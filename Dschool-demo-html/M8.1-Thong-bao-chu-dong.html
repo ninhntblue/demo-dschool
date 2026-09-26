@@ -1562,9 +1562,11 @@ function cs2(){
   const lockNS=role==='TCNS';
   h+='<div class="gf"><label>Vai người nhận <b>*</b></label><div class="seg">'+
    [['PH','Phụ huynh'],['HS','Học sinh'],['NS','Nhân sự của phạm vi']].map(function(v){
-    const on=C.vai.indexOf(v[0])>=0,dis=lockNS&&v[0]!=='NS'||C.lockPV;
-    return '<button class="chk '+(on?'on':'')+(dis?' dis':'')+'" data-vai="'+v[0]+'" '+(dis?'disabled':'')+'><span class="bx">'+(on?'✓':'')+'</span>'+v[1]+'</button>'}).join('')+'</div>'+
-   '<div class="hint">'+(lockNS?'🔒 Vai <b>Tổ chức nhân sự</b> khóa người nhận ở <b>Nhân sự</b> — không gửi được cho phụ huynh và học sinh.':'Không có ô này thì nhãn “Lớp 6A1” là mơ hồ: gửi cho phụ huynh, cho học sinh, hay cho cả giáo viên dạy lớp đó.')+'</div></div>';
+    /* TKHS-1C — năm chủ đề khóa cứng vai Học sinh (C3b) */
+    const khoaHS=(v[0]==='HS'&&typeof tkKhoaHS==='function'&&tkKhoaHS(C.chude));
+    const on=C.vai.indexOf(v[0])>=0,dis=lockNS&&v[0]!=='NS'||C.lockPV||khoaHS;
+    return '<button class="chk '+(on?'on':'')+(dis?' dis':'')+'" data-vai="'+v[0]+'" '+(dis?'disabled':'')+'><span class="bx">'+(on?'✓':'')+'</span>'+v[1]+(khoaHS?' 🔒':'')+'</button>'}).join('')+'</div>'+
+   '<div class="hint">'+(typeof tkKhoaHS==='function'&&tkKhoaHS(C.chude)?'🔒 Chủ đề <b>'+esc(C.chude)+'</b> ⛔ gửi cho <b>học sinh</b> — bề mặt của em không có khối ấy. ⛔ Không có đường «vẫn gửi» <i>(C3b)</i>. Mặc định là <b>Phụ huynh</b> cho mọi chủ đề — gửi cho em là một quyết định có người tích ô <i>(Đ 6)</i>.':(lockNS?'🔒 Vai <b>Tổ chức nhân sự</b> khóa người nhận ở <b>Nhân sự</b> — không gửi được cho phụ huynh và học sinh.':'Không có ô này thì nhãn “Lớp 6A1” là mơ hồ: gửi cho phụ huynh, cho học sinh, hay cho cả giáo viên dạy lớp đó.'))+'</div></div>';
  }
  const u=uoc(curPV());
  h+='<div class="uoc '+(u.tong?'':'zero')+'">'+
@@ -1707,7 +1709,11 @@ function cs4(k){
 function fRow(k,v,s){return '<div class="f"><div class="k">'+k+'</div><div class="v" style="font-weight:500">'+v+
  ' <button class="rolnk" data-step="'+s+'">bước '+s+' ↗</button></div></div>'}
 </script>
-<script>
+<script>/* TKHS-1C — năm chủ đề KHÓA vai Học sinh (bản CHỐT TKHS §6.4 · M8.1 §8.2.2b · C3b).
+   ⛔ Không có đường «vẫn gửi» — ⛔ không phải quy định pháp lý mà là ranh giới sản phẩm. */
+var TKHS_KHOA=['Tài chính','Y tế','Kỷ luật','Hồ sơ','Khiếu nại'];
+function tkKhoaHS(cd){return TKHS_KHOA.indexOf(String(cd||''))>=0}
+
 "use strict";
 /* ============ TIEN ICH ============ */
 function reRender(fid){
@@ -1848,14 +1854,20 @@ document.addEventListener('click',function(e){
 
  if(d.step){const s=+d.step;const k=kiemTra?null:null;C.step=s;render();return}
  if(d.cd){C.chude=d.cd;
-   if(!C.vai.length)C.vai=d.cd==='Tài chính'?['PH']:d.cd==='Học tập'?['PH','HS']:['PH','HS'];
+   /* TKHS-1C (Đ 6): mặc định là PHỤ HUYNH cho MỌI chủ đề — ⛔ không tin nào tự nhiên chảy sang học sinh.
+      Vế cũ «Học tập ⇒ PH+HS» vô hại khi vai HS còn là ĐẦU CỤT; nay HS có Web học sinh nên nó gửi thật. */
+   if(!C.vai.length)C.vai=['PH'];
+   if(tkKhoaHS(C.chude))C.vai=C.vai.filter(function(v){return v!=='HS'});   /* chủ đề khóa ⇒ bỏ tích HS */
    if(role==='TCNS')C.vai=['NS'];render();return}
  if(d.pv){C.pvLoai=d.pv;C.pvIds=[];C.qc='';
    const r=R();if(r.dt&&d.pv==='dt')C.pvIds=[r.dt];if(r.to&&d.pv==='to')C.pvIds=[r.to];
-   if(!C.vai.length&&['truong','dt','khoi','lop'].indexOf(d.pv)>=0)C.vai=['PH','HS'];
+   if(!C.vai.length&&['truong','dt','khoi','lop'].indexOf(d.pv)>=0)C.vai=['PH'];   /* TKHS-1C (Đ 6) */
    if(role==='TCNS')C.vai=['NS'];render();return}
  if(d.pvid!==undefined){const v=C.pvLoai==='khoi'?+d.pvid:d.pvid;toggle(C.pvIds,v);render();return}
- if(d.vai){toggle(C.vai,d.vai);render();return}
+ if(d.vai){
+   if(d.vai==='HS'&&tkKhoaHS(C.chude)&&C.vai.indexOf('HS')<0){
+     toast('⛔ Chủ đề <b>'+esc(C.chude)+'</b> ⛔ gửi cho học sinh — bề mặt của em không có khối ấy <i>(C3b)</i>');return}
+   toggle(C.vai,d.vai);render();return}
  if(d.kenh){C.push=!C.push;render();return}
  if(d.khi){C.khi=d.khi;render();return}
  if(d.mau2){const m=mauById(d.mau2);

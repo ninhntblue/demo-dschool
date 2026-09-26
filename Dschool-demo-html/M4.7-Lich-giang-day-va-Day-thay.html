@@ -186,6 +186,21 @@ tr.grp td{background:#f8fafc;font-weight:700;font-size:11.5px}
 
 /* ===== GDDP (20/9/2026) — nhãn PHẦN trên ô tiết. ⏱ = người dạy theo giai đoạn ===== */
 .ngn.gd{background:#f5f3ff;color:#6d28d9}
+.fldi.loi{border-color:var(--red);background:var(--red-soft)}
+
+/* ===== KGLH-1D (23/9/2026) — T5 Lịch toàn cảnh: mini-tuần của MỘT lớp / MỘT giáo viên / MỘT phòng.
+   Một dòng nhóm = một đối tượng của trục; ô bên trong là tiết, nhỏ hơn ô lưới của T1 vì
+   một ngày có thể có nhiều tiết của cùng đối tượng. ===== */
+.cal{width:100%;border-collapse:collapse;table-layout:fixed}
+.cal th{background:#f8fafc;border:1px solid var(--line);padding:4px 5px;font-size:11px;font-weight:700;color:var(--ink2)}
+.cal th.hom{background:#e0e7ff;color:#3730a3}
+.cal td{border:1px solid var(--line);vertical-align:top;padding:3px;background:var(--surface)}
+.cal td.hom{background:#f5f7ff}
+.cell.tco{min-height:0;padding:3px 5px;margin-bottom:3px;border-radius:6px;border:1px solid var(--line)}
+.cell.tco:last-child{margin-bottom:0}
+.cell.tco b{font-size:11px;line-height:1.3}
+.tcw .ch{border-top:1px solid var(--line)}
+.tcw .ch:first-child{border-top:0}
 </style>
 </head>
 <body>
@@ -201,7 +216,10 @@ tr.grp td{background:#f8fafc;font-weight:700;font-size:11.5px}
   <button class="rb" data-r="TTCM1">TTCM Toán — Tin</button>
   <button class="rb" data-r="TTCM4">TTCM KHTN</button>
   <button class="rb" data-r="VT">Văn thư</button>
+  <button class="rb" data-r="GT">Giám thị Điểm trường A</button>
   <button class="rb" data-r="HT">Hiệu trưởng</button>
+  <button class="rb" data-r="GVCN">GVCN lớp 6A1</button>
+  <button class="rb" data-r="QLCSVC">Quản lý CSVC</button>
   <button class="rb" data-r="GV">Giáo viên</button>
   <span class="note">Bối cảnh: <b>Thứ Tư 02/12/2026 = D0</b> · 08:40</span>
   <select class="dlsel" id="dlsel" title="Preview mở tệp dạng data: nên mất query string — thử deep-link và mô phỏng sự kiện bằng ô này"></select>
@@ -261,33 +279,59 @@ const NAV=[
          Thao tac S tren F3, KHONG phai D: F3 khong co buoc duyet. Lanh dao KHONG co nut Tu choi / Huy phan cong.
        + YKNP 17/9/2026: baovang (⚡ Báo vắng) · doingay (↩ Đề nghị đổi ngày) · doitiet_to (F4 khi CẢ HAI tiết thuộc tổ mình — YK03-6)
          · cauhinh (⚙ ngưỡng sát giờ) · xacnhan (xác nhận một nút người dạy thay đã đề xuất trong đơn — YK02-2)
+       + SDBG-1B 22/9/2026: ghichu (✎ Ghi chú tình hình lớp của tiết Hủy — chuyển từ M2.2 F8, §4.4b).
+         Ô S HẸP trên F5: KHÔNG hủy tiết, KHÔNG xếp người, KHÔNG đổi cách xử lý. Ai: Giám thị · PHT_DT (điểm trường của lớp).
+         Vai GT mang cờ chiHuy: thấy ĐÚNG tiết Hủy của điểm trường mình — không mở lưới F1 (§11 dòng Giám thị).
  (năng lực 'nghi' đã BỎ 7/9/2026 — tab Lịch nghỉ nay CHỈ ĐỌC, chủ sở hữu là M10.9 (R7).
   Giữ chuỗi trong mảng vai cũng vô hại vì không nút nào đọc nó nữa, nhưng đã gỡ cho sạch.) */
 const ROLE={
- FULL:{n:'Đủ quyền — rà luồng nghiệp vụ',menu:'all',ava:'DQ',pv:'school',
-   viec:['daythay','doitiet','huy','daybu','sinh','xuat','baovang','doingay','cauhinh','xacnhan','phanhoi'],mchu:['M4.6','M4.8','M2.1','M2.2','M4.9','M4.5','M10.1','M5.6','M4.2','M0.4']},
- PDT:{n:'Phạm Đức Thắng — Phó HT Điểm trường A',menu:'all',ava:'PT',pv:'branch',dt:'Điểm trường A',
-   viec:['daythay','doitiet','huy','daybu','sinh','xuat','baovang','doingay','xacnhan','phanhoi'],mchu:['M4.6','M4.8','M2.1','M2.2','M4.5','M5.6','M4.2']},
+ FULL:{n:'Đủ quyền — rà luồng nghiệp vụ',menu:'all',ava:'DQ',pv:'school',truc:['lop','gv','phong'],
+   viec:['daythay','doitiet','huy','daybu','sinh','xuat','baovang','doingay','cauhinh','xacnhan','phanhoi','ghichu'],mchu:['M4.6','M4.8','M2.1','M2.2','M4.9','M4.5','M10.1','M5.6','M4.2','M0.4','M5.1']},
+   /* DTHN-1E 24/9: + 'M5.1' — vai Đủ quyền phải bấm được bước ① «✂ Cắt phần tại tuần…» của chuỗi bàn giao (§4.7). Vai khác GIỮ NGUYÊN mchu */
+ PDT:{n:'Phạm Đức Thắng — Phó HT Điểm trường A',menu:'all',ava:'PT',pv:'branch',dt:'Điểm trường A',truc:['lop','gv','phong'],
+   viec:['daythay','doitiet','huy','daybu','sinh','xuat','baovang','doingay','xacnhan','phanhoi','ghichu'],mchu:['M4.6','M4.8','M2.1','M2.2','M4.5','M5.6','M4.2']},
  /* GY18-J2: PHT Chuyên môn — School, trước đây chưa có trên thanh vai của demo này dù ma trận §11 luôn có dòng PHT_CM */
- PCM:{n:'Vũ Thị Thanh — Phó HT Chuyên môn',menu:'all',ava:'VT',pv:'school',
+ PCM:{n:'Vũ Thị Thanh — Phó HT Chuyên môn',menu:'all',ava:'VT',pv:'school',truc:['lop','gv','phong'],
    viec:['daythay','doitiet','huy','daybu','xuat','baovang','doingay','cauhinh','xacnhan','phanhoi'],mchu:['M4.6','M4.8','M2.1','M2.2','M4.5','M5.6','M4.2']},
- TTCM:{n:'Ngô Thị Hương — Tổ trưởng Tổ Ngoại ngữ',menu:['','lh','ns'],ava:'NH',pv:'to',to:'T3',
+ TTCM:{n:'Ngô Thị Hương — Tổ trưởng Tổ Ngoại ngữ',menu:['','lh','ns'],ava:'NH',pv:'to',to:'T3',truc:['gv','lop'],
    viec:['daythay','daybu','dexuathuy','xuat','baovang','doingay','doitiet_to','xacnhan'],mchu:['M2.1']},
    /* §12 diem 3 CHOT 7/9/2026: TTCM CHI DE NGHI huy, PHT quyet (§4.5).
       -> co 'dexuathuy' (nut 'De nghi huy tiet'), KHONG co 'huy'.
       YKNP 17/9: TTCM ROI M4.8 (M4.8 khong con Group) -> mchu bo 'M4.8': khong hien deep-link sang don nghi (D3). */
- TTCM1:{n:'Lê Minh Tuấn — Tổ trưởng Tổ Toán — Tin',menu:['','lh','ns'],ava:'LT',pv:'to',to:'T1',
+ TTCM1:{n:'Lê Minh Tuấn — Tổ trưởng Tổ Toán — Tin',menu:['','lh','ns'],ava:'LT',pv:'to',to:'T1',truc:['gv','lop'],
    viec:['daythay','daybu','dexuathuy','xuat','baovang','doingay','doitiet_to','xacnhan'],mchu:['M2.1']},
- TTCM4:{n:'Cao Thị Nhung — Tổ trưởng Tổ Khoa học tự nhiên',menu:['','lh','ns'],ava:'CN',pv:'to',to:'T4',
+ TTCM4:{n:'Cao Thị Nhung — Tổ trưởng Tổ Khoa học tự nhiên',menu:['','lh','ns'],ava:'CN',pv:'to',to:'T4',truc:['gv','lop'],
    viec:['daythay','daybu','dexuathuy','xuat','baovang','doingay','doitiet_to','xacnhan'],mchu:['M2.1']},
- VT:{n:'Ngô Thị Bích — Văn thư Điểm trường A',menu:['','lh','ns'],ava:'NB',pv:'branch',dt:'Điểm trường A',
+ VT:{n:'Ngô Thị Bích — Văn thư Điểm trường A',menu:['','lh','ns'],ava:'NB',pv:'branch',dt:'Điểm trường A',truc:['lop','gv','phong'],
    viec:['sinh','daybu','xuat','baovang'],mchu:['M4.6','M2.2']},
    /* NP-3: VT duoc ⚡ Bao vang, pham vi Branch — KHONG co 'doingay' (⏳ P-2: de nghi doi ngay la viec cua nguoi xep lich) */
- HT:{n:'Trần Văn Hùng — Hiệu trưởng',menu:'all',ava:'TH',pv:'school',
+ /* SDBG-1B 22/9/2026 — Giám thị: vai MỚI của menu này. Trước đây ghi chú tiết GV vắng nằm ở M2.2 F8
+    (tab «Ghi chú tiết GV vắng» dính chung Feature với «Ghi sổ tiết của tôi» — M2.2 §10 điểm 16 · 17).
+    X ở F5 Hủy và dạy bù (chỉ tiết Hủy của điểm trường) + S HẸP chỉ ô ghi chú. Không có XD, không có mchu nào:
+    Giám thị không còn ô quyền ở M2.2 sau SDBG-1A ⇒ không hiện deep-link sang đó (D3). */
+ GT:{n:'Lê Văn Thái — Giám thị Điểm trường A',menu:['','lh','ns'],ava:'LT',pv:'branch',dt:'Điểm trường A',chiHuy:true,
+   truc:[],viec:['ghichu'],mchu:[]},
+ HT:{n:'Trần Văn Hùng — Hiệu trưởng',menu:'all',ava:'TH',pv:'school',truc:['lop','gv','phong'],
    viec:['xuat','phanhoi'],mchu:['M4.6','M4.8','M4.9','M4.5']},
    /* GY18-J2: HT co 'phanhoi' nhung KHONG co 'daythay' — o S HEP, dung hai nut; khong xep day thay, khong doi tiet, khong xep day bu (§11) */
+ /* KGLH-1D 23/9/2026 — GVCN: vai MỚI trên thanh chức danh của demo này.
+    Bảng chuẩn LUÔN có dòng GVCN ở m4.7.lich_giang_day (X/XD @Class — «lớp mình») nhưng demo chưa dựng bao giờ.
+    Phiên này phải dựng vì tab nhận về — m2.1.lich_toan_canh — có ô GVCN @Class và sổ §5 1D việc 2 nói rõ «GVCN GIỮ ô».
+    truc:['lop'] — đúng lăng kính cũ ở M2.1 (GVCN chỉ trục Lớp: trục Giáo viên và trục Phòng là việc điều hành).
+    🔁 KGL2-1A 23/9 chiều — chính vai này là BẰNG CHỨNG dẫn tới chốt T1: hai tab trùng HOÀN TOÀN với GVCN
+    (cùng xe@Class, cùng chỉ đọc, cùng một tập tiết). Gộp xong: MỘT ô, MỘT tab, BA cách nhìn; ⛔ không một bit quyền nào đổi. */
+ GVCN:{n:'Nguyễn Thị Mai — GVCN lớp 6A1',menu:['','lh','ns'],ava:'NM',pv:'lop',lopCN:'6A1',dt:'Điểm trường A',gvid:3,
+   truc:['lop'],viec:['xuat'],mchu:['M2.1','M2.2']},
+ /* KGL2-1A 23/9/2026 chiều — QLCSVC: vai MỚI trên thanh chức danh của demo này (chốt S14, §12b phương án ②).
+    Ô nạp sáng cùng ngày trên Feature m2.1.lich_toan_canh; chiều Feature ấy BỎ HẲN (chốt T1) nên ô
+    chuyển sang m4.7.lich_giang_day — và hẹp thêm một vế: vai này CHỈ mở được cách nhìn 🔭 Toàn cảnh.
+    chiToanCanh:true  → không 📅, không 🗓, không lát ✎; không tab T2 · T3 · T4 (0 dòng ở ba Feature đó)
+    truc:['phong']    → CHỈ trục Phòng (rb 50 · rb 54)
+    anGV:true         → ô tiết ẩn TÊN GIÁO VIÊN và KHÔNG mở panel tiết (khuôn SB1-P4 của Giám thị) */
+ QLCSVC:{n:'Đặng Quốc Vinh — Quản lý CSVC Điểm trường A',menu:['','ns'],ava:'DV',pv:'branch',dt:'Điểm trường A',
+   chiToanCanh:true,anGV:true,truc:['phong'],viec:['xuat'],mchu:['M4.6']},
  GV:{n:'Ngô Thị Hương — Giáo viên Tiếng Anh',menu:['','lh','ns'],ava:'NH',pv:'own',gvid:7,
-   viec:[],mchu:['M2.1']},
+   truc:[],viec:[],mchu:['M2.1']},
 };
 let role='FULL';
 const R=()=>ROLE[role];
@@ -317,6 +361,8 @@ const NS=[
  /* YKNP 17/9 — người nền của bộ ca mẫu S1…S10 (mã chung M4.8 · M4.7 · M4.9). KHÔNG dạy ⇒ không có tổ, không sinh việc ở menu này */
  {id:30,n:'Phạm Đức Thắng',to:'',cd:'PHT_DT'},{id:31,n:'Vũ Thị Thanh',to:'',cd:'PHT_CM'},{id:40,n:'Ngô Thị Bích',to:'',cd:'VT'},
  {id:41,n:'Lê Thị Kim Chi',to:'',cd:'KT'},{id:45,n:'Trần Thị Thanh',to:'',cd:'NVCC'},{id:46,n:'Ngô Thị Hạnh',to:'',cd:'TCNS'},
+ /* SDBG-1B — hai giám thị, mỗi điểm trường một người (người ghi chú tình hình lớp của tiết Hủy — §4.4b) */
+ {id:47,n:'Lê Văn Thái',to:'',cd:'GT'},{id:48,n:'Đinh Thị Hằng',to:'',cd:'GT'},
 ];
 const GV_NS=NS.filter(p=>!p.cd);   /* chỉ người đứng lớp mới vào gợi ý dạy thay */
 const ns=id=>NS.find(x=>x.id===id);
@@ -694,6 +740,13 @@ const CHAMCONG_KL=[];
 /* ⚙ NP-4 ① — ngưỡng sát giờ ở M4.7, trường sửa được, CÓ LỊCH SỬ */
 let NGUONG_SATGIO=24;
 const LS_NGUONG=[{luc:'01/09/2026 07:00',ai:'Hệ thống',tu:null,den:24,ly:'Giá trị mặc định — YK02-6 · NP-4'}];
+/* 🆕 DTHN-1E 24/9/2026 — ⚙ NGƯỠNG GỢI Ý BÀN GIAO (bản CHỐT DTHN · DT-C) — đặt CẠNH sát giờ: CÙNG hộp ⚙, CÙNG người sửa,
+   CÙNG bảng lịch sử (§8b.10 · §4.7). HAI số: `tiet` tiết trong `tuan` tuần.
+   Đếm: CÙNG MỘT người dạy thay × CÙNG MỘT cặp Lớp × Môn, trong MỘT cửa sổ tuan×7 ngày liên tiếp BẤT KỲ, ĐẾM CẢ tiết đã xếp TƯƠNG LAI.
+   Chạm ngưỡng ⇒ GỢI Ý «Nên chuyển sang bàn giao phân công» ở ba chỗ (hộp xếp · panel tiết · T2). ⛔ KHÔNG CHẶN gì — rb 55.
+   Mục lịch sử mới mang ts:'ban_giao'; mục cũ không có ts = ngưỡng sát giờ. */
+let NGUONG_BAN_GIAO={tiet:5,tuan:2};
+LS_NGUONG.push({luc:'01/09/2026 07:00',ai:'Hệ thống',ts:'ban_giao',tu:null,den:'5 tiết / 2 tuần',ly:'Giá trị mặc định — DT-C (CHỐT DTHN 24/9/2026)'});
 
 /* ③ HÀM HIỆU LỰC — HDNP. Mọi chỗ trong demo đọc hàm này, KHÔNG đọc trang_thai */
 function coHieuLuc(don,ngay){
@@ -846,9 +899,15 @@ let LECH_NGUOI=null;
 /* ---- PHẠM VI: dữ liệu ngoài phạm vi KHÔNG có trong tập trả về ---- */
 function xemDuoc(x){const r=R();
  if(r.pv==='own') return x.gv===r.gvid||x.gvGoc===r.gvid;
+ /* SDBG-1B — Giám thị: X HẸP, chỉ tiết Hủy của điểm trường mình (neo LỚP của tiết — rb 30). Tiết khác KHÔNG có trong tập trả về */
+ if(r.chiHuy) return x.tt==='huy'&&lop(x.lop).dt===r.dt;
  /* YKNP 17/9 — Group NEO VÀO TIẾT (HDNP ⑦): môn của tiết thuộc tổ, KHÔNG phải tổ của người dạy.
     Bản cũ neo người (ns(x.gv).to) ⇒ GV dạy hai tổ lọt hết vào một TTCM, tiết Toán của GV Tổ KHTN không TTCM Toán nào thấy. */
  if(r.pv==='to')  return MONTO[x.mon]===r.to;
+ /* KGLH-1D — Class: lớp mình CHỦ NHIỆM (không phải lớp mình dạy).
+    🔁 KGL2-1A 23/9 chiều: GVCN nay có ĐÚNG MỘT ô ở menu này (m4.7.lich_giang_day) — hai Feature cũ
+    đã gộp làm một, chính vì với vai này chúng TRÙNG HOÀN TOÀN (điểm 1D-P2, nay đã đóng). */
+ if(r.pv==='lop') return x.lop===r.lopCN;
  if(r.pv==='branch') return lop(x.lop).dt===r.dt;
  return true}
 const VIS=()=>LICH.filter(xemDuoc);
@@ -874,6 +933,37 @@ const huyChuaBu=()=>VIS().filter(x=>x.tt==='huy'&&x.seBu&&!x.daBu);
 /* de nghi huy dang cho PHT quyet — §4.5.2. Tiet VAN o 'dukien' (rang buoc 8c). */
 const deNghiHuy=()=>VIS().filter(x=>x.tt==='dukien'&&x.deNghiHuy);
 const soThayThang=g=>LICH.filter(x=>x.gv===g&&x.nguon==='Dạy thay').length;
+/* ===== DTHN-1E (24/9/2026) — GỢI Ý CHUYỂN BÀN GIAO · §4.7 · rb 55–58 =====
+   Hàm MỚI — ⛔ không sửa soThayThang(): hàm kia đếm MỌI tiết dạy thay của một người cho ngưỡng THÁNG (§12 điểm 1 — phân bổ
+   công bằng giữa người với người); hàm này đếm MỘT người × MỘT cặp Lớp × Môn trong cửa sổ `tuan` tuần (gợi ý bàn giao).
+   Chỉ tiết nguồn «Dạy thay» — ⏱ theo giai đoạn và 🤝 bàn giao KHÔNG phải dạy thay (§4.6), đếm vào là gợi ý bàn giao cho chính ca đã bàn giao.
+   Tiết Hủy · Nghỉ không đếm: không ai đứng lớp. Đã diễn ra + Dự kiến (tương lai) ĐỀU đếm. */
+const ngayThayCap=(g,l,m,boQua)=>LICH.filter(z=>z.gv===g&&z.gv!==z.gvGoc&&z.nguon==='Dạy thay'&&z.lop===l&&z.mon===m
+  &&z.tt!=='huy'&&z.tt!=='nghi'&&z.id!==boQua).map(z=>z.ngay);
+function cuaSoMax(ngays){const W=NGUONG_BAN_GIAO.tuan*7*86400000;
+ const d=ngays.map(k=>k2d(k).getTime()).sort((a,b)=>a-b);let best={n:0,tu:null,den:null};
+ for(let i=0,j=0;i<d.length;i++){if(j<i)j=i;while(j+1<d.length&&d[j+1]-d[i]<W)j++;
+  if(j-i+1>best.n)best={n:j-i+1,tu:key(new Date(d[i])),den:key(new Date(d[j]))}}
+ return best}
+/* them = tiết ĐANG định xếp (hộp xếp dạy thay) — cộng giả định nó vào; bỏ nó khỏi tập cũ nếu đang «Đổi người dạy» */
+function banGiaoCap(g,l,m,them){const ds=ngayThayCap(g,l,m,them?them.id:null);if(them)ds.push(them.ngay);
+ const b=cuaSoMax(ds);return b.n>=NGUONG_BAN_GIAO.tiet?b:null}
+/* mọi cặp (người dạy thay × Lớp × Môn) đang chạm ngưỡng trong phạm vi — nguồn của khối T2 */
+function dsBanGiao(){const nhom={};
+ VIS().filter(z=>z.nguon==='Dạy thay'&&z.gv!==z.gvGoc&&z.tt!=='huy'&&z.tt!=='nghi').forEach(z=>{const k=z.gv+'|'+z.lop+'|'+z.mon;(nhom[k]=nhom[k]||[]).push(z)});
+ return Object.keys(nhom).map(k=>{const ts=nhom[k],z=ts[0],b=banGiaoCap(z.gv,z.lop,z.mon);if(!b)return null;
+  const goc=[...new Set(ts.map(q=>q.gvGoc))];
+  return {gv:z.gv,lop:z.lop,mon:z.mon,b,ts:ts.sort((p,q)=>p.ngay<q.ngay?-1:p.ngay>q.ngay?1:p.tiet-q.tiet),goc,
+   tuongLai:ts.filter(q=>q.tt==='dukien').length}}).filter(Boolean)}
+/* lời gợi ý — dẫn ĐÚNG chuỗi hai bước (M4.5 §4.4.2): ✂ cắt phần ở M5.1 → gán người đoạn sau ở M4.5 T1 */
+/* 🔁 DTHN-2A (24/9 — bản CHỐT §7.1 `DT-D` g): lời gợi ý nêu HAI lối, lối «thay giáo viên» ĐỨNG TRƯỚC —
+   ① vắng tới hết năm ⇒ 🔁 Thay giáo viên bộ môn ở M4.5 (MỘT bước, deep-link mới mang cặp Lớp × Môn);
+   ② vắng có ngày quay lại ⇒ 🤝 bàn giao theo kế hoạch — chuỗi hai bước ✂ M5.1 → M4.5 T1 GIỮ NGUYÊN. o = {lop, mon} (có thể thiếu) */
+const nutBanGiao=o=>`${dlink('M4.5','🔁 Thay giáo viên bộ môn (M4.5)',o?'action=tao&loai=thay_giao_vien&ctx='+o.lop+'|'+o.mon+'&return=M4.7':'action=tao&loai=thay_giao_vien&return=M4.7')}
+ <span class="mini">vắng tới hết năm</span> · hoặc 🤝 bàn giao theo kế hoạch: ${dlink('M5.1','① ✂ Cắt phần tại tuần… (M5.1)','action=sua_lich_phan&return=M4.5')} → ${dlink('M4.5','② Gán người cho đoạn sau (M4.5 T1)')}`;
+const loiBanGiao=b=>`💡 <b>Dạy thay đã kéo dài — nên đổi phân công</b> — <b>${b.n} tiết</b> trong ${NGUONG_BAN_GIAO.tuan} tuần (${k2s(b.tu).slice(0,5)} → ${k2s(b.den).slice(0,5)}), ngưỡng ${NGUONG_BAN_GIAO.tiet} tiết`;
+/* gợi ý là việc của NGƯỜI XẾP LỊCH (và BGH đang theo dõi phân công) — giáo viên · GVCN · Văn thư không thấy */
+const thayGoiYBG=()=>co('daythay')||co('phanhoi');
 
 /* ===== GY18-J2 (19/9/2026) — PHẢN HỒI PHÂN CÔNG DẠY THAY · §4.3b =====
    MỘT TRƯỜNG trên tiết, mượn nguyên khuôn de_nghi_huy (§4.5.1) — KHÔNG thêm trạng thái thứ năm:
@@ -924,7 +1014,7 @@ const hangTen=h=>['','Cùng môn, cùng tổ','Cùng môn, khác tổ','Khác m�
 
 /* ================= TRẠNG THÁI ================= */
 let tab='lich',cheDo='ngay',curNgay=key(HOMNAY),curDT='Điểm trường A',curAi='6A1',aiLoai='lop',curTiet=null,tuanBD=key(TUAN_BD);
-function dtHien(){const r=R();return r.pv==='branch'?r.dt:curDT}
+function dtHien(){const r=R();return (r.pv==='branch'||r.pv==='lop')?r.dt:curDT}
 
 function dlink(menu,label,ctx){
  if(!R().mchu.includes(menu))
@@ -943,11 +1033,23 @@ function sidebar(){
 }
 function tabList(){
  const r=R(),t=[['lich','Lịch giảng dạy','',0]];
- if(r.pv!=='own'){const n=canThay().length+huyChuaBu().length+deNghiHuy().length+yeuCauMo().length;
-  t.push(['viec','Việc cần xử lý',n,n?1:0]);
-  /* NP-5: T4 Giáo viên vắng đứng NGAY SAU Việc cần xử lý. Mã số T4 theo thứ tự ra đời — không đánh số lại T3 Lịch nghỉ */
-  const nv=dsVang().filter(c=>c.chua).length;
-  t.push(['vang','Giáo viên vắng',nv,nv?1:0]);
+ /* SDBG-1B — Giám thị chỉ có ô ở m4.7.lich_giang_day (F5). Tên tab GIỮ «Lịch giảng dạy» đúng danh mục M10.4:
+    một Feature mang hai tên theo vai là đúng lỗi M2.2 §10 điểm 17 mà cụm SDBG đang gỡ — không lặp lại ở đây. */
+ if(r.chiHuy){const n=VIS().filter(chuaGhiChu).length;t[0][2]=n;t[0][3]=n?1:0;return t}
+ /* KGL2-1A 23/9/2026 chiều — QLCSVC có X HẸP: đúng MỘT tab, và trong tab ấy đúng MỘT cách nhìn (🔭 Toàn cảnh).
+    Không có dòng nào ở m4.7.viec_can_xu_ly · m4.7.giao_vien_vang · m4.7.lich_nghi ⇒ không hiện ba tab kia. */
+ if(r.chiToanCanh)return t;
+ if(r.pv!=='own'){
+  /* 🔴 KGL2-1A 23/9/2026 chiều — tab «Lịch toàn cảnh» ĐÃ GỘP vào «Lịch giảng dạy» (chốt T1).
+     Feature m2.1.lich_toan_canh BỎ HẲN (K2-1); nội dung nay là CÁCH NHÌN thứ ba của T1 — xem segNhin().
+     ⛔ Đừng dựng lại tab này: ranh giới «ai tra cứu · ai điều hành» nay giữ bằng LĂNG KÍNH TRỤC + BIT GHI (rb 53). */
+  /* GVCN (Class) KHÔNG có dòng nào ở m4.7.viec_can_xu_ly và m4.7.giao_vien_vang ⇒ không hiện hai tab đó.
+     Vẫn có dòng ở m4.7.lich_nghi ⇒ tab Lịch nghỉ hiện. */
+  if(r.pv!=='lop'){const n=canThay().length+huyChuaBu().length+deNghiHuy().length+yeuCauMo().length;
+   t.push(['viec','Việc cần xử lý',n,n?1:0]);
+   /* NP-5: T4 Giáo viên vắng đứng NGAY SAU Việc cần xử lý. Mã số T4 theo thứ tự ra đời — không đánh số lại T3 Lịch nghỉ */
+   const nv=dsVang().filter(c=>c.chua).length;
+   t.push(['vang','Giáo viên vắng',nv,nv?1:0]);}
   t.push(['nghi','Lịch nghỉ',NGHI.length,0]);}
  return t;
 }
@@ -958,7 +1060,16 @@ function tabs(){
 }
 function scopeBar(){
  const r=R();let s;
- if(r.pv==='own')       s=`Bạn thấy <b>lịch dạy của chính mình</b> — chỉ đọc. Giáo viên không thao tác ở menu này, xem lịch cá nhân tại ${dlink('M2.1','M2.1')}.`;
+ if(r.chiHuy)           return `<div class="scope">🔎 <span class="sp">Phạm vi <b>Branch — ${r.dt}</b>, chỉ <b>tiết đã bị Hủy</b>. Bộ chọn Điểm trường đã <b>khoá</b>.
+   Giám thị ghi được <b>đúng một ô — Ghi chú tình hình lớp</b>: không hủy tiết, không xếp người dạy thay hay dạy bù, không đổi cách xử lý.
+   Lưới lịch giảng dạy <b>không mở</b> với vai này — tiết không bị hủy không có trong dữ liệu trả về.</span>
+   <span class="chip">Hôm nay ${d2s(HOMNAY)}</span></div>`;
+ else if(r.chiToanCanh) return `<div class="scope">🔎 <span class="sp">Phạm vi <b>Branch — ${r.dt}</b>, ô quyền <b>X HẸP</b>: bạn chỉ mở được <b>một cách nhìn — 🔭 Toàn cảnh</b>, <b>một trục — Theo Phòng</b>.
+   Bạn <b>chỉ đọc</b>: không nút ghi nào, không dải cảnh báo nhân sự, ô tiết <b>không hiện tên giáo viên</b> và <b>không mở bảng chi tiết tiết</b> —
+   việc của bạn là biết <b>phòng nào bận giờ nào</b>. Mẫu tuần đọc ở ${dlink('M4.6','M4.6')}; lịch mượn phòng ngoài giờ ở <b>M6.5</b>; báo cáo khai thác ở <b>M9.13</b>.</span>
+   <span class="chip">Hôm nay ${d2s(HOMNAY)}</span></div>`;
+ else if(r.pv==='own')  s=`Bạn thấy <b>lịch dạy của chính mình</b> — chỉ đọc. Giáo viên không thao tác ở menu này, xem lịch cá nhân tại ${dlink('M2.1','M2.1')}.`;
+ else if(r.pv==='lop')  s=`Phạm vi <b>Class — lớp ${r.lopCN}</b> <i>(lớp bạn chủ nhiệm)</i>. Bộ chọn Điểm trường đã <b>khoá</b>. Bạn <b>chỉ đọc</b> — không có ô ghi nào ở menu này.`;
  else if(r.pv==='to')   s=`Phạm vi <b>Group — ${TO[r.to]}</b>, <b>neo vào TIẾT</b>: bạn thấy và xử lý <b>tiết có môn thuộc tổ mình</b>, kể cả tiết của giáo viên tổ khác; người dạy thay chọn trong tổ mình.`;
  else if(r.pv==='branch')s=`Phạm vi <b>Branch — ${r.dt}</b>. Bộ chọn Điểm trường đã <b>khoá</b>.`;
  else                   s=`Phạm vi <b>School</b> — mọi điểm trường.`;
@@ -1019,14 +1130,36 @@ function khungHien(loc){
  const k=KHUNG.filter(x=>cs.has(x.b));
  return k.length?k:KHUNG.filter(x=>x.b==='S');
 }
+/* 🆕 KGL2-1A — BỘ CHUYỂN CÁCH NHÌN của tab «Lịch giảng dạy» (tài liệu §2.1).
+   Ba cách nhìn + một lát, MỘT Feature m4.7.lich_giang_day:
+     📅 Theo ngày  — MỘT ngày × MỌI lớp        (mặc định, màn điều hành)
+     🗓 Theo tuần  — MỘT tuần × MỘT đối tượng
+     🔭 Toàn cảnh  — MỘT tuần × MỌI đối tượng của MỘT trục   (nội dung cũ của tab T5)
+     ✎ Tiết hủy   — lát của Giám thị · PHT_DT, giữ nguyên từ SDBG-1B
+   🛑 Vai có 0 TRỤC (GVBM · Giám thị) KHÔNG thấy nút 🔭 — đây là cửa duy nhất giữ cho việc gộp
+      không âm thầm nới quyền đọc cho hai vai chưa bao giờ có ô ở tab toàn cảnh cũ (rb 53). */
+function segNhin(){
+ const r=R();
+ if(r.chiToanCanh)return `<span class="seg"><button class="on" data-cd="toancanh" title="Vai này chỉ mở được một cách nhìn — X hẹp (rb 54)">🔭 Toàn cảnh</button></span>`;
+ const nc=VIS().filter(chuaGhiChu).length;
+ return `<span class="seg">
+   <button class="${cheDo==='ngay'?'on':''}" data-cd="ngay">📅 Theo ngày</button>
+   <button class="${cheDo==='tuan'?'on':''}" data-cd="tuan">🗓 Theo tuần</button>
+   ${trucCua().length?`<button class="${cheDo==='toancanh'?'on':''}" data-cd="toancanh" title="Cả tuần của MỌI đối tượng một trục — chỉ đọc (§8d). Gộp từ tab «Lịch toàn cảnh» ngày 23/9/2026">🔭 Toàn cảnh</button>`:''}
+   ${co('ghichu')?`<button class="${cheDo==='huy'?'on':''}" data-cd="huy" title="Lát tiết Hủy — nơi Giám thị và PHT điểm trường ghi chú tình hình lớp (§4.4b)">✎ Tiết hủy${nc?` · ${nc} chưa ghi chú`:''}</button>`:''}</span>`;
+}
 function lichTab(){
  const r=R(),dt=dtHien();
+ if(r.chiHuy)return lensHuy();
+ if(r.chiToanCanh)cheDo='toancanh';
+ if(cheDo==='toancanh'&&!trucCua().length)cheDo='ngay';
+ if(cheDo==='huy')return lensHuy();
+ if(cheDo==='toancanh')return toanCanhView();
  const ngay=pd(curNgay.split('-').reverse().join('/'));
- const ls=LOP.filter(l=>l.dt===dt);
+ /* KGLH-1D — vai phạm vi Class chỉ có lớp mình trong tập trả về; cột lưới ngày phải theo đúng phạm vi đó */
+ const ls=LOP.filter(l=>l.dt===dt&&(r.pv!=='lop'||l.id===r.lopCN));
  const bar=`<div class="bar">
-   <span class="seg">
-     <button class="${cheDo==='ngay'?'on':''}" data-cd="ngay">📅 Theo ngày</button>
-     <button class="${cheDo==='tuan'?'on':''}" data-cd="tuan">🗓 Theo tuần</button></span>
+   ${segNhin()}
    ${cheDo==='ngay'?`<button class="btn sm" data-x="ng-tr">←</button>
      <input class="fs" id="fngay" value="${d2s(ngay)}" style="width:110px;text-align:center">
      <button class="btn sm" data-x="ng-sau">→</button>
@@ -1041,7 +1174,7 @@ function lichTab(){
         :`<span class="seg">${[['lop','Lớp'],['gv','Giáo viên'],['phong','Phòng']].map(([k,n])=>
         `<button class="${aiLoai===k?'on':''}" data-al="${k}">${n}</button>`).join('')}</span>`}`}
    <span class="flab">Điểm trường</span>
-   <select class="fs" id="fdt" ${r.pv==='branch'?'disabled':''}>${DTS.map(d=>`<option ${curDT===d?'selected':''}>${d}</option>`).join('')}</select>
+   <select class="fs" id="fdt" ${(r.pv==='branch'||r.pv==='lop')?'disabled':''}>${DTS.map(d=>`<option ${dtHien()===d?'selected':''}>${d}</option>`).join('')}</select>
    ${co('sinh')?`<button class="btn" data-x="sinh-lai">🔄 Sinh lại từ TKB</button>`:''}
    ${co('sinh')&&nhieuBo(dtHien())?`<button class="btn" data-x="doi-gio" title="M4.6 §8.2b ký ban hành một bộ giờ — điểm đến của deep-link M4.6 → M4.7?nhom=doi_gio">⏰ Bộ giờ vừa đổi ở M4.6</button>`:''}
    ${co('sinh')?`<button class="btn" data-x="doi-nguoi" title="M5.1 ⑤ sửa lịch triển khai phần — mẫu tuần không đổi, chỉ NGƯỜI của tiết đổi (§7)">⏱ Lịch phần vừa đổi ở M5.1</button>`:''}
@@ -1100,10 +1233,143 @@ function lichTab(){
 function chotAi(){const d=dsAi();if(!d.length)return d;
  if(!d.some(x=>x[0]===curAi))curAi=d[0][0];return d}
 function dsAi(){
- const dt=dtHien();
- if(aiLoai==='lop')return LOP.filter(l=>l.dt===dt).map(l=>[l.id,l.id]);
+ const dt=dtHien(),r=R();
+ if(aiLoai==='lop')return LOP.filter(l=>l.dt===dt&&(r.pv!=='lop'||l.id===r.lopCN)).map(l=>[l.id,l.id]);
  if(aiLoai==='gv') return NS.filter(p=>VIS().some(x=>x.gv===p.id)).map(p=>[String(p.id),p.n+' — '+DTGV[p.id]]);
  return [...new Set(VIS().filter(x=>lop(x.lop).dt===dt).map(x=>x.phong))].sort().map(p=>[p,p]);
+}
+
+/* ============ CÁCH NHÌN 🔭 TOÀN CẢNH của T1 (KGL2-1A · 23/9/2026 chiều — chốt T1) ============
+   🔴 SÁNG 23/9 đây là TAB RIÊNG «T5 Lịch toàn cảnh», Feature m2.1.lich_toan_canh nhận từ M2.1 (KGLH-1D).
+      CHIỀU 23/9 anh Ninh chốt GỘP hai màn hình lịch làm một: Feature ấy BỎ HẲN khỏi danh mục (luật K2-1,
+      mã ⛔ KHÔNG tái dùng), nội dung về trong m4.7.lich_giang_day thành CÁCH NHÌN thứ ba của T1.
+      Vì sao: cách nhìn «theo tuần» của T1 chính là MỘT DÒNG của T5; và với GVCN thì hai tab TRÙNG HOÀN TOÀN
+      (cùng xe@Class, cùng chỉ đọc, cùng một tập tiết). Lập luận «khác đơn vị dòng chính» đúng mà không đủ.
+   Nội dung gốc: M2.1 v1.4 §7.3.1 ba trục · §7.3.2 dải cảnh báo · §7.3.3 bộ lọc · §7.2.3 dải phạm vi.
+   🛑 Nguồn dữ liệu VẪN là LỊCH THỰC của menu này (mảng LICH — instance tiết theo ngày).
+      ⛔ KHÔNG trộn với mẫu tuần của M4.6: mẫu tuần đọc ở M4.6 tab 1, cũng có ba góc nhìn lớp/GV/phòng.
+   🛑 RANH GIỚI «ai tra cứu · ai điều hành» KHÔNG còn đọc được từ ma trận quyền (một Feature mang cả hai việc)
+      — nó giữ bằng ① lăng kính trục (trucCua) ② bit ghi (viec) ③ dải cảnh báo chỉ tới vai điều hành. rb 53. */
+const TRUCS={lop:['🏫','Theo Lớp','Lớp 9A2 chiều nay học gì'],
+             gv:['👤','Theo Giáo viên','Cô Mai tuần này dạy bao nhiêu tiết, có trống thứ Năm không'],
+             phong:['🚪','Theo Phòng','Phòng Thí nghiệm Lý thứ Năm tiết 3 có ai dùng không']};
+const trucCua=()=>R().truc||[];
+const ds0=()=>trucCua().indexOf(tcTruc);
+let tcTruc='lop',tcTuan=key(TUAN_BD),tcQ='',tcKhoi='',tcTo='',tcMon='',tcTT='',tcNguon='';
+const tcNgays=()=>{const bd=pd(tcTuan.split('-').reverse().join('/'));return [0,1,2,3,4,5].map(i=>them(bd,i))};
+/* tập của tuần đang xem, trong phạm vi vai VÀ trong điểm trường đang chọn
+   (tab này CHỊU bộ chọn Điểm trường — M2.1 §2.3 bản cũ; tab Lịch dạy cá nhân thì không) */
+const tcTuanTap=()=>{const ks=tcNgays().map(key),dt=dtHien();
+ return VIS().filter(x=>ks.indexOf(x.ngay)>=0&&lop(x.lop).dt===dt)};
+function tcTap(){
+ let L=tcTuanTap();
+ if(tcKhoi)L=L.filter(x=>String(lop(x.lop).k)===tcKhoi);
+ if(tcTo)L=L.filter(x=>MONTO[x.mon]===tcTo);
+ if(tcMon)L=L.filter(x=>x.mon===tcMon);
+ if(tcTT)L=L.filter(x=>x.tt===tcTT);
+ if(tcNguon)L=L.filter(x=>(x.nguon||'TKB')===tcNguon);
+ if(tcQ){const q=kd(tcQ);
+  L=L.filter(x=>kd(x.lop).indexOf(q)>=0||kd(x.mon).indexOf(q)>=0||kd(x.phong||'').indexOf(q)>=0
+   ||kd(ns(x.gv)?ns(x.gv).n:'').indexOf(q)>=0||kd(ns(x.gvGoc)?ns(x.gvGoc).n:'').indexOf(q)>=0)}
+ return L;
+}
+/* dải «Thay đổi trên lịch trong phạm vi của bạn» — M2.1 §7.2.3, đi theo tab sang đây.
+   Đọc thẳng LỊCH SỬ THAY ĐỔI TIẾT của menu này, không dựng hàng đợi thứ hai. */
+function tcThayDoi(){
+ const t1=them(HOMNAY,-7),out=[];
+ tcTuanTap().concat(VIS().filter(x=>lop(x.lop).dt===dtHien())).forEach(x=>(x.lichSu||[]).forEach(h=>{
+  const d=pd(String(h.luc).split(' ')[0]);
+  if(d&&d>=t1&&d<=HOMNAY&&!out.some(o=>o.x.id===x.id&&o.h.luc===h.luc&&o.h.viec===h.viec))out.push({x,h})}));
+ return out.sort((a,b)=>String(b.h.luc).localeCompare(String(a.h.luc)));
+}
+function tcO(x){
+ /* KGL2-1A — vai anGV (QLCSVC): ô ẩn TÊN GIÁO VIÊN và KHÔNG mở panel tiết (rb 54).
+    Họ cần biết «phòng nào bận giờ nào», ⛔ không cần biết ai dạy, lý do hủy hay nguồn vắng của đồng nghiệp
+    — cùng khuôn SB1-P4 đã dùng cho Giám thị. */
+ const an=!!R().anGV;
+ const cls=x.tt==='nghi'?'nghi':x.tt==='huy'?'huy':x.canThay?'chua'
+   :x.nguon==='Dạy thay'?'thay':x.nguon==='Đổi tiết'?'doi':x.nguon==='Dạy bù'?'bu':x.tt==='dien'?'dien':'';
+ const ng=x.nguon==='Dạy thay'?' 🔁':x.nguon==='Đổi tiết'?' ⇄':x.nguon==='Dạy bù'?' ➕':x.nguon==='Thêm thủ công'?' ✋':'';
+ const d2=an?x.lop
+   :tcTruc==='lop'?(x.canThay?'⛔ chưa có GV':(ns(x.gv)?ns(x.gv).n:''))
+   :tcTruc==='gv'?(x.lop+' · '+(x.phong||'⛔ chưa gán phòng'))
+   :(x.lop+' · '+(x.canThay?'⛔ chưa có GV':(ns(x.gv)?ns(x.gv).n:'')));
+ return `<div class="cell tco ${cls}"${an?' style="cursor:default"':` data-tiet="${x.id}"`}><b>T${x.tiet} ${x.mon}${ng}</b>
+   <span class="g2">${d2}</span>${x.truc?'<span class="g2">🖥 trực tuyến</span>':''}
+   ${x.tt==='huy'?`<span class="g2 nodata">HỦY · ${x.cachXuLy||''}</span>`:''}</div>`;
+}
+function tcMiniTuan(rows,ngs){
+ return `<table class="cal"><thead><tr>${ngs.map(d=>`<th class="${key(d)===key(HOMNAY)?'hom':''}">
+   ${['CN','T2','T3','T4','T5','T6','T7'][d.getDay()]}<div class="mini">${p2(d.getDate())}/${p2(d.getMonth()+1)}</div></th>`).join('')}</tr></thead>
+  <tbody><tr>${ngs.map(d=>{const cs=rows.filter(x=>x.ngay===key(d)).sort((a,b)=>a.tiet-b.tiet);
+   return `<td class="${key(d)===key(HOMNAY)?'hom':''}">${cs.length?cs.map(tcO).join(''):'<span class="mini">—</span>'}</td>`}).join('')}</tr></tbody></table>`;
+}
+function toanCanhView(){
+ const r=R(),ds=trucCua();
+ if(ds.indexOf(tcTruc)<0)tcTruc=ds[0]||'lop';
+ const ngs=tcNgays(),L=tcTap(),tuan=tcTuanTap();
+ /* §7.3.2 — dải cảnh báo NHÂN SỰ chỉ tới vai điều hành (Group · Branch · School).
+    Vai phạm vi Class KHÔNG nhận dải này: tiết chưa có giáo viên là việc của người xếp lịch. */
+ /* vai X HẸP (QLCSVC) tuy mang phạm vi Branch nhưng ⛔ KHÔNG nhận dải cảnh báo nhân sự — rb 51 · rb 54 */
+ const dh=!r.chiToanCanh&&['branch','school','to'].indexOf(r.pv)>=0;
+ const noGV=canThay().filter(x=>lop(x.lop).dt===dtHien()&&conLai(x)<24*60);
+ const hcb=huyChuaBu().filter(x=>lop(x.lop).dt===dtHien());
+ /* «Cảnh báo ở đây, xử lý ở M4.7» — luật CŨ của M2.1, nay hết khoảng cách vì cùng một menu:
+    nút dẫn sang tab Việc cần xử lý, và chỉ hiện với vai có ô ở m4.7.viec_can_xu_ly (D3). */
+ const coT2=tabList().some(t=>t[0]==='viec');
+ const al=dh&&(noGV.length||hcb.length)?`<div>
+   ${noGV.length?`<div class="danger">⛔ <b>${noGV.length} tiết chưa có giáo viên, dưới 24 giờ đến giờ dạy.</b>
+     ${coT2?`<button class="btn xs" data-x="tc-viec">→ Xếp người dạy thay ở tab Việc cần xử lý</button>`
+       :'<span class="mini">Vai này không có ô ghi — không hiện lối thao tác (D3).</span>'}</div>`:''}
+   ${hcb.length?`<div class="warn">⚠ <b>${hcb.length} tiết bị hủy chưa bố trí dạy bù.</b>
+     ${coT2?`<button class="btn xs" data-x="tc-viec">→ Xếp dạy bù ở tab Việc cần xử lý</button>`
+       :'<span class="mini">Vai này không có ô ghi — không hiện lối thao tác (D3).</span>'}</div>`:''}</div>`:'';
+ const cg=dh?(()=>{const c=tcThayDoi();
+   return `<div class="ro"><b>↔ Thay đổi trên lịch trong phạm vi của bạn</b> — 7 ngày gần nhất:
+     <b>${c.length}</b> lượt can thiệp. ${c.length?'Mới nhất: '+c.slice(0,3).map(o=>
+       `<span class="tg">${o.h.luc} · ${o.x.lop} · ${o.x.mon} tiết ${o.x.tiet} — ${o.h.viec} <i>(${o.h.ai})</i></span>`).join(' ')
+     :'Không có lượt nào.'}
+     <br>Dải này trả lời <i>«tuần này lịch bị can thiệp bao nhiêu lần, ai làm»</i> — câu hỏi của người <b>sắp lịch</b>
+     (chuyển từ <b>M2.1 §7.2.3</b> ngày 23/9/2026 cùng tab này). Vế <b>cá nhân</b> của dải vẫn ở <b>M2.1</b>.</div>`})():'';
+ const uniq=(a)=>[...new Set(a)].filter(Boolean).sort();
+ const sel=(id,lb,v,opts)=>`<span class="flab">${lb}</span><select class="fs" id="${id}">
+   <option value="">Tất cả</option>${opts.map(o=>`<option value="${o[0]}" ${v===o[0]?'selected':''}>${o[1]}</option>`).join('')}</select>`;
+ const bar=`<div class="bar">
+   ${segNhin()}
+   <button class="btn sm" data-x="tc-tr">←</button>
+   <span class="chip">Tuần ${d2s(pd(tcTuan.split('-').reverse().join('/')))}</span>
+   <button class="btn sm" data-x="tc-sau">→</button>
+   ${tcTuan!==key(TUAN_BD)?`<button class="btn xs" data-x="tc-nay">Tuần này</button>`:'<span class="chip">Tuần này</span>'}
+   <span class="seg">${ds.map(k=>`<button class="${tcTruc===k?'on':''}" data-tc="${k}">${TRUCS[k][0]} ${TRUCS[k][1]}</button>`).join('')}</span>
+   <span class="flab">Điểm trường</span>
+   <select class="fs" id="fdt" ${(r.pv==='branch'||r.pv==='lop')?'disabled':''}>${DTS.map(d=>`<option ${dtHien()===d?'selected':''}>${d}</option>`).join('')}</select>
+   ${co('xuat')?`<button class="btn" data-x="xuat">⬇ Xuất</button>`:''}</div>
+  <div class="bar" style="padding-top:0">
+   <input class="fs" id="tcQ" placeholder="🔎 Tìm tên giáo viên · lớp · môn · số phòng" value="${tcQ}" style="width:250px">
+   ${sel('tcKhoi','Khối',tcKhoi,uniq(tuan.map(x=>String(lop(x.lop).k))).map(k=>[k,'Khối '+k]))}
+   ${sel('tcTo','Tổ',tcTo,uniq(tuan.map(x=>MONTO[x.mon])).map(k=>[k,TO[k]||k]))}
+   ${sel('tcMon','Môn',tcMon,uniq(tuan.map(x=>x.mon)).map(k=>[k,k]))}
+   ${sel('tcTT','Trạng thái',tcTT,[['dukien','Dự kiến'],['dien','Đã diễn ra'],['huy','Hủy'],['nghi','Nghỉ']])}
+   ${sel('tcNguon','Nguồn tiết',tcNguon,[['TKB','TKB'],['Dạy thay','Dạy thay'],['Đổi tiết','Đổi tiết'],['Dạy bù','Dạy bù'],['Thêm thủ công','Thêm thủ công']])}
+   <span class="mini">${L.length}/${tuan.length} tiết khớp bộ lọc</span></div>`;
+ const hoi=`<div class="ro">Trục đang xem trả lời: <i>«${TRUCS[tcTruc][2]}»</i>.
+   Ba trục <b>cùng dữ liệu, khác đơn vị của dòng chính</b> — nên chúng là <b>bộ chuyển trục trong MỘT tab</b>, không phải ba tab.
+   Nguồn là <b>lịch thực</b> của chính menu này; <b>mẫu tuần</b> đọc ở ${dlink('M4.6','M4.6')} — ⛔ hai thứ không trộn.
+   ${tcTruc==='gv'?'<br>Trục này là <b>công cụ chuẩn bị cho việc đổi tiết</b>: xem người kia có trống khung giờ đó không. Từ 23/9/2026 <b>tra cứu và thao tác đứng cạnh nhau</b> — vế «M2.1 tra cứu, M4.7 thao tác» hết hiệu lực.':''}
+   ${ds.length===1?`<br>Vai <b>${r.n.split(' — ').slice(-1)[0]}</b> chỉ có <b>${TRUCS[ds[0]][1].toLowerCase()}</b>${dh?'':' và <b>không nhận dải cảnh báo nhân sự</b> — đó không phải việc của họ'}.`:''}
+   ${r.chiToanCanh?'<br>🛑 Ô tiết ở đây <b>không hiện tên giáo viên</b> và <b>không mở bảng chi tiết tiết</b> — ô <b>X hẹp</b> (rb 54).':''}
+   <br><span class="mini">🔁 <b>23/9/2026 chiều</b> — đây từng là <b>một tab riêng</b> (<i>Lịch toàn cảnh</i>); nay là <b>cách nhìn thứ ba</b> của tab này. Feature <code>m2.1.lich_toan_canh</code> <b>đã bỏ khỏi danh mục</b> (K2-1) — ⛔ mã không tái dùng.</span></div>`;
+ const kf=tcTruc==='lop'?(x=>x.lop):tcTruc==='gv'?(x=>String(x.canThay?'__':x.gv)):(x=>x.phong||'__');
+ const nhan=k=>tcTruc==='lop'?('Lớp '+k+' · '+lop(k).dt+' · phòng cố định '+lop(k).phong)
+   :tcTruc==='gv'?(k==='__'?'⛔ Chưa có giáo viên':(ns(+k)?ns(+k).n+' — '+(TO[ns(+k).to]||'')+' · '+(DTGV[+k]||''):k))
+   :(k==='__'?'⛔ Tiết chưa gán phòng':'Phòng '+k);
+ const ks=[...new Set(L.map(kf))].sort();
+ const than=ks.length?`<div class="gridw tcw">${ks.map(k=>{const rows=L.filter(x=>kf(x)===k);
+    return `<div class="ch"><span>${nhan(k)}</span><span class="spacer"></span>
+      <span class="mini">${rows.length} tiết/tuần</span></div>
+     <div style="padding:6px 10px 10px">${tcMiniTuan(rows,ngs)}</div>`}).join('')}</div>`
+  :`<div class="gridw"><div style="padding:18px;text-align:center;color:var(--ink3)">Không có tiết nào khớp bộ lọc trong phạm vi của bạn.</div></div>`;
+ return bar+hoi+al+cg+than+(curTiet?panelTiet():'');
 }
 
 /* ---- panel một tiết ---- */
@@ -1129,6 +1395,11 @@ function panelTiet(){
   ['Trạng thái',`<span class="st2 ${x.tt==='dien'?'o':x.tt==='huy'?'r':x.tt==='nghi'?'n':'b'}">${
     {dukien:'Dự kiến',dien:'Đã diễn ra',nghi:'Nghỉ',huy:'Hủy'}[x.tt]}</span>`],
   x.dienGiai?['Diễn giải thỏa thuận',`<span style="font-weight:400">${x.dienGiai}</span>`]:null,
+  /* DTHN-1E — chỗ ② của gợi ý bàn giao: panel tiết dạy thay. ⛔ Không khóa nút nào của panel (rb 55) */
+  (x.nguon==='Dạy thay'&&x.gv!==x.gvGoc&&x.tt!=='huy'&&thayGoiYBG()&&banGiaoCap(x.gv,x.lop,x.mon))?['💡 Gợi ý bàn giao',
+    (b=>`<span style="font-weight:400">${loiBanGiao(b)} — <b>${ns(x.gv).n}</b> dạy thay <b>${x.lop} · ${x.mon}</b>.
+     Dạy thay chỉ cho <b>vắng ngắn ngày</b>: người thay theo tiết không ký được kết quả môn, không đính chính được bài cũ (§4.7).</span>
+     <div class="mini">${nutBanGiao(x)} · <b>không chặn</b> — vẫn xếp, đổi, hủy như thường</div>`)(banGiaoCap(x.gv,x.lop,x.mon))]:null,
   x.lyDo?['Lý do đổi tiết',`<span style="font-weight:400">${x.lyDo}</span>`]:null,
   x.lyHuy?['Lý do hủy',`<span style="font-weight:400">${x.lyHuy}</span>`]:null,
   x.deNghiHuy?['⚠ Đề nghị hủy — chờ PHT quyết',`<span style="font-weight:400">${x.deNghiHuy.ly}</span><div class="mini">${x.deNghiHuy.ai} · ${x.deNghiHuy.khi} — <b>tiết vẫn ở Dự kiến, vẫn phải dạy</b> (rb 8c)</div>`]:null,
@@ -1139,6 +1410,11 @@ function panelTiet(){
      v.loai==='bao_vang'?'':dlink(MENU_NGUON_VANG[v.loai],MENU_NGUON_VANG[v.loai],v.id)}`).join(' ')
      +(x.deXuat?`<div class="mini" style="width:100%">Đơn đề xuất <b>${ns(x.deXuat).n}</b> — «${x.donDeXuat.thoa_thuan}»</div>`:'')]:null,
   x.baoHuy?['↩ Phân công đã gỡ',`<span style="font-weight:400">${ns(x.baoHuy.nguoi).n} bị hủy vì <b>${ns(x.baoHuy.rutBoi).n}</b> (GV gốc) rút đơn <b>${x.baoHuy.don}</b> lúc ${x.baoHuy.luc.split(' ')[1]} ${k2s(x.baoHuy.luc.split(' ')[0])} — «${x.baoHuy.ly}» · đã báo đích danh ở M2.1</span>${x.baoHuy.satGio?'<span class="st2 r">sát giờ</span>':''}`]:null,
+  /* 🔁 DTHN-2A — tiết đổi giáo viên vì M4.5 thay giáo viên bộ môn (§4.8). Nguồn về TKB: định mức của người mới, không phải dạy thay */
+  x.tgv?['🔁 Thay giáo viên bộ môn',`<span style="font-weight:400">Từ <b>${x.tgv.luc.split(' ')[1]} ${k2s(x.tgv.luc.split(' ')[0])}</b> cặp <b>${x.lop} · ${x.mon}</b> đổi người được phân công:
+     ${ns(x.tgv.cu).n} → <b>${ns(x.tgv.moi).n}</b> · ${x.tgv.ma} ${dlink('M4.5','M4.5')}</span>
+     <div class="mini">Tiết <b>bắt đầu sau</b> thời điểm xác nhận nên đổi giáo viên; tiết đã diễn ra giữ nguyên. Tiết này tính vào <b>định mức của ${ns(x.tgv.moi).n}</b> — ⛔ không phải dạy thay.</div>`]:null,
+  x.goTGV?['↩ Phân công dạy thay đã gỡ',`<span style="font-weight:400">${ns(x.goTGV.nguoi).n} bị gỡ vì trường <b>thay giáo viên bộ môn</b> của cặp (${x.goTGV.ma}) lúc ${x.goTGV.luc.split(' ')[1]} ${k2s(x.goTGV.luc.split(' ')[0])} — tiết đã có người được phân công, không còn ai vắng · đã báo đích danh ở M2.1</span>${x.goTGV.satGio?'<span class="st2 r">sát giờ</span>':''}`]:null,
   x.giuNguoi?['Giữ nguyên người dạy thay',`<span style="font-weight:400">GV gốc rút đơn ${x.giuNguoi.don} nhưng tick <b>Giữ nguyên người dạy thay</b> — không gỡ</span>${x.giuNguoi.satGio?'<span class="st2 r">sát giờ</span>':''}`]:null,
   x.phanHoi?[x.phanHoi.loai==='yeucau'?'⚠ Yêu cầu thay đổi — chờ Tổ trưởng trả lời':'✓ Ban giám hiệu đã xem',
     (x.phanHoi.loai==='yeucau'
@@ -1177,10 +1453,16 @@ function panelTiet(){
    </tbody></table></div>`:'';
  const cuaTo=co('doitiet')||(co('doitiet_to')&&MONTO[x.mon]===R().to);
  const dienRa=x.tt==='dien';
+ /* SDBG-1B — Giám thị thấy tiết Hủy nhưng KHÔNG thấy vì sao giáo viên vắng: đợt vắng là chuyện riêng của người vắng
+    (cùng lý do giáo viên không có X ở F10 — §11). Giữ: lớp, giờ, phòng, giáo viên theo TKB, trạng thái, cách xử lý, người quyết. */
+ const anGT=R().chiHuy?['Vắng — nguồn nhu cầu','Lý do hủy','Diễn giải thỏa thuận','↩ Phân công đã gỡ','Giữ nguyên người dạy thay','Nguồn phát sinh','Nguồn khai báo']:[];
+ const rowsV=rows.filter(([k])=>!anGT.includes(k));
+ const lsV=R().chiHuy?((x.lichSu||[]).length?`<div class="mini" style="padding:2px 12px 6px">Lịch sử thay đổi người dạy · trạng thái và nguồn vắng <b>không hiện với Giám thị</b> — đợt vắng là chuyện riêng của người vắng (§11).</div>`:''):ls;
  return `<div class="card" style="margin-top:13px"><div class="ch">Tiết học <span class="sp"></span>
    <button class="btn xs" data-x="dong-tiet">✕ Đóng</button></div>
-  <div class="cb">${rows.map(([k,v])=>`<div class="f"><div class="k">${k}</div><div class="v">${v}</div></div>`).join('')}</div>${ls}${lsph}
+  <div class="cb">${rowsV.map(([k,v])=>`<div class="f"><div class="k">${k}</div><div class="v">${v}</div></div>`).join('')}</div>${lsV}${lsph}${khoiGhiChu(x)}
   <div class="cact">
+   ${ghiDuoc(x)?`<button class="btn sm p" data-x="gc-mo" data-i="${x.id}">✎ ${x.ghiChuLop?'Sửa ghi chú tình hình lớp':'Ghi chú tình hình lớp'}</button>`:''}
    ${x.canThay&&x.deXuat&&co('xacnhan')?`<button class="btn sm g" data-x="xn-dexuat" data-i="${x.id}">✓ Xác nhận ${ns(x.deXuat).n}</button>`:''}
    ${x.canThay&&co('daythay')?`<button class="btn sm p" data-x="xep-thay" data-i="${x.id}">🔁 Xếp dạy thay</button>`:''}
    ${!x.canThay&&x.tt==='dukien'&&co('daythay')?`<button class="btn sm" data-x="xep-thay" data-i="${x.id}">🔁 Đổi người dạy</button>`:''}
@@ -1200,6 +1482,78 @@ function panelTiet(){
    ${dienRa?`<span class="mini">Tiết <b>đã diễn ra</b> — không đổi, không hủy, không khai nghỉ. <b>Đã diễn ra = đã ghi xong sổ</b> (✓ Kết thúc ở ${dlink('M2.2','M2.2')}) — căn cứ <b>tiết thực dạy</b> của M4.9. Giờ giấc lên lớp do thiết bị cửa lớp ghi, không lấy từ sổ.</span>`:''}
    ${x.tt==='nghi'?'<span class="mini">Tiết rơi vào Lịch nghỉ — không sinh sổ đầu bài và điểm danh.</span>':''}
   </div></div>`;
+}
+
+/* ================= SDBG-1B (22/9/2026) — GHI CHÚ TÌNH HÌNH LỚP CỦA TIẾT HỦY (§4.4b) =================
+   Chuyển từ M2.2 F8 «Ghi chú tiết GV vắng». Menu này là chủ của instance tiết và đã bắt chọn CÁCH XỬ LÝ khi hủy (§4.4),
+   nên ô ghi chú gắn thẳng vào tiết Hủy ở đây — M2.2 chỉ còn CHIẾU 🔗 lên dòng sổ rút gọn.
+   ghiChuLop = { nd · ai · cd · luc } là một TRƯỜNG của tiết, không phải trạng thái (rb 33); mỗi lần lưu thêm một dòng
+   lsGhiChu {luc · ai · cd · viec · cu · moi}. Không đổi gv_id, không đổi trạng thái ⇒ KHÔNG mang Nguồn phát sinh (rb 29 không áp)
+   — để RIÊNG bảng lịch sử thay đổi tiết, cùng lý do bảng lịch sử phản hồi của GY18-J2. */
+const daBatDau=x=>{const k=key(HOMNAY);return x.ngay<k||(x.ngay===k&&phut(gioCua(x)[0])<=GIOHIENTAI)};
+const chuaGhiChu=x=>x.tt==='huy'&&!x.ghiChuLop&&daBatDau(x);
+const NGUOI_GHI={FULL:['Người dùng demo','Đủ quyền'],PDT:['Phạm Đức Thắng','PHT_DT'],GT:['Lê Văn Thái','Giám thị']};
+const ghiDuoc=x=>!!x&&co('ghichu')&&x.tt==='huy'&&xemDuoc(x);
+let locHuy='tat_ca';
+function lensHuy(){
+ const r=R();
+ const all=VIS().filter(x=>x.tt==='huy').sort((a,b)=>(chuaGhiChu(b)-chuaGhiChu(a))||(b.ngay+p2(b.tiet)).localeCompare(a.ngay+p2(a.tiet)));
+ const nChua=all.filter(chuaGhiChu).length,nDa=all.filter(x=>x.ghiChuLop).length,nBu=all.filter(x=>x.seBu&&!x.daBu).length;
+ const ds=all.filter(x=>locHuy==='chua'?chuaGhiChu(x):locHuy==='da'?!!x.ghiChuLop:true);
+ const bar=r.chiHuy?'':`<div class="bar">${segNhin()}
+   <span class="mini">Lát này là màn hình <b>duy nhất</b> của vai Giám thị ở menu này — Đủ quyền mở để rà luồng.</span></div>`;
+ const giai=`<div class="ro">✎ <b>Ghi chú tình hình lớp</b> là vết của một buổi học không có giáo viên: lớp ở đâu, ai trông, sĩ số, có sự việc gì cần GVCN biết.
+   Nó <b>không đổi người dạy, không đổi trạng thái tiết</b> — nên không mang «Nguồn phát sinh» và không chạm chấm công.
+   <b>Cách xử lý</b> do người quyết định hủy chọn lúc đánh dấu hủy (§4.4) — ở đây chỉ đọc.
+   <span class="mini">Chuyển từ Sổ đầu bài (M2.2 F8) ngày 22/9/2026 — dòng sổ rút gọn bên đó chỉ còn chiếu 🔗 ô này.</span></div>`;
+ const loc=`<div class="bar"><span class="seg">${[['tat_ca','Tất cả',all.length],['chua','Chưa ghi chú',nChua],['da','Đã ghi chú',nDa]].map(([k,n,c])=>
+    `<button class="${locHuy===k?'on':''}" data-x="gc-loc" data-v="${k}">${n} · ${c}</button>`).join('')}</span>
+   <span class="chip">🗓 Quét <b>cả năm học</b> — không cắt theo tuần</span>
+   <span class="chip">${nBu} tiết chờ xếp dạy bù</span></div>`;
+ const row=x=>{const g=x.ghiChuLop,c=chuaGhiChu(x),nls=(x.lsGhiChu||[]).length;
+  return `<div class="vrow ${c?'gap':''}">
+   <div><b>${d2s(ngayCuaTiet(x))}</b><div class="mini">tiết ${x.tiet} · ${gioCua(x)[0]}–${gioCua(x)[1]}${tenBo(x)?' · '+tenBo(x):''}</div></div>
+   <div><b>${x.lop}</b> · ${x.mon}<div class="mini">${lop(x.lop).dt} · theo TKB: ${ns(x.gvGoc).n}</div></div>
+   <div><span class="st2 r">HỦY</span> ${x.cachXuLy}<div class="mini">quyết định: ${(x.nguoiXep||'—').split(' · ')[0]}</div></div>
+   <div>${g?`<span class="st2 o">✎ Đã ghi chú</span><div class="mini">${g.ai} (${g.cd}) · ${g.luc}${nls>1?` · sửa ${nls-1} lần`:''}</div>`
+      :c?'<span class="st2 r">⛔ Chưa có ghi chú</span><div class="mini">tiết đã bắt đầu</div>'
+      :'<span class="st2 w">Tiết chưa diễn ra</span><div class="mini">ghi được — chưa tính là thiếu</div>'}</div>
+   <div style="display:flex;gap:5px;flex-wrap:wrap">
+    ${ghiDuoc(x)?`<button class="btn xs ${g?'':'p'}" data-x="gc-mo" data-i="${x.id}">${g?'✎ Sửa ghi chú':'✎ Ghi chú'}</button>`:''}
+    <button class="btn xs" data-x="gc-xem" data-i="${x.id}">Xem tiết</button></div></div>`};
+ const list=`<div class="listw"><div class="ch">Tiết đã bị hủy <span class="sp"></span><span class="mini">chưa ghi chú xếp trước, rồi mới nhất trước</span>
+   <span class="st2 ${nChua?'r':'o'}">${nChua} chưa ghi chú</span></div>
+   <div class="hdrow"><div>Khi nào</div><div>Lớp · Môn</div><div>Cách xử lý 🔗</div><div>Ghi chú</div><div>Thao tác</div></div>
+   ${ds.length?ds.map(row).join(''):`<div class="empty">${locHuy==='chua'?'✓ Không còn tiết hủy nào chưa có ghi chú':'Không có tiết hủy nào trong phạm vi'}</div>`}</div>`;
+ return bar+giai+loc+list+(curTiet?panelTiet():'');
+}
+function khoiGhiChu(x){
+ if(!x||x.tt!=='huy')return '';
+ const g=x.ghiChuLop,ls=x.lsGhiChu||[],c=chuaGhiChu(x);
+ return `<div style="padding:4px 12px 10px"><div style="font-size:11px;font-weight:700;color:var(--ink3);margin:6px 0 4px">✎ GHI CHÚ TÌNH HÌNH LỚP — tiết giáo viên vắng (§4.4b)</div>
+  ${g?`<div class="okbox" style="margin-bottom:6px"><div style="white-space:pre-wrap">${g.nd}</div><div class="mini">${g.ai} (${g.cd}) · ${g.luc}</div></div>`
+    :`<div class="${c?'danger':'ro'}" style="margin-bottom:6px">${c?'⛔ <b>Chưa có ghi chú</b> — tiết đã bắt đầu.':'Chưa có ghi chú — tiết chưa diễn ra.'}
+      Người ghi: <b>Giám thị</b> hoặc <b>Phó HT</b> của ${lop(x.lop).dt}.</div>`}
+  ${ls.length?`<table><thead><tr><th>Lúc</th><th>Người</th><th>Việc</th><th>Trước → sau</th></tr></thead><tbody>
+    ${ls.map(h=>`<tr><td>${h.luc}</td><td>${h.ai} <span class="tg c">${h.cd}</span></td><td>${h.viec}</td>
+      <td style="font-weight:400">${h.cu?`<s>${h.cu}</s> → `:'<span class="mini">(trống)</span> → '}<b>${h.moi}</b></td></tr>`).join('')}</tbody></table>
+    <div class="mini" style="margin-top:4px">Không mang «Nguồn phát sinh» — ghi chú không đổi người dạy, không đổi trạng thái tiết (rb 29 chỉ áp cho hai thứ đó).</div>`:''}
+ </div>`;
+}
+function moGhiChu(id){
+ const x=LICH.find(z=>String(z.id)===String(id));if(!x)return;
+ if(!ghiDuoc(x)){toast(x.tt!=='huy'?'⛔ Chỉ tiết <b>Hủy</b> mới có ô ghi chú tình hình lớp':'⛔ Vai này không ghi được ghi chú tình hình lớp — chỉ Giám thị và Phó HT của điểm trường');return}
+ const g=x.ghiChuLop,[ai,cd]=NGUOI_GHI[role]||['',''];
+ modal(`✎ Ghi chú tình hình lớp — ${x.lop} · ${x.mon} · ${d2s(ngayCuaTiet(x))} tiết ${x.tiet}`,
+  `<div class="ro">Tiết <b>đã bị hủy</b> — cách xử lý: <b>${x.cachXuLy}</b> <span class="tg c">chọn khi đánh dấu hủy · chỉ đọc</span>.
+    Bạn <b>chỉ ghi chú</b>: không hủy tiết, không xếp người dạy thay hay dạy bù, không đổi cách xử lý.</div>
+   <label class="lbl">Ghi chú tình hình lớp <span style="color:var(--red)">*</span></label>
+   <textarea class="fldi" id="gcNd" rows="4" placeholder="Lớp ở đâu, ai trông, sĩ số có mặt, có sự việc gì cần GVCN biết…">${g?g.nd:''}</textarea>
+   <div id="gcLoi"></div>
+   <div class="mini" style="margin-top:6px">Người ghi và thời điểm <b>tự điền</b>: ${ai} (${cd}) · ${LUCPH()}.
+    ${g?' Sửa thì <b>bản cũ giữ lại</b> trong lịch sử ghi chú (cũ → mới) — không có gì bị ghi đè mất vết.':''}</div>
+   <div class="warn" style="margin-top:10px">Không ghi <b>nội dung dạy</b>, không <b>xếp loại ý thức</b> — không ai dạy tiết này; điền hai thứ ấy là tạo dữ liệu giả trong sổ đầu bài.</div>`,
+  `<button class="btn" data-x="close">Hủy</button><button class="btn p" data-x="ok-gc" data-i="${x.id}">✎ Lưu ghi chú</button>`);
 }
 
 /* ================= T2 — VIỆC CẦN XỬ LÝ ================= */
@@ -1268,8 +1622,10 @@ function viecTab(){
      <div><b>${d2s(pd(x.ngay.split('-').reverse().join('/')))}</b><div class="mini">tiết ${x.tiet}${quaHanBu(x)?` · <b style="color:var(--red)">quá ${soNgayTu(ngayCuaTiet(x))} ngày</b>`:''}</div></div>
      <div><b>${x.lop}</b> · ${x.mon}</div>
      <div>${ns(x.gvGoc).n}<div class="mini">${x.cachXuLy}</div></div>
-     <div><span class="mini">${x.lyHuy||''}</span></div>
-     <div>${co('daybu')?`<button class="btn xs g" data-x="mo-bu" data-i="${x.id}">➕ Xếp dạy bù</button>`:''}</div></div>`).join('')
+     <div><span class="mini">${x.lyHuy||''}</span>
+       <div>${x.ghiChuLop?'<span class="st2 o">✎ đã ghi chú</span>':chuaGhiChu(x)?'<span class="st2 r">✎ chưa ghi chú tình hình lớp</span>':''}</div></div>
+     <div>${co('daybu')?`<button class="btn xs g" data-x="mo-bu" data-i="${x.id}">➕ Xếp dạy bù</button>`:''}
+       ${ghiDuoc(x)&&!x.ghiChuLop?`<button class="btn xs" data-x="gc-mo" data-i="${x.id}">✎ Ghi chú</button>`:''}</div></div>`).join('')
     :'<div class="empty">Không có tiết nào chờ dạy bù</div>'}
    <div class="lgd"><span class="chip">Quá ${NGUONG_BU_NGAY} ngày chưa bố trí thì cảnh báo Phó HT Chuyên môn</span><span class="chip"><b>${hb.filter(quaHanBu).length}</b> tiết đang quá hạn</span><span class="chip">Ngưỡng <b>dùng chung</b> với cột "Chưa bù" ở tab Lịch nghỉ — R13c</span></div></div>`;
  const thay={};LICH.filter(x=>x.nguon==='Dạy thay').forEach(x=>thay[x.gv]=(thay[x.gv]||0)+1);
@@ -1280,6 +1636,24 @@ function viecTab(){
      <td><b>${ns(+g).n}</b></td><td>${TO[ns(+g).to]}</td><td class="num">${thay[g]}</td>
      <td>${thay[g]>4?'<span class="st2 w">Vượt ngưỡng 4 tiết/tháng</span>':'<span class="st2 o">Trong ngưỡng</span>'}</td></tr>`).join('')
     :'<tr><td colspan="4" class="empty">Chưa có tiết dạy thay nào trong tháng</td></tr>'}</tbody></table></div>`;
+ /* DTHN-1E — chỗ ③ của gợi ý bàn giao: MỘT dòng việc cho mỗi (người dạy thay × Lớp × Môn) chạm ngưỡng.
+    Đứng NGAY SAU khối «Số tiết dạy thay trong tháng» — hai ngưỡng khác nhau, đặt cạnh để khỏi lẫn (§12 điểm 1 · rb 57).
+    ⛔ Không cộng vào số đỏ trên nhãn tab: gợi ý không phải «chuyện phải xong trước giờ dạy», và không chặn gì. */
+ const bg=thayGoiYBG()?dsBanGiao():[];
+ const kBG=bg.length?`<div class="listw" style="margin-bottom:13px" id="khoi-ban-giao">
+   <div class="ch">💡 Gợi ý đổi phân công — thay giáo viên hoặc bàn giao <span class="sp"></span>
+     <span class="mini">cùng người · cùng lớp × môn · ≥ ${NGUONG_BAN_GIAO.tiet} tiết / ${NGUONG_BAN_GIAO.tuan} tuần — <b>gợi ý, không chặn</b></span><span class="st2 b">${bg.length}</span></div>
+   <div class="hdrow"><div>Người dạy thay</div><div>Lớp · Môn</div><div>Thay cho · số tiết</div><div>Khoảng</div><div>Thao tác</div></div>
+   ${bg.map(c=>`<div class="vrow">
+     <div><b>🔁 ${ns(c.gv).n}</b><div class="mini">${TO[ns(c.gv).to]||''}</div></div>
+     <div><b>${c.lop}</b> · ${c.mon}<div class="mini">${lop(c.lop).dt}</div></div>
+     <div>${c.goc.map(g=>ns(g).n).join(', ')}<div class="mini"><b>${c.b.n}</b> tiết trong cửa sổ ${NGUONG_BAN_GIAO.tuan} tuần · ${c.tuongLai} tiết <b>đã xếp tương lai</b></div></div>
+     <div>${k2s(c.b.tu).slice(0,5)} → ${k2s(c.b.den).slice(0,5)}</div>
+     <div style="display:flex;gap:5px;flex-wrap:wrap">${nutBanGiao(c)}
+       <button class="btn xs" data-x="toi-tiet" data-i="${c.ts[0].id}">Xem trên lịch</button></div></div>`).join('')}
+   <div class="lgd"><span class="chip">Dạy thay chỉ cho <b>vắng ngắn ngày</b> — quyền của người thay đi theo TIẾT (DT-1), không ký được kết quả môn, không đính chính được bài cũ (§4.7)</span>
+    <span class="chip">Bàn giao là <b>hai bước</b>: ✂ cắt phần ở M5.1 → gán người đoạn sau ở M4.5 T1 (loại <b>Bàn giao</b> — 🤝, không phải dạy thay, §4.6)</span>
+    <span class="chip">${co('cauhinh')?'<button class="btn xs" data-x="mo-nguong">⚙ Ngưỡng</button>':'⚙ Ngưỡng'} ở tab <b>Giáo viên vắng</b>, cạnh ngưỡng sát giờ</span></div></div>`:'';
  const tkbTiet=TKB.length*SO_TUAN, thucTiet=LICH.filter(x=>x.tt==='dien').length;
  const kD=`<div class="listw">
    <div class="ch">Chênh lệch Thời khóa biểu ↔ thực tế <span class="sp"></span>
@@ -1302,7 +1676,7 @@ function viecTab(){
      <div><button class="btn xs p" data-x="toi-tiet" data-i="${x.id}">Gán phòng</button></div></div>`).join('')
     :'<div class="empty">✓ Mọi tiết đều đã có phòng</div>'}</div>`;
  return `<div class="ro">Ba hàng đợi ở đây là <b>cùng một loại việc: chuyện phải xong trước giờ dạy</b>.
-   Mỗi dòng xử lý được ngay tại chỗ, không bắt quay về lịch tìm lại tiết.</div>`+kA+kDN+kYC+kP+kB+kC+kD;
+   Mỗi dòng xử lý được ngay tại chỗ, không bắt quay về lịch tìm lại tiết.</div>`+kA+kDN+kYC+kP+kB+kC+kBG+kD;
 }
 
 /* ===== NGUONG CANH BAO 'CHUA BU' — MOT THAM SO DUY NHAT (chot 7/9/2026) =====
@@ -1378,6 +1752,9 @@ const tenNguonPS=n=>!n?'':n.loai==='giao_vien_vang'?'Giáo viên vắng · '+(n.
  /* GDDP (20/9/2026) — giá trị thứ SÁU. 🛑 KHÔNG phải dạy thay: đây là người dạy THEO KẾ HOẠCH
     của giai đoạn, máy tự ghi khi lịch triển khai phần ở M5.1 ⑤ hoặc phân công ở M4.5 ⑥ đổi. */
  :n.loai==='theo_giai_doan'?'⏱ Theo giai đoạn · '+(n.phan||'')+(n.tu?' (tuần '+n.tu+'–'+n.den+')':'')
+ /* 🔁 DTHN-2A (24/9) — giá trị thứ BẢY, MÁY ghi. Phân công của cặp đổi ở M4.5 (🔁 Thay giáo viên bộ môn, `DT-D`).
+    🛑 KHÔNG phải dạy thay: tiết về nguồn TKB, tính vào ĐỊNH MỨC của người mới (§4.8). */
+ :n.loai==='thay_giao_vien'?'🔁 Thay giáo viên bộ môn · '+n.tgv_id
  :'Khác · '+n.ghi_ro;
 function ghiLichSu(x,viec,truoc,sau,nguon){
  const luc=k2s(key(HOMNAY))+' '+p2(Math.floor(GIOHIENTAI/60))+':'+p2(GIOHIENTAI%60);
@@ -1412,6 +1789,7 @@ function chipTiet(x,c){
  else if(x.canThay){than='⛔ chưa xếp người';cls='chua'}
  else if(x.nguon==='Dạy thay'){than=`🔁 ${ns(x.gv).n}`+(x.giuNguoi?' · giữ người':'');cls='thay'}
  else if(x.baoHuy){than=`↩ đã gỡ ${ns(x.baoHuy.nguoi).n} — GV gốc dạy`;cls='rut'}
+ else if(x.goTGV){than=`↩ đã gỡ ${ns(x.goTGV.nguoi).n} — thay giáo viên`;cls='rut'}
  else {than='GV gốc dạy';cls='rut'}
  const sat=(x.baoHuy&&x.baoHuy.satGio)||(x.giuNguoi&&x.giuNguoi.satGio)?'<span class="st2 r">sát giờ</span>':'';
  const xn=x.canThay&&x.deXuat&&co('xacnhan')?`<button class="btn xs g" data-x="xn-dexuat" data-i="${x.id}">✓ Xác nhận ${ns(x.deXuat).n}</button>`:'';
@@ -1466,7 +1844,7 @@ function vangTab(){
  const bar=`<div class="bar">
    ${co('baovang')?`<button class="btn p" data-x="mo-baovang">⚡ Báo vắng</button>`:''}
    <span class="seg">${[['tat_ca','Tất cả'],['chua','Còn tiết chưa xếp'],['qua','Đã qua']].map(([k,n])=>`<button class="${locVang===k?'on':''}" data-lv="${k}">${n}</button>`).join('')}</span>
-   <button class="btn" data-x="mo-nguong">⚙ Ngưỡng sát giờ: ${NGUONG_SATGIO} giờ</button>
+   <button class="btn" data-x="mo-nguong">⚙ Ngưỡng: sát giờ ${NGUONG_SATGIO} giờ · gợi ý bàn giao ${NGUONG_BAN_GIAO.tiet} tiết / ${NGUONG_BAN_GIAO.tuan} tuần</button>
    <div class="sum"><span><b>${all.length}</b> đợt vắng có tiết trong phạm vi</span><span><b style="color:var(--red)">${all.reduce((s,c)=>s+c.chua,0)}</b> tiết chưa xếp</span></div></div>`;
  const giai=`<div class="ro"><b>Trục nhìn, không phải nơi xử lý.</b> Mỗi thẻ là một <b>đợt vắng của NGƯỜI</b> — đối xứng tab <i>Lịch nghỉ</i> (đợt nghỉ của TRƯỜNG).
    Bốn nguồn: <b>đơn nghỉ có hiệu lực theo ngày</b> 🔗 M4.8 · <b>⚡ báo vắng</b> · <b>đợt đào tạo</b> 🔗 M5.6 · <b>tạm nghỉ</b> 🔗 M4.2.
@@ -1580,14 +1958,22 @@ function moDoiNgay(id){
 /* ---- ⚙ NGƯỠNG SÁT GIỜ — NP-4 ①: ở M4.7 vì nó điều khiển NHÃN TRÊN PHÂN CÔNG; trường sửa được, có lịch sử ---- */
 function moNguong(){
  const sua=co('cauhinh');
- modal('⚙ Ngưỡng «sát giờ»',
-  `<div class="ro">Người xin nghỉ rút một ngày ở vùng 🟡 <b>trong ít hơn ngưỡng này trước tiết đầu tiên của ngày</b> ⇒ phân công bị gỡ mang nhãn <span class="st2 r">sát giờ</span> và báo <b>đỏ</b> người dạy thay bị hủy. <b>Không chặn rút.</b>
+ /* DTHN-1E — hộp ⚙ nay giữ HAI tham số của menu này: sát giờ (NP-4 ①) và gợi ý bàn giao (DT-C). CÙNG người sửa · CÙNG lý do · CÙNG lịch sử */
+ modal('⚙ Ngưỡng của Lịch giảng dạy &amp; Dạy thay',
+  `<div class="ro"><b>① Sát giờ.</b> Người xin nghỉ rút một ngày ở vùng 🟡 <b>trong ít hơn ngưỡng này trước tiết đầu tiên của ngày</b> ⇒ phân công bị gỡ mang nhãn <span class="st2 r">sát giờ</span> và báo <b>đỏ</b> người dạy thay bị hủy. <b>Không chặn rút.</b>
     Ngưỡng <i>Vắng chưa có đơn</i> (${NGUONG_CHUA_DON_M49} ngày làm việc) <b>không ở đây</b> — nó sinh ngoại lệ chấm công nên ở ⚙ ${dlink('M4.9','M4.9')}.</div>
-   <label class="lbl">Ngưỡng (giờ)</label><input class="fldi" id="ngGio" type="number" min="1" max="168" value="${NGUONG_SATGIO}" ${sua?'':'disabled'}>
-   ${sua?'<label class="lbl">Lý do thay đổi <span style="color:var(--red)">*</span></label><textarea class="fldi" id="ngLy" rows="2"></textarea>':'<div class="mini">Vai này chỉ xem — sửa ngưỡng là của Phó HT chuyên môn (⏳ P-3).</div>'}
-   <div style="font-size:12px;font-weight:700;color:var(--ink3);margin:12px 0 6px">LỊCH SỬ THAY ĐỔI</div>
-   <table><thead><tr><th>Lúc</th><th>Người</th><th class="num">Từ</th><th class="num">Thành</th><th>Lý do</th></tr></thead><tbody>
-   ${LS_NGUONG.slice().reverse().map(h=>`<tr><td>${h.luc}</td><td>${h.ai}</td><td class="num">${h.tu==null?'—':h.tu+'h'}</td><td class="num">${h.den}h</td><td>${h.ly}</td></tr>`).join('')}</tbody></table>`,
+   <label class="lbl">Ngưỡng sát giờ (giờ)</label><input class="fldi" id="ngGio" type="number" min="1" max="168" value="${NGUONG_SATGIO}" ${sua?'':'disabled'}>
+   <div class="ro" style="margin-top:12px"><b>② Gợi ý bàn giao</b> <span class="tg b">DT-C</span> — <b>cùng một người</b> dạy thay <b>cùng một lớp × môn</b> từ ngưỡng này trở lên trong cửa sổ số tuần liên tiếp, <b>đếm cả tiết đã xếp tương lai</b>
+    ⇒ gợi ý <i>«Dạy thay đã kéo dài — nên đổi phân công»</i> <i>(🔁 thay giáo viên ở M4.5 · hoặc 🤝 bàn giao theo kế hoạch)</i> ở hộp xếp dạy thay · panel tiết · tab Việc cần xử lý. <b>Không chặn</b> — vẫn xếp được.
+    <b>Khác ngưỡng tháng</b> ở tab Việc cần xử lý: ngưỡng tháng đếm <b>mọi lớp</b> của một người để phân bổ công bằng (⏳ §12 điểm 1); ngưỡng này đếm <b>một cặp</b> để nhận ra ca vắng dài.</div>
+   <div style="display:flex;gap:10px">
+    <div style="flex:1"><label class="lbl">Số tiết</label><input class="fldi" id="ngBgTiet" type="number" min="2" max="99" value="${NGUONG_BAN_GIAO.tiet}" ${sua?'':'disabled'}></div>
+    <div style="flex:1"><label class="lbl">Trong (tuần)</label><input class="fldi" id="ngBgTuan" type="number" min="1" max="8" value="${NGUONG_BAN_GIAO.tuan}" ${sua?'':'disabled'}></div></div>
+   ${sua?'<label class="lbl">Lý do thay đổi <span style="color:var(--red)">*</span></label><textarea class="fldi" id="ngLy" rows="2"></textarea>':'<div class="mini">Vai này chỉ xem — sửa hai ngưỡng là của Phó HT chuyên môn (⏳ P-3).</div>'}
+   <div style="font-size:12px;font-weight:700;color:var(--ink3);margin:12px 0 6px">LỊCH SỬ THAY ĐỔI — chung cho hai ngưỡng</div>
+   <table><thead><tr><th>Lúc</th><th>Người</th><th>Ngưỡng</th><th class="num">Từ</th><th class="num">Thành</th><th>Lý do</th></tr></thead><tbody>
+   ${LS_NGUONG.slice().reverse().map(h=>{const bg=h.ts==='ban_giao',dv=v=>v==null?'—':bg?v:v+'h';
+     return `<tr><td>${h.luc}</td><td>${h.ai}</td><td>${bg?'Gợi ý bàn giao':'Sát giờ'}</td><td class="num">${dv(h.tu)}</td><td class="num">${dv(h.den)}</td><td>${h.ly}</td></tr>`}).join('')}</tbody></table>`,
   `<button class="btn" data-x="close">Đóng</button>${sua?'<button class="btn p" data-x="ok-nguong">Lưu ngưỡng</button>':''}`);
 }
 
@@ -1641,6 +2027,7 @@ function bangRut(tieuDe,kq){
 }
 /* mô phỏng sự kiện từ menu khác — demo đứng ở 08:40, các sự kiện mang ĐÚNG GIỜ của chúng */
 function moPhong(k){
+ if(k==='TGV'){moPhongTGV();return}   /* 🔁 DTHN-2A — §4.8 */
  if(k==='S3-don'){
   if(DON.some(d=>d.id==='NP-2026-143')){toast('Đơn nhập hộ của Lưu Thị Ngân đã có');return}
   DON.push({id:'NP-2026-143',ns:17,loai:'Nghỉ ốm',co_che:'ghi_nhan',trang_thai:'co_hieu_luc',gui:'Web M4.8 · nhập hộ · '+k2s(D(0))+' 14:30',
@@ -1681,11 +2068,17 @@ function veXepThay(id){
       nhưng đổi người dạy thì <b>bắt buộc khai Nguồn phát sinh</b>; vì giáo viên vắng thì gắn bản ghi — tạo nhanh ⚡ Báo vắng ngay trong hộp.</div>`}
    <div class="ro">Không có bước giáo viên được chọn bấm Xác nhận / Từ chối — bước đó chỉ số hóa lại một cuộc
     trao đổi đã kết thúc. <b>Thông báo là kênh duy nhất báo kết quả</b> nên bắt buộc gửi.</div>
+   ${(()=>{/* DTHN-1E — chỗ ① của gợi ý bàn giao: SAU khối cảnh báo, TRƯỚC «CHỌN ĐƯỢC». Chỉ ứng viên CHỌN ĐƯỢC mới xét —
+      người bị loại không bao giờ được xếp nên gợi ý cho họ là thừa. ⛔ Không chặn: ứng viên chạm ngưỡng vẫn chọn được, nút Xếp vẫn bật (rb 55) */
+     const cham=duoc.map(g=>({g,b:banGiaoCap(g.p.id,x.lop,x.mon,x)})).filter(o=>o.b);
+     return cham.length?`<div class="warn" id="bg-hop">${cham.map(o=>`${loiBanGiao(o.b)} — nếu xếp <b>${o.g.p.n}</b> thì đây là tiết thứ <b>${o.b.n}</b> của <b>${x.lop} · ${x.mon}</b> trong cửa sổ đó (kể cả tiết đã xếp tương lai).`).join('<br>')}
+       <div class="mini" style="margin-top:4px">Dạy thay chỉ cho <b>vắng ngắn ngày</b> (§4.7). ${nutBanGiao(x)} · <b>Không chặn</b> — xếp dạy thay vẫn lưu được.</div></div>`:''})()}
    <div style="font-size:12px;font-weight:700;color:var(--ink3);margin:11px 0 6px">CHỌN ĐƯỢC — ${duoc.length} người</div>
    ${duoc.map(g=>`<div class="uv ${uvChon===g.p.id?'on':''}" data-uv="${g.p.id}">
      <input type="checkbox" ${uvChon===g.p.id?'checked':''} style="pointer-events:none">
      <div class="sp"><b>${g.p.n}</b>${x.deXuat===g.p.id?' <span class="tg g">đề xuất trong đơn</span>':''}${x.lechNguoi&&x.lechNguoi.ns===g.p.id?' <span class="tg b">thiết bị ghi nhận</span>':''}
        <div class="mini">${hangTen(g.hang)} · ${TO[g.p.to]}</div></div>
+     ${(b=>b?`<span class="tg a" title="Gợi ý, không chặn — §4.7 · rb 55">💡 ${b.n} tiết ${x.lop} · ${x.mon} / ${NGUONG_BAN_GIAO.tuan} tuần — nên bàn giao</span>`:'')(banGiaoCap(g.p.id,x.lop,x.mon,x))}
      <span class="tg ${g.thay>=4?'b':'c'}">${g.thay} tiết dạy thay tháng này</span></div>`).join('')}
    <div style="font-size:12px;font-weight:700;color:var(--ink3);margin:11px 0 6px">KHÔNG CHỌN ĐƯỢC — ${loai.length} người</div>
    ${loai.slice(0,6).map(g=>`<div class="uv loai"><div class="sp"><b>${g.p.n}</b>
@@ -1704,7 +2097,8 @@ function moHuy(id){
  const x=LICH.find(z=>z.id===id);
  modal(`Đánh dấu hủy tiết — ${x.lop} · ${x.mon}`,
   `<div class="warn">Tiết ${d2s(pd(x.ngay.split('-').reverse().join('/')))} tiết ${x.tiet} sẽ chuyển <b>Hủy</b>.
-    <b>Không tính vào số tiết thực dạy</b>; sổ đầu bài chỉ còn dòng rút gọn để Giám thị ghi chú.</div>
+    <b>Không tính vào số tiết thực dạy</b>; sổ đầu bài chỉ còn dòng rút gọn.
+    Giám thị hoặc Phó HT điểm trường ghi <b>ghi chú tình hình lớp</b> ngay trên tiết này (§4.4b) — cách xử lý bạn chọn dưới đây họ <b>không đổi được</b>.</div>
    <label class="lbl">Cách xử lý <span style="color:var(--red)">*</span></label>
    <select class="fldi" id="hxl"><option value="">— Chọn —</option>
      <option>Lớp tự học có giám sát</option><option>Lớp nghỉ</option><option>Sẽ dạy bù</option></select>
@@ -1904,6 +2298,12 @@ document.addEventListener('change',e=>{
    if(x)$('#npsCT').innerHTML=chiTietNguon(x,t.value,npsNho.trongDoi);return}
  if(t.id==='dlsel'){const v=t.value;t.value='';if(!v)return;
    if(v.startsWith('mp:'))moPhong(v.slice(3));else thuLink(v);return}
+ /* KGLH-1D — bộ lọc của T5 Lịch toàn cảnh (M2.1 §7.3.3 chuyển sang) */
+ if(t.id==='tcKhoi'){tcKhoi=t.value;curTiet=null;render();return}
+ if(t.id==='tcTo'){tcTo=t.value;curTiet=null;render();return}
+ if(t.id==='tcMon'){tcMon=t.value;curTiet=null;render();return}
+ if(t.id==='tcTT'){tcTT=t.value;curTiet=null;render();return}
+ if(t.id==='tcNguon'){tcNguon=t.value;curTiet=null;render();return}
  if(t.id==='fphong'){const z=LICH.find(q=>q.id===+t.dataset.i);if(!z||!t.value)return;
    z.phong=t.value;delete z.ghiChuPhong;render();
    toast(`✓ Đã gán phòng <b>${z.phong}</b> cho ${z.lop} · tiết ${z.tiet} · M4.9 ghép lại được tiết này · ghi audit`);return}
@@ -1914,10 +2314,17 @@ document.addEventListener('change',e=>{
 });
 document.addEventListener('click',e=>{
  if(e.target.matches('input,select,textarea'))return;
- const t=e.target.closest('[data-r],[data-tab],[data-x],[data-cd],[data-al],[data-tiet],[data-uv],[data-lv]');
+ const t=e.target.closest('[data-r],[data-tab],[data-x],[data-cd],[data-al],[data-tc],[data-tiet],[data-uv],[data-lv]');
  if(!t)return;
  const x=t.dataset.x;
  if(t.dataset.lv){locVang=t.dataset.lv;render();return}
+ /* --- KGLH-1D: T5 Lịch toàn cảnh — bộ chuyển trục và thanh tuần --- */
+ if(t.dataset.tc&&!x){tcTruc=t.dataset.tc;curTiet=null;render();return}
+ if(x==='tc-tr'){tcTuan=key(them(pd(tcTuan.split('-').reverse().join('/')),-7));curTiet=null;render();return}
+ if(x==='tc-sau'){tcTuan=key(them(pd(tcTuan.split('-').reverse().join('/')),7));curTiet=null;render();return}
+ if(x==='tc-nay'){tcTuan=key(TUAN_BD);curTiet=null;render();return}
+ if(x==='tc-viec'){tab='viec';curTiet=null;render();
+   toast('→ Cảnh báo phát hiện ở cách nhìn <b>🔭 Toàn cảnh</b>, xử lý ở tab <b>Việc cần xử lý</b> — từ 23/9/2026 chiều hai thứ ở <b>cùng một menu</b>, và tra cứu ⇄ thao tác ở <b>cùng một tab</b>');return}
 
  /* --- YKNP: Giáo viên vắng --- */
  if(x==='xn-dexuat'){   /* YK02-2 — người xin nghỉ đã đề xuất sẵn ⇒ người điều hành XÁC NHẬN MỘT NÚT */
@@ -1957,21 +2364,49 @@ document.addEventListener('click',e=>{
    toast(`↩ Đã gửi đề nghị đổi ngày cho <b>${ns(d.ns).n}</b> · ghi vào trường de_nghi_doi_ngay của đơn ${d.id} · <b>đơn vẫn có hiệu lực</b>, nhu cầu dạy thay giữ nguyên · người xin nghỉ nhận ở M0.4 · App N05 · M0.2`);return}
  if(x==='mo-nguong'){moNguong();return}
  if(x==='ok-nguong'){const v=+$('#ngGio').value,ly=$('#ngLy').value.trim();
-   if(!(v>=1&&v<=168)){toast('⛔ Ngưỡng phải từ 1 đến 168 giờ');return}
-   if(v===NGUONG_SATGIO){toast('Ngưỡng không đổi');return}
+   /* DTHN-1E — hai ngưỡng, một lý do, một bảng lịch sử: ngưỡng nào ĐỔI thì ghi MỘT dòng riêng cho nó */
+   const bt=+$('#ngBgTiet').value,bw=+$('#ngBgTuan').value;
+   if(!(v>=1&&v<=168)){toast('⛔ Ngưỡng sát giờ phải từ 1 đến 168 giờ');return}
+   if(!(bt>=2&&bt<=99&&bw>=1&&bw<=8)){toast('⛔ Ngưỡng gợi ý bàn giao: số tiết từ 2 đến 99, số tuần từ 1 đến 8');return}
+   const doiSG=v!==NGUONG_SATGIO,doiBG=bt!==NGUONG_BAN_GIAO.tiet||bw!==NGUONG_BAN_GIAO.tuan;
+   if(!doiSG&&!doiBG){toast('Ngưỡng không đổi');return}
    if(!ly){toast('⛔ Bắt buộc ghi lý do thay đổi ngưỡng — có lịch sử');return}
-   LS_NGUONG.push({luc:d2s(HOMNAY)+' '+LUC_NAY.split(' ')[1],ai:R().n.split(' — ')[0],tu:NGUONG_SATGIO,den:v,ly});NGUONG_SATGIO=v;
-   closeModal();render();toast(`⚙ Ngưỡng sát giờ: <b>${LS_NGUONG[LS_NGUONG.length-2].den}h → ${v}h</b> · đã ghi lịch sử · áp cho lượt rút từ nay, không tính lại nhãn cũ`);return}
+   const luc=d2s(HOMNAY)+' '+LUC_NAY.split(' ')[1],ai=R().n.split(' — ')[0],kq=[];
+   if(doiSG){LS_NGUONG.push({luc,ai,tu:NGUONG_SATGIO,den:v,ly});kq.push(`sát giờ <b>${NGUONG_SATGIO}h → ${v}h</b>`);NGUONG_SATGIO=v}
+   if(doiBG){const cu=NGUONG_BAN_GIAO.tiet+' tiết / '+NGUONG_BAN_GIAO.tuan+' tuần',moi=bt+' tiết / '+bw+' tuần';
+    LS_NGUONG.push({luc,ai,ts:'ban_giao',tu:cu,den:moi,ly});kq.push(`gợi ý bàn giao <b>${cu} → ${moi}</b>`);NGUONG_BAN_GIAO={tiet:bt,tuan:bw}}
+   closeModal();render();toast(`⚙ ${kq.join(' · ')} · đã ghi lịch sử${doiSG?' · sát giờ áp cho lượt rút từ nay, không tính lại nhãn cũ':''}${doiBG?' · gợi ý bàn giao tính lại ngay — nó chỉ là gợi ý, không có bản ghi nào để giữ':''}`);return}
  if(t.dataset.r){role=t.dataset.r;curTiet=null;
   document.querySelectorAll('.rb').forEach(b=>b.classList.toggle('on',b.dataset.r===role));
   const r=R();$('#ava').textContent=r.ava;
   const s=$('#hdt');
-  if(r.pv==='branch'){s.value=r.dt;s.disabled=true;$('#dtlock').textContent='🔒 khoá theo phạm vi';curDT=r.dt}
+  if(r.pv==='branch'||r.pv==='lop'){s.value=r.dt;s.disabled=true;$('#dtlock').textContent='🔒 khoá theo phạm vi';curDT=r.dt}
   else{s.disabled=false;s.value='Toàn trường';$('#dtlock').textContent=''}
   if(r.pv==='own'){cheDo='tuan';aiLoai='gv';curAi=String(r.gvid)}
+  /* KGLH-1D — vai phạm vi Class: lưới mở sẵn ở lớp mình, trục Lịch toàn cảnh về trục Lớp */
+  if(r.pv==='lop'){cheDo='tuan';aiLoai='lop';curAi=r.lopCN;tcTruc='lop'}
+  if(trucCua().indexOf(tcTruc)<0)tcTruc=trucCua()[0]||'lop';
+  if(cheDo==='huy'&&!co('ghichu'))cheDo='ngay';
   render();return}
  if(t.dataset.tab&&!x){tab=t.dataset.tab;curTiet=null;render();return}
  if(x==='close'){closeModal();return}
+ /* --- SDBG-1B: ghi chú tình hình lớp của tiết Hủy (§4.4b) --- */
+ if(x==='gc-loc'){locHuy=t.dataset.v;render();return}
+ if(x==='gc-xem'){const z=LICH.find(q=>String(q.id)===t.dataset.i);if(!z)return;curTiet=z.id;render();
+   const el=document.querySelector('.card .ch');if(el)el.scrollIntoView({block:'nearest'});return}
+ if(x==='gc-mo'){moGhiChu(t.dataset.i);return}
+ if(x==='ok-gc'){const z=LICH.find(q=>String(q.id)===t.dataset.i),o=$('#gcNd'),nd=o?o.value.trim():'';
+   if(!ghiDuoc(z)){toast('⛔ Vai này không ghi được ghi chú tình hình lớp của tiết này');return}
+   if(!nd){o.classList.add('loi');
+     $('#gcLoi').innerHTML='<div class="danger" style="margin:8px 0 0">⛔ Còn thiếu <b>1</b> trường bắt buộc: <b>Ghi chú tình hình lớp</b> — không lưu ghi chú trống.</div>';
+     toast('⛔ Còn thiếu: <b>Ghi chú tình hình lớp</b>');return}
+   const cu=z.ghiChuLop?z.ghiChuLop.nd:'';
+   if(cu===nd){toast('Nội dung không đổi — không ghi thêm dòng lịch sử');return}
+   const [ai,cd]=NGUOI_GHI[role],luc=LUCPH();
+   z.ghiChuLop={nd,ai,cd,luc};
+   z.lsGhiChu=(z.lsGhiChu||[]).concat({luc,ai,cd,viec:cu?'✎ Sửa ghi chú tiết GV vắng':'✎ Ghi chú tiết GV vắng',cu,moi:nd});
+   closeModal();curTiet=z.id;render();
+   toast(`✎ Đã lưu ghi chú tình hình lớp · <b>${z.lop} · ${z.mon}</b> tiết ${z.tiet} · ${cu?'bản cũ giữ trong lịch sử ghi chú':'đã ghi vào lịch sử tiết'} · dòng sổ rút gọn ở sổ đầu bài chiếu 🔗 ô này`);return}
  if(x==='dl'){closeModal();toast(`↗ Mở <b>${t.dataset.m}</b>${t.dataset.c?` · <code>${t.dataset.c}</code>`:''} · có nút quay lại M4.7`);return}
  if(t.dataset.cd){cheDo=t.dataset.cd;curTiet=null;render();return}
  if(t.dataset.al){aiLoai=t.dataset.al;curAi=null;render();return}
@@ -2216,6 +2651,12 @@ document.addEventListener('change',e=>{
  if(el.id==='fngay'){const[a,b,c]=el.value.split('/').map(Number);
    if(a&&b&&c){curNgay=key(new Date(c,b-1,a));render()}return}
 });
+/* KGLH-1D — ô tìm kiếm của T5 (M2.1 §7.3.3). Lọc sống theo từng phím, trả con trỏ về đúng chỗ sau khi vẽ lại. */
+document.addEventListener('input',e=>{
+ if(e.target.id!=='tcQ')return;
+ tcQ=e.target.value;curTiet=null;render();
+ const o=$('#tcQ');if(o){o.focus();o.setSelectionRange(o.value.length,o.value.length)}
+});
 
 /* ================= DEEP-LINK (đầu tiên của M4.7 — YK-01) =================
    /M4.7?ctx=<tiet_id>&action=tao&loai=day_thay&return=M4.9 — mở sẵn form dạy thay của đúng tiết.
@@ -2225,7 +2666,41 @@ let linkVe='';
      /M4.7?tab=giao_vien_vang&ctx=<don_nghi_id|bao_vang_id>&return=…        mở tab T4, chọn thẻ
      /M4.7?action=tao&loai=bao_vang&ctx=<nhan_su_id>&return=…              mở hộp ⚡ Báo vắng điền sẵn người
      /M4.7?action=tao&loai=de_nghi_doi_ngay&ctx=<don_nghi_id>&return=…     mở hộp ↩ Đề nghị đổi ngày của đơn */
-function moLink(ctx,action,loai,ret,tabQ){
+function moLink(ctx,action,loai,ret,tabQ,trucQ,nhinQ){
+ /* SDBG-1B — /M4.7?ctx=<tiet_id>&action=sua&loai=ghi_chu_tiet_huy&return=… : mở sẵn hộp ghi chú của tiết Hủy.
+    Khuôn D3: action là ĐỘNG TỪ chung (sua — ghi chú là một TRƯỜNG của tiết đã có), loại ở `loai`. */
+ if(action==='sua'&&loai==='ghi_chu_tiet_huy'){
+  const q=LICH.find(w=>String(w.id)===String(ctx));
+  if(!co('ghichu')){toast('⛔ Vai này không ghi được ghi chú tình hình lớp — menu gọi đã <b>không hiện</b> deep-link này (D3)');return}
+  if(!q){toast(`⛔ Không tìm thấy tiết <b>${ctx}</b> ở Lịch giảng dạy`);return}
+  if(!xemDuoc(q)){toast(`⛔ Tiết <b>${ctx}</b> ngoài phạm vi của vai này — bản ghi ngoài phạm vi không có trong dữ liệu trả về`);return}
+  if(q.tt!=='huy'){toast(`⛔ Tiết <b>${q.lop} · ${q.mon} · tiết ${q.tiet}</b> không ở trạng thái Hủy — chỉ tiết Hủy có ô ghi chú tình hình lớp`);return}
+  linkVe=ret||'';tab='lich';cheDo='huy';curTiet=q.id;render();moGhiChu(q.id);return}
+ /* 🔴 KGL2-1A 23/9/2026 chiều — cửa của cách nhìn 🔭 Toàn cảnh. CHUỖI ĐỔI theo chốt T1:
+      /M4.7?tab=lich_giang_day&nhin=toan_canh&truc={lop|gv|phong}&ctx={id}&return={menu-goc}
+    ⛔ Chuỗi cũ ?tab=lich_toan_canh BỎ HẲN cùng với Feature (K2-1) — KHÔNG dựng cửa tương thích:
+       giữ chuỗi cũ sống là giữ mã Feature sống, đúng thứ phép kiểm K2-A của cụm cấm.
+    `ctx` là ID của ĐỐI TƯỢNG TRỤC (mã lớp · mã giáo viên · số phòng), không phải tiết — khác mọi cửa cũ. */
+ if(tabQ==='lich_giang_day'||nhinQ){
+  linkVe=ret||'';tab='lich';curTiet=null;
+  if(nhinQ&&nhinQ!=='toan_canh'&&['ngay','tuan'].indexOf(nhinQ)<0){render();
+   toast(`⛔ M4.7 nhận <code>nhin</code> ∈ {toan_canh · ngay · tuan} — nhận được <code>nhin=${nhinQ}</code>`);return}
+  if(nhinQ==='ngay'||nhinQ==='tuan'){cheDo=nhinQ;render();toast(`↗ Mở <b>Lịch giảng dạy</b> · cách nhìn <b>${nhinQ==='ngay'?'📅 Theo ngày':'🗓 Theo tuần'}</b>`);return}
+  if(!nhinQ){render();toast('↗ Mở <b>Lịch giảng dạy</b> — cách nhìn mặc định của vai');return}
+  /* nhin=toan_canh — lăng kính trục là CỬA chặn (rb 53): vai 0 trục ⇒ không mở được cách nhìn này */
+  if(!trucCua().length){render();
+   toast('⛔ Vai này <b>không mở được cách nhìn 🔭 Toàn cảnh</b> — không có trục nào (rb 53). Menu gọi đã <b>không hiện</b> deep-link này (D3)');return}
+  cheDo='toancanh';
+  if(trucQ&&trucCua().indexOf(trucQ)<0){render();
+   toast(`⛔ Trục <b>${TRUCS[trucQ]?TRUCS[trucQ][1]:trucQ}</b> không mở với vai này — vai này chỉ có: <b>${trucCua().map(k=>TRUCS[k][1]).join(' · ')}</b>`);return}
+  if(trucQ)tcTruc=trucQ;
+  if(ds0()<0)tcTruc=trucCua()[0];
+  if(!ctx){render();toast(`↗ Mở <b>Lịch giảng dạy</b> · cách nhìn <b>🔭 Toàn cảnh</b> · ${TRUCS[tcTruc][1]}`);return}
+  const hit=tcTuanTap().filter(z=>tcTruc==='lop'?z.lop===ctx:tcTruc==='gv'?String(z.gv)===String(ctx):z.phong===ctx);
+  if(!hit.length){tcQ='';render();
+   toast(`⛔ Không có <b>${ctx}</b> ở trục ${TRUCS[tcTruc][1]} trong phạm vi của vai này, tuần đang xem — bản ghi ngoài phạm vi không có trong dữ liệu trả về`);return}
+  tcQ=tcTruc==='gv'?(ns(+ctx)?ns(+ctx).n:String(ctx)):String(ctx);
+  render();toast(`↗ Mở <b>🔭 Toàn cảnh</b> · ${TRUCS[tcTruc][1]} · lọc sẵn <b>${tcQ}</b> — ${hit.length} tiết trong tuần`);return}
  if(tabQ==='giao_vien_vang'){
   const c=dsVang().find(q=>q.id===ctx);
   if(ctx&&!c){toast(`⛔ Không có đợt vắng <b>${ctx}</b> trong phạm vi của vai này — nhân sự không đứng lớp không có thẻ ở M4.7; bản ghi ngoài phạm vi không trả về`);tab='vang';render();return}
@@ -2261,6 +2736,14 @@ function thuLink(v){
  else if(v==='dnn')moLink('NP-2026-147','tao','de_nghi_doi_ngay','M0.2');
  else if(v==='j2')moLink(J2_TIET?J2_TIET.id:'0','','','M0.2');
  else if(v==='j2-sai')moLink('999999','','','M0.2');
+ else if(v==='gc')moLink(SDBG_TIET?SDBG_TIET.id:'0','sua','ghi_chu_tiet_huy','M2.2');
+ else if(v==='gc-sai'){const q=LICH.find(z=>z.tt==='dukien'&&xemDuoc(z));moLink(q?q.id:'0','sua','ghi_chu_tiet_huy','M2.2')}
+ /* 🔴 KGL2-1A — cửa của cách nhìn 🔭 Toàn cảnh: tab=lich_giang_day&nhin=toan_canh&truc=…&ctx=… */
+ else if(v==='tc-lop')moLink('6A1','','','M0.1','lich_giang_day','lop','toan_canh');
+ else if(v==='tc-gv')moLink('7','','','M4.5','lich_giang_day','gv','toan_canh');
+ else if(v==='tc-phong')moLink('P.101','','','M6.4','lich_giang_day','phong','toan_canh');
+ else if(v==='tc-sai')moLink('9Z9','','','M0.1','lich_giang_day','lop','toan_canh');
+ else if(v==='tc-ngay')moLink('','','','M0.1','lich_giang_day','','ngay');
 }
 function render(){
  sidebar();tabs();
@@ -2332,6 +2815,30 @@ let J2_TIET=null;
   ly:'Cô Đỗ Thị Yến đã nhận nhiều tiết dạy thay trong tháng này. Tổ cân nhắc người khác, ưu tiên giáo viên chưa nhận tiết dạy thay nào.'};
  J2_TIET=z;
 })();
+/* ===== SDBG-1B (22/9/2026) — ca nền: ghi chú tình hình lớp của tiết Hủy (§4.4b) =====
+   ① tiết Hủy SÁNG NAY (8A1 · Tiếng Anh · tiết 1 — ca S3 báo vắng, PHT_DT hủy lúc 06:48) — đã qua giờ, CHƯA ghi chú ⇒ việc của Giám thị
+   ② tiết Hủy hôm qua (6A1 · Ngữ văn · tiết 2) — Giám thị ghi lúc 09:12 rồi SỬA lúc 10:05 ⇒ lịch sử có hai dòng cũ → mới
+   ③ tiết Hủy 20/11 (mất điện) — PHT_DT ghi chú
+   ④ tiết Hủy ở ngày học gần nhất đã qua của ĐIỂM TRƯỜNG B (10B1 — 01/12 cả điểm trường B nghỉ) — Giám thị B ghi ⇒ Giám thị A KHÔNG thấy (Branch neo lớp của tiết)
+   Giờ ghi chú đặt SAU giờ bắt đầu tiết (bộ giờ mùa đông: tiết 1 07:30 · tiết 2 08:20). */
+let SDBG_TIET=null;
+(function(){
+ const gc=(x,nd,ai,cd,luc,cu)=>{x.ghiChuLop={nd,ai,cd,luc};
+  x.lsGhiChu=(x.lsGhiChu||[]).concat({luc,ai,cd,viec:cu?'✎ Sửa ghi chú tiết GV vắng':'✎ Ghi chú tiết GV vắng',cu:cu||'',moi:nd})};
+ SDBG_TIET=LICH.find(z=>z.tt==='huy'&&z.ngay===key(HOMNAY)&&lop(z.lop).dt==='Điểm trường A')||null;
+ const hq=LICH.find(z=>z.tt==='huy'&&z.ngay===D(-1)&&lop(z.lop).dt==='Điểm trường A');
+ if(hq){const v1='Lớp tự học tại phòng, giám thị Lê Văn Thái trông. Sĩ số 38/38.';
+  gc(hq,v1,'Lê Văn Thái','Giám thị',k2s(D(-1))+' 09:12');
+  gc(hq,'Lớp tự học tại phòng, giám thị trông. Sĩ số 37/38 — em Trần Gia Bảo xin xuống phòng y tế lúc 08:40 (đau bụng), đã báo GVCN.','Lê Văn Thái','Giám thị',k2s(D(-1))+' 10:05',v1);}
+ const qh=LICH.find(z=>z.id==='L-QH1');
+ if(qh)gc(qh,'Mất điện cả khu, phòng tối. Lớp xuống thư viện đọc sách có cô thư viện trông, sĩ số 36/36. Chờ xếp dạy bù.','Phạm Đức Thắng','PHT_DT','20/11/2026 09:30');
+ /* ④ Điểm trường B — tiết cuối buổi sáng của 10B1 ở NGÀY HỌC gần nhất đã qua, «Lớp nghỉ» (lớp về sớm) */
+ let b=null;for(let i=1;i<=7&&!b;i++)b=LICH.filter(z=>z.ngay===D(-i)&&z.lop==='10B1'&&z.tt==='dien'&&z.nguon==='TKB'&&!z.phanMa&&tiet(z.tiet).b==='S').sort((p,q)=>q.tiet-p.tiet)[0]||null;
+ if(b){b.tt='huy';b.cachXuLy='Lớp nghỉ';b.seBu=0;
+  b.lyHuy='Giáo viên đi khám bệnh đột xuất, tiết cuối buổi — không có giáo viên cùng môn trống tiết';
+  b.nguoiXep='Nguyễn Hữu Phước (PHT_DT) · '+k2s(b.ngay);
+  gc(b,'Lớp về sớm sau khi GVCN nhắn phụ huynh qua App. 2 em ở lại chờ đón, ngồi ở phòng trực giám thị đến khi phụ huynh đón.','Đinh Thị Hằng','Giám thị',k2s(b.ngay)+' '+gioCua(b)[1]);}
+})();
 /* ca Lệch người mẫu: một tiết ĐÃ DIỄN RA hôm nay ở Điểm trường A; người thiết bị ghi nhận = ứng viên hợp lệ đầu tiên */
 (function(){
  const x=LICH.find(z=>z.ngay===key(HOMNAY)&&z.tt==='dien'&&z.nguon==='TKB'&&lop(z.lop).dt==='Điểm trường A'&&z.phong&&!z.truc);
@@ -2341,6 +2848,112 @@ let J2_TIET=null;
  x.lechNguoi={ns:g.p.id,luc:gioCua(x)[0].replace(/:(\d\d)$/,(m,a)=>':'+String(+a+3).padStart(2,'0')),tb:'TB-'+x.phong.replace('.','')};
  LECH_NGUOI=x;
 })();
+/* ===== DTHN-1E (24/9/2026) — ca nền DT-C: MỘT người dạy thay MỘT cặp Lớp × Môn ≥ 5 tiết trong 2 tuần =====
+   🛑 NỐI THÊM CUỐI (sổ DTHN luật DH-4): chạy SAU mọi ca cũ, không chèn vào vòng sinh lịch; ⛔ không đụng một tiết nào của ca cũ.
+   Chỉ các tiết của CHÍNH đợt vắng mới bị đổi người — đo trước / sau ở mục G phiếu PHIEU-DTHN-1E.
+   Chuyện: sáng nay 07:20 cô Tạ Thị Quyên (Ngữ văn 7A2 · 8A1) gọi Tổ trưởng Trần Thị Bích — mai nhập viện mổ, bác sĩ dặn nghỉ
+   hai tuần ⇒ ⚡ Báo vắng BV-2026-032, D+1 → D+14 (đơn gửi sau). 07:50 Tổ trưởng xếp:
+     · 7A2 · Ngữ văn → thầy Trần Văn Hùng ĐÚNG 5 tiết ⇒ CHẠM ngưỡng 5 tiết / 2 tuần — cả 5 là tiết TƯƠNG LAI
+       (bằng chứng «đếm cả tiết đã xếp tương lai») ⇒ gợi ý hiện ở PANEL tiết và ở T2. Thầy dạy Lịch sử, cùng tổ ⇒ tầng ③ «dạy trông»:
+       đo trên dữ liệu mẫu, ba người cùng môn Ngữ văn KHÔNG ai trống đủ tiết của 7A2 trong hai tuần — đúng cái giá của dạy thay
+       kéo dài, và đúng lý do có gợi ý bàn giao.
+     · 8A1 · Ngữ văn → cô Lý Thị Thu 4 tiết (DƯỚI ngưỡng — chưa gợi ý gì); tiết kế tiếp cô Thu trống giờ ĐỂ TRỐNG (DTC_CHO)
+       ⇒ bấm «Xếp người» ở tiết đó thấy cô Thu mang nhãn 💡 «tiết thứ 5» — gợi ý hiện TRƯỚC khi chạm, lúc còn kịp đổi hướng.
+     · các tiết còn lại của đợt → người hợp lệ đầu tiên của gợi ý ba tầng mà CHƯA chạm ngưỡng (Tổ trưởng tránh dồn một người).
+   Ca này KHÔNG phải S7 (thầy Chiến — đơn nghỉ ốm dài ngày chưa xếp người): S7 giữ nguyên, không một tiết nào đổi.
+   seqBV nâng lên 33: BV-2026-032 là của ca này, BV-2026-033 đã được ca PC18 nêu tên ⇒ báo vắng tạo tay trên demo bắt đầu từ 034. */
+let DTC_TIET=null,DTC_CHO=null;
+(function(){
+ const GOC=20,THAY=12,THAY2=6,BV='BV-2026-032',ai='Trần Thị Bích (TTCM)',luc=k2s(D(0))+' 07:50',nguon={loai:'giao_vien_vang',bao_vang_id:BV};
+ BAOVANG.push({id:BV,nhan_su_id:GOC,tu:{ngay:D(1),buoi:'sang'},den:{ngay:D(14),buoi:'chieu'},kenh:'goi_dien',nguoi_bao_id:4,
+   luc:D(0)+' 07:20',ghi_chu:'Cô Quyên gọi báo mai nhập viện mổ, bác sĩ dặn nghỉ hai tuần — đơn nghỉ cô gửi sau khi ra viện',don_phu_id:null});
+ seqBV=Math.max(seqBV,33);
+ tinhNhuCau();
+ const xep=(x,uv,giai)=>{const cu=x.gv;
+  x.gv=uv;x.nguon='Dạy thay';x.dienGiai=giai;x.nguoiXep=ai+' · '+luc;x.canThay=false;x.nguonPS=nguon;
+  x.lichSu=(x.lichSu||[]).concat({luc,ai,viec:'Xếp dạy thay',truoc:ns(cu).n,sau:ns(uv).n,nguon})};
+ const ts=LICH.filter(z=>z.gvGoc===GOC&&z.gv===GOC&&z.canThay&&z.tt==='dukien')
+   .sort((p,q)=>p.ngay<q.ngay?-1:p.ngay>q.ngay?1:p.tiet-q.tiet);
+ const rong=(z,id)=>goiY(z).some(u=>!u.loai&&u.p.id===id);
+ /* ① 7A2 · Ngữ văn → thầy Hùng đúng NGUONG tiết */
+ let n=0;
+ ts.filter(z=>z.lop==='7A2'&&z.mon==='Ngữ văn').forEach(z=>{if(n>=NGUONG_BAN_GIAO.tiet||!rong(z,THAY))return;
+  xep(z,THAY,`Cô Quyên báo nghỉ hai tuần lúc 07:20; tổ không còn giáo viên Ngữ văn trống các tiết này — tôi gặp thầy Trần Văn Hùng ở phòng giáo viên lúc 07:40, thầy nhận trông lớp 7A2 theo đề cương cô Quyên gửi lại`);
+  n++;DTC_TIET=DTC_TIET||z});
+ /* ② 8A1 · Ngữ văn → cô Thu NGUONG−1 tiết; tiết kế tiếp cô Thu trống giờ ĐỂ TRỐNG */
+ let m=0;
+ ts.filter(z=>z.lop==='8A1'&&z.mon==='Ngữ văn').forEach(z=>{if(!rong(z,THAY2))return;
+  if(m<NGUONG_BAN_GIAO.tiet-1){xep(z,THAY2,`Cô Quyên báo nghỉ hai tuần lúc 07:20; tôi gọi cô Lý Thị Thu lúc 07:45, cô nhận trông lớp 8A1`);m++}
+  else if(!DTC_CHO)DTC_CHO=z});
+ /* ③ còn lại → người hợp lệ đầu tiên CHƯA chạm ngưỡng */
+ ts.filter(z=>z.canThay&&z.gv===GOC&&z!==DTC_CHO).forEach(z=>{
+  const g=goiY(z).find(u=>!u.loai&&u.p.id!==THAY&&u.p.id!==THAY2&&!banGiaoCap(u.p.id,z.lop,z.mon,z));
+  if(g)xep(z,g.p.id,`Cô Quyên báo nghỉ hai tuần lúc 07:20; tôi gọi ${g.p.n} lúc 07:45, ${g.p.n} nhận tiết`)});
+ tinhNhuCau();
+})();
+/* ===== 🔁 DTHN-2A (24/9/2026) — THAY GIÁO VIÊN BỘ MÔN · §4.8 · bản CHỐT DTHN §7.1 `DT-D` =====
+   M4.5 là CHỦ bản ghi `thay_giao_vien` — bản ghi RIÊNG, ⛔ không phải dòng HDPC ⑥ (hợp đồng chỉ có đoạn khoảng TUẦN,
+   không diễn đạt được «hiệu lực từ THỜI ĐIỂM xác nhận» — đo ở PHIEU-DTHN-2A mục A.2).
+   Menu này CHỊU HỆ QUẢ trong CÙNG GIAO DỊCH với lúc xác nhận ở M4.5 — ⛔ không qua bảng đối chiếu §7: người quyết đã quyết,
+   và hộp xác nhận ở M4.5 đã nói trước từng hệ quả. Luật (DT-D b · c):
+     · tiết BẮT ĐẦU SAU thời điểm xác nhận, gv gốc = giáo viên cũ  ⇒ gv = gv gốc = giáo viên mới (nguồn giữ; tiết Hủy/Nghỉ giữ trạng thái)
+     · trong đó tiết DẠY THAY đã xếp                             ⇒ GỠ phân công dạy thay, nguồn về TKB, BÁO ĐÍCH DANH người bị gỡ (khuôn vùng 🟡 §8b.7)
+     · tiết đã bắt đầu trước mốc                                  ⇒ GIỮ NGUYÊN từng trường (HDNP ⑧.2 — tiết đã dạy không bao giờ đổi chủ)
+   Mọi dòng lịch sử mang Nguồn phát sinh `thay_giao_vien { tgv_id }` — giá trị thứ BẢY, MÁY ghi (§8b.8).
+   ⛔ Ca mẫu KHÔNG chạy lúc nạp trang (luật DH-4 — dữ liệu nạp giống hệt trước phiên): chỉ chạy khi chọn ⏩ trong ô mô phỏng.
+   Chuyện: cô Tạ Thị Quyên (BV-2026-032, mổ) — sáng nay bệnh viện kết luận phải điều trị tới hết năm học. Trường ký hợp đồng
+   cô Đoàn Thị Ngọc (Ngữ văn) — đo trên dữ liệu mẫu, CẢ BA giáo viên Ngữ văn đang có đều trùng giờ với 7A2 · Ngữ văn (Mai 9 ô,
+   Bích 9 ô, Lan 6 ô) nên M4.5 sẽ chặn họ (ràng buộc 9 HDPC). PHT_CM xác nhận 🔁 Thay giáo viên bộ môn 7A2 · Ngữ văn lúc 08:40.
+   Cô Quyên còn 8A1 · Ngữ văn: KHÔNG thay trong ca này — thay đi TỪNG CẶP, cặp kia vẫn chạy dạy thay theo BV-2026-032. */
+let TGV_CHIEU=[];   /* 🔗 bản chiếu CHỈ ĐỌC các bản ghi thay giáo viên của M4.5 */
+const batDauSau=(x,luc)=>(x.ngay+' '+gioCua(x)[0])>luc;
+function apThayGV(r){
+ const kq={giu:[],doi:[],go:[]},nguon={loai:'thay_giao_vien',tgv_id:r.ma};
+ const lucS=k2s(r.luc.split(' ')[0])+' '+r.luc.split(' ')[1],ai=r.ai+' — xác nhận ở M4.5';
+ LICH.filter(x=>x.lop===r.lop&&x.mon===r.mon&&(!r.phan||!x.phanMa||x.phanMa===r.phan)).forEach(x=>{
+  if(x.gvGoc!==r.cu)return;
+  if(!batDauSau(x,r.luc)){kq.giu.push(x);return}
+  if(x.nguon==='Dạy thay'&&x.gv!==x.gvGoc){
+   const cu=x.gv,satGio=(tg(x.ngay+' '+gioCua(x)[0])-tg(r.luc))/3600000<NGUONG_SATGIO;
+   x.lichSu=(x.lichSu||[]).concat({luc:lucS,ai,viec:'Gỡ phân công dạy thay — thay giáo viên bộ môn',truoc:ns(cu).n,sau:ns(r.moi).n,nguon});
+   x.goTGV={nguoi:cu,luc:r.luc,ma:r.ma,satGio};delete x.dienGiai;x.nguon='TKB';kq.go.push(x);
+  }else{
+   x.lichSu=(x.lichSu||[]).concat({luc:lucS,ai,viec:'Đổi giáo viên — thay giáo viên bộ môn',truoc:ns(x.gv).n,sau:ns(r.moi).n,nguon});
+   kq.doi.push(x);
+  }
+  x.gv=r.moi;x.gvGoc=r.moi;x.nguonPS=nguon;x.tgv=r;x.nguoiXep=ai+' · '+lucS;
+ });
+ tinhNhuCau();
+ return kq;
+}
+function moPhongTGV(){
+ if(TGV_CHIEU.length){toast('Cặp 7A2 · Ngữ văn đã thay giáo viên — '+TGV_CHIEU[0].ma);return}
+ const MOI=23;
+ if(!ns(MOI)){const p={id:MOI,n:'Đoàn Thị Ngọc',to:'T2'};NS.push(p);GV_NS.push(p);MONGV[MOI]=['Ngữ văn'];DTGV[MOI]='Điểm trường A'}
+ const r={ma:'TGV-2026-001',lop:'7A2',mon:'Ngữ văn',phan:'',cu:20,moi:MOI,luc:LUC_NAY,ai:'Vũ Thị Thanh (PHT_CM)',
+  ly:'Bệnh viện kết luận cô Quyên điều trị tới hết năm học — trường ký hợp đồng giáo viên Ngữ văn thay hẳn'};
+ TGV_CHIEU.push(r);
+ const kq=apThayGV(r);
+ const khac=LICH.filter(x=>x.gvGoc===r.cu&&!(x.lop===r.lop&&x.mon===r.mon)&&x.tt==='dukien'&&x.ngay>=D(1)&&x.ngay<=D(14));
+ const nhom={};kq.go.forEach(x=>{(nhom[x.goTGV.nguoi]=nhom[x.goTGV.nguoi]||[]).push(x)});
+ const dsN=xs=>xs.map(x=>`${k2s(x.ngay).slice(0,5)} t${x.tiet}`).join(' · ');
+ tab='viec';render();
+ modal('⏩ '+LUC_NAY.split(' ')[1]+' — M4.5 xác nhận 🔁 Thay giáo viên bộ môn '+r.ma,
+  `<div class="ro">Sự kiện này <b>xảy ra ở M4.5</b> — ${r.ai} xác nhận: <b>${r.lop} · ${r.mon}</b> ${ns(r.cu).n} → <b>${ns(r.moi).n}</b>,
+    hiệu lực <b>${LUC_NAY.split(' ')[1]} ${k2s(key(HOMNAY))}</b> <i>(thời điểm xác nhận — không lùi, không hẹn trước)</i>.
+    Bảng dưới là <b>hệ quả phía lịch</b> ở menu này, <b>cùng giao dịch</b>. «${r.ly}».</div>
+   <table><thead><tr><th>Hệ quả</th><th class="num">Tiết</th><th>Chi tiết</th></tr></thead><tbody>
+    <tr><td>✓ <b>Giữ nguyên</b> — tiết đã bắt đầu trước mốc</td><td class="num">${kq.giu.length}</td><td>${dsN(kq.giu)} · sổ đầu bài, chấm công, lịch sử tiết <b>không đổi một chữ</b></td></tr>
+    <tr><td>🔁 <b>Đổi giáo viên</b> — tiết của cặp bắt đầu sau mốc</td><td class="num">${kq.doi.length}</td><td>${dsN(kq.doi)} · nguồn giữ nguyên${kq.doi.some(x=>x.tt==='nghi')?' · tiết rơi vào Lịch nghỉ giữ trạng thái Nghỉ':''}</td></tr>
+    <tr><td>↩ <b>Gỡ dạy thay đã xếp</b> — báo đích danh ở M2.1</td><td class="num">${kq.go.length}</td><td>${Object.keys(nhom).map(g=>`<b>${ns(+g).n}</b> ${nhom[g].length} tiết (${dsN(nhom[g])})`).join('<br>')||'—'}</td></tr>
+    <tr><td>⏸ <b>Không đổi</b> — cặp khác của ${ns(r.cu).n}</td><td class="num">${khac.length}</td><td>${[...new Set(khac.map(x=>x.lop+' · '+x.mon))].join(', ')} — vẫn trong đợt vắng BV-2026-032, dạy thay <b>giữ nguyên</b>: thay giáo viên đi <b>từng cặp</b></td></tr>
+   </tbody></table>
+   <div class="ro" style="margin-top:10px">Mỗi tiết đổi mang dòng lịch sử nguồn <span class="tg c">🔁 Thay giáo viên bộ môn · ${r.ma}</span> — <b>máy ghi</b>, không ai chọn được giá trị này ở panel.
+    Tiết của ${ns(r.moi).n} tính vào <b>định mức</b> của cô <i>(nguồn TKB)</i> — ⛔ không phải thù lao dạy thay (§4.6).
+    Khối 💡 gợi ý của <b>${r.lop} · ${r.mon}</b> ở tab này <b>tự biến mất</b> — không còn tiết dạy thay nào của cặp.</div>`,
+  `${kq.doi[0]||kq.go[0]?`<button class="btn" data-x="toi-tiet" data-i="${(kq.go[0]||kq.doi[0]).id}">Xem một tiết trên lịch</button>`:''}
+   <button class="btn p" data-x="close">Đóng</button>`);
+}
 (function(){
  const q='&'+String(location.search||'').replace(/^\?/,'')+'&'+String(location.hash||'').replace(/^#/,'');
  const g=k=>{const m=q.match(new RegExp('&'+k+'=([^&]+)'));return m?decodeURIComponent(m[1]):''};
@@ -2349,7 +2962,14 @@ let J2_TIET=null;
    <optgroup label="⏩ Sự kiện từ menu khác (giờ ghi kèm)">
     <option value="mp:S3-don">S3 · 14:30 VT nhập hộ đơn cho Lưu Thị Ngân (M4.8) ⇒ máy ghép</option>
     <option value="mp:S4-rut">S4 · 08:40 Bùi Văn Khánh rút cả đơn (M0.4) ⇒ ⚪🟡🔴</option>
-    <option value="mp:S5-rut">S5 · 15:30 Trịnh Thu Hà rút ngày mai, giữ người (M0.4)</option></optgroup>
+    <option value="mp:S5-rut">S5 · 15:30 Trịnh Thu Hà rút ngày mai, giữ người (M0.4)</option>
+    <option value="mp:TGV">DT-D · 08:40 M4.5 xác nhận 🔁 Thay giáo viên bộ môn 7A2 · Ngữ văn (cô Quyên → cô Ngọc)</option></optgroup>
+   <optgroup label="🔗 Cách nhìn 🔭 Toàn cảnh — cửa MỚI sau khi gộp (KGL2-1A)">
+    <option value="tc-lop">tab=lich_giang_day&amp;nhin=toan_canh&amp;truc=lop&amp;ctx=6A1&amp;return=M0.1</option>
+    <option value="tc-gv">tab=lich_giang_day&amp;nhin=toan_canh&amp;truc=gv&amp;ctx=7&amp;return=M4.5</option>
+    <option value="tc-phong">tab=lich_giang_day&amp;nhin=toan_canh&amp;truc=phong&amp;ctx=P.101&amp;return=M6.4</option>
+    <option value="tc-ngay">tab=lich_giang_day&amp;nhin=ngay — cách nhìn mặc định</option>
+    <option value="tc-sai">cùng cửa toàn cảnh, ctx=9Z9 — lớp không có trong phạm vi</option></optgroup>
    <optgroup label="🔗 Deep-link YKNP">
     <option value="tab">tab=giao_vien_vang&amp;ctx=NP-2026-142 (S2)</option>
     <option value="tab-s9">tab=giao_vien_vang&amp;ctx=NP-2026-148 (S9 Kế toán — không có thẻ)</option>
@@ -2358,11 +2978,14 @@ let J2_TIET=null;
    ${J2_TIET?`<optgroup label="🔗 Cửa M0.2 — phản hồi phân công (GY18-J2)">
     <option value="j2">ctx=${J2_TIET.id}&amp;return=M0.2 (không kèm action) — ${J2_TIET.lop} · ${J2_TIET.mon}</option>
     <option value="j2-sai">ctx=999999 — tiết không có</option></optgroup>`:''}
+   ${SDBG_TIET?`<optgroup label="🔗 Ghi chú tiết GV vắng — cửa từ sổ đầu bài (SDBG-1B)">
+    <option value="gc">ctx=${SDBG_TIET.id}&amp;action=sua&amp;loai=ghi_chu_tiet_huy — ${SDBG_TIET.lop} · ${SDBG_TIET.mon} hôm nay</option>
+    <option value="gc-sai">cùng cửa, trỏ vào tiết Dự kiến — bị từ chối</option></optgroup>`:''}
    ${LECH_NGUOI?`<optgroup label="🔗 Cửa M4.9 — Lệch người (YK-01)">
     <option value="ok">${LECH_NGUOI.lop} · tiết ${LECH_NGUOI.tiet} hôm nay — action=tao&amp;loai=day_thay</option>
     <option value="sai">action=day_thay (sai khuôn D3) — bị từ chối</option></optgroup>`:''}`;}
  render();
- if(g('ctx')||g('tab'))moLink(g('ctx'),g('action'),g('loai'),g('return'),g('tab'));
+ if(g('ctx')||g('tab')||g('nhin'))moLink(g('ctx'),g('action'),g('loai'),g('return'),g('tab'),g('truc'),g('nhin'));
 })();
 </script>
 </body>

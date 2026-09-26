@@ -554,16 +554,19 @@ const CAP={FULL:['xem','soan','lop','theodoi','nhanxet','nhac','mau','maufull','
 const ROLE={
  FULL:{n:'Đủ quyền — rà luồng nghiệp vụ',ava:'DQ',me:'Nguyễn Văn An',
   to:['Tổ Toán — Tin','Tổ Lý — Hóa — Sinh'],vt:{'Tổ Toán — Tin':'TT','Tổ Lý — Hóa — Sinh':'TP'},
-  sc:'Mọi thao tác',mchu:['M5.1','M4.4','M5.2','M2.2','M10.1']},
+  sc:'Mọi thao tác',mchu:['M5.1','M4.4','M5.2','M2.2','M10.1','M5.9']},
  GVBM:{n:'Nguyễn Văn An — Giáo viên bộ môn Toán, Tin học',ava:'NA',me:'Nguyễn Văn An',
   to:['Tổ Toán — Tin'],vt:{'Tổ Toán — Tin':'GV'},sc:'Own — giáo án của tôi',mchu:['M5.1','M10.1','M2.2']},
  TTCM:{n:'Trần Thị Bích — Tổ trưởng Tổ Toán — Tin',ava:'TB',me:'Trần Thị Bích',
-  to:['Tổ Toán — Tin'],vt:{'Tổ Toán — Tin':'TT'},sc:'Group — Tổ Toán — Tin',mchu:['M5.1','M4.4','M5.2','M2.2','M10.1']},
+  to:['Tổ Toán — Tin'],vt:{'Tổ Toán — Tin':'TT'},sc:'Group — Tổ Toán — Tin',mchu:['M5.1','M4.4','M5.2','M2.2','M10.1','M5.9']},
  TPCM:{n:'Lê Văn Dũng — Tổ phó Tổ Toán — Tin',ava:'LD',me:'Lê Văn Dũng',
-  to:['Tổ Toán — Tin'],vt:{'Tổ Toán — Tin':'TP'},sc:'Group — không nhắc hàng loạt, không gỡ mẫu',mchu:['M5.1','M10.1']},
+  to:['Tổ Toán — Tin'],vt:{'Tổ Toán — Tin':'TP'},sc:'Group — không nhắc hàng loạt, không gỡ mẫu',mchu:['M5.1','M10.1','M5.9']},
  PHT_CM:{n:'Phó Hiệu trưởng Chuyên môn',ava:'PC',me:null,to:[],sc:'School — theo dõi mọi tổ',
-  mchu:['M5.1','M4.4','M5.2','M2.2','M10.1']},
- HT:{n:'Hiệu trưởng — chỉ Đọc',ava:'HT',me:null,to:[],sc:'School — xem và xuất',mchu:['M5.1','M4.4','M10.1']}};
+  mchu:['M5.1','M4.4','M5.2','M2.2','M10.1','M5.9']},
+ HT:{n:'Hiệu trưởng — chỉ Đọc',ava:'HT',me:null,to:[],sc:'School — xem và xuất',mchu:['M5.1','M4.4','M10.1','M5.9']}};
+/* TDHT-Z 23/9/2026 — 'M5.9' thêm vào mchu của NĂM vai có ô ở m5.9.theo_giao_vien
+   (TTCM · TPCM @Group · PHT_CM · HT @School, + FULL). ⛔ KHONG cho GVBM — chốt C6 của M5.9:
+   «giáo viên bộ môn và giáo viên chủ nhiệm không có ô quyền nào», phần «của tôi» ở M0.4. */
 let role='FULL';
 const R=()=>ROLE[role];
 const can=c=>CAP[role].indexOf(c)>=0;
@@ -576,7 +579,7 @@ const NAV=[
  ['lop','📚 Lớp học hàng ngày',[['M2.1','Lịch dạy & học'],['M2.2','Sổ đầu bài'],['M2.5','Bảng điểm môn học'],['M2.8','Kỳ thi định kỳ']]],
  ['ck','🎓 Cuối kỳ & cuối năm',[['M3.1','Tổng kết và xếp loại']]],
  ['ns','👨‍🏫 Nhân sự',[['M4.1','Hồ sơ nhân sự'],['M4.5','Phân công giảng dạy'],['M4.6','Thời khóa biểu'],['M4.7','Lịch giảng dạy']]],
- ['cm','📖 Chuyên môn',[['M5.1','Kế hoạch giảng dạy'],['M5.2','Giáo án'],['M5.3','Dự giờ'],['M5.4','Sinh hoạt chuyên môn'],['M5.5','Bộ KPI giáo viên'],['M5.6','Đào tạo, bồi dưỡng'],['M5.7','Bồi dưỡng thường xuyên']]],
+ ['cm','📖 Chuyên môn',[['M5.1','Kế hoạch giảng dạy'],['M5.2','Giáo án'],['M5.3','Dự giờ'],['M5.4','Sinh hoạt chuyên môn'],['M5.5','Bộ KPI giáo viên'],['M5.6','Đào tạo, bồi dưỡng'],['M5.7','Bồi dưỡng thường xuyên'],['M5.10','⚙ Cấu hình chuyên môn']]],   /* SDBG-2Z 22/9/2026 — + M5.10 (NAV ẩn, chỉ cho thanh chọn nội bộ) */
  ['qt','⚙️ Quản trị',[['M10.1','Hồ sơ năm học'],['M10.2','Thông tin trường'],['M10.6','Trung tâm cấu hình']]]];
 const NAVOK={FULL:'all',GVBM:['lop','cm'],TTCM:['lop','cm','ns'],TPCM:['lop','cm'],
  PHT_CM:['lop','ck','ns','cm','qt'],HT:'all'};
@@ -852,6 +855,17 @@ function tabTo(){
  const nSel=Object.keys(V.tdSel).length;
  return '<div class="info">Dòng ở đây là <b>một cặp Giáo viên × Bài</b>. Tổ trưởng <b>theo dõi và góp ý</b> — '+
   '<b>không có nút Duyệt, không có nút Trả lại</b>. Nhận xét không chặn việc dạy.</div>'+
+ /* TDHT-Z 23/9/2026 — LỐI NGƯỢC của ranh giới M5.9 §2.6. Bên kia đã khai một chiều
+    («giáo án KHÔNG có ở M5.9»); đây là chiều còn lại, để hai menu đọc được nhau.
+    🛑 Ranh giới là CÂU HỎI, không phải dữ liệu: tab này hỏi «tuần tới ai còn thiếu BÀI nào»,
+    M5.9 hỏi «ai đang chậm NHẬP DỮ LIỆU hằng ngày». Hai câu, hai chu kỳ, hai menu.
+    Cổng D3 qua dlink() — vai không có ô ở M5.9 thấy nhãn xám, ⛔ không phải nút bấm được. */
+ '<div class="ro">📊 <b>Tab này theo dõi HỒ SƠ CHUYÊN MÔN — giáo án của từng bài.</b> '+
+  'Việc <b>nhập dữ liệu hằng ngày</b> của cùng những giáo viên ấy <i>(sổ đầu bài · điểm danh · '+
+  'bài tập về nhà · điểm thường xuyên)</i> theo dõi ở <b>M5.9 · Theo giáo viên</b> — khác chu kỳ '+
+  '<i>(giáo án theo tuần dự kiến của kế hoạch; nhập liệu theo tiết đã qua giờ)</i>, khác câu hỏi. '+
+  '🛑 Và <b>M5.9 chỉ đọc</b>: <b>viết nhận xét</b> và <b>🔔 nhắc hàng loạt</b> chỉ làm được <b>ở đây</b>. '+
+  dlink('M5.9','M5.9 · Theo giáo viên','tab=theo_giao_vien')+'</div>'+
  '<div class="bar">'+QF.map(q=>'<button class="qf '+(V.tdQf===q[0]?'on':'')+(q[0]==='quahan'?' al':'')+'" data-x="tdqf" data-t="'+q[0]+'">'+q[1]+'</button>').join('')+
   '<span class="sum"><span>Đang xem <b>'+rows.length+'</b> dòng</span><span>Chưa soạn <b>'+rows.filter(x=>!x.g).length+'</b></span></span></div>'+
  (can('nhac')?'<div class="bar" style="padding-top:0"><button class="btn p sm" data-x="nhac">🔔 Nhắc soạn giáo án'+

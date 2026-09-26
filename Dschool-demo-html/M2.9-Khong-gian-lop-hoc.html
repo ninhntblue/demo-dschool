@@ -3745,6 +3745,187 @@ render();
 if(lkTiet&&cur===lkTiet.l&&tab==='T3') popSDB(lkTiet.d,lkTiet.t);
 if(lkLoi) toast('⛔ Liên kết xin lớp <b>'+esc(lkLoi)+'</b> — không có lớp này trong năm học đang chọn. Đang mở danh sách lớp.');
 
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TKHS-1B — M2.9 tab T1 · CỬA CẤP LẠI MẬT KHẨU tài khoản học sinh của GVCN
+   Tài liệu: M2.9 §3.5  ·  hợp đồng 🔒 HDTH bản 1 (băm 969EC8D49E9C6199…2D06)
+
+   🛑 ⛔ KHÔNG tab mới — T1 đã đúng trục (một dòng một học sinh). §3.5.1.
+   🛑 ⛔ KHÔNG nút IN — GVCN cố ý không có bit XD ở T1 (chốt 22/9/2026);
+      in phiếu là việc của Văn thư ở M10.5 tab ②.
+   🛑 ⛔ KHÔNG nút KHÓA — chỉ HT · IT (HS-3: khóa ⛔ không bao giờ là kỷ luật).
+   🔑 CỬA VÀO THỨ HAI của M10.5 — bản ghi vẫn thuộc M10.5 (quy tắc 16),
+      nhật ký ghi «cap_lai_hs · từ M2.9». ⛔ Không phá D1.
+   ⚠ T1 là một BẢNG, ⛔ không có panel tầng 2 ⇒ dùng HỘP THAO TÁC,
+      đúng khuôn hộp «Lịch sử chức danh tự quản» đã có ở chính T1.
+
+   🛑 ⛔ Không sửa một byte của app.js — bọc render() và act().
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ⚙ công tắc theo cấp học — nguồn thật ở M10.5 tab ③ (quyền HT). Đây chỉ CHIẾU. */
+var TKCAP_LOP = {th:false, thcs:true, thpt:true};
+
+/* trạng thái tài khoản — nguồn thật ở M10.5; demo giữ bản chiếu đủ để thao tác */
+var TKHS_LOP = {};
+var TKTT_LOP = {chua_phat:['Chưa phát','gr'], cho_doi_mk:['Chờ đổi mật khẩu lần đầu','w'],
+                dang_dung:['Đang dùng','o'], dang_khoa:['🔒 Đang khóa','r'], chi_doc:['Chỉ đọc','gr']};
+
+/* lượt giao bài M12.7 đang mở — nguồn của dải cảnh báo (§3.5.4) */
+var TKLUOT_LOP = {};
+
+/* nhật ký — demo chỉ giữ để hộp nói được «đã ghi vết» */
+var TKLOG_LOP = [];
+
+/* gieo một lần theo danh sách học sinh thật của demo */
+(function tkGieo(){
+ var ds = Object.keys(typeof HS!=='undefined'?HS:{});
+ var mau = ['dang_dung','cho_doi_mk','dang_dung','chua_phat','dang_dung','dang_dung','cho_doi_mk','dang_dung'];
+ ds.forEach(function(h,i){
+  TKHS_LOP[h] = {tt: mau[i%mau.length], dn: (mau[i%mau.length]==='dang_dung'?'26/09/2026 07:'+(10+i%45):'')};
+ });
+ /* một em đang khóa — để thấy hộp chỉ đọc với GVCN */
+ if(ds[2]) TKHS_LOP[ds[2]] = {tt:'dang_khoa', dn:'22/09/2026 08:14',
+   khoa:{ly:'Mật khẩu bị bạn cùng lớp biết',boi:'Quản trị hệ thống',luc:'23/09/2026'}};
+ /* hai em đang có lượt làm bài mở */
+ if(ds[0]) TKLUOT_LOP[ds[0]] = [['L02','Toán 9 · Ôn tập chương II','đóng 28/09 23:59']];
+ if(ds[4]) TKLUOT_LOP[ds[4]] = [['L02','Toán 9 · Ôn tập chương II','đóng 28/09 23:59'],
+                                ['L07','Tiếng Anh 9 · Unit 3','đóng 30/09 22:00']];
+})();
+
+function tkKhoiLop(l){const k=parseInt(String(l),10); return k<=5?'th':(k<=9?'thcs':'thpt')}
+function tkBatLop(l){return !!TKCAP_LOP[tkKhoiLop(l)]}
+function tkTtLop(h,l){
+ if(!tkBatLop(l))return '';
+ var r=TKHS_LOP[h]; return r?r.tt:'chua_phat'}
+function tkOLop(h){return TKHS_LOP[h]||(TKHS_LOP[h]={tt:'chua_phat',dn:''})}
+function tkMkTamLop(){var c='abcdefghjkmnpqrstuvwxyz23456789',s='';
+ for(var i=0;i<8;i++)s+=c[Math.floor(Math.random()*c.length)];return s}
+/* 🛑 Đi trên bit S của m2.9.hs_cua_lop — mà ở T1 CHỈ GVCN có S.
+   Demo: năng lực 'sua' + là GVCN của CHÍNH lớp đang mở. */
+function tkCoCapLaiLop(l){return co('sua') && (role==='FULL' || laGVCN(l))}
+
+/* ═════════ CỘT «Tài khoản» — bơm vào bảng sau render (§3.5.2) ═════════ */
+var _renderGoc85_29 = render;
+render = function(){ _renderGoc85_29.apply(null, arguments); tkVeCot29(); };
+
+function tkVeCot29(){
+ if(typeof tab==='undefined'||tab!=='T1'||!cur)return;
+ if(typeof laBM==='function'&&laBM())return;          /* lát cắt GVBM — ⛔ không có cột này */
+ var tb=document.querySelector('.listw table.bd');
+ if(!tb||tb.classList.contains('tk6'))return;
+ tb.classList.add('tk6');
+ var bat=tkBatLop(cur);
+
+ /* header — chèn trước ô <th> cuối (ô chứa nút ↗ Hồ sơ) */
+ var hr=tb.querySelector('tr');
+ if(hr){const th=document.createElement('th'); th.className='gc'; th.textContent='Tài khoản';
+  hr.insertBefore(th, hr.lastElementChild)}
+
+ /* các dòng */
+ Array.prototype.forEach.call(tb.querySelectorAll('tr'), function(tr,i){
+  if(i===0)return;
+  var gom=tr.querySelector('td[colspan]');
+  if(gom){gom.colSpan=parseInt(gom.colSpan||9,10)+1; return}     /* dòng nhóm «đã rời lớp» */
+  var nut=tr.querySelector('button[data-a="bcsLS"]');
+  var roi=tr.querySelector('button[data-v^="M1.5"]');
+  var td=document.createElement('td'); td.className='gc';
+  if(roi){td.innerHTML='<span class="hint">— đang chuyển đi</span>'}
+  else if(!nut){td.innerHTML='<span class="hint">—</span>'}
+  else{
+   var h=nut.dataset.v, t=tkTtLop(h,cur);
+   if(!t){td.innerHTML='<span class="hint" title="Cấp học này chưa bật tài khoản học sinh — ⚙ M10.5 tab ③">—</span>'}
+   else{
+    var o=tkOLop(h), lt=TKLUOT_LOP[h]||[];
+    td.innerHTML='<button class="rolnk" data-a="tkHop" data-v="'+h+'" title="Tài khoản học sinh — mở hộp thao tác">'+
+     '<span class="st2 '+TKTT_LOP[t][1]+'">'+TKTT_LOP[t][0]+'</span></button>'+
+     (t==='dang_dung'&&o.dn?'<div class="hint">'+o.dn+'</div>':'')+
+     (lt.length?'<div class="hint" style="color:var(--amber,#b45309)">⚠ '+lt.length+' lượt làm bài mở</div>':'')}}
+  tr.insertBefore(td, tr.lastElementChild)});
+
+ /* dải nhắc đầu bảng — chỉ GVCN, chỉ khi có em chưa phát */
+ if(bat&&tkCoCapLaiLop(cur)){
+  var chua=(typeof hsLop==='function'?hsLop(cur):[]).filter(function(h){return tkTtLop(h,cur)==='chua_phat'});
+  var lw=tb.closest('.listw');
+  if(lw&&chua.length&&!document.querySelector('#tkNhac29'))
+   tb.insertAdjacentHTML('beforebegin','<div class="info" id="tkNhac29">🎓 <b>'+chua.length+' em chưa được phát tài khoản học sinh.</b> '+
+    'Bấm ô cột <b>Tài khoản</b> của em để cấp mật khẩu tạm. '+
+    '🖨 <b>In phiếu cả lớp là việc của Văn thư</b> ở <b>M10.5</b> — ở đây ⛔ không có nút in '+
+    '<i>(T1 cố ý không cấp bit XD cho GVCN — chốt 22/9/2026)</i>.</div>')}
+ if(!bat&&!document.querySelector('#tkNhac29'))
+  tb.insertAdjacentHTML('beforebegin','<div class="ro" id="tkNhac29">🎓 Cấp học <b>'+
+   ({th:'Tiểu học',thcs:'THCS',thpt:'THPT'})[tkKhoiLop(cur)]+'</b> <b>chưa bật</b> tài khoản học sinh — '+
+   'công tắc ở <b>M10.5 tab ③ Chính sách bảo mật</b>, quyền <b>Hiệu trưởng</b>. ⛔ 0 thao tác ở đây.</div>');
+}
+
+/* ═════════ HỘP THAO TÁC (§3.5.3) ═════════ */
+function tkHop29(h){
+ var t=tkTtLop(h,cur), o=tkOLop(h), lt=TKLUOT_LOP[h]||[], duoc=tkCoCapLaiLop(cur);
+ var ten=(typeof HS!=='undefined'&&HS[h])?HS[h].n:h;
+ var b='<div class="ro" style="line-height:1.7">🔑 <b>Bản ghi tài khoản thuộc <code>M10.5</code></b> — đây là '+
+  '<b>cửa vào thứ hai của menu chủ</b> <i>(quy tắc 16 · tiền lệ ô ghi hộ M10.1)</i>, ⛔ không phá <code>D1</code>. '+
+  'Nhật ký ghi <b>cap_lai_hs · từ M2.9</b>.</div>'+
+  '<table class="bd" style="margin-top:10px"><tr><th>Dòng</th><th>Nội dung</th></tr>'+
+  '<tr><td>Tên đăng nhập</td><td><b>'+esc(h)+'</b> <span class="st2 gr" title="= mã học sinh">bất biến</span></td></tr>'+
+  '<tr><td>Trạng thái</td><td><span class="st2 '+TKTT_LOP[t][1]+'">'+TKTT_LOP[t][0]+'</span>'+
+   (t==='dang_khoa'&&o.khoa?'<div class="hint">Khóa bởi <b>'+esc(o.khoa.boi)+'</b> · '+o.khoa.luc+
+     ' · lý do <i>(nội bộ)</i>: '+esc(o.khoa.ly)+'</div>':'')+'</td></tr>'+
+  '<tr><td>Đăng nhập gần nhất</td><td>'+(o.dn||'<span class="hint">— chưa lần nào</span>')+'</td></tr></table>';
+
+ if(lt.length)b+='<div class="warn" style="margin-top:10px;line-height:1.7">⚠ <b>Em đang có '+lt.length+' lượt làm bài mở</b> — '+
+  lt.map(function(l){return '<b>'+l[0]+'</b> '+esc(l[1])+' <i>('+l[2]+')</i>'}).join(' · ')+
+  '.<br>Lần cấp lại này sẽ được <b>ghi vào Lịch sử của các lượt đó</b>. 🛑 <b>Cảnh báo, ⛔ không chặn</b> — '+
+  'em quên mật khẩu <b>đúng lúc vào phòng kiểm tra</b> là ca thật, chặn là làm em mất bài.</div>';
+
+ if(t==='dang_khoa')b+='<div class="danger" style="margin-top:10px;line-height:1.7">🛑 Tài khoản <b>đang khóa</b> — '+
+  '⛔ giáo viên chủ nhiệm <b>không mở khóa được</b>. Chỉ <b>Quản trị hệ thống</b> và <b>Hiệu trưởng</b> '+
+  '<i>(M10.5 tab ②)</i>.<br>🛑 <b>HS-3</b> — khóa tài khoản là <b>biện pháp quản trị hệ thống</b>, '+
+  '⛔ <b>không bao giờ là biện pháp kỷ luật</b>; kỷ luật học sinh đi đường <b>M2.7</b> <i>(có hồ sơ, có người ký, có đường khiếu nại)</i>.</div>';
+
+ b+='<div class="ro" style="margin-top:10px;line-height:1.7">🖨 ⛔ <b>Không có nút In phiếu ở đây</b> — in phiếu mật khẩu là '+
+  '<b>hành vi xuất dữ liệu trẻ em</b> phải <b>bắt chọn mục đích + ghi nhật ký</b> <i>(Luật BVDLCN 91/2025)</i>, đi trên bit '+
+  '<b>XD</b> mà <b>T1 cố ý không cấp cho GVCN</b> <i>(chốt 22/9/2026)</i>. Phiếu cả lớp do <b>Văn thư</b> in ở '+
+  '<b>M10.5</b>; chủ nhiệm <b>phát tay</b>.</div>';
+
+ if(!duoc)b+='<div class="info" style="margin-top:10px">👁 Vai này <b>chỉ xem</b> — ⛔ 0 thao tác. '+
+  'Nút <b>🔑 Cấp lại</b> đi trên bit <b>S</b> của <code>m2.9.hs_cua_lop</code>, mà ở <code>T1</code> <b>chỉ GVCN của chính lớp đó</b> có.</div>';
+
+ var btns=[['Đóng','',null]];
+ if(duoc&&t!=='dang_khoa'&&t!=='chi_doc')
+  btns=[['Hủy','',null],['🔑 Cấp lại mật khẩu','p',function(){tkCapLai29(h)}]];
+ modal('🎓 Tài khoản học sinh — '+esc(ten)+' <span class="st2 n">lớp '+esc(cur)+'</span>', b, btns);
+}
+
+function tkCapLai29(h){
+ var lt=TKLUOT_LOP[h]||[], mk=tkMkTamLop(), o=tkOLop(h), ten=(HS[h]||{}).n||h;
+ o.tt='cho_doi_mk'; o.dn=''; delete o.khoa;
+ TKLOG_LOP.unshift({sk:'cap_lai_hs',hs:h,ai:R().n,tu:'M2.9',luot:lt.map(function(l){return l[0]})});
+ var daGhi=false;
+ modal('🔑 Mật khẩu tạm — hiện ĐÚNG MỘT LẦN',
+  '<div class="okbox" style="line-height:1.8">Học sinh <b>'+esc(ten)+'</b> · lớp '+esc(cur)+'<br>'+
+  'Tên đăng nhập: <b>'+esc(h)+'</b><br>Mật khẩu tạm: <b style="font-size:19px;letter-spacing:.09em">'+mk+'</b></div>'+
+  '<div class="ro" style="margin-top:10px;line-height:1.7">Mật khẩu do <b>máy sinh</b> — ⛔ chủ nhiệm không gõ. '+
+  '⛔ <b>Không tệp, ⛔ không email, ⛔ không SMS.</b> Đóng hộp là <b>mất hẳn</b> — muốn có lại thì <b>cấp lại lần nữa</b> '+
+  '<i>(ghi vết riêng)</i>. Mật khẩu <b>băm</b>; 🔴 khác <b>mã làm bài</b> của M12.7 vốn <b>mã hóa</b> để in lại được.</div>'+
+  '<div class="info" style="margin-top:10px">Mật khẩu cũ <b>vô hiệu ngay</b> · phiên của em <b>bị đóng</b> · '+
+  'trạng thái về <b>Chờ đổi mật khẩu lần đầu</b>.</div>'+
+  (lt.length?'<div class="warn" style="margin-top:10px">⚠ Đã ghi <b>cờ</b> vào Lịch sử của '+lt.length+' lượt: '+
+    lt.map(function(l){return '<b>'+l[0]+'</b>'}).join(' · ')+' <i>(việc vẽ thuộc M12.7)</i>.</div>':'')+
+  '<label style="display:flex;gap:7px;align-items:center;margin-top:11px;font-weight:700">'+
+  '<input type="checkbox" id="tkDaGhi29"> Tôi đã ghi lại mật khẩu này</label>',
+  [['Đóng','p',function(){
+    var cb=document.querySelector('#tkDaGhi29');
+    if(cb&&!cb.checked){toast('⛔ Tích <b>«Tôi đã ghi lại mật khẩu này»</b> trước khi đóng — đóng rồi là mất hẳn');return}
+    closeM(); render();
+    toast('Đã cấp lại · mật khẩu cũ vô hiệu · phiên của em đã đóng'+(lt.length?' · đã ghi cờ vào '+lt.length+' lượt':''));
+  }]]);
+}
+
+/* ═════════ bọc act() — ⛔ không sửa app.js ═════════ */
+var _actGoc85_29 = act;
+act = function(a,v,el){
+ if(a==='tkHop'){tkHop29(v);return}
+ return _actGoc85_29.apply(null, arguments);
+};
 </script>
 </body>
 </html>

@@ -1,0 +1,1228 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>M5.10 ⚙ Cấu hình chuyên môn — Dschool</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#f1f5f9;--surface:#fff;--line:#e2e8f0;--line2:#cbd5e1;
+ --ink:#0f172a;--ink2:#475569;--ink3:#94a3b8;--brand:#1d4ed8;--brand-soft:#eff6ff;
+ --red:#dc2626;--red-soft:#fef2f2;--amber:#d97706;--amber-soft:#fffbeb;
+ --green:#059669;--green-soft:#ecfdf5;--violet:#7c3aed}
+body{font:14px/1.5 "Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--ink)}
+button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,select,textarea{font:inherit}
+
+.hdr{height:56px;background:var(--surface);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:13px;padding:0 15px;position:sticky;top:0;z-index:40}
+.logo{display:flex;align-items:center;gap:9px;font-weight:700;font-size:15px}
+.logo .mark{width:28px;height:28px;border-radius:7px;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:13px}
+.school{color:var(--ink2);font-size:12.5px;border-left:1px solid var(--line);padding-left:13px;max-width:210px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sel{border:1px solid var(--line2);border-radius:7px;padding:5px 9px;font-size:12.5px;background:#fff}
+.sel:disabled{background:var(--bg);color:var(--ink3);cursor:not-allowed}
+.lockwrap{position:relative;display:inline-flex;align-items:center;gap:5px}
+.lockwrap .lk{font-size:11px;color:var(--ink3)}
+.spacer{flex:1}
+.icobtn{width:34px;height:34px;border-radius:8px;display:grid;place-items:center;position:relative;font-size:15px}
+.icobtn:hover{background:var(--bg)}
+.dot{position:absolute;top:3px;right:3px;min-width:16px;height:16px;padding:0 4px;border-radius:9px;background:var(--red);color:#fff;font-size:10px;font-weight:700;display:grid;place-items:center}
+.avatar{width:32px;height:32px;border-radius:50%;background:var(--violet);color:#fff;display:grid;place-items:center;font-size:12px;font-weight:700}
+
+.wrap{display:flex;min-height:calc(100vh - 56px)}
+.side{width:206px;flex:0 0 206px;background:var(--surface);border-right:1px solid var(--line);padding:10px 8px;position:sticky;top:56px;max-height:calc(100vh - 56px);overflow-y:auto}
+.sgrp{font-size:10.5px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em;padding:12px 10px 5px}
+.snav{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;color:var(--ink2);font-size:12.5px;margin-bottom:1px}
+.snav:hover{background:var(--bg)}
+.snav.on{background:var(--brand-soft);color:var(--brand);font-weight:600}
+.snav .nb{margin-left:auto;flex:0 0 auto;background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:9px;min-width:18px;text-align:center;line-height:15px}
+.snav.off{opacity:.34;pointer-events:none}
+.main{flex:1;padding:15px 18px 40px;min-width:0}
+
+.tophd{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+h1{font-size:19px;font-weight:700}
+.btn{border:1px solid var(--line2);background:#fff;border-radius:8px;padding:7px 12px;font-size:13px;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{background:var(--bg)}
+.btn.p{background:var(--brand);color:#fff;border-color:var(--brand)}
+.btn.p:hover{background:#1e40af}
+.btn.d{background:var(--red);color:#fff;border-color:var(--red)}
+.btn.g{background:var(--green);color:#fff;border-color:var(--green)}
+.btn.sm{padding:4px 10px;font-size:12px}
+.btn.xs{padding:3px 8px;font-size:11.5px}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.tabs{display:flex;gap:3px;border-bottom:2px solid var(--line);margin:12px 0 0;flex-wrap:wrap}
+.tab1{padding:9px 15px;font-size:13.5px;font-weight:600;color:var(--ink2);border-bottom:2px solid transparent;margin-bottom:-2px;display:flex;align-items:center;gap:7px}
+.tab1.on{color:var(--brand);border-bottom-color:var(--brand)}
+.tab1 .b{background:var(--bg);color:var(--ink2);font-size:11px;font-weight:700;padding:1px 7px;border-radius:9px}
+.tab1.on .b{background:var(--brand);color:#fff}
+.tab1 .b.r{background:var(--red);color:#fff}
+
+.scopebar{background:#eef2ff;border:1px solid #c7d2fe;color:#3730a3;padding:8px 12px;border-radius:9px;font-size:12.5px;margin:11px 0;display:flex;gap:8px;align-items:flex-start}
+.scopebar code{background:#e0e7ff;padding:0 4px;border-radius:3px;font-size:11.5px}
+.info{background:var(--brand-soft);border:1px solid #bfdbfe;color:#1e40af;padding:9px 12px;border-radius:9px;font-size:12.5px;line-height:1.6;margin-bottom:12px}
+.warn{background:var(--amber-soft);border:1px solid #fde68a;color:#92400e;padding:9px 12px;border-radius:9px;font-size:12.5px;line-height:1.6;margin-bottom:12px}
+.danger{background:var(--red-soft);border:1px solid #fecaca;color:#991b1b;padding:9px 12px;border-radius:9px;font-size:12.5px;line-height:1.6;margin-bottom:12px}
+.ro{background:#f8fafc;border:1px solid var(--line);color:var(--ink2);padding:8px 11px;border-radius:9px;font-size:12px;margin-bottom:12px}
+.rolnk{font-size:10px;font-weight:700;color:var(--brand);background:#eef2ff;border:1px solid #c7d2fe;border-radius:999px;padding:1px 7px;cursor:pointer;white-space:nowrap;margin-left:6px}
+.rolnk:hover{background:#e0e7ff}
+.backbar{background:#0f172a;color:#cbd5e1;border-radius:9px;padding:8px 12px;font-size:12.5px;display:flex;gap:9px;align-items:center;margin-bottom:11px}
+.backbar b{color:#fff}
+.oldwk{background:#fef3c7;border:1px solid var(--amber);color:#92400e;border-radius:9px;padding:9px 13px;
+ font-size:12.5px;margin-bottom:11px;display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.oldwk .sp{flex:1}
+.wksel{border:1px solid var(--line2);border-radius:8px;padding:6px 11px;font-size:12.5px;background:#fff;font-weight:700}
+.lastles{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:9px;padding:9px 12px;font-size:12.5px;color:#065f46;margin-bottom:11px}
+.lastles b{color:#064e3b}
+.backbar button{color:#93c5fd;font-weight:600}
+
+.navbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:0 0 11px}
+.seg{display:inline-flex;border:1px solid var(--line2);border-radius:8px;overflow:hidden;background:#fff}
+.seg button{padding:6px 13px;font-size:12.5px;color:var(--ink2);border-right:1px solid var(--line)}
+.seg button:last-child{border-right:none}
+.seg button.on{background:var(--brand);color:#fff;font-weight:600}
+.sumbar{display:flex;gap:0;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:12px}
+.sumbar .it{padding:9px 15px;border-right:1px solid var(--line);font-size:12.5px;color:var(--ink2)}
+.sumbar .it b{display:block;font-size:17px;color:var(--ink);font-weight:700;line-height:1.25}
+.sumbar .it.w b{color:var(--amber)}.sumbar .it.r b{color:var(--red)}.sumbar .it.g b{color:var(--green)}
+
+.stage{display:flex;gap:13px;align-items:flex-start}
+.listw{flex:1;min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.stage.open .listw{flex:1 1 0}
+.panel{flex:1;min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:none}
+.stage.open .panel{display:block}
+@media(max-width:1180px){.stage.open .listw{display:none}.stage.open .panel{flex:1}}
+
+.grow{display:flex;align-items:center;gap:9px;padding:9px 13px;background:#f8fafc;border-bottom:1px solid var(--line);font-size:12.5px;font-weight:700;cursor:pointer}
+.grow:hover{background:#eef2f7}
+.grow .ar{color:var(--ink3);font-size:10px;width:12px}
+.grow .ct{margin-left:auto;font-weight:400;color:var(--ink3);font-size:11.5px;display:flex;gap:10px}
+
+.trow{display:flex;gap:11px;padding:10px 13px;border-bottom:1px solid var(--line);align-items:center;cursor:pointer}
+.trow:hover{background:var(--brand-soft)}
+.trow.on{background:#eff6ff;box-shadow:inset 3px 0 0 var(--brand)}
+.trow .tm{flex:0 0 72px;text-align:center;font-size:11px;color:var(--ink3)}
+.trow .tm b{display:block;font-size:13px;color:var(--ink);font-weight:700}
+.trow .bd{flex:1;min-width:0}
+.trow .bd b{font-size:13.5px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.trow .bd .sub{font-size:11.5px;color:var(--ink3)}
+.trow .rt{flex:0 0 auto;display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end;max-width:300px}
+.trow.huy{background:var(--red-soft)}
+.trow.huy .bd b{text-decoration:line-through;color:#991b1b}
+
+.lrow{display:flex;gap:11px;padding:10px 13px;border-bottom:1px solid var(--line);align-items:center;cursor:pointer}
+.lrow:hover{background:var(--brand-soft)}
+.lrow.on{background:#eff6ff;box-shadow:inset 3px 0 0 var(--brand)}
+.lrow .lp{flex:0 0 150px}
+.lrow .lp b{font-size:13.5px;display:block}
+.lrow .lp span{font-size:11.5px;color:var(--ink3)}
+.lrow .num{flex:0 0 86px;text-align:center;font-size:11px;color:var(--ink3)}
+.lrow .num b{display:block;font-size:15px;color:var(--ink)}
+.lrow .num.r b{color:var(--red)}.lrow .num.w b{color:var(--amber)}.lrow .num.g b{color:var(--green)}
+.bar4{flex:1;min-width:120px;display:flex;height:9px;border-radius:5px;overflow:hidden;background:var(--bg)}
+.bar4 i{display:block;height:100%}
+
+.st2{font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;white-space:nowrap;display:inline-block}
+.st2.o{background:var(--green-soft);color:var(--green)}
+.st2.w{background:var(--amber-soft);color:var(--amber)}
+.st2.r{background:var(--red-soft);color:var(--red)}
+.st2.n{background:var(--bg);color:var(--ink2)}
+.st2.b{background:#e0e7ff;color:#3730a3}
+.st2.v{background:#ede9fe;color:#5b21b6}
+
+.ph{padding:12px 15px;border-bottom:1px solid var(--line);display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.ph .n{flex:1;min-width:0}
+.ph .n h2{font-size:16px;font-weight:700}
+.ph .n .m{font-size:12px;color:var(--ink2);margin-top:3px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.pill{font-size:10.5px;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:2px 8px;color:var(--ink2)}
+.pnav{display:flex;gap:6px;align-items:center;padding:8px 15px;border-bottom:1px solid var(--line);background:#fafbfc;font-size:12px;color:var(--ink2)}
+.pnav .sp{flex:1}
+.pbody{padding:14px 15px;max-height:calc(100vh - 260px);overflow-y:auto}
+.f{display:grid;grid-template-columns:136px 1fr;gap:11px;align-items:start;padding:7px 0;font-size:13px}
+.f+.f{border-top:1px solid #f1f5f9}
+.f .k{color:var(--ink2);font-size:12.5px}
+.f .v{font-weight:600;min-width:0}
+.card{border:1px solid var(--line);border-radius:11px;margin-bottom:12px;overflow:hidden}
+.card.lock{opacity:.55}
+.card.hl{border-color:#fde68a}
+.ch{display:flex;align-items:center;gap:9px;padding:9px 12px;background:#f8fafc;border-bottom:1px solid var(--line);font-size:12.5px;font-weight:700;flex-wrap:wrap}
+.card.hl .ch{background:var(--amber-soft);border-bottom-color:#fde68a;color:#92400e}
+.ch .sp{flex:1}
+.cb{padding:4px 12px}
+.cb.p{padding:11px 12px}
+.cact{display:flex;gap:6px;padding:9px 12px;border-top:1px solid var(--line);background:#fcfdfe;flex-wrap:wrap;align-items:center}
+.logl{border-left:2px solid var(--line);margin-left:6px;padding-left:14px}
+.logi{position:relative;padding:7px 0;font-size:12.5px}
+.logi::before{content:"";position:absolute;left:-20px;top:12px;width:8px;height:8px;border-radius:50%;background:var(--brand);border:2px solid #fff}
+.logi.w::before{background:var(--amber)}.logi.r::before{background:var(--red)}.logi.g::before{background:var(--green)}
+.logi b{display:block;font-weight:600}
+.logi .mm{color:var(--ink3);font-size:11.5px}
+
+.fld{margin-bottom:11px}
+.fld label{display:block;font-size:12.5px;font-weight:600;margin-bottom:4px}
+.fld label .req{color:var(--red)}
+.fldi{width:100%;border:1px solid var(--line2);border-radius:8px;padding:8px 10px;background:#fff}
+.fldi:disabled,textarea.fldi:disabled{background:var(--bg);color:var(--ink3);cursor:not-allowed}
+.fldi.err{border-color:var(--red);background:var(--red-soft)}
+.mucs{display:flex;gap:6px;flex-wrap:wrap}
+.muc{border:1.5px solid var(--line2);background:#fff;border-radius:8px;padding:6px 15px;font-size:12.5px;font-weight:600;color:var(--ink2)}
+.muc:hover:not(:disabled){background:var(--bg)}
+.muc.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+.muc:disabled{opacity:.45;cursor:not-allowed}
+
+.dd{display:flex;gap:9px;padding:7px 0;font-size:12.5px;align-items:flex-start;border-bottom:1px solid #f1f5f9}
+.dd:last-child{border-bottom:none}
+.dd .nm{flex:1;min-width:0}
+.dd .nm b{display:block;font-weight:600}
+.dd .nm span{color:var(--ink3);font-size:11.5px}
+.dd .ac{flex:0 0 auto;display:flex;gap:4px}
+.roblk{background:#f8fafc;border:1px dashed var(--line2);border-radius:9px;padding:9px 11px;font-size:12px;color:var(--ink2)}
+
+table.tb{width:100%;border-collapse:collapse;font-size:12.5px}
+table.tb th{text-align:left;font-size:10.5px;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em;font-weight:700;padding:7px 9px;border-bottom:1px solid var(--line);background:#f8fafc}
+table.tb td{padding:8px 9px;border-bottom:1px solid var(--line);vertical-align:top}
+table.tb tr:last-child td{border-bottom:none}
+.diff-o{background:var(--red-soft);color:#991b1b;padding:1px 4px;border-radius:3px;text-decoration:line-through}
+.diff-n{background:var(--green-soft);color:#065f46;padding:1px 4px;border-radius:3px;font-weight:600}
+
+.chips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:11px}
+.chip{border:1px solid var(--line2);background:#fff;border-radius:999px;padding:4px 12px;font-size:12px;color:var(--ink2)}
+.chip.on{background:var(--brand);color:#fff;border-color:var(--brand);font-weight:600}
+.ms{position:relative}
+.msb{border:1px solid var(--line2);border-radius:8px;padding:6px 10px;font-size:12.5px;background:#fff;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.msb.act{border-color:var(--brand);background:var(--brand-soft);color:var(--brand);font-weight:600}
+.msb .cnt{background:var(--brand);color:#fff;font-size:10px;font-weight:700;padding:0 5px;border-radius:8px}
+.msp{position:absolute;top:calc(100% + 4px);left:0;background:#fff;border:1px solid var(--line2);border-radius:9px;box-shadow:0 8px 22px rgba(15,23,42,.14);min-width:210px;max-height:260px;overflow-y:auto;z-index:20;display:none;padding:5px}
+.msp.on{display:block}
+.mso{display:flex;align-items:center;gap:8px;padding:6px 9px;border-radius:7px;font-size:12.5px;cursor:pointer}
+.mso:hover{background:var(--bg)}
+.mso input{width:15px;height:15px;flex:0 0 15px}
+
+.mask{position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:60;display:none;place-items:center}
+.mask.on{display:grid}
+.modal{background:#fff;border-radius:13px;width:700px;max-width:94vw;max-height:88vh;display:flex;flex-direction:column}
+.mh{padding:14px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.mb{padding:15px 18px;overflow-y:auto;font-size:13px}
+.mf{padding:12px 18px;border-top:1px solid var(--line);display:flex;gap:8px;justify-content:flex-end;align-items:center}
+
+.rolebar{background:#0f172a;color:#cbd5e1;padding:8px 15px;display:flex;align-items:center;gap:7px;font-size:12.5px;flex-wrap:wrap}
+.rolebar b{color:#fff}
+.rb{border:1px solid #334155;border-radius:999px;padding:3px 10px;font-size:12px;color:#cbd5e1}
+.rb:hover{background:#1e293b;color:#fff}
+.rb.on{background:#fff;color:#0f172a;border-color:#fff;font-weight:700}
+.note{margin-left:auto;color:#64748b;font-size:11.5px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(90px);background:#0f172a;color:#fff;padding:11px 17px;border-radius:9px;font-size:13px;z-index:80;transition:transform .22s;max-width:92vw}
+.toast.on{transform:translateX(-50%)}
+.empty{padding:38px;text-align:center;color:var(--ink3)}
+.lgd{display:flex;gap:13px;font-size:11px;color:var(--ink3);padding:9px 13px;border-top:1px solid var(--line);flex-wrap:wrap;align-items:center}
+
+/* ── bố cục sidebar (P17 · khuôn M2.5 §15) — phần riêng của M2.2; khuôn ở style.05-sidebar-lop.css ── */
+.sbl-main>.tabs{margin-top:0}
+.dlsel{background:#1e293b;color:#e2e8f0;border:1px solid #334155;border-radius:7px;padding:3px 6px;font-size:11.5px;max-width:330px}
+.caphd{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:11px 0 0}
+.caphd h2{font-size:16px;margin:0}
+.caphd span{font-size:12px;color:var(--ink3)}
+.lrow.tong{flex-wrap:wrap;cursor:default;background:#f8fafc}
+.lrow.tong:hover{background:#f8fafc}
+.ngoaicap{font-size:12px;color:var(--ink2);padding:8px 13px;background:#fffbeb;border-bottom:1px solid #fde68a}
+
+
+/* ── GY18-H1 · ô XÁC NHẬN sĩ số của tiết (không phải ô gõ số) ── */
+.xnbox{border:1px solid var(--line);border-left:3px solid var(--ink3);border-radius:9px;padding:10px 12px;margin-top:9px;background:#fff}
+.xnbox.du{border-left-color:var(--green);background:#f0fdf4}
+.xnbox.vang{border-left-color:var(--amber);background:#fffbeb}
+.xnbox.chua{border-left-color:var(--ink3);background:#f8fafc}
+.xnh{display:flex;align-items:center;gap:8px;font-weight:700;font-size:12.5px;flex-wrap:wrap}
+.xnhan{font-size:11px;color:var(--ink3);font-weight:400;margin-top:4px}
+.xnb{display:flex;gap:8px;margin-top:9px;flex-wrap:wrap}
+.xnds{margin-top:9px}
+.xnck{display:flex;align-items:center;gap:8px;padding:3px 0;font-size:12.5px}
+.xnck input{width:15px;height:15px;flex:0 0 15px}
+
+/* ══ GDDP (v2.5) — PHẦN của môn chia phần ═══════════════════════════════════
+   Dải «phần của tôi» ở đầu danh sách tiết của cặp, và dòng tên phần trên mỗi
+   dòng tiết. Môn một phần KHÔNG sinh phần tử nào — PC1 chạy y hệt hôm nay.   */
+.phandai{flex:1 1 100%;margin-top:6px;padding:7px 10px;border-radius:7px;
+  background:color-mix(in srgb,var(--violet) 7%,transparent);
+  border-left:3px solid var(--violet);font-size:12px;line-height:1.5}
+.phandai b{color:var(--violet)}
+.phandai span{font-size:11px;color:var(--ink3)}
+.phandai div{margin-top:2px;color:var(--ink2)}
+.phanln{font-size:11.5px;color:var(--violet);margin:2px 0 1px}
+
+/* M5.10 — phần riêng (nền style.css chép từ M2.2 ngày 22/9/2026, SDBG-1D) */
+.main{max-width:1060px}
+.rb2{border:1px dashed #475569;border-radius:999px;padding:3px 10px;font-size:12px;color:#fcd34d}
+.rb2:hover{background:#1e293b}
+.rolebar code{background:#1e293b;color:#e2e8f0;padding:0 4px;border-radius:3px;font-size:11px}
+.cfgw{padding:2px 0 30px}
+.stt{border:1px solid var(--line);border-radius:11px;padding:11px 13px;margin-bottom:12px;background:var(--surface)}
+.stt.cho{border-color:#fde68a;background:var(--amber-soft)}
+.stt.tra{border-color:#fecaca;background:var(--red-soft)}
+.stt.nhap{border-color:#bfdbfe;background:var(--brand-soft)}
+.stt.hen{border-color:#bbf7d0;background:var(--green-soft)}
+.stt.flash{box-shadow:0 0 0 3px #f59e0b}
+.stt .hd{display:flex;gap:9px;align-items:center;flex-wrap:wrap;font-size:13px}
+.stt .hd .sp{flex:1}
+.stt .ly{font-size:12.5px;margin-top:6px;color:var(--ink2)}
+.stt table.tb{background:#fff;border:1px solid var(--line);border-radius:8px;margin-top:9px}
+.acts{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px;align-items:center}
+.seg2{display:inline-flex;border:1px solid var(--line2);border-radius:8px;overflow:hidden;margin:0 0 12px}
+.seg2 button{padding:6px 12px;font-size:12.5px;border-right:1px solid var(--line2);background:#fff}
+.seg2 button:last-child{border-right:none}
+.seg2 button.on{background:var(--brand);color:#fff;font-weight:600}
+.card .cb.p .who{font-size:11.5px;color:var(--ink3);margin-top:8px}
+.card.edit{border-color:#bfdbfe}
+.chg{font-size:10.5px;font-weight:700;color:#92400e;background:#fef3c7;border:1px solid #fde68a;border-radius:5px;padding:0 5px;margin-left:5px;white-space:nowrap}
+.mt{width:100%;border-collapse:collapse;font-size:12.5px}
+.mt th{text-align:left;font-size:10.5px;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em;padding:6px 8px;border-bottom:1px solid var(--line);background:#f8fafc}
+.mt td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.mt td.c{text-align:center;white-space:nowrap}
+.mt .lk{color:var(--ink3);font-size:11.5px}
+.mucs2{display:flex;flex-direction:column;gap:6px;max-width:420px}
+.mucs2 .r{display:flex;gap:6px;align-items:center}
+.mucs2 .r span{width:22px;color:var(--ink3);font-size:12px;text-align:right}
+.mucs2 .fldi{padding:6px 9px}
+.caps{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:10px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:860px){.two{grid-template-columns:1fr}}
+.noacc{border:1px dashed var(--line2);border-radius:11px;padding:22px;text-align:center;color:var(--ink2);background:var(--surface);margin-top:12px}
+.noacc b{color:var(--ink)}
+.lnk{color:var(--brand);font-weight:600;cursor:pointer}
+.lnk:hover{text-decoration:underline}
+.errl{color:var(--red);font-size:12px;margin-top:5px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 9px}
+</style>
+</head>
+<body>
+<div class="rolebar">
+  <b>Chức danh:</b>
+  <button class="rb on" data-r="FULL">🔓 Đủ quyền (demo)</button>
+  <button class="rb" data-r="PHT_CM">PHT_CM</button>
+  <button class="rb" data-r="HT">HT</button>
+  <button class="rb" data-r="GVBM">GVBM (không có quyền)</button>
+  <button class="rb2" data-x="reset" title="Trạng thái cấu hình dùng chung giữa các vai — đổi vai KHÔNG đặt lại, để thử luồng PHT_CM gửi → HT duyệt">↺ Dữ liệu mẫu</button>
+  <span class="note">Vai Đủ quyền = năng lực <code>['soan','duyet']</code></span>
+  <select class="dlsel" id="dlsel" title="Preview mở tệp dạng data: nên mất query string — thử deep-link bằng ô này"></select>
+</div>
+
+<header class="hdr">
+  <div class="logo"><span class="mark">DS</span> Dschool</div>
+  <div class="school">TH, THCS &amp; THPT Nguyễn Tất Thành</div>
+  <select class="sel" title="Cấu hình chuyên môn là Master — không theo năm học"><option>Năm học 2026-2027</option></select>
+  <select class="sel" id="hdt" title="Cấu hình theo CẤP HỌC — bộ chọn điểm trường không áp cho menu này">
+    <option>Tất cả điểm trường</option><option>Điểm chính — Cầu Giấy</option><option>Điểm 2 — Dịch Vọng</option></select>
+  <div class="spacer"></div>
+  <button class="icobtn">🔔<span class="dot" id="bell">1</span></button>
+  <div class="avatar" id="ava">ĐQ</div>
+</header>
+
+<div class="wrap">
+  <main class="main">
+    <div id="back"></div>
+    <div class="tophd"><h1>⚙ Cấu hình chuyên môn</h1><div class="spacer"></div>
+      <span class="pill">Nhóm 📖 Chuyên môn · tham số dùng chung của nhóm 📖 / 📚</span></div>
+    <div id="tabs"></div>
+    <div id="content"></div>
+  </main>
+</div>
+
+<div class="mask" id="mask"><div class="modal">
+  <div class="mh" id="mh"></div><div class="mb" id="mb"></div><div class="mf" id="mf"></div>
+</div></div>
+<div class="toast" id="toast"></div>
+<script>/* =====================================================================
+   M5.10 ⚙ Cấu hình chuyên môn — demo
+   (SDBG-1D 22/9/2026 · KGLH-1F 23/9/2026 · KGL2-1C 23/9/2026)
+   Tab 1 «Sổ đầu bài» = Feature m2.2.cau_hinh — GIỮ MÃ khi chuyển menu (SB-1).
+   Tab 2 «⚙ Chính sách BTVN» = Feature m2.3.chinh_sach_btvn — GIỮ MÃ (KG-1, cụm KGLH);
+          dữ liệu và các khối ở app.20-chinh-sach-btvn.js, LUỒNG DÙNG CHUNG với tab 1.
+   Tab 3 «Ngưỡng cảnh báo» = Feature m5.10.nguong_canh_bao — 🆕 MÃ MỚI (KGL2-1C, chốt T5).
+          🛑 KHÁC hai tab trên: KHÔNG có Feature nào rời M2.5 — hai ngưỡng là F6d, một
+          chức năng BÊN TRONG Feature duy nhất m2.5.bang_diem_mon, mà Feature ấy ở lại
+          vì nó chính là bảng điểm. Vậy nên menu này phải TỰ SINH mã; ⛔ không đặt m2.5.*.
+          Dữ liệu và bốn khối ở app.30-nguong-canh-bao.js.
+   Bốn khối tab 1 lấy nguyên từ M2.2 §8.10 (viewCfg cũ của demo M2.2).
+   Luồng: PHT_CM soạn bản nháp → gửi → HT duyệt / trả lại (lý do bắt buộc)
+          → có hiệu lực từ THỨ HAI TUẦN SAU → lịch sử thay đổi.
+   Quyền mô hình hóa bằng MẢNG NĂNG LỰC — kiểm bằng .includes().
+   Bit XUẤT DỮ LIỆU (XD) khai RIÊNG theo tab: ROLES[…].xd = danh sách tab có XD.
+   Hiện chỉ tab 2 có (hai ô đi theo Feature từ M2.3 — KG-1); tab 1 và tab 3 KHÔNG có ô
+   XD nào, nên ⛔ không tab nào ngoài tab 2 hiện nút ⬇ Xuất.
+   ===================================================================== */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const clone=o=>JSON.parse(JSON.stringify(o));
+/* số thập phân kiểu Việt Nam — ngưỡng nghi lệch in là «3,0 điểm», đúng như M2.5 in nó */
+const soVN=n=>Number(n).toFixed(1).replace('.',',');
+
+const ROLES={
+ FULL:  {cd:'🔓 Đủ quyền (demo)',n:'Người rà demo',ten:'Đủ quyền (demo)',viec:['xem','soan','duyet'],xd:['chinh_sach_btvn']},
+ PHT_CM:{cd:'PHT_CM',n:'Trần Minh Đức',ten:'Phó hiệu trưởng chuyên môn',viec:['xem','soan'],xd:['chinh_sach_btvn']},
+ HT:    {cd:'HT',n:'Nguyễn Thị Hòa',ten:'Hiệu trưởng',viec:['xem','duyet'],xd:['chinh_sach_btvn']},
+ GVBM:  {cd:'GVBM',n:'Lê Văn Nam',ten:'Giáo viên bộ môn',viec:[],xd:[]}
+};
+let role='FULL';
+const R=()=>ROLES[role];
+const co=v=>R().viec.includes(v);
+/* XD theo TỪNG TAB, không theo menu — tab 1 và tab 3 không có ô XD nào (M5.10 §8) */
+const coXuat=()=>(R().xd||[]).indexOf(tab)>=0;
+const ai=()=>role==='FULL'?'Người rà demo (Đủ quyền)':R().n+' ('+R().cd+')';
+
+const CAP=[['TH','Tiểu học'],['THCS','THCS'],['THPT','THPT']];
+const TUAN_SAU='Thứ Hai 28/9/2026';
+/* menu để GOM — tab sau thêm vào đây. Khóa tab 3 là `nguong_canh_bao`: ⛔ ĐỪNG ĐỔI,
+   M2.5 đang phát sẵn chuỗi /M5.10?tab=nguong_canh_bao&return=M2.5 (PHIEU-KGL2-1D E3). */
+const TABS=[['so_dau_bai','Sổ đầu bài'],['chinh_sach_btvn','⚙ Chính sách BTVN'],['nguong_canh_bao','Ngưỡng cảnh báo']];
+const FEAT={so_dau_bai:'m2.2.cau_hinh',chinh_sach_btvn:'m2.3.chinh_sach_btvn',nguong_canh_bao:'m5.10.nguong_canh_bao'};
+const TAB_TEN=k=>(TABS.find(t=>t[0]===k)||['','?'])[1];
+const MENU_TEN={'M2.2':'Sổ đầu bài','M2.3':'Bài tập về nhà','M2.5':'Bảng điểm môn học','M10.6':'Trung tâm cấu hình','M0.2':'Việc cần làm','M5.9':'Theo dõi hoạt động giảng dạy','M6.13':'Theo dõi thi đua','M0.1':'Bảng điều khiển'};
+
+/* đồng hồ demo — mỗi thao tác tiến một phút */
+let phut=0;
+const bayGio=()=>{phut++;const m=10+phut;return '22/9/2026 15:'+(m<10?'0':'')+m};
+
+/* ---------------- dữ liệu mẫu ---------------- */
+let HL,HEN,NHAP,LS,xem,fLS='all',tab='so_dau_bai',ret='',hoiDuyet=false;
+/* ---- mỗi TAB một bộ cấu hình riêng, luồng thì dùng chung ----
+   Biến HL · HEN · NHAP · LS · xem luôn là của TAB ĐANG MỞ; đổi tab thì cất bộ cũ vào ST
+   rồi nạp bộ mới ra. Nhờ vậy toàn bộ luồng soạn → duyệt viết một lần, chạy cho mọi tab. */
+const ST={};
+function catST(){ if(tab&&HL) ST[tab]={HL:HL,HEN:HEN,NHAP:NHAP,LS:LS,xem:xem,fLS:fLS} }
+function napST(k){ const z=ST[k]; HL=z.HL;HEN=z.HEN;NHAP=z.NHAP;LS=z.LS;xem=z.xem;fLS=z.fLS }
+function doiTab(k){ if(k===tab)return; catST(); tab=k; napST(k); render() }
+const laBT=()=>tab==='chinh_sach_btvn';
+const laNC=()=>tab==='nguong_canh_bao';
+/* bộ nào đang chờ việc của vai hiện tại — dùng cho chấm đỏ trên NÚT TAB và chuông */
+function choViec(k){ const z=(k===tab)?{NHAP:NHAP}:ST[k]; if(!z||!z.NHAP)return false;
+ return (co('duyet')&&z.NHAP.tt==='cho')||(co('soan')&&z.NHAP.tt==='tra') }
+function macDinh(){return {
+  ythuc:{TH:0,THCS:1,THPT:1},
+  muc:['Tốt','Khá','Trung bình','Yếu'],
+  ghichu:{TH:{bat:1,bb:0},THCS:{bat:1,bb:0},THPT:{bat:1,bb:0}},
+  chot:24, truocGhi:15, treGhi:15 }}
+function seed(){
+ const v2=macDinh();
+ HL={ver:2,tu:'Thứ Hai 07/9/2026',duyet:'Nguyễn Thị Hòa (HT) · 04/9/2026 16:20',cfg:v2};
+ HEN=null;
+ const n=clone(v2); n.treGhi=30;
+ NHAP={cfg:n,tt:'cho',nguoi:'Trần Minh Đức (PHT_CM)',nguoiR:'PHT_CM',gui:'21/9/2026 17:05',
+  lyDo:'Tiết 5 buổi chiều kết thúc 17:10, thầy cô còn đưa lớp ra cổng rồi mới ghi sổ — ngưỡng 15 phút gắn nhãn «ghi muộn» gần như mọi tiết cuối buổi, nhãn mất ý nghĩa.',tra:''};
+ LS=[
+  {t:'17/8/2026 08:00',ai:'Hệ thống',hd:'Khởi tạo',thay:[],ly:'Bản v1 theo mặc định: xếp loại ý thức Tiểu học TẮT · THCS BẬT · THPT TẮT · mốc chốt 24 giờ · nhãn lệch giờ 15/15 phút'},
+  {t:'03/9/2026 10:12',ai:'Trần Minh Đức (PHT_CM)',hd:'Gửi duyệt',thay:[['Xếp loại ý thức lớp','THPT','Tắt','Bật']],ly:'Dùng chung thang bốn mức với THCS để tiêu chí «Ý thức trong tiết» của M6.13 chấm được cả khối THPT'},
+  {t:'04/9/2026 16:20',ai:'Nguyễn Thị Hòa (HT)',hd:'Duyệt',thay:[['Xếp loại ý thức lớp','THPT','Tắt','Bật']],ly:'Có hiệu lực từ Thứ Hai 07/9/2026'},
+  {t:'07/9/2026 00:00',ai:'Hệ thống',hd:'Có hiệu lực',thay:[],ly:'Bản v2 thay bản v1'},
+  {t:'10/9/2026 09:30',ai:'Trần Minh Đức (PHT_CM)',hd:'Gửi duyệt',thay:[['Mốc chốt sổ','Tính từ giờ kết thúc tiết','24 giờ','12 giờ']],ly:'Muốn giáo viên hoàn tất sổ ngay trong ngày'},
+  {t:'11/9/2026 14:05',ai:'Nguyễn Thị Hòa (HT)',hd:'Trả lại',thay:[['Mốc chốt sổ','Tính từ giờ kết thúc tiết','24 giờ','12 giờ']],ly:'12 giờ tính từ cuối tiết chiều là rạng sáng hôm sau — người dạy tiết cuối chỉ còn buổi tối để sửa. Giữ 24 giờ; việc NHẮC sớm đã có mốc 6 giờ ở M5.9.'},
+  {t:'11/9/2026 14:30',ai:'Trần Minh Đức (PHT_CM)',hd:'Bỏ nháp',thay:[],ly:'Bỏ bản bị trả lại — giữ 24 giờ'},
+  {t:'21/9/2026 17:05',ai:'Trần Minh Đức (PHT_CM)',hd:'Gửi duyệt',thay:[['Nhãn lệch giờ ghi sổ','⏱ Ghi sổ muộn — sau giờ kết thúc tiết quá','15 phút','30 phút']],ly:NHAP.lyDo}
+ ];
+ xem='nhap'; phut=0; fLS='all';
+ /* tab 2 — KGLH-1F: dữ liệu mẫu riêng, khai ở app.20-chinh-sach-btvn.js
+    tab 3 — KGL2-1C: dữ liệu mẫu riêng, khai ở app.30-nguong-canh-bao.js */
+ tab='so_dau_bai'; catST(); ST.chinh_sach_btvn=seedBT(); ST.nguong_canh_bao=seedNC();
+}
+
+/* ---------------- so sánh hai bản ---------------- */
+const bt=v=>v?'Bật':'Tắt';
+const gcTxt=g=>g.bat?(g.bb?'Bật · bắt buộc':'Bật · không bắt buộc'):'Tắt';
+function diff(a,b){
+ if(laBT()) return diffBT(a,b);
+ if(laNC()) return diffNC(a,b);
+ const d=[];
+ CAP.forEach(([k,n])=>{ if(a.ghichu[k].bat!==b.ghichu[k].bat||a.ghichu[k].bb!==b.ghichu[k].bb)
+   d.push(['Mẫu sổ đầu bài','Ghi chú của giáo viên · '+n,gcTxt(a.ghichu[k]),gcTxt(b.ghichu[k])]) });
+ CAP.forEach(([k,n])=>{ if(a.ythuc[k]!==b.ythuc[k]) d.push(['Xếp loại ý thức lớp',n,bt(a.ythuc[k]),bt(b.ythuc[k])]) });
+ if(a.muc.join('|')!==b.muc.join('|')) d.push(['Xếp loại ý thức lớp','Các mức ('+a.muc.length+' → '+b.muc.length+')',a.muc.join(' · '),b.muc.join(' · ')]);
+ if(a.chot!==b.chot) d.push(['Mốc chốt sổ','Tính từ giờ kết thúc tiết',a.chot+' giờ',b.chot+' giờ']);
+ if(a.truocGhi!==b.truocGhi) d.push(['Nhãn lệch giờ ghi sổ','⏱ Ghi trước giờ tiết — lưu lần đầu sớm hơn giờ bắt đầu quá',a.truocGhi+' phút',b.truocGhi+' phút']);
+ if(a.treGhi!==b.treGhi) d.push(['Nhãn lệch giờ ghi sổ','⏱ Ghi sổ muộn — sau giờ kết thúc tiết quá',a.treGhi+' phút',b.treGhi+' phút']);
+ return d;
+}
+const goc=()=>HEN?HEN.cfg:HL.cfg;                 /* bản ĐÃ DUYỆT gần nhất = gốc của bản nháp */
+const dangXem=()=>xem==='nhap'&&NHAP?NHAP.cfg:xem==='hen'&&HEN?HEN.cfg:HL.cfg;
+function suaDuoc(){
+ if(!co('soan')) return false;
+ if(NHAP) return xem==='nhap'&&NHAP.tt!=='cho';
+ return xem===(HEN?'hen':'hl');
+}
+/* cảnh báo phụ thuộc — M6.13 quy đổi bốn mức ý thức (M6.13 §2.1 «Ý thức trong tiết») */
+function canhBaoM613(d){
+ return d.some(x=>x[0]==='Xếp loại ý thức lớp')
+  ?`<div class="warn" style="margin-top:9px">⚠ <b>Có menu đọc các mức này:</b> tiêu chí <i>Ý thức trong tiết</i> của <b>M6.13 Theo dõi thi đua</b>
+    quy đổi Tốt 10 · Khá 8 · Trung bình 6 · Yếu 4. Đổi tên mức, đổi số mức hoặc tắt xếp loại ở một cấp thì tiêu chí đó
+    <b>mất nguồn hoặc lệch quy đổi</b> ở cấp ấy — báo người phụ trách thi đua (⚙ M6.13 tab 4) trước khi có hiệu lực.</div>`:'';
+}
+const bangDiff=d=>`<table class="tb"><tr><th>Khối</th><th>Mục</th><th>Bản đã duyệt</th><th>Đề nghị</th></tr>
+ ${d.map(x=>`<tr><td>${esc(x[0])}</td><td>${esc(x[1])}</td><td>${esc(x[2])}</td><td><b>${esc(x[3])}</b></td></tr>`).join('')}</table>`;
+/* cảnh báo phụ thuộc của TAB ĐANG MỞ — mỗi tab một danh sách «ai đọc con số này» */
+const canhBao=d=>laBT()?canhBaoBT(d):laNC()?canhBaoNC(d):canhBaoM613(d);
+
+/* ---------------- vẽ ---------------- */
+function render(){
+ $('#ava').textContent=role==='FULL'?'ĐQ':R().cd.slice(0,2);
+ $('#bell').textContent=String(TABS.filter(t=>choViec(t[0])).length);
+ $('#back').innerHTML=ret?`<div class="backbar">↩ Mở từ <b>${esc(ret)} ${esc(MENU_TEN[ret]||'')}</b><span class="spacer"></span>
+   <button data-x="ve">Quay về ${esc(ret)}</button></div>`:'';
+ /* thanh tab: mỗi tab một chấm đỏ RIÊNG — bộ chờ duyệt của tab này không nói gì về tab kia */
+ $('#tabs').innerHTML=`<div class="tabs">${TABS.map(([k,n])=>
+  `<button class="tab1 ${tab===k?'on':''}" data-tab="${k}">${n}${choViec(k)?`<span class="b r">1</span>`:''}</button>`).join('')}</div>`;
+ if(!R().viec.length){ $('#content').innerHTML=noAcc(); wire(); return }
+ const khoi=laBT()?`${xuatBT()}${bt1()}${bt2()}${bt2b()}${bt3()}${bt4()}`
+   :laNC()?`${nc0()}${nc1()}${nc2()}${nc3()}${nc4()}`
+   :`${k1()}${k2()}${k3()}${k4()}${k5()}`;
+ $('#content').innerHTML=scope()+`<div class="cfgw">${khoiTrangThai()}${chonBan()}${khoi}${lichSu()}</div>`;
+ wire();
+}
+function noAcc(){
+ const sdb=ST.so_dau_bai?ST.so_dau_bai.HL.cfg:null, btv=ST.chinh_sach_btvn?ST.chinh_sach_btvn.HL.cfg:null,
+       ncg=ST.nguong_canh_bao?ST.nguong_canh_bao.HL.cfg:null;
+ return `<div class="noacc">🔒 <b>${esc(R().ten)} không có quyền ở menu này.</b><br>
+  Chức danh của bạn không có ô nào ở <code>m2.2.cau_hinh</code>, <code>m2.3.chinh_sach_btvn</code> cũng như <code>m5.10.nguong_canh_bao</code> — trên hệ thống thật menu
+  <b>không hiện</b> ở sidebar, và lối sang từ <b>M2.2</b> · <b>M2.3</b> · <b>M2.5</b> <b>không hiện</b> với bạn (quy ước D3).<br><br>
+  Cấu hình <b>đang hiệu lực</b> vẫn áp lên bạn: màn hình ghi sổ <b>M2.2</b> đọc mốc chốt <b>${sdb?sdb.chot:24} giờ</b> sau giờ kết thúc tiết;
+  màn hình giao bài <b>M2.3</b> đọc ngưỡng <b>${btv?btv.nguong.THCS.b1:3} lượt đang mở</b> (THCS · 1 buổi/ngày) và nhắc chấm muộn
+  <b>${btv?btv.chamMuon:7} ngày</b>; bảng điểm <b>M2.5</b> đọc ngưỡng nghi lệch <b>${ncg?soVN(ncg.lech):'3,0'} điểm</b> và tỉ lệ dưới trung bình
+  <b>${ncg?ncg.tiLe:30} %</b> — tất cả dưới dạng bản chiếu 🔗.<br><br>
+  🛑 Riêng hai ngưỡng của <b>M2.5</b>: trước 23/9/2026 <b>giáo viên bộ môn sửa được</b> chúng (bằng bit <code>S</code> của
+  <code>m2.5.bang_diem_mon</code>). Nay người quyết là PHT chuyên môn và Hiệu trưởng — <b>một thay đổi về NGƯỜI, không phải về hành vi</b>:
+  cảnh báo vẫn hiện y như cũ, vẫn chỉ với giáo viên giữ đúng phần của ô đó (NB-1).</div>`;
+}
+function scope(){
+ const vai=role==='FULL'
+  ?'Vai <b>Đủ quyền (demo)</b> mang CẢ HAI năng lực <code>soan</code> và <code>duyet</code> — vừa soạn vừa duyệt được, để rà trọn luồng.'
+  :co('soan')?'<b>Bạn soạn</b> cấu hình — Hiệu trưởng duyệt mới có hiệu lực.'
+  :'<b>Bạn duyệt</b> nội dung Phó hiệu trưởng chuyên môn soạn — ô cấu hình chỉ đọc với bạn.';
+ /* Đơn vị áp dụng KHÁC NHAU giữa các tab — tab 3 là MỘT BỘ DUY NHẤT, toàn trường (1D-P2 lối A):
+    công thức trung vị và ĐTBmhk chỉ tồn tại ở THCS/THPT, Tiểu học đánh giá bằng nhận xét (TT 27/2020),
+    nên một dòng «Tiểu học» ở tab 3 sẽ là DÒNG CHẾT — khai bao nhiêu cũng không có gì để đếm. */
+ const dv=laNC()
+  ?'cấu hình <b>MỘT BỘ DUY NHẤT, áp TOÀN TRƯỜNG</b> — ⛔ không tách theo cấp học như hai tab kia'
+  :'cấu hình <b>theo CẤP HỌC</b>'+(laBT()?' (ngưỡng khối lượng còn cắt theo <b>số buổi/ngày</b> của hệ đào tạo)':'')+', áp cho mọi điểm trường có cấp đó';
+ return `<div class="scopebar">⚙<div>${vai}<br>
+  Phạm vi <code>School</code> — ${dv}; không có ngữ cảnh lớp, không có sidebar lớp.
+  <b>Bộ chọn Điểm trường ở header không áp cho tab này</b>, bộ chọn năm học cũng vậy — đây là cấu hình Master, đổi thì có hiệu lực <b>từ thứ Hai tuần sau khi duyệt</b>.</div></div>`;
+}
+function khoiTrangThai(){
+ const hl=`<span class="st2 o">Đang hiệu lực · v${HL.ver}</span> từ <b>${esc(HL.tu)}</b> · duyệt bởi ${esc(HL.duyet)}`;
+ let s='';
+ if(HEN) s+=`<div class="stt hen"><div class="hd">🗓 <b>Đã duyệt — bản v${HEN.ver} có hiệu lực từ ${esc(HEN.tu)}</b>
+   <span class="sp"></span><span class="pill">${esc(HEN.duyet)}</span></div>
+   <div class="ly">Đến ngày đó, màn hình ghi sổ vẫn chạy theo bản v${HL.ver}. Tiết đã ghi <b>không bị tính lại</b> theo bản mới.</div>
+   <div class="acts"><button class="btn sm" data-x="sangtuan" title="Chỉ có ở demo">⏩ (demo) Giả lập sang ${esc(HEN.tu)}</button></div></div>`;
+ if(!NHAP){
+  s+=`<div class="stt"><div class="hd">✅ ${hl}</div>
+   <div class="ly">${co('soan')?'Không có bản nháp nào. <b>Sửa bất kỳ ô nào bên dưới là mở bản nháp</b> — bản nháp chưa có hiệu lực cho tới khi Hiệu trưởng duyệt.'
+     :'Không có bản nào chờ bạn duyệt.'}</div></div>`;
+  return s;
+ }
+ const d=diff(goc(),NHAP.cfg), n=d.length;
+ const soVoi=`<div class="ly">So với bản đã duyệt gần nhất: ${HEN?'<span class="st2 o">Đã duyệt · v'+HEN.ver+'</span> có hiệu lực từ <b>'+esc(HEN.tu)+'</b>':hl}</div>`;
+ if(NHAP.tt==='nhap'){
+  s+=`<div class="stt nhap"><div class="hd">📝 <b>Bản nháp của ${esc(NHAP.nguoi)}</b> — ${n} thay đổi, <b>chưa gửi</b></div>${soVoi}
+   ${n?bangDiff(d):'<div class="ly">Bản nháp đang giống hệt bản đã duyệt gần nhất.</div>'}
+   ${co('soan')?`<div class="acts"><button class="btn p" data-x="gui">📤 Gửi Hiệu trưởng duyệt</button><button class="btn" data-x="bonhap">↺ Bỏ nháp</button></div>`
+     :'<div class="ly">Bản nháp chưa gửi — Hiệu trưởng chưa có gì để duyệt.</div>'}</div>`;
+ } else if(NHAP.tt==='cho'){
+  s+=`<div class="stt cho" id="sttcho"><div class="hd">⏳ <b>Chờ Hiệu trưởng duyệt</b> — gửi bởi ${esc(NHAP.nguoi)} lúc ${esc(NHAP.gui)} · ${n} thay đổi</div>${soVoi}
+   <div class="ly"><b>Lý do thay đổi:</b> ${esc(NHAP.lyDo)}</div>
+   ${bangDiff(d)}${canhBao(d)}
+   <div class="acts">
+    ${co('duyet')?`<button class="btn g" data-x="duyet">✓ Duyệt — có hiệu lực từ ${TUAN_SAU}</button><button class="btn" data-x="tralai">↩ Trả lại</button>`:''}
+    ${co('soan')?`<button class="btn" data-x="rut">↩ Rút lại để sửa</button>`:''}
+    ${co('soan')&&!co('duyet')?'<span class="pill">Ô cấu hình khóa trong lúc chờ duyệt — rút lại nếu cần sửa</span>':''}
+   </div></div>`;
+ } else {
+  s+=`<div class="stt tra"><div class="hd">↩ <b>Hiệu trưởng trả lại</b> — bản nháp của ${esc(NHAP.nguoi)} · ${n} thay đổi</div>${soVoi}
+   <div class="ly"><b>Lý do trả lại:</b> ${esc(NHAP.tra)}</div>
+   ${n?bangDiff(d):''}
+   ${co('soan')?`<div class="acts"><button class="btn p" data-x="gui">📤 Sửa xong — gửi lại</button><button class="btn" data-x="bonhap">↺ Bỏ nháp</button></div>`:''}</div>`;
+ }
+ return s;
+}
+function chonBan(){
+ const b=[['hl','Đang hiệu lực · v'+HL.ver]];
+ if(HEN) b.push(['hen','Đã duyệt · v'+HEN.ver+' từ 28/9']);
+ if(NHAP) b.push(['nhap',NHAP.tt==='cho'?'Bản chờ duyệt':NHAP.tt==='tra'?'Bản bị trả lại':'Bản nháp']);
+ if(b.length<2) return '';
+ return `<div class="seg2">${b.map(([k,n])=>`<button class="${xem===k?'on':''}" data-xem="${k}">${n}</button>`).join('')}</div>`;
+}
+/* tag «đã đổi» cạnh ô khi đang xem bản nháp */
+function chg(f){ if(xem!=='nhap'||!NHAP) return ''; const v=f(goc()); return v!==f(NHAP.cfg)?`<span class="chg">đang: ${esc(v)}</span>`:'' }
+const dis=()=>suaDuoc()?'':'disabled';
+
+function k1(){
+ const c=dangXem(), sd=suaDuoc();
+ const khoa=(txt,vi)=>`<td class="c" colspan="3"><span class="lk">🔒 ${txt}</span></td><td class="lk">${vi}</td>`;
+ return `<div class="card ${sd?'edit':''}"><div class="ch">① Mẫu sổ đầu bài — trường nào có, trường nào bắt buộc, theo cấp học<span class="sp"></span>
+  <span class="pill">đọc bởi: M2.2 màn hình ghi sổ · chặn ✓ Kết thúc</span></div><div class="cb p">
+  <table class="mt"><tr><th>Trường của dòng sổ</th>${CAP.map(([,n])=>`<th class="c">${n}</th>`).join('')}<th>Vì sao</th></tr>
+   <tr><td><b>Nội dung dạy thực tế</b></td>${khoa('Luôn bật · bắt buộc','Là biên bản tiết học — thiếu thì không còn sổ đầu bài. Chặn nút ✓ Kết thúc nếu trống')}</tr>
+   <tr><td><b>Xếp loại ý thức lớp</b></td>${CAP.map(([k])=>`<td class="c">${c.ythuc[k]?'Bật · bắt buộc':'<span class="lk">Tắt</span>'}</td>`).join('')}
+     <td class="lk">Dẫn xuất từ khối ② — không khai hai chỗ</td></tr>
+   <tr><td><b>Sĩ số có mặt</b></td>${khoa('Dẫn xuất','Không có ô nhập tay (M2.2 §5.3)')}</tr>
+   <tr><td><b>Xác nhận sĩ số của tiết</b></td>${khoa('Luôn bật · không bắt buộc','Nguồn gợi ý điểm danh đầu ngày cho M2.9/T2 (GY18-H1) — không có hạn nộp')}</tr>
+   <tr><td><b>Sự việc trong tiết</b></td>${khoa('Luôn bật · không bắt buộc','M6.13 trừ điểm nền nếp và M2.7 · M2.10 lập quyết định từ đây — tắt là cắt nguồn của hai menu khác')}</tr>
+   <tr><td><b>Ghi chú của giáo viên</b></td>${CAP.map(([k,n])=>{const g=c.ghichu[k];
+     return `<td class="c"><label class="mso" style="justify-content:center;padding:2px"><input type="checkbox" data-gc="${k}" data-f="bat" ${g.bat?'checked':''} ${dis()}>bật</label>
+      <label class="mso" style="justify-content:center;padding:2px"><input type="checkbox" data-gc="${k}" data-f="bb" ${g.bb?'checked':''} ${g.bat?'':'disabled'} ${dis()}>bắt buộc</label>
+      ${chg(x=>gcTxt(x.ghichu[k]))}</td>`}).join('')}
+     <td class="lk">Trường tự do duy nhất trường tự quyết — không menu nào đọc nó</td></tr>
+  </table>
+  <div class="who">Năm trường khóa có lý do ở cột phải: mỗi trường khóa là <b>nguồn của một menu khác</b> hoặc là <b>dẫn xuất</b>. Mở khóa chúng ở đây là cho phép một quyết định cấu hình âm thầm cắt dữ liệu của menu khác.</div>
+ </div></div>`;
+}
+function k2(){
+ const c=dangXem(), sd=suaDuoc();
+ return `<div class="card ${sd?'edit':''}"><div class="ch">② Xếp loại ý thức lớp — bật tắt theo cấp · tên và số mức<span class="sp"></span>
+  <span class="pill">đọc bởi: M2.2 · M6.13 «Ý thức trong tiết»</span></div><div class="cb p">
+  <div class="roblk" style="margin-bottom:11px"><b>Không có căn cứ pháp lý.</b> TT 22/2021 chỉ có đánh giá kết quả rèn luyện
+   <b>cả học kỳ và cả năm</b>; TT 27/2020 ở Tiểu học đánh giá bằng <b>nhận xét</b>. Xếp loại theo từng tiết là <b>quy định nội bộ của trường</b>
+   — màn hình ghi sổ nói rõ điều này ở tooltip. Vì thế <b>mặc định TẮT với Tiểu học</b>.</div>
+  <div class="caps">${CAP.map(([k,n])=>`<label class="mso"><input type="checkbox" data-yt="${k}" ${c.ythuc[k]?'checked':''} ${dis()}>
+    <b>${n}</b> — ${c.ythuc[k]?'đang bật':'đang tắt'}${k==='TH'?' <span class="lk">(mặc định tắt)</span>':''}${chg(x=>bt(x.ythuc[k]))}</label>`).join('')}</div>
+  <div class="fld"><label>Các mức — theo thứ tự từ cao xuống thấp ${chg(x=>x.muc.join(' · '))}</label>
+   <div class="mucs2">${c.muc.map((m,i)=>`<div class="r"><span>${i+1}.</span>
+     <input class="fldi ${m.trim()?'':'err'}" data-muc="${i}" value="${esc(m)}" ${dis()} maxlength="20">
+     ${sd&&c.muc.length>2?`<button class="btn xs" data-x="bomuc" data-i="${i}" title="Bỏ mức này">✕</button>`:''}</div>`).join('')}
+    ${sd&&c.muc.length<5?`<div><button class="btn xs" data-x="themmuc">＋ Thêm mức</button> <span class="lk">từ 2 đến 5 mức</span></div>`:''}</div></div>
+  <div class="who">⚠ Mức ở đây là nguồn quy đổi của tiêu chí <i>Ý thức trong tiết</i> ở <b>M6.13</b> (Tốt 10 · Khá 8 · Trung bình 6 · Yếu 4) —
+   đổi tên, đổi số mức hay tắt một cấp thì tiêu chí đó mất nguồn hoặc lệch quy đổi. Máy <b>cảnh báo khi gửi</b>, không chặn.</div>
+ </div></div>`;
+}
+function k3(){
+ const c=dangXem(), sd=suaDuoc();
+ return `<div class="card ${sd?'edit':''}"><div class="ch">③ Mốc chốt sổ — khóa sửa thẳng<span class="sp"></span>
+  <span class="pill">đọc bởi: M2.2 — sau mốc chỉ còn ✎ Đính chính</span></div><div class="cb p">
+  <div class="fld"><label>Mốc chốt — tính từ <b>giờ kết thúc tiết</b> ${chg(x=>x.chot+' giờ')}</label>
+   <select class="fldi" id="cfgchot" style="max-width:220px" ${dis()}>${[12,24,48].map(h=>
+     `<option value="${h}" ${c.chot===h?'selected':''}>${h} giờ</option>`).join('')}</select>
+   <div class="roblk" style="margin-top:7px">Neo vào <b>giờ tiết học kết thúc</b>, không neo vào lúc ghi. Tính từ lúc ghi thì người ghi muộn hai ngày
+    lại được cửa sổ sửa dài hơn người ghi đúng giờ. Trong mốc: người dạy <b>sửa tự do</b>. Sau mốc: chỉ <b>giáo viên thực dạy</b> bấm
+    <b>✎ Đính chính</b> — lý do bắt buộc, bản gốc giữ nguyên, <b>không có người duyệt</b> (cụm SDBG, chốt 22/9/2026).</div></div>
+  <div class="fld" style="margin-bottom:0"><label>Hạn cuối được đính chính <span class="st2 w">✅ luật cứng — chốt 22/9/2026</span></label>
+   <div class="roblk">Luật: <b>đến khi giáo viên chủ nhiệm ký chốt rèn luyện kỳ đó ở M2.9</b> — sau đó khóa hẳn.
+    Đây là <b>luật</b>, không phải ô cấu hình <i>(anh Ninh chốt 22/9/2026 — không thành tham số)</i>; dòng này chỉ để người chỉnh mốc chốt thấy cả hai mốc cạnh nhau.</div></div>
+ </div></div>`;
+}
+function k4(){
+ const c=dangXem(), sd=suaDuoc();
+ return `<div class="card ${sd?'edit':''}"><div class="ch">④ Nhãn lệch giờ ghi sổ<span class="sp"></span>
+  <span class="pill">đọc bởi: M2.2 nhãn ⏱ · M5.9 · báo cáo nề nếp chuyên môn</span></div><div class="cb p">
+  <div class="two">
+   <div class="fld"><label>Nhãn <b>⏱ Ghi trước giờ tiết</b> — lưu lần đầu sớm hơn giờ bắt đầu tiết quá ${chg(x=>x.truocGhi+' phút')}</label>
+    <select class="fldi" id="cfgtruoc" ${dis()}>${[10,15,30].map(m=>`<option value="${m}" ${c.truocGhi===m?'selected':''}>${m} phút</option>`).join('')}</select></div>
+   <div class="fld"><label>Nhãn <b>⏱ Ghi sổ muộn</b> — bấm ✓ Kết thúc sau giờ kết thúc tiết quá ${chg(x=>x.treGhi+' phút')}</label>
+    <select class="fldi" id="cfgtre" ${dis()}>${[0,15,30].map(m=>`<option value="${m}" ${c.treGhi===m?'selected':''}>${m} phút</option>`).join('')}</select></div>
+  </div>
+  <div class="roblk">Ngoài ngưỡng vẫn <b>ghi được</b>, chỉ gắn nhãn — <b>không chặn cứng</b>: chặn thì giáo viên quên ghi mất luôn biên bản tiết.<br>
+   🛑 <b>Đây KHÔNG phải cửa sổ nhận của M4.9</b> (khai theo từng phòng, quanh giờ bắt đầu tiết). Hai con số khác nhau, hai chủ sở hữu khác nhau —
+   sổ đầu bài <b>không còn là nguồn chấm công</b> (YK-01).</div>
+ </div></div>`;
+}
+function k5(){
+ const c=dangXem(), m59=co('soan')||co('duyet');
+ return `<div class="card"><div class="ch">🔗 Ba mốc thời gian quanh một tiết — đừng nhầm<span class="sp"></span><span class="pill">chỉ đọc</span></div><div class="cb p">
+  <table class="mt"><tr><th>Mốc</th><th>Giá trị</th><th>Chủ sở hữu</th><th>Nghĩa</th></tr>
+   <tr><td><b>Nhắc «chậm ghi sổ»</b></td><td>6 giờ sau giờ kết thúc tiết</td><td>🔗 M5.9 ⚙ ${m59?'<span class="lnk" data-x="m59">↗ Mở</span>':''}</td><td>Mốc <b>NHẮC</b> — tô vàng ở màn hình theo dõi của quản lý, không khóa gì</td></tr>
+   <tr><td><b>Chốt sổ</b></td><td><b>${c.chot} giờ</b> sau giờ kết thúc tiết</td><td>Tại đây — khối ③</td><td>Mốc <b>KHÓA SỬA THẲNG</b> — sau đó chỉ đính chính có vết</td></tr>
+   <tr><td><b>Cửa sổ nhận chấm công</b></td><td>khai theo từng phòng</td><td>🔗 M4.9 ⚙</td><td>Giờ giấc thiết bị cửa lớp — <b>không liên quan</b> đến sổ đầu bài</td></tr>
+  </table>
+  <div class="who">6 giờ và ${c.chot} giờ <b>không mâu thuẫn</b>: 6 giờ đủ sớm để người quên còn ghi trong ngày; ${c.chot} giờ là lúc thôi sửa thẳng. Mốc 6 giờ vẫn ở M5.9 — xem điểm P về việc gom.</div>
+ </div></div>`;
+}
+const HD_CLS={'Gửi duyệt':'b','Duyệt':'o','Trả lại':'r','Rút lại':'n','Bỏ nháp':'n','Có hiệu lực':'v','Khởi tạo':'n'};
+function lichSu(){
+ const nhom={all:'Tất cả',gui:'Gửi duyệt',duyet:'Duyệt · có hiệu lực',tra:'Trả lại',rut:'Rút lại · bỏ nháp'};
+ const loc=x=>fLS==='all'||(fLS==='gui'&&x.hd==='Gửi duyệt')||(fLS==='duyet'&&(x.hd==='Duyệt'||x.hd==='Có hiệu lực'||x.hd==='Khởi tạo'))
+   ||(fLS==='tra'&&x.hd==='Trả lại')||(fLS==='rut'&&(x.hd==='Rút lại'||x.hd==='Bỏ nháp'));
+ const rows=LS.filter(loc).slice().reverse();
+ return `<div class="card"><div class="ch">🕘 Lịch sử thay đổi — người · thời điểm · cũ → mới · lý do<span class="sp"></span><span class="pill">${LS.length} lượt · không xóa được</span></div><div class="cb p">
+  <div class="chips">${Object.entries(nhom).map(([k,n])=>`<button class="chip ${fLS===k?'on':''}" data-ls="${k}">${n}</button>`).join('')}</div>
+  <table class="mt" id="lstb"><tr><th style="width:118px">Thời điểm</th><th>Người</th><th>Hành động</th><th>Thay đổi (cũ → mới)</th><th>Lý do</th></tr>
+  ${rows.map(x=>`<tr><td>${esc(x.t)}</td><td>${esc(x.ai)}</td><td><span class="st2 ${HD_CLS[x.hd]||'n'}">${esc(x.hd)}</span></td>
+    <td>${x.thay.length?x.thay.map(t=>`${esc(t[0])} · ${esc(t[1])}: <s>${esc(t[2])}</s> → <b>${esc(t[3])}</b>`).join('<br>'):'<span class="lk">—</span>'}</td>
+    <td>${esc(x.ly)}</td></tr>`).join('')||'<tr><td colspan="5" class="lk">Không có lượt nào ở nhóm này</td></tr>'}</table>
+ </div></div>`;
+}
+
+/* ---------------- sửa ---------------- */
+function sua(fn){
+ if(!suaDuoc()) return;
+ if(!NHAP){ NHAP={cfg:clone(goc()),tt:'nhap',nguoi:ai(),nguoiR:role,gui:'',lyDo:'',tra:''}; xem='nhap';
+   toast('📝 Đã mở <b>bản nháp</b> — chưa có hiệu lực cho tới khi Hiệu trưởng duyệt') }
+ fn(NHAP.cfg); render();
+}
+
+/* ---------------- modal & toast ---------------- */
+let mfns={};
+function modal(title,body,btns){
+ $('#mh').innerHTML=title; $('#mb').innerHTML=body; mfns={};
+ $('#mf').innerHTML=btns.map((b,i)=>{const t=b[0],fn=b[1];
+   if(fn)mfns['b'+i]=fn;
+   const cls=b[2]||(typeof fn==='function'?'p':'');
+   return `<button class="btn ${cls}" data-mb="${fn?'b'+i:''}">${t}</button>`}).join('');
+ $('#mask').classList.add('on');
+}
+const closeM=()=>$('#mask').classList.remove('on');
+let tmr;
+function toast(t){const el=$('#toast');el.innerHTML=t;el.classList.add('on');clearTimeout(tmr);tmr=setTimeout(()=>el.classList.remove('on'),4200)}
+
+/* ---------------- hành động ---------------- */
+function act(a,el){
+ if(a==='reset'){ seed(); closeM(); render(); toast('↺ Đã đặt lại dữ liệu mẫu'); return }
+ if(a==='ve'){ toast('↩ Về <b>/'+esc(ret)+'</b> — demo tệp rời không điều hướng khung ngoài'); return }
+ if(a==='m59'){ toast('↗ Mở <b>/M5.9?tab=cau_hinh&amp;return=M5.10</b> — mốc nhắc 6 giờ sửa ở menu chủ của nó'); return }
+ if(a==='m23'){ toast('↗ Mở <b>/M2.3?return=M5.10</b> — màn hình giao bài đọc ngưỡng này dưới dạng bản chiếu 🔗'); return }
+ if(a==='m25'){ toast('↗ Mở <b>/M2.5?return=M5.10</b> — bảng điểm môn đọc hai ngưỡng này dưới dạng bản chiếu 🔗; công thức nghi lệch và định nghĩa tỉ lệ dưới TB <b>ở lại M2.5</b>'); return }
+ if(a==='m59np'){ toast('↗ Mở <b>/M5.9?tab=theo_doi_nop_bai&amp;return=M5.10</b> — nhãn cam «Chưa nộp ≥ N» đọc ngưỡng này dưới dạng bản chiếu 🔗'); return }
+ if(a==='inbt') return inBT();
+ if(a==='themmuc'){ sua(c=>c.muc.push('')); return }
+ if(a==='bomuc'){ const i=+el.dataset.i; sua(c=>c.muc.splice(i,1)); return }
+ if(a==='sangtuan'){
+  if(!HEN) return;
+  LS.push({t:'28/9/2026 00:00',ai:'Hệ thống',hd:'Có hiệu lực',thay:diff(HL.cfg,HEN.cfg),ly:'Bản v'+HEN.ver+' thay bản v'+HL.ver});
+  HL={ver:HEN.ver,tu:HEN.tu,duyet:HEN.duyet,cfg:HEN.cfg}; HEN=null; xem=NHAP?'nhap':'hl';
+  render(); toast('⏩ (demo) Đã sang '+TUAN_SAU+' — bản v'+HL.ver+' đang hiệu lực; '+(laBT()?'M2.3 · M5.9':laNC()?'M2.5 · M0.1':'M2.2')+' đọc bản này từ hôm nay'); return }
+ if(a==='gui') return gui();
+ if(a==='bonhap'){
+  modal('↺ Bỏ bản nháp?',`<div class="warn">Bản nháp có <b>${diff(goc(),NHAP.cfg).length}</b> thay đổi sẽ bị bỏ. Cấu hình đang hiệu lực <b>không đổi</b>.
+   ${NHAP.gui?'Bản này đã từng được gửi — lượt bỏ được ghi vào lịch sử.':''}</div>`,
+   [['Không',0],['↺ Bỏ nháp',()=>{
+     if(NHAP.gui) LS.push({t:bayGio(),ai:ai(),hd:'Bỏ nháp',thay:diff(goc(),NHAP.cfg),ly:'Bỏ bản '+(NHAP.tt==='tra'?'bị trả lại':'nháp')});
+     NHAP=null; xem=HEN?'hen':'hl'; closeM(); render(); toast('Đã bỏ bản nháp')},'d']]); return }
+ if(a==='rut'){
+  if(!NHAP||NHAP.tt!=='cho') return;
+  NHAP.tt='nhap'; LS.push({t:bayGio(),ai:ai(),hd:'Rút lại',thay:[],ly:'Rút bản chờ duyệt về nháp để sửa'});
+  xem='nhap'; render(); toast('↩ Đã rút về bản nháp — Hiệu trưởng không còn thấy bản chờ duyệt'); return }
+ if(a==='duyet') return duyet();
+ if(a==='tralai') return traLai();
+}
+/* chặn khi gửi của TAB 1 — tách ra thành hàng riêng khi menu lên ba tab (KGL2-1C) */
+function thieuSDB(c,d){
+ const t=[];
+ if(!d.length) t.push('Bản nháp chưa khác bản đã duyệt gần nhất — không có gì để gửi');
+ c.muc.forEach((m,i)=>{ if(!m.trim()) t.push('Mức thứ '+(i+1)+' của «Xếp loại ý thức lớp» chưa có tên') });
+ const tt=c.muc.map(m=>m.trim().toLowerCase()).filter(Boolean), trung=tt.filter((m,i)=>tt.indexOf(m)!==i);
+ if(trung.length) t.push('Hai mức cùng tên «'+trung[0]+'» — màn hình ghi sổ sẽ không phân biệt được');
+ return t;
+}
+function gui(){
+ const d=diff(goc(),NHAP.cfg), c=NHAP.cfg;
+ let thieu=laBT()?thieuBT(c,d):laNC()?thieuNC(c,d):thieuSDB(c,d);
+ /* Tiểu học 2 buổi khác 0 là CẢNH BÁO, không phải chặn — gửi vẫn đi tiếp (M2.3 §4: không khoá cứng) */
+ const nhac=laBT()?thieu.filter(t=>t.indexOf('Chỉ thị 5105')>=0):[];
+ thieu=laBT()?thieu.filter(t=>t.indexOf('Chỉ thị 5105')<0):thieu;
+ if(thieu.length){
+  modal('⛔ Chưa gửi được — còn thiếu',`<div class="danger">${thieu.map(t=>'• '+esc(t)).join('<br>')}</div>
+   <div class="ro">Sửa ở khối tương ứng bên dưới rồi gửi lại.</div>`,[['Đóng',0]]); return }
+ modal('📤 Gửi Hiệu trưởng duyệt — '+TAB_TEN(tab),`${bangDiff(d)}${canhBao(d)}
+  ${nhac.length?`<div class="danger" style="margin-top:9px">⚠ ${nhac.map(esc).join('<br>')}</div>`:''}
+  <div class="fld" style="margin-top:12px"><label>Lý do thay đổi <span class="req">*</span></label>
+   <textarea class="fldi" id="lydo" rows="3" placeholder="Vì sao trường cần đổi — lý do này đi vào lịch sử, Hiệu trưởng đọc khi duyệt">${esc(NHAP.lyDo)}</textarea>
+   <div class="errl" id="lydoerr"></div></div>
+  <div class="ro">Duyệt xong thì có hiệu lực <b>từ thứ Hai tuần sau</b> — không áp ngay giữa tuần, không tính lại tiết đã ghi.</div>`,
+  [['Hủy',0],['📤 Gửi',()=>{
+    const v=$('#lydo').value.trim();
+    if(!v){ $('#lydo').classList.add('err'); $('#lydoerr').textContent='⛔ Chưa gửi được — còn thiếu: Lý do thay đổi'; return }
+    NHAP.lyDo=v; NHAP.tt='cho'; NHAP.gui=bayGio(); NHAP.nguoi=ai(); NHAP.nguoiR=role; NHAP.tra='';
+    LS.push({t:NHAP.gui,ai:ai(),hd:'Gửi duyệt',thay:d,ly:v}); xem='nhap';
+    closeM(); render(); toast('📤 Đã gửi Hiệu trưởng duyệt · cấu hình <b>chưa có hiệu lực</b>')}]]);
+}
+function duyet(){
+ if(!NHAP||NHAP.tt!=='cho') return;
+ /* bốn mắt: người gửi ≠ người duyệt — vai Đủ quyền được bỏ qua để rà trọn luồng */
+ if(NHAP.nguoiR===role&&role!=='FULL'){ modal('⛔ Không tự duyệt được',`<div class="danger">Bạn là người gửi bản này. Người gửi và người duyệt phải khác nhau.</div>`,[['Đóng',0]]); return }
+ const d=diff(goc(),NHAP.cfg);
+ modal('✓ Duyệt cấu hình — '+TAB_TEN(tab),`${bangDiff(d)}${canhBao(d)}
+  <div class="info" style="margin-top:10px">Có hiệu lực từ <b>${TUAN_SAU}</b>. Đến ngày đó màn hình ghi sổ vẫn chạy bản hiện hành; tiết đã ghi không bị tính lại.</div>
+  ${role==='FULL'&&NHAP.nguoiR==='FULL'?'<div class="ro">Vận hành thật: <b>người gửi và người duyệt phải khác nhau</b>. Vai Đủ quyền (demo) được bỏ qua để rà trọn luồng.</div>':''}`,
+  [['Hủy',0],['✓ Duyệt',()=>{
+    const t=bayGio(), v=(HEN?HEN.ver:HL.ver)+1;
+    HEN={ver:v,tu:TUAN_SAU,duyet:ai()+' · '+t,cfg:clone(NHAP.cfg)};
+    LS.push({t,ai:ai(),hd:'Duyệt',thay:d,ly:'Có hiệu lực từ '+TUAN_SAU});
+    NHAP=null; xem='hen'; closeM(); render(); toast('✓ Đã duyệt · bản v'+v+' có hiệu lực từ '+TUAN_SAU)},'g']]);
+}
+function traLai(){
+ if(!NHAP||NHAP.tt!=='cho') return;
+ modal('↩ Trả lại bản cấu hình',`${bangDiff(diff(goc(),NHAP.cfg))}
+  <div class="fld" style="margin-top:12px"><label>Lý do trả lại <span class="req">*</span></label>
+   <textarea class="fldi" id="lytra" rows="3" placeholder="Người soạn đọc lý do này để sửa — trả lại không kèm lý do thì họ không biết sửa gì"></textarea>
+   <div class="errl" id="lytraerr"></div></div>`,
+  [['Hủy',0],['↩ Trả lại',()=>{
+    const v=$('#lytra').value.trim();
+    if(!v){ $('#lytra').classList.add('err'); $('#lytraerr').textContent='⛔ Chưa trả lại được — còn thiếu: Lý do trả lại'; return }
+    LS.push({t:bayGio(),ai:ai(),hd:'Trả lại',thay:diff(goc(),NHAP.cfg),ly:v});
+    NHAP.tt='tra'; NHAP.tra=v; xem='nhap'; closeM(); render(); toast('↩ Đã trả lại · người soạn nhận thông báo kèm lý do')},'d']]);
+}
+
+/* ---------------- nối sự kiện ---------------- */
+function wire(){
+ document.querySelectorAll('[data-tab]').forEach(el=>el.onclick=()=>doiTab(el.dataset.tab));
+ wireBT(); wireNC();
+ document.querySelectorAll('[data-xem]').forEach(el=>el.onclick=()=>{xem=el.dataset.xem;render()});
+ document.querySelectorAll('[data-ls]').forEach(el=>el.onclick=()=>{fLS=el.dataset.ls;render()});
+ document.querySelectorAll('[data-yt]').forEach(el=>el.onchange=()=>sua(c=>c.ythuc[el.dataset.yt]=el.checked?1:0));
+ document.querySelectorAll('[data-gc]').forEach(el=>el.onchange=()=>sua(c=>{const g=c.ghichu[el.dataset.gc];
+   g[el.dataset.f]=el.checked?1:0; if(!g.bat) g.bb=0}));
+ document.querySelectorAll('[data-muc]').forEach(el=>el.onchange=()=>sua(c=>c.muc[+el.dataset.muc]=el.value.trim()));
+ [['#cfgchot','chot'],['#cfgtruoc','truocGhi'],['#cfgtre','treGhi']].forEach(([s,k])=>{const el=$(s); if(el) el.onchange=()=>sua(c=>c[k]=+el.value)});
+ document.querySelectorAll('[data-x]').forEach(el=>el.onclick=e=>{e.stopPropagation();act(el.dataset.x,el)});
+}
+document.addEventListener('click',e=>{
+ const mb=e.target.closest('[data-mb]');
+ if(mb){const k=mb.dataset.mb; if(k&&mfns[k])mfns[k](); else closeM(); return}
+ if(e.target.id==='mask'){closeM();return}
+ const rb=e.target.closest('.rb');
+ if(rb){role=rb.dataset.r;document.querySelectorAll('.rb').forEach(z=>z.classList.toggle('on',z===rb));
+   if(NHAP&&xem==='nhap'&&!R().viec.length) xem='hl'; render(); return}
+ const x=e.target.closest('.rolebar [data-x]'); if(x) act(x.dataset.x,x);
+});
+
+/* ---------------- deep-link nhận: /M5.10?tab=so_dau_bai&return={menu-goc}[&action=duyet] ---------------- */
+const DL=['','?tab=so_dau_bai&return=M2.2','?tab=so_dau_bai&return=M10.6','?tab=so_dau_bai&action=duyet&return=M0.2',
+ '?tab=chinh_sach_btvn&return=M2.3','?tab=chinh_sach_btvn&return=M5.9','?tab=chinh_sach_btvn&action=duyet&return=M0.2',
+ '?tab=nguong_canh_bao&return=M2.5','?tab=nguong_canh_bao&action=duyet&return=M0.2','?tab=khong_co&return=M2.2'];
+function moDL(q){
+ const p=new URLSearchParams(q||''); ret=p.get('return')||''; hoiDuyet=p.get('action')==='duyet';
+ const t=p.get('tab');
+ if(t&&!TABS.some(([k])=>k===t)) setTimeout(()=>toast('Tab <b>'+esc(t)+'</b> không có ở M5.10 — mở tab <b>Sổ đầu bài</b>'),50);
+ doiTab(TABS.some(([k])=>k===t)?t:'so_dau_bai'); render();
+ if(hoiDuyet){
+  if(co('duyet')&&NHAP&&NHAP.tt==='cho'){ const b=$('#sttcho'); if(b){b.classList.add('flash'); b.scrollIntoView({block:'center'})} }
+  else setTimeout(()=>toast(co('duyet')?'Không còn bản nào chờ duyệt — có thể đã được xử lý':'Vai hiện tại không có quyền duyệt ở menu này'),50);
+ }
+}
+/* Khởi động nằm ở app.90-khoi-dong.js — phải chạy SAU khi app.20 khai xong dữ liệu của tab 2. */
+
+/* =====================================================================
+   TAB 2 «⚙ Chính sách BTVN» — Feature m2.3.chinh_sach_btvn, GIỮ MÃ (KG-1)
+   Chuyển từ M2.3 sang M5.10 ngày 23/9/2026 (cụm KGLH, phiên KGLH-1F).
+
+   Nhận ĐÚNG HAI khối của M2.3 §8.8: «Ngưỡng khối lượng» và «Ngưỡng nhắc chấm muộn».
+   ⛔ KHÔNG nhận «Mức đánh giá» và «Cửa sổ chọn tiết» — hai khối đó vốn CHỈ ĐỌC, không ai
+   sửa được, nên chúng không phải cấu hình của ai; nội dung ở lại M2.3 (§8.4.2b · §2.5.2).
+   Ở đây chỉ chiếu 🔗 để người chỉnh ngưỡng thấy đủ luật của một lượt bài.
+
+   Luồng soạn → duyệt → hiệu lực từ thứ Hai tuần sau: DÙNG CHUNG với tab «Sổ đầu bài»
+   (gui · duyet · traLai · sua · lịch sử ở app.js) — tệp này chỉ khai DỮ LIỆU và CÁC KHỐI.
+   Mọi khai báo ở đây là `function` (hoisted) — khởi động nằm ở app.90.
+
+   🆕 KGL2-1C (23/9/2026) — hai việc thêm vào tab này:
+   • Chốt T3: khối ③ «Ngưỡng nhãn cam Chưa nộp ≥ N bài» — từ Đợt 1 tới 22/9 nó là MỘT CON
+     SỐ NẰM TRONG MÃ (M2.3 §8.7.2 gọi là «ngưỡng cấu hình» mà không menu nào khai). Nay
+     khai thành tham số, MẶC ĐỊNH VẪN 3 — luật K2-5: gom chỉ đổi chỗ khai, ⛔ không đổi
+     giá trị, ⛔ không đổi chỗ áp dụng. Hai nơi đọc: M2.3 và M5.9 tab «Theo dõi tình hình
+     nộp bài» — cả hai chuyển thành bản chiếu 🔗.
+   • Chốt T4: BẢN IN «Chính sách bài tập về nhà đang hiệu lực + lịch sử» (inBT · xuatBT) —
+     để hai ô XD của PHT_CM · HT (đi theo Feature từ M2.3, KG-1) có việc thật thay vì nằm
+     không. 🛑 Nút ⬇ Xuất chỉ hiện ở TAB NÀY: tab 1 và tab 3 không có ô XD nào.
+   ===================================================================== */
+
+function capBuoi(){return [['TH','Tiểu học'],['THCS','THCS'],['THPT','THPT']]}
+function nhanBuoi(){return [['b1','1 buổi/ngày'],['b2','2 buổi/ngày']]}
+
+/* Mặc định = đúng bảng M2.3 §4.3: TH 2 buổi 0 · TH 1 buổi 1 · THCS/THPT 1 buổi 3 · 2 buổi 2
+   chuaNop = 3 — ĐÚNG con số đang chạy trong mã từ Đợt 1 (KGL2-1C, chốt T3): khai ra chỗ
+   sửa được, ⛔ không đổi giá trị. */
+function macDinhBT(){return {
+  nguong:{TH:{b1:1,b2:0},THCS:{b1:3,b2:2},THPT:{b1:3,b2:2}},
+  chamMuon:7, chuaNop:3 }}
+
+function seedBT(){
+ const v3=macDinhBT();
+ return {
+  HL:{ver:3,tu:'Thứ Hai 07/9/2026',duyet:'Nguyễn Thị Hòa (HT) · 04/9/2026 16:26',cfg:v3},
+  HEN:null, NHAP:null, xem:'hl', fLS:'all',
+  LS:[
+   {t:'17/8/2026 08:05',ai:'Hệ thống',hd:'Khởi tạo',thay:[],
+    ly:'Bản v1 theo mặc định của M2.3 §4.3 — Tiểu học 2 buổi/ngày ngưỡng 0 (Chỉ thị 5105/CT-BGDĐT), Tiểu học 1 buổi 1 lượt, THCS · THPT 3 lượt (2 buổi: 2); nhắc chấm muộn 7 ngày'},
+   {t:'28/8/2026 09:40',ai:'Trần Minh Đức (PHT_CM)',hd:'Gửi duyệt',
+    thay:[['Ngưỡng khối lượng','THPT · 2 buổi/ngày','3 lượt','2 lượt']],
+    ly:'Khối 10 học hai buổi từ năm nay — giữ 3 lượt đang mở là quá tải cho buổi tối'},
+   {t:'29/8/2026 15:10',ai:'Nguyễn Thị Hòa (HT)',hd:'Duyệt',
+    thay:[['Ngưỡng khối lượng','THPT · 2 buổi/ngày','3 lượt','2 lượt']],ly:'Có hiệu lực từ Thứ Hai 07/9/2026'},
+   {t:'07/9/2026 00:00',ai:'Hệ thống',hd:'Có hiệu lực',thay:[],ly:'Bản v3 thay bản v2'},
+   {t:'15/9/2026 10:20',ai:'Trần Minh Đức (PHT_CM)',hd:'Gửi duyệt',
+    thay:[['Ngưỡng nhắc chấm muộn','Sau hạn nộp','7 ngày','3 ngày']],
+    ly:'Muốn bài được chấm trong tuần'},
+   {t:'15/9/2026 16:45',ai:'Nguyễn Thị Hòa (HT)',hd:'Trả lại',
+    thay:[['Ngưỡng nhắc chấm muộn','Sau hạn nộp','7 ngày','3 ngày']],
+    ly:'3 ngày thì thầy cô dạy 5 lớp một môn không kịp chấm vòng nào — nhãn đỏ sẽ hiện ở gần hết hàng đợi và không ai còn nhìn nó nữa. Giữ 7 ngày.'},
+   {t:'15/9/2026 17:02',ai:'Trần Minh Đức (PHT_CM)',hd:'Bỏ nháp',thay:[],ly:'Bỏ bản bị trả lại — giữ 7 ngày'},
+   /* KGL2-1C · chốt T3 — khai thêm một tham số vào bộ đang chạy thì KHÔNG phải một lượt
+      soạn-duyệt: không giá trị nào đổi, nên hành động là «Khởi tạo» của riêng khối ③. */
+   {t:'23/9/2026 14:10',ai:'Hệ thống',hd:'Khởi tạo',thay:[],
+    ly:'Khai thêm khối ③ «Chưa nộp ≥ N bài» vào bộ này (chốt T3, cụm KGL2). Trước đó con số 3 nằm trong mã — M2.3 §8.7.2 gọi nó là «ngưỡng cấu hình» nhưng không khối nào khai. Giá trị GIỮ NGUYÊN 3, không có lượt duyệt nào vì không có gì đổi; lần đổi đầu tiên sẽ đi đủ luồng soạn → duyệt.'}
+  ]};
+}
+
+/* So sánh hai bản của tab 2 — cùng dạng [khối, mục, cũ, mới] như tab 1 */
+function diffBT(a,b){
+ const d=[];
+ capBuoi().forEach(function(c){ nhanBuoi().forEach(function(x){
+  if(a.nguong[c[0]][x[0]]!==b.nguong[c[0]][x[0]])
+   d.push(['Ngưỡng khối lượng',c[1]+' · '+x[1],a.nguong[c[0]][x[0]]+' lượt',b.nguong[c[0]][x[0]]+' lượt']);
+ })});
+ if(a.chamMuon!==b.chamMuon) d.push(['Ngưỡng nhắc chấm muộn','Sau hạn nộp',a.chamMuon+' ngày',b.chamMuon+' ngày']);
+ if(a.chuaNop!==b.chuaNop) d.push(['Ngưỡng nhãn cam «Chưa nộp»','Số bài quá hạn chưa nộp của một em','≥ '+a.chuaNop+' bài','≥ '+b.chuaNop+' bài']);
+ return d;
+}
+
+/* Chặn khi gửi — nêu ĐÚNG mục còn thiếu (cùng luật rb 6 của tab 1) */
+function thieuBT(c,d){
+ const t=[];
+ if(!d.length) t.push('Bản nháp chưa khác bản đã duyệt gần nhất — không có gì để gửi');
+ if(c.nguong.TH.b2>0) t.push('Tiểu học · 2 buổi/ngày đang để '+c.nguong.TH.b2+' lượt — Chỉ thị 5105/CT-BGDĐT khuyến nghị 0; '+
+   'muốn đặt khác 0 thì ghi rõ lý do của trường vào ô Lý do thay đổi (máy CẢNH BÁO, Hiệu trưởng vẫn duyệt được)');
+ if(c.chamMuon<1||c.chamMuon>30) t.push('Ngưỡng nhắc chấm muộn phải trong khoảng 1 – 30 ngày');
+ if(c.chuaNop<1||c.chuaNop>10) t.push('Ngưỡng nhãn cam «Chưa nộp» phải trong khoảng 1 – 10 bài');
+ return t;
+}
+/* Cảnh báo phụ thuộc — ai đọc con số này */
+function canhBaoBT(d){
+ if(!d.length) return '';
+ const co=function(k){return d.some(function(x){return x[0]===k})};
+ let h='';
+ if(co('Ngưỡng khối lượng')) h+='<div class="warn" style="margin-top:9px">⚠ <b>M2.3 Bài tập về nhà đọc ngưỡng này ngay khi giáo viên bấm Giao bài</b> — '+
+  'ngưỡng mới có hiệu lực thì câu cảnh báo trên màn hình giao bài đổi theo. 🛑 <b>Cảnh báo, KHÔNG chặn</b>: giáo viên vẫn giao được, '+
+  'và lượt vượt ngưỡng <b>ghi một dòng vào Lịch sử của lượt bài</b> (M2.3 §4.3b) để Hiệu trưởng tra được.</div>';
+ if(co('Ngưỡng nhắc chấm muộn')) h+='<div class="warn" style="margin-top:9px">⚠ <b>Ba chỗ đọc ngưỡng này:</b> nhãn đỏ <i>«Chờ chấm N ngày»</i> ở hàng đợi '+
+  '<b>Chờ tôi chấm</b> của M2.3 · một mục việc ở <b>M0.2</b> · cột ④ ⚙ của <b>M5.9</b> (bản chiếu 🔗). Đổi ở đây là đổi cả ba.</div>';
+ if(co('Ngưỡng nhãn cam «Chưa nộp»')) h+='<div class="warn" style="margin-top:9px">⚠ <b>Hai chỗ đọc ngưỡng này:</b> nhãn cam trên dòng học sinh ở '+
+  '<b>M5.9</b> tab <i>Theo dõi tình hình nộp bài</i> · câu ngưỡng ở <b>M2.3</b> §8.7.2 — cả hai là <b>bản chiếu 🔗</b>, ⛔ không khai lại (D1).<br>'+
+  '🛑 Đây là ngưỡng <b>NHẮC</b>: nó đổi <b>màu một dòng</b>, ⛔ không khoá thao tác nào, ⛔ không sinh hệ quả nào với học sinh — '+
+  'hạ xuống thì nhiều em mang nhãn hơn, ⛔ không phải nhiều em bị kỷ luật hơn.</div>';
+ return h;
+}
+
+/* ---------------- bốn khối của tab 2 ---------------- */
+function bt1(){
+ const c=dangXem(), sd=suaDuoc();
+ return '<div class="card '+(sd?'edit':'')+'"><div class="ch">① Ngưỡng khối lượng BTVN — số lượt <b>đang mở</b> tối đa mỗi lớp<span class="sp"></span>'+
+  '<span class="pill">đọc bởi: M2.3 — cảnh báo khi giao, không chặn</span></div><div class="cb p">'+
+  '<table class="mt"><tr><th style="width:150px">Cấp học</th>'+nhanBuoi().map(function(x){return '<th>'+x[1]+'</th>'}).join('')+'</tr>'+
+  capBuoi().map(function(c2){
+   return '<tr><td><b>'+c2[1]+'</b></td>'+nhanBuoi().map(function(x){
+    const v=c.nguong[c2[0]][x[0]], k0=(c2[0]==='TH'&&x[0]==='b2');
+    return '<td><select class="fldi" data-ng="'+c2[0]+'|'+x[0]+'" style="max-width:120px" '+dis()+'>'+
+     [0,1,2,3,4,5].map(function(n){return '<option value="'+n+'" '+(v===n?'selected':'')+'>'+n+' lượt</option>'}).join('')+'</select>'+
+     chg(function(z){return z.nguong[c2[0]][x[0]]+' lượt'})+
+     (k0?'<div class="who" style="margin-top:5px">Mặc định <b>0</b> — <b>khuyến nghị không giao</b>, căn cứ <b>Chỉ thị 5105/CT-BGDĐT</b> (3/11/2014) và '+
+        'Công văn 3977/BGDĐT-GDTH (2020). Đặt khác 0 thì máy <b>cảnh báo khi gửi</b>, không chặn.</div>':'')+
+     '</td>'}).join('')+'</tr>'}).join('')+
+  '</table>'+
+  '<div class="roblk" style="margin-top:9px">Ngưỡng <b>đếm mọi môn</b> — học sinh chịu tải của cả lớp chứ không của riêng một môn. '+
+  'Vượt ngưỡng thì màn hình giao bài của M2.3 nêu đủ <b>ba điều</b>: lớp nào · đang mở mấy trên ngưỡng bao nhiêu · căn cứ; '+
+  'và lượt ấy <b>để lại dấu vết</b> trong Lịch sử của lượt bài (M2.3 §4.3b). '+
+  '🛑 <b>Không khoá cứng</b>: khoá thì trường có lý do chính đáng sẽ khai sai số buổi/ngày để lách, và dữ liệu nền của cả hệ thống sai theo.</div>'+
+  '<div class="who">«Học mấy buổi/ngày» là thuộc tính của <b>Hệ đào tạo</b>, khai ở <b>M10.2</b> theo Điểm trường × Năm học — '+
+  'menu này <b>chỉ đọc</b> nó, không khai lại (D1).</div>'+
+  '</div></div>';
+}
+function bt2(){
+ const c=dangXem(), sd=suaDuoc();
+ return '<div class="card '+(sd?'edit':'')+'"><div class="ch">② Ngưỡng nhắc chấm muộn<span class="sp"></span>'+
+  '<span class="pill">đọc bởi: M2.3 hàng đợi Chờ tôi chấm · M0.2 · M5.9 ⚙ (chiếu)</span></div><div class="cb p">'+
+  '<div class="fld" style="margin-bottom:0"><label>Nhãn đỏ <b>«Chờ chấm N ngày»</b> — tính từ <b>hạn nộp</b> của lượt bài '+
+   chg(function(z){return z.chamMuon+' ngày'})+'</label>'+
+  '<select class="fldi" id="cfgcham" style="max-width:220px" '+dis()+'>'+
+   [3,5,7,10,14].map(function(n){return '<option value="'+n+'" '+(c.chamMuon===n?'selected':'')+'>'+n+' ngày</option>'}).join('')+'</select>'+
+  '<div class="roblk" style="margin-top:7px">Neo vào <b>hạn nộp</b>, không neo vào ngày giao — bài chỉ chấm được sau khi học sinh nộp. '+
+  'Đây là ngưỡng <b>NHẮC</b>: quá ngưỡng thì bài mang nhãn đỏ ở hàng đợi chấm của chính giáo viên và hiện một mục ở M0.2 — '+
+  '<b>không khoá thao tác chấm</b>, không sinh hệ quả nào với người dạy.<br>'+
+  '🔗 <b>M5.9 ⚙ dòng ④ chiếu đúng con số này</b> và <b>không khai lại</b> (D1 áp cho cấu hình): khai hai nơi thì một hôm '+
+  'giáo viên thấy «còn hạn» trong khi Tổ trưởng thấy «quá hạn» trên cùng một bài nộp.</div></div>'+
+  '</div></div>';
+}
+/* 🆕 ③ Ngưỡng nhãn cam «Chưa nộp ≥ N bài» — KGL2-1C, chốt T3 (điểm 1F-P1 của cụm trước) */
+function bt2b(){
+ const c=dangXem(), sd=suaDuoc();
+ return '<div class="card '+(sd?'edit':'')+'"><div class="ch">③ Ngưỡng nhãn cam <b>«Chưa nộp ≥ N bài»</b><span class="sp"></span>'+
+  '<span class="pill">đọc bởi: M5.9 tab Theo dõi tình hình nộp bài · M2.3 §8.7.2</span></div><div class="cb p">'+
+  '<div class="fld"><label>Dòng học sinh mang <b>nhãn cam</b> khi đang nợ từ '+
+   chg(function(z){return '≥ '+z.chuaNop+' bài'})+'</label>'+
+  '<select class="fldi" id="cfgchuanop" style="max-width:220px" '+dis()+'>'+
+   [1,2,3,4,5,6,8,10].map(function(n){return '<option value="'+n+'" '+(c.chuaNop===n?'selected':'')+'>≥ '+n+' bài</option>'}).join('')+'</select>'+
+  '<div class="roblk" style="margin-top:7px">Đếm <b>số lượt bài ĐÃ QUÁ HẠN mà em chưa nộp</b>, gộp mọi môn — cùng cách đếm với cột '+
+  '<i>Chưa nộp</i> của bảng, ⛔ không đếm lượt còn trong hạn và ⛔ không đếm lượt em vắng có phép.<br>'+
+  '🛑 Là ngưỡng <b>NHẮC</b>: quá ngưỡng thì dòng đổi màu để giáo viên chủ nhiệm nhìn ra em cần gọi gia đình — '+
+  '<b>không khoá gì, không sinh hệ quả nào với học sinh</b>, và ⛔ không phải một mức xếp loại.</div></div>'+
+  '<div class="roblk">🔄 <b>Từ Đợt 1 tới 22/9/2026 con số này nằm trong mã.</b> M2.3 §8.7.2 gọi nó là «ngưỡng cấu hình» '+
+  'nhưng <b>không khối nào của menu nào khai nó</b> — điểm <b>1F-P1</b> của cụm KGLH. Chốt <b>T3</b> (23/9/2026) khai nó ra đây: '+
+  'cùng người quyết và cùng chủ đề <i>«bao nhiêu thì đáng nhắc»</i> với hai khối trên. '+
+  '<b>Mặc định giữ nguyên 3</b> và chỗ áp dụng giữ nguyên — luật K2-5: gom tham số chỉ đổi <b>chỗ khai</b>.</div>'+
+  '<div class="who">Vì sao đáng khai: <b>3 bài là nhiều với một em tiểu học</b> và <b>là bình thường với một em THPT ôn thi</b>. '+
+  'Một con số cứng thì trường nào cũng phải sống với thang của trường khác. '+
+  '⚠ Ngưỡng này <b>không tách theo cấp học</b> như khối ① — nó áp một bộ, vì bảng nộp bài xếp theo lớp chứ không gộp liên cấp; '+
+  'trường nhiều cấp đặt một con số chung và đọc theo lớp.</div>'+
+  '<div class="acts"><span class="lnk" data-x="m59np">↗ Mở M5.9 · tab Theo dõi tình hình nộp bài</span></div>'+
+  '</div></div>';
+}
+function bt3(){
+ return '<div class="card"><div class="ch">🔗 Hai khối <b>ở lại M2.3</b> — chiếu để đủ luật của một lượt bài<span class="sp"></span>'+
+  '<span class="pill">chỉ đọc</span></div><div class="cb p">'+
+  '<table class="mt"><tr><th style="width:170px">Khối</th><th>Nội dung</th><th style="width:210px">Vì sao KHÔNG chuyển về đây</th></tr>'+
+  '<tr><td><b>Mức đánh giá</b></td><td>Theo <b>cấp học</b>: Tiểu học <i>Hoàn thành tốt · Hoàn thành · Chưa hoàn thành</i> (TT 27/2020) · '+
+   'THCS · THPT <i>Đạt · Chưa đạt</i> (TT 22/2021)</td>'+
+   '<td>Là <b>quy định của Bộ</b>, không ai trong trường sửa được ⇒ không phải cấu hình của ai. Nội dung ở <b>M2.3 §8.4.2b</b></td></tr>'+
+  '<tr><td><b>Cửa sổ chọn tiết</b></td><td><b>Cả kỳ học hiện tại</b> — giáo viên gắn lượt bài vào bất kỳ tiết nào trong kỳ</td>'+
+   '<td>Đã thôi là tham số từ v2.x; giữ ở <b>M2.3 §2.5.2</b> đúng chỗ nghiệp vụ</td></tr>'+
+  '</table>'+
+  '<div class="who">Chuyển hai khối này sang đây thì menu cấu hình mọc thêm <b>hai ô không ai bấm được</b> — đúng thứ M5.10 sinh ra để tránh.</div>'+
+  '<div class="roblk" style="margin-top:9px">✅ <b>Điểm 1F-P1 đã đóng — 23/9/2026, chốt T3.</b> Ngưỡng nhãn cam «Chưa nộp ≥ N bài» '+
+  'nay là <b>khối ③</b> ngay trên, đúng chỗ phiếu KGLH-1F đề xuất. ⛔ Đừng mở lại câu hỏi «nó thuộc về đâu».</div>'+
+  '</div></div>';
+}
+function bt4(){
+ const c=dangXem();
+ return '<div class="card"><div class="ch">🔗 Ba con số quanh một lượt bài — đừng nhầm<span class="sp"></span><span class="pill">chỉ đọc</span></div><div class="cb p">'+
+  '<table class="mt"><tr><th>Con số</th><th>Giá trị</th><th>Chủ sở hữu</th><th>Nghĩa</th></tr>'+
+  '<tr><td><b>Ngưỡng khối lượng</b></td><td>'+c.nguong.THCS.b1+' lượt đang mở (THCS · 1 buổi)</td><td>Tại đây — khối ①</td>'+
+   '<td>Cảnh báo <b>khi giao thêm</b> — không chặn</td></tr>'+
+  '<tr><td><b>Nhắc chấm muộn</b></td><td>'+c.chamMuon+' ngày sau hạn nộp</td><td>Tại đây — khối ②</td>'+
+   '<td>Nhãn đỏ ở hàng đợi chấm — không khoá</td></tr>'+
+  '<tr><td><b>Hạn nộp của một lượt</b></td><td>giáo viên đặt cho từng lượt</td><td>🔗 <b>M2.3</b> — người đứng lớp</td>'+
+   '<td>Mốc của <b>một lượt bài</b>, không phải quy định chung của trường</td></tr>'+
+  '</table>'+
+  '<div class="who">Hai con số trên là <b>quy định chung của trường</b> nên ở menu của cấp quản lý chuyên môn; con số thứ ba là <b>việc của người dạy</b> '+
+  'nên ở lại menu tác nghiệp. Đây đúng là tiêu chí gom của §1 — không phải «cái gì có chữ cấu hình thì gom về đây».<br>'+
+  '⚠ <b>Khối ③ không có trong bảng này là có chủ ý</b>: ba con số trên đều là con số <b>của một lượt bài</b>, '+
+  'còn «Chưa nộp ≥ N» là con số <b>của một học sinh</b> cộng qua nhiều lượt — khác đơn vị, không đứng cùng bảng được.</div>'+
+  '</div></div>';
+}
+
+/* ---------------- 🆕 T4 — BẢN IN «Chính sách BTVN đang hiệu lực + lịch sử» ----------------
+   Việc thật cho hai ô XD (PHT_CM · HT) đi theo Feature từ M2.3 (KG-1). Trước lượt này hai ô
+   ấy KHÔNG mở ra thao tác nào — điểm 1F-P2.
+   🛑 Bản in chỉ gồm BẢN ĐANG HIỆU LỰC + lịch sử. Bản nháp và bản chờ duyệt KHÔNG vào bản in:
+   chúng chưa phải quy định của trường, in ra là phát tán một thứ chưa ai ký.               */
+function xuatBT(){
+ if(!coXuat()) return '';
+ return '<div class="card"><div class="cb p" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">'+
+  '<b>📄 Bản in quy định</b><span class="lk">Chính sách bài tập về nhà đang hiệu lực + lịch sử thay đổi</span>'+
+  '<span class="sp" style="flex:1"></span><button class="btn" data-x="inbt">⬇ Xuất bản in</button></div></div>';
+}
+function inBT(){
+ if(!coXuat()){ toast('Chức danh của bạn không có bit <b>XD</b> ở tab này'); return }
+ const c=HL.cfg, n=nhanBuoi();
+ const bang='<table class="mt"><tr><th style="width:170px">Cấp học</th>'+n.map(function(x){return '<th>'+x[1]+'</th>'}).join('')+'</tr>'+
+  capBuoi().map(function(c2){ return '<tr><td><b>'+c2[1]+'</b></td>'+n.map(function(x){
+    return '<td>'+c.nguong[c2[0]][x[0]]+' lượt đang mở</td>'}).join('')+'</tr>'}).join('')+'</table>';
+ const ls='<table class="mt"><tr><th style="width:118px">Thời điểm</th><th>Người</th><th>Hành động</th><th>Thay đổi</th><th>Lý do</th></tr>'+
+  LS.slice().reverse().map(function(x){ return '<tr><td>'+esc(x.t)+'</td><td>'+esc(x.ai)+'</td><td>'+esc(x.hd)+'</td><td>'+
+   (x.thay.length?x.thay.map(function(t){return esc(t[0])+' · '+esc(t[1])+': '+esc(t[2])+' → <b>'+esc(t[3])+'</b>'}).join('<br>'):'—')+
+   '</td><td>'+esc(x.ly)+'</td></tr>'}).join('')+'</table>';
+ modal('⬇ Bản in — Chính sách bài tập về nhà',
+  '<div class="info">Bản in gồm <b>bản đang hiệu lực</b> và <b>toàn bộ lịch sử thay đổi</b>. '+
+   (HEN?'Bản <b>v'+HEN.ver+' đã duyệt, có hiệu lực từ '+esc(HEN.tu)+'</b> và ':'')+
+   (NHAP?'bản <b>'+(NHAP.tt==='cho'?'đang chờ duyệt':'nháp')+'</b> ':'')+
+   (HEN||NHAP?'<b>KHÔNG</b> vào bản in — chưa phải quy định đang áp dụng của trường.':'Không có bản nào đang chờ.')+'</div>'+
+  '<div class="fld" style="margin-top:12px"><label>Mục đích sử dụng <span class="req">*</span></label>'+
+  '<select class="fldi" id="mdin"><option value="">— chọn mục đích —</option>'+
+   '<option>Lưu hồ sơ quy định nội bộ của trường</option>'+
+   '<option>Trả lời văn bản hỏi căn cứ giao bài tập về nhà (Sở · Phòng)</option>'+
+   '<option>Gửi tổ chuyên môn để phổ biến tới giáo viên</option>'+
+   '<option>Đính kèm biên bản họp Hội đồng trường</option></select>'+
+  '<div class="errl" id="mdinerr"></div></div>'+
+  '<div class="ro" style="margin-top:10px"><b>Trường:</b> TH, THCS &amp; THPT Nguyễn Tất Thành · '+
+   '<b>Bản v'+HL.ver+'</b> có hiệu lực từ <b>'+esc(HL.tu)+'</b> · duyệt bởi '+esc(HL.duyet)+'</div>'+
+  '<div class="ch" style="margin-top:12px">① Ngưỡng khối lượng BTVN — số lượt đang mở tối đa mỗi lớp</div>'+bang+
+  '<div class="ro">Tiểu học · 2 buổi/ngày để <b>'+c.nguong.TH.b2+'</b> — khuyến nghị 0 theo Chỉ thị 5105/CT-BGDĐT (3/11/2014) và Công văn 3977/BGDĐT-GDTH (2020). '+
+   'Ngưỡng là <b>cảnh báo, không chặn</b>.</div>'+
+  '<div class="ch" style="margin-top:10px">② Ngưỡng nhắc chấm muộn</div>'+
+  '<div class="ro">Nhãn đỏ «Chờ chấm N ngày» khi quá <b>'+c.chamMuon+' ngày</b> kể từ hạn nộp của lượt bài.</div>'+
+  '<div class="ch" style="margin-top:10px">③ Ngưỡng nhãn cam «Chưa nộp»</div>'+
+  '<div class="ro">Dòng học sinh mang nhãn cam khi đang nợ <b>≥ '+c.chuaNop+' bài</b> đã quá hạn (gộp mọi môn).</div>'+
+  '<div class="ch" style="margin-top:12px">🕘 Lịch sử thay đổi — '+LS.length+' lượt, không xóa được</div>'+ls,
+  [['Đóng',0],['⬇ Tải bản in',function(){
+    const v=$('#mdin').value;
+    if(!v){ $('#mdin').classList.add('err'); $('#mdinerr').textContent='⛔ Chưa xuất được — còn thiếu: Mục đích sử dụng'; return }
+    closeM(); toast('⬇ (demo) Đã xuất <b>Chinh-sach-BTVN-v'+HL.ver+'-hieu-luc-'+esc(HL.tu.replace(/^\D+/,'').replace(/[^0-9]+/g,'-'))+'.pdf</b> · mục đích: '+esc(v)+
+     ' — lượt xuất ghi vết theo quy ước quyền <b>XD</b>')}]]);
+}
+
+/* Nối sự kiện riêng của tab 2 — gọi từ wire() */
+function wireBT(){
+ document.querySelectorAll('[data-ng]').forEach(function(el){ el.onchange=function(){
+  const p=el.dataset.ng.split('|'); sua(function(c){c.nguong[p[0]][p[1]]=+el.value});
+ }});
+ const e=$('#cfgcham'); if(e) e.onchange=function(){ sua(function(c){c.chamMuon=+e.value}) };
+ const e2=$('#cfgchuanop'); if(e2) e2.onchange=function(){ sua(function(c){c.chuaNop=+e2.value}) };
+}
+
+/* =====================================================================
+   TAB 3 «Ngưỡng cảnh báo» — Feature m5.10.nguong_canh_bao — 🆕 MÃ MỚI
+   Dựng 23/9/2026 (cụm KGL2, phiên KGL2-1C, chốt T5). Bên gỡ: phiên KGL2-1D ở M2.5.
+
+   🛑 KHÁC HẲN hai tab trên, đọc trước khi sửa:
+   Tab 1 nhận m2.2.cau_hinh và tab 2 nhận m2.3.chinh_sach_btvn — mỗi lần MỘT FEATURE
+   NGUYÊN VẸN đi theo, GIỮ MÃ (luật KG-1), nên tổng Feature của hệ thống không đổi.
+   Lần này KHÔNG có Feature nào rời M2.5: hai ngưỡng là F6d — một chức năng BÊN TRONG
+   Feature duy nhất m2.5.bang_diem_mon, mà Feature ấy ở lại vì nó chính là bảng điểm.
+   ⇒ menu này phải TỰ SINH mã; ⛔ ĐỪNG đặt m2.5.* (bịa một Feature chưa từng tồn tại).
+
+   ĐƠN VỊ ÁP DỤNG: MỘT BỘ DUY NHẤT, TOÀN TRƯỜNG (1D-P2 lối A) — ⛔ không tách theo cấp học
+   như hai tab kia. Công thức trung vị (M2.5 §5.8) và ĐTBmhk (§5.9) chỉ tồn tại ở THCS/THPT;
+   Tiểu học đánh giá bằng nhận xét (TT 27/2020) và M2.5 đã loại lớp Tiểu học khỏi bộ chọn.
+   Một dòng «Tiểu học» ở đây là DÒNG CHẾT — khai bao nhiêu cũng không có gì để đếm.
+
+   ⛔ KHÔNG NHẬN: công thức «nghi lệch là gì» và định nghĩa «tỉ lệ dưới trung bình» — hai thứ
+   đó ở lại M2.5 §5.8 · §5.9 (bảng ánh xạ M2.5 §4.1d dòng ⑧). Menu này khai MỘT CON SỐ.
+
+   🛑 NB-1 · NB-2 phải giữ nguyên: gom CHỖ KHAI ⛔ không mở rộng AI ĐƯỢC NHÌN THẤY cảnh báo.
+
+   Luồng soạn → duyệt → hiệu lực thứ Hai tuần sau: DÙNG CHUNG với hai tab kia (app.js).
+   Tệp này chỉ khai DỮ LIỆU và BỐN KHỐI. Mọi khai báo là `function` (hoisted) — khởi động ở app.90.
+   Tab này KHÔNG có ô XD nào ⇒ ⛔ không nút ⬇ Xuất (M5.10 §8 · điểm 1C-E1).
+   ===================================================================== */
+
+/* Giá trị mang sang NGUYÊN từ M2.5 §4.1c — luật K2-5: gom chỉ đổi chỗ khai */
+function macDinhNC(){return { lech:3, tiLe:30 }}
+const NC_LECH=[0.5,10];      /* khoảng hợp lệ của ngưỡng nghi lệch — M2.5 bàn giao */
+const NC_TILE=[1,100];       /* khoảng hợp lệ của ngưỡng tỉ lệ dưới TB */
+
+function seedNC(){
+ return {
+  HL:{ver:1,tu:'Thứ Hai 07/9/2026',duyet:'Hoàng Văn Khoa (PHT chuyên môn) · 2/9/2026 08:15 — đặt ở M2.5 trước khi chuyển chủ',cfg:macDinhNC()},
+  HEN:null, NHAP:null, xem:'hl', fLS:'all',
+  LS:[
+   {t:'2/9/2026 08:15',ai:'Hoàng Văn Khoa (PHT chuyên môn)',hd:'Khởi tạo',thay:[],
+    ly:'Hai ngưỡng đang chạy ở M2.5 từ 18/9/2026 — nghi lệch 3,0 điểm · tỉ lệ dưới trung bình cao 30%. Dòng «đặt bởi … ngày …» này là dòng M2.5 vẫn in trên mọi màn hình đọc ngưỡng.'},
+   {t:'23/9/2026 14:20',ai:'Hệ thống',hd:'Khởi tạo',thay:[],
+    ly:'Chuyển chủ về M5.10 (chốt T5, cụm KGL2). Hai con số và mọi chỗ áp dụng GIỮ NGUYÊN; cái đổi là NGƯỜI QUYẾT — trước đây giáo viên bộ môn sửa được bằng bit S của m2.5.bang_diem_mon, nay PHT chuyên môn soạn · Hiệu trưởng duyệt. Bản v1 là bản MANG SANG, chưa đi qua luồng duyệt của menu này; lần đổi đầu tiên sẽ đi đủ luồng.'}
+  ]};
+}
+
+/* So sánh hai bản của tab 3 — cùng dạng [khối, mục, cũ, mới] như hai tab kia */
+function diffNC(a,b){
+ const d=[];
+ if(a.lech!==b.lech) d.push(['Ngưỡng nghi lệch điểm','Chênh so với trung vị các ô khác của cùng em',soVN(a.lech)+' điểm',soVN(b.lech)+' điểm']);
+ if(a.tiLe!==b.tiLe) d.push(['Ngưỡng tỉ lệ dưới trung bình cao','Tỉ lệ em có ĐTBmhk < 5,0 trên số em đã đủ điểm của cặp',a.tiLe+' %',b.tiLe+' %']);
+ return d;
+}
+
+/* Chặn khi gửi — hai khoảng hợp lệ M2.5 bàn giao, nêu ĐÚNG mục còn thiếu (rb 6) */
+function thieuNC(c,d){
+ const t=[];
+ if(!d.length) t.push('Bản nháp chưa khác bản đã duyệt gần nhất — không có gì để gửi');
+ if(!(c.lech>=NC_LECH[0]&&c.lech<=NC_LECH[1]))
+  t.push('Ngưỡng nghi lệch phải trong khoảng '+soVN(NC_LECH[0])+' – '+NC_LECH[1]+' điểm — dưới '+soVN(NC_LECH[0])+' thì mọi ô đều kêu, trên '+NC_LECH[1]+' thì thang điểm 10 không có ô nào lệch nổi');
+ if(!(c.tiLe>=NC_TILE[0]&&c.tiLe<=NC_TILE[1]))
+  t.push('Ngưỡng tỉ lệ dưới trung bình phải trong khoảng '+NC_TILE[0]+' – '+NC_TILE[1]+' %');
+ return t;
+}
+
+/* Cảnh báo phụ thuộc — ai đọc con số này. 🛑 Câu cuối là hàng rào của NB-2, đừng bỏ. */
+function canhBaoNC(d){
+ if(!d.length) return '';
+ const c=function(k){return d.some(function(x){return x[0]===k})};
+ let h='';
+ if(c('Ngưỡng nghi lệch điểm')) h+='<div class="warn" style="margin-top:9px">⚠ <b>Năm chỗ đọc ngưỡng này:</b> dải đầu bảng điểm · ô đang gõ · ô gõ tại chỗ · '+
+  'bước đối chiếu khi Import (M2.5 §5.5 mục 4) · widget <b>W-A72</b> của M0.1 — tất cả là <b>bản chiếu 🔗</b>, ⛔ không khai lại (D1).<br>'+
+  '🛑 <b>NB-1 không đổi:</b> cảnh báo nghi lệch <b>chỉ hiện với giáo viên bộ môn giữ đúng phần của ô đó</b>. '+
+  'Đổi con số ở đây ⛔ <b>không</b> mở rộng ai nhìn thấy nó.</div>';
+ if(c('Ngưỡng tỉ lệ dưới trung bình cao')) h+='<div class="warn" style="margin-top:9px">⚠ <b>Ba chỗ đọc ngưỡng này:</b> chip <i>📉 Tỉ lệ dưới TB cao</i> của M2.5 · '+
+  'dải đầu danh sách ấy · widget <b>W-S51</b> của M0.1 (Bảng điều khiển của Ban giám hiệu).<br>'+
+  '🛑 <b>NB-2 không đổi:</b> danh sách ấy là <b>cặp Lớp × Môn</b> — <b>không cột giáo viên, không xếp theo tỉ lệ, không hạng</b>. '+
+  'Hạ ngưỡng là thêm dòng vào một danh sách rà soát, ⛔ <b>không</b> phải dựng bảng đánh giá giáo viên.</div>';
+ return h;
+}
+
+/* ---------------- bốn khối của tab 3 ---------------- */
+function nc0(){
+ return '<div class="card"><div class="ch">Đơn vị áp dụng — <b>một bộ duy nhất, toàn trường</b><span class="sp"></span>'+
+  '<span class="pill">khác hai tab kia</span></div><div class="cb p">'+
+  '<div class="roblk">Hai tab kia khai <b>theo cấp học</b> vì <i>căn cứ của tham số khác nhau theo cấp</i>. '+
+  'Ở đây <b>không có căn cứ nào khác nhau theo cấp</b> — chỉ có <b>một cấp không dùng được tham số</b>: '+
+  'công thức <b>trung vị</b> (M2.5 §5.8) và <b>ĐTBmhk</b> (§5.9) chỉ tồn tại ở THCS · THPT, còn Tiểu học đánh giá bằng '+
+  '<b>nhận xét</b> (TT 27/2020) và M2.5 đã <b>loại lớp Tiểu học khỏi bộ chọn</b>. '+
+  'Dựng một dòng «Tiểu học» ở đây là dựng <b>một dòng chết</b>: khai bao nhiêu cũng không có gì để đếm — '+
+  'đúng thứ ảo giác mà M2.5 §4.1a đã chốt tránh.</div>'+
+  '<div class="who">⛔ Đừng «dọn cho giống» ba tab. Hình dạng của một tab cấu hình phải theo <b>đơn vị thật của tham số</b>, '+
+  'không theo tab bên cạnh (điểm <b>1D-P2</b> — lối A).</div>'+
+  '</div></div>';
+}
+function nc1(){
+ const c=dangXem(), sd=suaDuoc();
+ return '<div class="card '+(sd?'edit':'')+'"><div class="ch">① Ngưỡng nghi lệch điểm<span class="sp"></span>'+
+  '<span class="pill">đọc bởi: M2.5 (5 chỗ) · M0.1 widget W-A72</span></div><div class="cb p">'+
+  '<div class="fld"><label>Một ô điểm bị đánh dấu <b>⚠ nghi lệch</b> khi chênh so với <b>trung vị</b> các ô khác của cùng em quá '+
+   chg(function(z){return soVN(z.lech)+' điểm'})+'</label>'+
+  '<div style="display:flex;align-items:center;gap:8px"><input class="fldi" type="number" id="cfglech" step="0.5" min="'+NC_LECH[0]+'" max="'+NC_LECH[1]+'" '+
+   'style="max-width:130px" value="'+c.lech+'" '+dis()+'><span class="lk">điểm · khoảng hợp lệ '+soVN(NC_LECH[0])+' – '+NC_LECH[1]+'</span></div>'+
+  '<div class="roblk" style="margin-top:7px">Dưới <b>'+soVN(NC_LECH[0])+'</b> thì <b>mọi ô đều kêu</b> và dấu ⚠ mất nghĩa; trên <b>'+NC_LECH[1]+'</b> thì '+
+  'thang điểm 10 <b>không có ô nào lệch nổi</b>. Hai đầu khoảng là hai cách làm hỏng cùng một thứ: dấu cảnh báo chỉ có giá trị khi nó hiếm.<br>'+
+  '🛑 <b>Công thức ở lại M2.5 §5.8</b> — menu này khai <b>một con số</b>, ⛔ không định nghĩa <i>«nghi lệch là gì»</i>.</div></div>'+
+  '<div class="who">🛑 <b>NB-1 — mang sang nguyên vẹn:</b> cảnh báo này <b>chỉ hiện với giáo viên bộ môn giữ đúng phần của ô đó</b>. '+
+  'Gom chỗ khai ⛔ <b>không</b> mở rộng ai được nhìn thấy nó; đổi con số không đổi một dòng quyền nào.</div>'+
+  '</div></div>';
+}
+function nc2(){
+ const c=dangXem(), sd=suaDuoc();
+ return '<div class="card '+(sd?'edit':'')+'"><div class="ch">② Ngưỡng tỉ lệ dưới trung bình cao<span class="sp"></span>'+
+  '<span class="pill">đọc bởi: M2.5 chip 📉 · M0.1 widget W-S51</span></div><div class="cb p">'+
+  '<div class="fld"><label>Một cặp <b>Lớp × Môn</b> vào danh sách <b>📉 Tỉ lệ dưới TB cao</b> khi tỉ lệ em có <b>ĐTBmhk &lt; 5,0</b> '+
+   'trên <b>số em đã đủ điểm của cặp</b> đạt từ '+chg(function(z){return z.tiLe+' %'})+'</label>'+
+  '<div style="display:flex;align-items:center;gap:8px"><input class="fldi" type="number" id="cfgtile" step="1" min="'+NC_TILE[0]+'" max="'+NC_TILE[1]+'" '+
+   'style="max-width:130px" value="'+c.tiLe+'" '+dis()+'><span class="lk">% · khoảng hợp lệ '+NC_TILE[0]+' – '+NC_TILE[1]+'</span></div>'+
+  '<div class="roblk" style="margin-top:7px">Mẫu số là <b>số em ĐÃ ĐỦ ĐIỂM của cặp</b>, không phải sĩ số — lớp mới nhập được nửa bảng điểm '+
+  'thì tỉ lệ tính trên nửa ấy, không kêu oan vì ô còn trống.<br>'+
+  '🛑 <b>Định nghĩa ở lại M2.5 §5.9</b>; ở đây chỉ là con số ngưỡng.</div></div>'+
+  '<div class="who">🛑 <b>NB-2 — mang sang nguyên vẹn:</b> danh sách ấy <b>không có cột giáo viên, không xếp theo tỉ lệ, không có hạng</b>, '+
+  'xếp theo Điểm trường → Lớp → Môn. Một ngưỡng đặt bừa là dựng một <b>bảng đánh giá giáo viên</b> — nên màn hình phải '+
+  '<b>in rõ ngưỡng đang chạy và ai đặt</b>, ở cả M5.10 lẫn M2.5.</div>'+
+  '</div></div>';
+}
+function nc3(){
+ return '<div class="card"><div class="ch">🛑 Hai ràng buộc đi kèm — <b>không phải trang trí</b><span class="sp"></span>'+
+  '<span class="pill">chỉ đọc · luật của M2.5</span></div><div class="cb p">'+
+  '<table class="mt"><tr><th style="width:90px">Mã</th><th>Ràng buộc</th><th style="width:230px">Vì sao nó là lý do tồn tại của ngưỡng</th></tr>'+
+  '<tr><td><b>NB-1</b></td><td>Cảnh báo <b>⚠ nghi lệch</b> <b>chỉ hiện với giáo viên bộ môn giữ đúng phần của ô đó</b> — '+
+   'Tổ trưởng, PHT chuyên môn, Hiệu trưởng <b>không</b> thấy khối này (M2.5 §5.8.2)</td>'+
+   '<td>Ngưỡng sinh ra để <b>người nhập tự rà lại tay mình</b>, ⛔ không phải để cấp trên soi</td></tr>'+
+  '<tr><td><b>NB-2</b></td><td>Danh sách <b>📉 Tỉ lệ dưới TB cao</b> có đơn vị dòng là <b>cặp Lớp × Môn</b>: '+
+   '⛔ không cột giáo viên · ⛔ không xếp theo tỉ lệ · ⛔ không hạng (M2.5 §5.9.1)</td>'+
+   '<td>Cùng một con số, thêm cột tên người là đổi từ <b>danh sách rà soát</b> thành <b>bảng xếp hạng</b></td></tr>'+
+  '</table>'+
+  '<div class="who">🔑 <b>Gom CHỖ KHAI ⛔ không mở rộng AI ĐƯỢC NHÌN THẤY.</b> Đây là câu phải đọc trước mọi lần sửa tab này: '+
+  'hai ngưỡng đổi chủ ngày 23/9/2026, còn hai ràng buộc trên <b>không đổi một chữ</b>.</div>'+
+  '</div></div>';
+}
+function nc4(){
+ const c=dangXem(), m25=co('soan')||co('duyet');
+ return '<div class="card"><div class="ch">🔗 Cái ở lại M2.5 — đừng đi tìm ở đây<span class="sp"></span><span class="pill">chỉ đọc</span></div><div class="cb p">'+
+  '<table class="mt"><tr><th style="width:230px">Cái gì</th><th>Chủ sở hữu</th><th>Ghi chú</th></tr>'+
+  '<tr><td><b>Công thức nghi lệch</b> · <b>định nghĩa tỉ lệ dưới TB</b></td><td>🔗 <b>M2.5</b> §5.8 · §5.9 '+
+   (m25?'<span class="lnk" data-x="m25">↗ Mở</span>':'')+'</td>'+
+   '<td>Menu này khai <b>một con số</b>; nó ⛔ không định nghĩa nghiệp vụ</td></tr>'+
+  '<tr><td><b>Con số in trên màn hình</b> (dải đầu bảng · ô đang gõ · chip 📉 · bước đối chiếu Import)</td><td>🔗 <b>M2.5</b> — bản chiếu</td>'+
+   '<td>In nguyên <b>'+soVN(c.lech)+' điểm</b> và <b>'+c.tiLe+' %</b>, kèm dòng <b>«đặt bởi … ngày …»</b> — 🛑 dòng ấy <b>bắt buộc giữ</b></td></tr>'+
+  '<tr><td><b>Bit <code>S</code> của GVBM</b> ở m2.5.bang_diem_mon</td><td>🔗 <b>M2.5</b> — <b>giữ nguyên</b></td>'+
+   '<td>⛔ Đừng gỡ «cho khớp với việc gỡ ⚙»: <code>S</code> ở đó là quyền <b>nhập và sửa điểm</b>, gỡ là cấm giáo viên nhập điểm</td></tr>'+
+  '</table>'+
+  '<div class="who">Khuôn giống tab 2 giữ lại <b>Mức đánh giá</b> · <b>Cửa sổ chọn tiết</b> ở M2.3: '+
+  '<b>cái có người quyết thì chuyển, cái là luật của nghiệp vụ thì ở lại menu chủ</b>.</div>'+
+  '</div></div>';
+}
+
+/* Nối sự kiện riêng của tab 3 — gọi từ wire() */
+function wireNC(){
+ const a=$('#cfglech'); if(a) a.onchange=function(){ sua(function(c){c.lech=+a.value}) };
+ const b=$('#cfgtile'); if(b) b.onchange=function(){ sua(function(c){c.tiLe=+b.value}) };
+}
+
+/* =====================================================================
+   KHỞI ĐỘNG — chạy SAU cùng.
+   Tách khỏi app.js từ 23/9/2026 (KGLH-1F): dữ liệu và bốn khối của tab 2 khai ở
+   app.20-chinh-sach-btvn.js, mà `seed()` gọi `seedBT()` ngay khi khởi động ⇒ đoạn khởi
+   động phải đứng sau tệp đó trong thứ tự ghép của gen-demo (app.js · app.20 · app.90).
+   ===================================================================== */
+(function(){
+ const s=$('#dlsel');
+ s.innerHTML=DL.map(q=>`<option value="${esc(q)}">${q?'/M5.10'+esc(q):'— thử deep-link —'}</option>`).join('');
+ s.onchange=()=>moDL(s.value);
+ seed(); napST('so_dau_bai'); moDL(location.search);
+})();
+</script>
+</body>
+</html>

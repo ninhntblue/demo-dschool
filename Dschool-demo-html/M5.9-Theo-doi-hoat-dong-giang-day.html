@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>M5.9 Theo dõi hoạt động giảng dạy — Dschool</title>
+<title>M5.9 Theo dõi hoạt động dạy – học — Dschool</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#f1f5f9;--surface:#fff;--line:#e2e8f0;--line2:#cbd5e1;
@@ -203,6 +203,94 @@ td.c,th.c{text-align:center}
 .oc:hover{background:var(--brand-soft);border-bottom-color:var(--brand)}
 .tfl{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0 4px}
 .tfl .lbl{margin-top:0;white-space:nowrap}
+
+/* ---- SDBG-1C · tab 7 Theo dõi nề nếp lớp ---- */
+.chip{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line2);border-radius:999px;padding:3px 11px;font-size:12px;background:#fff;cursor:pointer;white-space:nowrap}
+.chip.on{background:var(--brand-soft);border-color:var(--brand);color:var(--brand);font-weight:600}
+.st2.oc2{cursor:pointer}
+/* khung hẹp: bảng rộng cuộn TRONG khung của nó, không cắt cột Thao tác, không cuộn cả trang */
+.listw{overflow-x:auto}
+.st2.oc2:hover{outline:1px solid #a78bfa}
+.nnstage{display:flex;gap:13px;align-items:flex-start}
+.nnside{width:220px;flex:0 0 220px;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.nnsh{padding:9px 12px;font-weight:700;font-size:13px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between}
+.nnsh span{color:var(--ink3);font-weight:400}
+.nnsp{padding:7px 12px;font-size:11px;color:var(--ink2);border-bottom:1px solid var(--line);background:#f8fafc;line-height:1.45}
+.nndt{padding:8px 12px 3px;font-size:10.5px;font-weight:700;color:var(--ink3);letter-spacing:.05em}
+.nnkh{padding:3px 12px 2px 20px;font-size:11px;color:var(--ink2);font-weight:600}
+.nnl{display:flex;gap:5px;align-items:center;flex-wrap:wrap;padding:6px 12px 6px 28px;cursor:pointer;font-size:12.5px;border-left:3px solid transparent}
+.nnl:hover{background:var(--brand-soft)}
+.nnl.on{background:#eff6ff;border-left-color:var(--brand)}
+.nnl b{margin-right:auto}
+.nnsel{display:none;width:100%;margin-bottom:9px}
+.nnmain{flex:1;min-width:0}
+.nnhd{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.nnhd h2{font-size:16px}
+.nnhd span{font-size:12px;color:var(--ink2)}
+.nntong{display:flex;gap:14px;flex-wrap:wrap;align-items:center;padding:10px 13px;border-bottom:1px solid var(--line);background:#f8fafc}
+.nntong .lp{display:flex;flex-direction:column;min-width:150px}
+.nntong .lp span{font-size:11px;color:var(--ink3)}
+.nntong .num{display:flex;flex-direction:column;font-size:10.5px;color:var(--ink3);min-width:62px}
+.nntong .num b{font-size:16px;color:var(--ink)}
+.nntong .num.g b{color:var(--green)} .nntong .num.w b{color:var(--amber)} .nntong .num.r b{color:var(--red)} .nntong .num.v b{color:var(--violet)}
+.bar4{display:flex;height:8px;width:120px;border-radius:4px;overflow:hidden;background:var(--bg)}
+.bar4 i{display:block;height:100%}
+.nnrow{display:grid;grid-template-columns:120px 1fr auto;gap:10px;padding:8px 13px;border-bottom:1px solid var(--line);cursor:pointer;align-items:center;font-size:12.5px}
+.nnrow:hover{background:var(--brand-soft)}
+.nnrow .tm{display:flex;flex-direction:column}
+.nnrow .tm span,.nnrow .sub{font-size:11px;color:var(--ink3)}
+.nnrow .rt{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+.lgd{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 13px;font-size:11px;color:var(--ink2);background:#f8fafc}
+.lgd i{display:inline-block;width:9px;height:9px;border-radius:2px}
+.dcw{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.dcc{border:1px solid var(--line);border-radius:9px;padding:9px 11px;background:#f8fafc}
+.dcc.moi{background:#f5f3ff;border-color:#ddd6fe}
+.dch{font-size:11px;font-weight:700;color:var(--ink2);text-transform:uppercase;letter-spacing:.04em}
+.dch span{font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink3);margin-left:5px}
+.dct{font-size:11.5px;color:var(--ink3);margin-top:4px}
+.dcv{font-size:13px;font-weight:600;margin-top:2px}
+@media (max-width:900px){
+ .nnside{display:none}
+ .nnsel{display:block}
+ .nnstage{display:block}
+ .nnrow{grid-template-columns:90px 1fr}
+ .nnrow .rt{grid-column:1 / -1;justify-content:flex-start}
+ .dcw{grid-template-columns:1fr}
+ .tfl .spacer{display:none}
+}
+
+/* ===== TDHT-1A 23/9/2026 — HAI KHỐI trên thanh tab (TD-5) ===== */
+.tabs{align-items:stretch}
+.tgrp{display:flex;flex-direction:column;gap:2px;padding:0 4px 0 0}
+.tgrp+.tgrp{margin-left:10px;padding-left:12px;border-left:1px dashed var(--line)}
+.tgl{font-size:9.5px;font-weight:800;letter-spacing:.06em;color:var(--ink3);
+     text-transform:uppercase;padding:2px 8px 0;white-space:nowrap}
+.tgrp.k2 .tgl{color:var(--violet)}
+.tgb{display:flex;gap:3px;flex-wrap:wrap;align-items:flex-end}
+.tgrp.k2 .tab1.on{color:var(--violet);border-bottom-color:var(--violet)}
+
+/* dải chắn của KHỐI ② — chen GIỮA dải TD-2 và dải phạm vi (§4.4) */
+.k2band{border:1px solid #ddd6fe;background:#faf5ff;border-radius:8px;
+        padding:9px 12px;margin:8px 0;font-size:12.5px;line-height:1.5;color:#4c1d95}
+.k2a{display:flex;gap:9px;align-items:flex-start}
+.k2b{margin-top:7px;padding-top:7px;border-top:1px dashed #ddd6fe;font-size:11.5px;color:#5b21b6}
+
+/* thanh tổng của tab 9 — đếm EM và LƯỢT, ⛔ không đếm lớp */
+.tot{border:1px solid var(--line);background:var(--bg);border-radius:8px;
+     padding:9px 12px;margin:8px 0;font-size:12.5px;line-height:1.7}
+.kpi{font-weight:800;font-size:14px;color:var(--ink);padding:0 2px}
+.kpi.rd{color:var(--red)}
+
+/* nhãn nhịp KỲ trên chính ô — TD-5c */
+.hk{font-size:9.5px;font-weight:800;letter-spacing:.04em;color:var(--violet);
+    background:#f5f3ff;border:1px solid #ddd6fe;border-radius:4px;padding:1px 5px;margin-left:5px}
+
+.sub{color:var(--ink3);font-size:10.5px;line-height:1.5;display:inline-block}
+.sub.rl{color:var(--amber)}
+.sub.gr{color:var(--ink3)}
+.am{color:var(--amber)}
+td .ct,th .ct{color:var(--ink3);font-size:10.5px}
+tr.hl>td{background:#fffbeb;box-shadow:inset 3px 0 0 var(--amber)}
 </style>
 </head>
 <body><script>/* sidebar da chuyen ve index.html — node an giu cho JS cu khong vo */
@@ -218,6 +306,7 @@ td.c,th.c{text-align:center}
   <button class="rb" data-r="HT">HT</button>
   <button class="rb" data-r="TCNS">TCNS</button>
   <button class="rb" data-r="GVU">Giáo vụ · A</button>
+  <button class="rb" data-r="GT">Giám thị · A</button>
   <span class="note">Menu <b>CHỈ ĐỌC 100%</b> — không Tạo · Sửa · Xóa · Duyệt · Chốt trên dữ liệu (TD-1)</span>
 </div>
 
@@ -235,8 +324,8 @@ td.c,th.c{text-align:center}
 
 <div class="wrap">
   <main class="main">
-    <div class="tophd"><h1 id="ttl">Theo dõi hoạt động giảng dạy</h1>
-      <span class="pill" style="background:var(--green-soft);color:#065f46;font-weight:700;border:1px solid #6ee7b7">M5.9 · v1.0</span><span class="pill">6 tab · 6 Feature · menu chỉ đọc</span><div class="spacer"></div>
+    <div class="tophd"><h1 id="ttl">Theo dõi hoạt động dạy – học</h1>
+      <span class="pill" style="background:var(--green-soft);color:#065f46;font-weight:700;border:1px solid #6ee7b7">M5.9 · v2.3</span><span class="pill">9 tab · 9 Feature · hai khối · 6 tín hiệu · menu chỉ đọc</span><div class="spacer"></div>
       <button class="btn sm" data-x="ghiChu">💡 Ghi chú thiết kế</button>
       <button class="btn sm" data-x="xuat">⬇ Xuất báo cáo</button></div>
     <div class="tabs" id="tabs"></div>
@@ -250,7 +339,25 @@ td.c,th.c{text-align:center}
 </div></div>
 <div class="toast" id="toast"></div>
 <script>/* ===================================================================
-   M5.9 — THEO DÕI HOẠT ĐỘNG GIẢNG DẠY  ·  v1.0 (18/9/2026, TDGD-1A)
+   M5.9 — THEO DÕI HOẠT ĐỘNG DẠY – HỌC  ·  v2.3 (23/9/2026, TDHT-1B)
+   v2.3: ✅ anh Ninh chốt hai điểm §12d. 1A-E1 GIỮ dòng PHT_ĐT ở F9 (0 ô đổi);
+         1A-E2 LÀM CẢ HAI ⇒ + cột ⑥ «Ký kết quả môn» ở tab 1·2·3 (khối ①),
+         vế «cặp chưa ký» ở cột ⑤ tab 9 (khối ②) GIỮ NGUYÊN. Cùng tầng dữ liệu
+         (CAP9 — nay ở app.15-ky-mon.js), cùng con số, KHÁC CHỦ THỂ của câu hỏi.
+         🛑 +0 Feature · +0 ô quyền — cột ⑥ nằm trên F1·F2·F3 đã có, đọc bằng
+         bit X sẵn có. 🛑 Cột ⑥ CHỈ có nghĩa SAU mốc chốt kỳ (rb 43).
+   v2.2: ĐỔI TÊN menu (mã M5.9 và tên tệp GIỮ). Menu chia HAI KHỐI (§4.1):
+         khối ① việc của giáo viên (tab 1·2·3·4·5·7) — khối ② tình hình học
+         tập của học sinh (tab 9·8). + tab 9 «Tình hình học tập của lớp»,
+         Feature MỚI m5.9.tinh_hinh_hoc_tap — app.38. + ràng buộc cứng TD-5
+         (§1.5): (a) khối ② KHÔNG cột giáo viên / tên môn trên dòng chính,
+         (b) KHÔNG bảng nào trộn cột hai khối, (c) khối ② chỉ nhịp TUẦN.
+         Đóng vết 3Z-F8: chốt S12 gỡ dòng GVCN khỏi F8 · chốt S13 mở F8 cho
+         TTCM · TPCM @Group ⇒ khối khóa cũ của tab 8 HẾT HIỆU LỰC (rb 42).
+   v2.1: + tab 8 «Theo dõi tình hình nộp bài» (mã giữ m2.3.theo_doi_nop_bai — app.37);
+         ⚙ dòng ④ đổi chủ sở hữu M2.3 → M5.10 (tab ⚙ Chính sách BTVN, cụm KGLH).
+   v2.0: + tab 7 «Theo dõi nề nếp lớp» (mã giữ m2.2.theo_doi_ne_nep_lop — app.35)
+         + nhãn ✎ Đã đính chính ở tab 3 · panel · tab 7 · + vai Giám thị. v1.0: TDGD-1A 18/9/2026.
 
    MENU CHỈ ĐỌC 100% (TD-1). Trong tệp này KHÔNG có một hàm nào ghi vào
    dữ liệu nghiệp vụ: không luu(), không duyet(), không chot(). Mọi ô
@@ -269,7 +376,7 @@ const NAV=[
  ['','🏠 Trung tâm điều hành',[['M0.1','Bảng điều khiển'],['M0.2','Việc cần làm','!'],['M0.4','Trang cá nhân của tôi']]],
  ['gd','📚 Giảng dạy hằng ngày',[['M2.2','Sổ đầu bài'],['M2.3','Bài tập về nhà'],['M2.5','Bảng điểm môn học'],['M2.9','Danh sách lớp học']]],
  ['cm','📖 Chuyên môn',[['M4.7','Lịch giảng dạy & Dạy thay'],['M5.2','Giáo án'],['M5.3','Dự giờ'],
-   ['M5.5','Bộ KPI giáo viên'],['M5.9','Theo dõi hoạt động giảng dạy','x']]],
+   ['M5.5','Bộ KPI giáo viên'],['M5.9','Theo dõi hoạt động dạy – học','x']]],
  ['ns','👨‍🏫 Nhân sự',[['M4.9','Chấm công nhân sự']]],
  ['ht','⚙ Quản trị & cấu hình',[['M10.1','Hồ sơ năm học'],['M10.4','Chức danh & Phân quyền']]],
 ];
@@ -277,21 +384,51 @@ const NAV=[
 /* ===== §14.4 — quyền bằng MẢNG NĂNG LỰC, kiểm bằng .includes() =====
    gv/lop/tiet/dd/cc/cf = sáu Feature (sáu tab). 'ccS' = sửa tham số ⚙,
    'ccD' = duyệt thay đổi ⚙ — hai năng lực này KHÔNG chạm dữ liệu nghiệp vụ. */
+/* SDBG-1C 22/9/2026 — 'nn' = tab 7 Theo dõi nề nếp lớp, Feature GIỮ MÃ m2.2.theo_doi_ne_nep_lop (chuyển từ M2.2).
+   Đúng hàng quyền cũ ở bảng chuẩn TRỪ GVCN: TTCM Group · Giám thị · PHT_DT Branch · PHT_CM · HT School.
+   'kl' = thấy lối ↗ Lập quyết định kỷ luật tại M2.7 ở bản in (chỉ HT — TT 19/2025 Đ.17), là DEEP-LINK, không ghi gì ở đây. */
 const ROLE={
+ /* TDHT-1C 23/9/2026 — 'ga' = CÓ ô ở m5.2.theo_doi_giao_an_to (cổng D3 cho lối ↗ M5.2).
+   Đúng bốn dòng của M5.2 §8: TTCM · TPCM · PHT_CM · HT. ⛔ PHT_ĐT và GVU KHÔNG có ô nào
+   ở M5.2 ⇒ không thấy lối. 🛑 Đây là MỘT LỐI DẪN, ⛔ không phải một bề mặt đọc: rb 48 cấm
+   mọi con số về giáo án trên menu này (§2.6 — TD-1 và rb 21 cắt đúng hai thứ làm nên giá
+   trị của M5.2 F4: viết nhận xét vào từng hoạt động, và 🔔 Nhắc hàng loạt). */
+/* TDHT-1B 23/9/2026 — 'm510' = CÓ ô quyền ở M5.10 (cổng D3 cho hai lối ⚙ chiếu).
+   Sau KGL2-2Z (chiều 23/9) hai ngưỡng đã có chủ thật ở M5.10: «tỉ lệ dưới trung bình»
+   ở Feature MỚI m5.10.nguong_canh_bao (PHT_CM soạn · HT duyệt) và «Chưa nộp ≥ N bài»
+   ở khối ③ tab ⚙ Chính sách BTVN (m2.3.chinh_sach_btvn). Vai không có ô ở đích thì
+   ⛔ KHÔNG hiện lối — D3, «vai không có quyền ở menu chủ thì không hiện deep-link». */
+/* TDHT-1A 23/9/2026 — 'tt' = tab 9 Tình hình học tập của lớp, Feature MỚI m5.9.tinh_hinh_hoc_tap.
+    Năm dòng, +5 ô: TTCM · TPCM @Group (lớp có tiết của tổ — neo như F4, KHÔNG neo tiết vì dòng là một LỚP) ·
+    PHT_DT @Branch · PHT_CM · HT @School. ⛔ KHÔNG có: GVBM · GVCN (chốt C6) · Giám thị (M9.3 §14 —
+    «kết quả học tập không phải việc của giám thị») · GVU (vị trí hỗ trợ — §8.5) · TCNS · NVCC · VT · KT. */
  FULL  :{ten:'Đủ quyền (demo)',            sc:'school',av:'DQ',to:null,
-         q:['gv','lop','tiet','dd','cc','cf','ccS','ccD','xd']},
+         q:['gv','lop','tiet','dd','cc','nn','np','tt','cf','ccS','ccD','xd','kl','m510','ga']},
  TTCM  :{ten:'Tổ trưởng chuyên môn — Tổ Tự nhiên',sc:'group',av:'TT',to:'TN',
-         q:['gv','lop','tiet','dd','cc','cf','xd']},
+         q:['gv','lop','tiet','dd','cc','nn','np','tt','cf','xd','ga']},
  TPCM  :{ten:'Tổ phó chuyên môn — Tổ Xã hội',     sc:'group',av:'TP',to:'XH',
-         q:['gv','lop','tiet','dd','cf','xd']},        /* KHÔNG có 'cc' — M4.9 không cấp cho TPCM */
+         q:['gv','lop','tiet','dd','nn','np','tt','cf','xd','ga']},   /* KHÔNG có 'cc' — M4.9 không cấp cho TPCM.
+            SDBG-2Z 22/9/2026: + 'nn' — ✅ anh Ninh chốt 1C-P2 (Tổ phó mở tab nề nếp giống Tổ trưởng: X · XD, Group neo tiết) */
  /* TDGD-2Z 18/9/2026 — ✅ anh Ninh chốt điểm 2: M4.9 đã cấp X @School cho PHT_CM trên m4.9.cham_cong_tiet_day,
     nên tab 5 MỞ. Vẫn KHÔNG có 'xdcc' (không XD trên bản chiếu chấm công) — §8.4 · rb 12. */
+ /* KGLH-1F 23/9/2026 — 'np' = tab 8 Theo dõi tình hình nộp bài, Feature GIỮ MÃ m2.3.theo_doi_nop_bai
+    (chuyển từ M2.3). Hàng quyền cũ có ĐÚNG BA dòng: HT · PHT_CM @School · GVCN @Class.
+    🔄 KGLH-3Z 23/9/2026 — anh Ninh chốt hai điểm, TDHT-1A ghi vào demo:
+      · S12 GỠ dòng GVCN (điều kiện đi kèm đã xong — M2.9 T4 sắp xếp được theo số bài chưa nộp)
+        ⇒ chốt C6 nay đúng KHÔNG ngoại lệ phía giáo viên; demo vẫn không dựng vai GVCN.
+      · S13 MỞ cho TTCM · TPCM @Group ⇒ F8 nay BỐN ô; khối khóa cũ («Tổ trưởng chưa từng có dòng nào»)
+        HẾT HIỆU LỰC và phải gỡ — rb 42. PHT_DT · GT · GVU vẫn không có dòng nào. */
  PHT_CM:{ten:'Phó hiệu trưởng chuyên môn',  sc:'school',av:'PC',to:null,
-         q:['gv','lop','tiet','dd','cc','cf','ccS','xd']},
+         q:['gv','lop','tiet','dd','cc','nn','np','tt','cf','ccS','xd','m510','ga']},
  PHT_DT:{ten:'Phó hiệu trưởng điểm trường A',sc:'branch',av:'PĐ',dt:'Điểm trường A',to:null,
-         q:['gv','lop','tiet','dd','cc','cf','xd']},
+         q:['gv','lop','tiet','dd','cc','nn','tt','cf','xd']},
  HT    :{ten:'Hiệu trưởng',                 sc:'school',av:'HT',to:null,
-         q:['gv','lop','tiet','dd','cc','cf','ccD','xd']},
+         q:['gv','lop','tiet','dd','cc','nn','np','tt','cf','ccD','xd','kl','m510','ga']},
+ /* SDBG-1C 22/9/2026 — Giám thị có ô ở M5.9 là MỞ RỘNG so với M5.9 v1.2: đúng MỘT tab (nề nếp lớp),
+    mang sang từ hàng quyền cũ của M2.2 (X · XD @ Branch). Không có tab 1–6: năm tín hiệu nhập liệu của
+    giáo viên và chấm công không phải việc của giám thị. */
+ GT    :{ten:'Giám thị — Điểm trường A',     sc:'branch',av:'GT',dt:'Điểm trường A',to:null,
+         q:['nn','xd']},
  TCNS  :{ten:'Tổ chức nhân sự',             sc:'school',av:'TC',to:null,
          q:[]},                                        /* không có ô nào ở M5.9 — §8.1 */
  /* TDGD-2Z 18/9/2026 — ✅ anh Ninh chốt điểm 1: Giáo vụ CHỈ hai tab Theo tiết · Điểm danh hằng ngày,
@@ -428,6 +565,7 @@ let BT=[];
   if(rnd()>0.42)return;                       /* KHÔNG phải tiết nào cũng giao — §5.1.3 */
   const ss=lopOf(t.lop).ss, nop=Math.floor(ss*(0.7+rnd()*0.3));
   const quaHan=t.di<=2;                        /* giao từ T2–T4 thì đã quá hạn nộp */
+  /* gv = giáo viên CÓ TÊN TRÊN LỊCH của tiết — ⛔ không dùng để đếm cột ③ ④ (DTHN-2D: nguoi_tao ⟂ chu_luot ở app.36) */
   BT.push({tiet:t.id,gv:t.gv,lop:t.lop,mon:t.mon,ngay:t.ngay,
    han:NGAY[Math.min(4,t.di+2)].d, quaHan:quaHan,
    nop:quaHan?nop:0, cham:quaHan?Math.floor(nop*(rnd()<0.3?0.35:0.92)):0,
@@ -494,7 +632,9 @@ const soSapHan=t=>t.daQua&&!soXong(t)&&t.gioQua<=CFG.gioSo&&t.gioQua>CFG.gioSo-3
 
 function doGV(gid){
  const ts=tietDaQua().filter(t=>(t.thay||t.gv)===gid);
- const bs=BT.filter(b=>b.gv===gid&&quaLoc(TIET.find(t=>t.id===b.tiet)||{})&&b.quaHan);
+ /* 🆕 DTHN-2D · chốt P-3 — cột ④ «Chấm BTVN» đếm theo CHỦ LƯỢT (người có quyền chấm — M2.3 §2.5b.2);
+    cột ③ «Giao BTVN» đếm theo NGƯỜI TẠO lượt (người đứng lớp tiết đó). Hai trường gắn ở app.36. ⛔ Không đọc b.gv. */
+ const bs=BT.filter(b=>b.chu_luot===gid&&quaLoc(TIET.find(t=>t.id===b.tiet)||{})&&b.quaHan);
  const dk=Object.keys(DTX).filter(k=>DTX[k].gv===gid
    &&(fLop==='ALL'||DTX[k].lop===fLop)&&(fTo==='ALL'||monTo(DTX[k].mon)===fTo));
  const cnLop=lopCN(gid);
@@ -504,10 +644,13 @@ function doGV(gid){
   ddPhai:dds.length, ddCo:dds.filter(d=>d.tt==='du').length, cnLop:cnLop,
   soPhai:ts.length, soCo:ts.filter(soXong).length,
   soQua:ts.filter(soQuaHan).length, soSap:ts.filter(soSapHan).length,
-  btLuot:BT.filter(b=>b.gv===gid&&quaLoc(TIET.find(t=>t.id===b.tiet)||{})).length,
+  btLuot:BT.filter(b=>b.nguoi_tao===gid&&quaLoc(TIET.find(t=>t.id===b.tiet)||{})).length,
   chamPhai:bs.reduce((s,b)=>s+b.nop,0), chamCo:bs.reduce((s,b)=>s+b.cham,0),
   chamQua:bs.filter(b=>b.ngayCho>7&&b.cham<b.nop).reduce((s,b)=>s+(b.nop-b.cham),0),
   dPhai:dk.reduce((s,k)=>s+DTX[k].phai,0), dCo:dk.reduce((s,k)=>s+DTX[k].co,0),
+  /* TDHT-1B — cột ⑥ Ký kết quả môn (khối ①). Cùng lát cắt `dk` của cột ⑤:
+     cặp Lớp × Môn mà chính người này dạy, trong bộ lọc đang chọn. CAP9 ở app.15. */
+  ky:doKy((x,k)=>dk.indexOf(k)>=0),
   tiets:ts
  };
 }
@@ -525,20 +668,111 @@ function doLop(lid){
   chamPhai:bs.reduce((s,b)=>s+b.nop,0), chamCo:bs.reduce((s,b)=>s+b.cham,0),
   chamQua:bs.filter(b=>b.ngayCho>7&&b.cham<b.nop).reduce((s,b)=>s+(b.nop-b.cham),0),
   dPhai:dk.reduce((s,k)=>s+DTX[k].phai,0), dCo:dk.reduce((s,k)=>s+DTX[k].co,0),
+  /* TDHT-1B — cột ⑥, cùng lát cắt `dk` của cột ⑤ (mọi cặp của lớp này trong bộ lọc).
+     ⚠ Con số này KHÁC vế thứ ba của cột ⑤ tab 9 ở CHỦ THỂ, không ở phép đếm:
+     ở đây nó trả lời «giáo viên dạy lớp này đã ký chưa», ở tab 9 nó trả lời
+     «bảng điểm của lớp này đã đủ chưa». Hai câu, một tầng dữ liệu — chốt 1A-E2. */
+  ky:doKy((x,k)=>dk.indexOf(k)>=0),
   tiets:ts};
+}
+
+/* ===================================================================
+   KÝ KẾT QUẢ MÔN  ·  TỈ LỆ DƯỚI TRUNG BÌNH  —  tầng dữ liệu DÙNG CHUNG
+   TDHT-1B · 23/9/2026  (tách ra từ app.38 của TDHT-1A)
+
+   Vì sao tệp riêng, và vì sao nằm ở app.15:
+   ① Sau chốt `1A-E2` («làm CẢ HAI»), trạng thái ký kết quả môn được đọc ở
+      HAI KHỐI — cột ⑥ của tab 1 · 2 · 3 (khối ①, chủ thể GIÁO VIÊN) và
+      vế thứ ba của cột ⑤ tab 9 (khối ②, chủ thể LỚP). Một tầng dữ liệu,
+      hai cách đọc ⇒ phải nằm ở chỗ CẢ HAI cùng thấy, không nằm trong
+      app.38 của riêng tab 9.
+   ② Số 15 đặt nó SAU app.js (có DTX) và TRƯỚC app.20 · app.30 · app.38.
+
+   🛑 HẠT GIỐNG RIÊNG sd5 — ⛔ không tiêu một lượt rnd() nào của app.js,
+      nên tám tab cũ giữ nguyên TỪNG CON SỐ. (Cột ⑥ làm bảng tab 1·2·3
+      rộng thêm một cột, nhưng ⛔ không đổi giá trị của sáu cột kia.)
+
+   🛑 TD-5a — tầng này biết cả gv · lop · mon của từng cặp, nhưng KHỐI ②
+      chỉ được đọc ra CON SỐ ĐẾM theo lớp. Hàm `doKy()` trả về số đếm;
+      ⛔ đừng thêm hàm nào trả về danh sách tên môn cho khối ②.
+   =================================================================== */
+
+let sd5=20260925;
+const rn5=()=>{sd5=(sd5*1103515245+12345)&0x7fffffff;return sd5/0x7fffffff};
+
+/* Mỗi cặp Lớp × Môn (khóa 'gv|lop|mon' của DTX): đã ký kết quả môn chưa,
+   và có đạt ngưỡng tỉ lệ dưới trung bình không. */
+const CAP9={};
+Object.keys(DTX).forEach(function(k){ CAP9[k]={ky: rn5()>0.22, duoiTB: rn5()<0.17} });
+
+/* 🛑 «Chưa ký» CHỈ CÓ NGHĨA SAU MỐC CHỐT KỲ của M10.1 — khuôn đã chốt ở M0.4:
+   trước mốc, ô ghi «chưa tới mốc chốt <ngày>» và ⛔ KHÔNG tô đỏ; chưa tới hạn
+   thì không phải đang chậm (rb 4 · §5.1.2). Demo đứng ở 18/9, mốc là 22/12. */
+const QUA_MOC_KY=false;                 /* dẫn xuất từ M10.1, ⛔ không phải tham số ⚙ */
+
+/* Đếm theo một lát cắt DTX bất kỳ. `loc(x, k)` nhận bản ghi DTX và khóa. */
+function doKy(loc){
+ let tong=0, ky=0, tb=0;
+ Object.keys(DTX).forEach(function(k){
+  if(!loc(DTX[k],k))return;
+  tong++; if(CAP9[k].ky)ky++; if(CAP9[k].duoiTB)tb++;
+ });
+ return {tong:tong, ky:ky, chua:tong-ky, duoiTB:tb};
+}
+
+/* Ô cột ⑥ của khối ① — dùng chung cho tab 1 · 2 · 3.
+   Deep-link sang M2.5 mang LỚP khi biết lớp; ⛔ không mang môn ở khối ②,
+   nhưng ở khối ① thì mang được vì chủ thể vốn đã là giáo viên. */
+function oKy(d, ctx){
+ if(!d.tong)return '<span style="color:var(--ink3)">—</span>';
+ const xong=d.chua===0;
+ const do_=QUA_MOC_KY&&!xong;
+ return '<span class="rolnk" data-go="M2.5"><b'+(do_?' style="color:var(--red)"':'')+'>'+
+   d.ky+'/'+d.tong+'</b> cặp</span>'+
+  '<br><span style="color:var(--ink3);font-size:10.5px">'+
+  (xong ? 'đã ký đủ'
+        : (QUA_MOC_KY ? '<b style="color:var(--red)">'+d.chua+' cặp chưa ký — đã qua mốc chốt</b>'
+                      : d.chua+' cặp chưa ký — <b>chưa tới mốc chốt '+MOCCHOT+'</b>, không tô đỏ'))+
+  '</span>';
 }
 
 /* ===================== KHUNG GIAO DIỆN — tab · dải · bộ lọc ===================== */
 const TABS=[['gv','👤 Theo giáo viên','gv'],['lop','🏫 Theo lớp','lop'],
             ['tiet','🕐 Theo tiết','tiet'],['dd','📋 Điểm danh hằng ngày','dd'],
-            ['cc','🔗 Chấm công','cc'],['cf','⚙ Cấu hình','cf']];
+            ['cc','🔗 Chấm công','cc'],
+            /* SDBG-1C 22/9/2026 — tab 7, mã giữ m2.2.theo_doi_ne_nep_lop. Đứng TRƯỚC ⚙ vì ⚙ luôn là tab cuối;
+               số 1–6 của các tab cũ giữ nguyên để tài liệu cũ tra được. */
+            ['nn','📓 Theo dõi nề nếp lớp','nn'],
+            /* KGLH-1F 23/9/2026 — tab 8, mã giữ m2.3.theo_doi_nop_bai (chuyển từ M2.3).
+               Cũng đứng TRƯỚC ⚙; số 1–7 của các tab cũ giữ nguyên. */
+            ['np','📥 Theo dõi tình hình nộp bài','np'],
+            /* TDHT-1A 23/9/2026 — tab 9, Feature MỚI m5.9.tinh_hinh_hoc_tap. Đứng ĐẦU khối ②
+               (từ khái quát mức lớp đi xuống chi tiết mức học sinh của tab 8), vẫn TRƯỚC ⚙.
+               Số 1–8 của các tab cũ giữ nguyên — số là ĐỊNH DANH, không phải vị trí. */
+            ['tt','📈 Tình hình học tập của lớp','tt'],
+            ['cf','⚙ Cấu hình','cf']];
+
+/* ===== TDHT-1A — HAI KHỐI (§4.1). Đây là cách TD-5 được cài vào HÌNH DẠNG màn hình
+   chứ không chỉ vào lời nhắc: khối ① đo GIÁO VIÊN, khối ② đo HỌC SINH. ⚙ không thuộc khối nào. */
+const KHOI=[
+ {n:'①', ten:'VIỆC CỦA GIÁO VIÊN',            t:['gv','lop','tiet','dd','cc','nn']},
+ {n:'②', ten:'TÌNH HÌNH HỌC TẬP CỦA HỌC SINH', t:['tt','np']},
+];
+const khoi2=k=>KHOI[1].t.indexOf(k)>=0;      /* tab này có thuộc khối ② không */
 
 function tabsBar(){
- $('#tabs').innerHTML=TABS.map(function(T){
-  var k=T[0],l=T[1],q=T[2];
-  return '<button class="tab1'+(tab===k?' on':'')+(co(q)?'':' mo')+'" data-tab="'+k+'">'+l+
-   (co(q)?'':' <span style="font-size:11px">🔒</span>')+'</button>';
- }).join('');
+ const btn=function(k){
+  const T=TABS.find(x=>x[0]===k); if(!T)return '';
+  return '<button class="tab1'+(tab===k?' on':'')+(co(T[2])?'':' mo')+'" data-tab="'+k+'">'+T[1]+
+   (co(T[2])?'':' <span style="font-size:11px">🔒</span>')+'</button>';
+ };
+ let h='';
+ KHOI.forEach(function(K,i){
+  h+='<div class="tgrp k'+(i+1)+'"><span class="tgl">'+K.n+' '+K.ten+'</span>'+
+     '<div class="tgb">'+K.t.map(btn).join('')+'</div></div>';
+ });
+ h+='<div class="tgrp kc"><span class="tgl">&nbsp;</span><div class="tgb">'+btn('cf')+'</div></div>';
+ $('#tabs').innerHTML=h;
 }
 function hdrBar(){
  const r=R(); $('#ava').textContent=r.av;
@@ -557,6 +791,22 @@ function daiTD2(){
   'Một giáo viên dạy tốt vẫn có thể chậm ghi sổ; một giáo viên ghi sổ đủ vẫn có thể dạy kém. '+
   'Màn hình này không đo được điều thứ hai và <b>không được dùng để xếp loại giáo viên</b>.'+
   '</div></div>';
+}
+
+/* ---- TDHT-1A — dải chắn của KHỐI ② (TD-5b). Chen GIỮA dải TD-2 và dải phạm vi, nền khác màu.
+   Ba dải nói ba điều ở ba cấp: TD-2 là luật của CẢ MENU · dải này là luật của NHÓM TAB đang mở ·
+   dải phạm vi là TRẠNG THÁI bộ lọc lúc này. Gộp lại thì câu của cấp dưới nuốt câu của cấp trên —
+   và câu bị nuốt luôn là câu TD-2, vì nó khó chịu nhất để đọc.
+   Dải này THAY dải riêng của tab 8 (v2.1 §5.9.1): nội dung cũ nằm gọn trong câu thứ hai. */
+function daiKhoi2(){
+ if(!khoi2(tab))return '';
+ return '<div class="k2band"><div class="k2a">'+
+  '<span style="font-size:15px;line-height:1.2">🧑‍🎓</span><div>'+
+  '<b>Bạn đang ở KHỐI ② — TÌNH HÌNH HỌC TẬP CỦA HỌC SINH.</b><br>'+
+  'Con số ở đây đo <b>HỌC SINH</b>. ⛔ Không đọc chéo sang khối ① và không cộng với số của khối ①: '+
+  'một lớp học kém <b>KHÔNG</b> nói gì về giáo viên dạy lớp đó, và ngược lại.'+
+  '</div></div><div class="k2b">🔭 <b>M9.3</b> = cả kỳ đạt bao nhiêu phần trăm · <b>tab này</b> = tuần này lớp nào cần để mắt '+
+  '— hai số khác nhau là <b>đúng</b>. <span class="rolnk" data-go="M9.3">↗ M9.3</span></div></div>';
 }
 
 const khoangChu=()=>tuanLech===0?'14/9 – 18/9':(tuanLech===-1?'7/9 – 11/9':'31/8 – 4/9');
@@ -585,6 +835,7 @@ function daiTuan(){
 
 /* ---- bộ lọc dùng chung ---- */
 function thanhLoc(){
+ if(tab==='nn'){$('#loc').innerHTML=co('nn')?locNN():'';return}   /* tab 7 có thanh lọc riêng: tuần · điểm trường */
  if(tab==='cf'||!co(tab)){$('#loc').innerHTML='';return}
  const r=R(), khoaTo=(r.sc==='group');
  let h='<div class="tfl">';
@@ -657,10 +908,12 @@ function viewGV(){
  h+='<div class="stage'+(panel?' open':'')+'"><div class="listw"><table><thead><tr>'+
   '<th>Giáo viên</th><th class="c">Tiết đã qua</th>'+
   '<th>① Điểm danh</th><th>② Sổ đầu bài</th><th>③ Giao BTVN</th><th>④ Chấm BTVN</th>'+
-  '<th>⑤ Điểm TX · HK I</th>'+
+  '<th>⑤ Điểm TX <span class="hk">HK I</span></th>'+
+  /* TDHT-1B — cột ⑥, chốt 1A-E2 */
+  '<th>⑥ Ký kết quả môn <span class="hk">HK I</span></th>'+
   '<th class="c"><span class="rolnk" data-x="sap" data-k="'+(sapTheo==='ten'?'qua':'ten')+'">↕ sắp</span></th>'+
   '</tr></thead><tbody>';
- if(!ds.length)h+='<tr><td colspan="8" class="empty">Không có giáo viên nào có tiết đã qua giờ trong khoảng đang chọn.</td></tr>';
+ if(!ds.length)h+='<tr><td colspan="9" class="empty">Không có giáo viên nào có tiết đã qua giờ trong khoảng đang chọn.</td></tr>';
  ds.forEach(d=>{
   const g=gvOf(d.gv);
   h+='<tr><td><b>'+esc(g.ten)+'</b><br><span style="color:var(--ink3);font-size:11px">'+
@@ -674,6 +927,7 @@ function viewGV(){
    '<td>'+oPS(d.chamCo,d.chamPhai,'bài',d.chamQua>0?d.chamQua:0,0,'cham|'+d.gv)+'</td>'+
    '<td>'+oPS(d.dCo,d.dPhai,'ô',0,0,'diem|'+d.gv)+
      '<br><span style="color:var(--ink3);font-size:10.5px">còn '+CONNGAY+' ngày tới mốc chốt</span></td>'+
+   '<td>'+oKy(d.ky)+'</td>'+
    '<td class="c"><span class="rolnk" data-x="mo" data-k="so|'+d.gv+'">xem ›</span></td></tr>';
  });
  h+='</tbody></table>'+chuCot5()+'</div>'+panelHTML()+'</div>';
@@ -695,10 +949,28 @@ function tongThanh(ts){
   '</div>';
 }
 const chuCot5=()=>'<div style="padding:8px 12px;font-size:11.5px;color:var(--ink2);border-top:1px solid var(--line);background:#f8fafc">'+
- '⚠ <b>Cột ⑤ đọc theo HỌC KỲ, không theo khoảng ngày</b> — mẫu số là số ô ĐGtx của cả kỳ (đọc từ M10.1 bước ⑥), '+
- 'hạn là <b>mốc chốt kỳ '+MOCCHOT+'</b>. Lùi khoảng ngày thì cột này đứng yên, đó là đúng.<br>'+
+ /* 🆕 DTHN-2D · chốt P-3 */
+ '🔁 <b>Lượt giao trong tiết dạy thay:</b> cột ③ đếm cho <b>người giao</b> — người đứng lớp tiết đó, cùng người với «trong N tiết» và cột ②; '+
+ 'cột ④ đếm cho <b>chủ lượt</b> — người có quyền chấm (qua mốc chốt sổ 24 giờ, lượt thường đã chuyển về giáo viên của lớp — DT-A). '+
+ 'Cùng một lượt có thể nằm ở ③ của người này và ④ của người kia — <b>đúng luật</b>, không phải lệch số.<br>'+
+ '⚠ <b>Cột ⑤ và ⑥ đọc theo HỌC KỲ, không theo khoảng ngày</b> — mẫu số của ⑤ là số ô ĐGtx của cả kỳ (đọc từ M10.1 bước ⑥), '+
+ 'hạn của cả hai là <b>mốc chốt kỳ '+MOCCHOT+'</b>. Lùi khoảng ngày thì hai cột này đứng yên, đó là đúng.<br>'+
+ /* TDHT-1B — chốt 1A-E2 */
+ '⚖ <b>Cột ⑥ chỉ có nghĩa SAU mốc chốt kỳ</b> — trước mốc, «chưa ký» <b>không phải đang chậm</b> nên ⛔ không tô đỏ '+
+ '(khuôn đã chốt ở M0.4). Con số này <b>khác</b> vế «cặp chưa ký» ở tab 📈 Tình hình học tập của lớp: ở đây chủ thể là '+
+ '<b>giáo viên</b>, ở đó là <b>lớp</b> — cùng một tầng dữ liệu, hai câu hỏi.<br>'+
  '🛑 <b>Cột ③ là số đếm, không phải phân số</b> — không quy định nào đặt tần suất giao bài tập về nhà, '+
- 'nên đặt mẫu số ở đây là tự chế ra một định mức (§5.1.3 — đang chờ chốt).</div>';
+ 'nên đặt mẫu số ở đây là tự chế ra một định mức (§5.1.3 — ✅ chốt 18/9/2026).<br>'+
+ '📥 <b>Cột ③ đếm LƯỢT GIAO của giáo viên; tỷ lệ NỘP của học sinh ở tab «Theo dõi tình hình nộp bài»</b> — '+
+ 'hai câu hỏi khác nhau, hai chủ thể khác nhau (§5.9.2). '+
+ (co('np')?'<span class="rolnk" data-x="nbGo">↗ Mở tab Theo dõi tình hình nộp bài</span>':'')+
+ /* TDHT-1C — ranh giới với M5.2 Giáo án (§2.6 · rb 48). MỘT LỐI DẪN, ⛔ 0 con số.
+    Chuỗi dùng ĐÚNG DẠNG M0.1 W-A32 đang phát (?tab=theo_doi_to&loc=chua_soan|qua_han),
+    ⛔ không tự đặt khóa mới — bài học của 'nguong_canh_bao'. Cổng D3: năng lực 'ga'. */
+ '<br>📗 <b>Giáo án KHÔNG có ở menu này</b> — theo dõi ở <b>M5.2 · Theo dõi giáo án của tổ</b>, '+
+ 'vì ở đó mới <b>viết nhận xét vào từng hoạt động</b> và <b>nhắc hàng loạt</b> được — hai thứ TD-1 và rb 21 cấm ở đây (§2.6). '+
+ (co('ga')?'<span class="rolnk" data-go="M5.2 · Theo dõi giáo án của tổ (lọc Chưa soạn · Quá hạn)">↗ M5.2</span>'
+          :'<span style="color:var(--ink3)" title="Chức danh của bạn không có ô ở m5.2.theo_doi_giao_an_to — quy tắc D3">🔒</span>')+'</div>';
 
 /* ===================== TAB 2 — THEO LỚP ===================== */
 function viewLop(){
@@ -708,9 +980,12 @@ function viewLop(){
    'nhưng dẫn tới hành động khác: thiếu trải trên nhiều môn của <b>một lớp</b> là vấn đề của lớp, không phải của một người.</div>';
  h+='<div class="stage'+(panel?' open':'')+'"><div class="listw"><table><thead><tr>'+
   '<th>Lớp</th><th>GVCN</th><th class="c">Môn có tiết</th><th class="c">Tiết đã qua</th>'+
-  '<th>① Điểm danh</th><th>② Sổ đầu bài</th><th>③ Giao BTVN</th><th>④ Chấm BTVN</th><th>⑤ Điểm TX</th>'+
+  '<th>① Điểm danh</th><th>② Sổ đầu bài</th><th>③ Giao BTVN</th><th>④ Chấm BTVN</th>'+
+  '<th>⑤ Điểm TX <span class="hk">HK I</span></th>'+
+  /* TDHT-1B — cột ⑥, chốt 1A-E2 */
+  '<th>⑥ Ký kết quả môn <span class="hk">HK I</span></th>'+
   '</tr></thead><tbody>';
- if(!ls.length)h+='<tr><td colspan="9" class="empty">Không có lớp nào trong phạm vi.</td></tr>';
+ if(!ls.length)h+='<tr><td colspan="10" class="empty">Không có lớp nào trong phạm vi.</td></tr>';
  ls.forEach(l=>{
   const d=doLop(l.id);
   h+='<tr><td><b>'+l.id+'</b><br><span style="color:var(--ink3);font-size:11px">Khối '+l.k+' · '+esc(l.dt)+' · sĩ số '+l.ss+'</span></td>'+
@@ -720,7 +995,8 @@ function viewLop(){
    '<td>'+oPS(d.soCo,d.soPhai,'tiết',d.soQua,d.soSap,'sol|'+l.id)+'</td>'+
    '<td>'+oDem(d.btLuot,'trong '+d.tiet+' tiết','btl|'+l.id)+'</td>'+
    '<td>'+oPS(d.chamCo,d.chamPhai,'bài',d.chamQua>0?d.chamQua:0,0,'chaml|'+l.id)+'</td>'+
-   '<td>'+oPS(d.dCo,d.dPhai,'ô',0,0,'dieml|'+l.id)+'</td></tr>';
+   '<td>'+oPS(d.dCo,d.dPhai,'ô',0,0,'dieml|'+l.id)+'</td>'+
+   '<td>'+oKy(d.ky)+'</td></tr>';
  });
  h+='</tbody></table>'+chuCot5()+'</div>'+panelHTML()+'</div>';
  return h;
@@ -729,20 +1005,32 @@ function viewLop(){
 /* ===================== TAB 3 — THEO TIẾT (tầng chi tiết) =====================
    Mỗi dòng BẮT BUỘC nêu đủ: tiết · môn · LỚP · GIÁO VIÊN · ngày (chốt số 7). */
 function viewTiet(){
- const ts=tietDaQua().slice().sort((a,b)=>(b.di-a.di)||(a.so-b.so));
+ const tsAll=tietDaQua().slice().sort((a,b)=>(b.di-a.di)||(a.so-b.so));
+ /* SDBG-1C — lọc «✎ Đã đính chính»: CHỈ ĐỌC, trong khoảng ngày đang chọn; lọc cả năm ở tab nề nếp */
+ const nDc=tsAll.filter(t=>t.dc).length, ts=dcTab3?tsAll.filter(t=>t.dc):tsAll;
  let h=daiTD2()+daiTuan()+daiPV();
  h+='<div class="info">🕐 Tầng chi tiết — trả lời <b>«tiết nào còn thiếu đúng cái gì»</b>. '+
-   'Mỗi dòng nêu đủ <b>tiết · môn · lớp · giáo viên · ngày</b>, không rút gọn kể cả khi đang lọc sẵn.</div>';
+   'Mỗi dòng nêu đủ <b>tiết · môn · lớp · giáo viên · ngày</b>, không rút gọn kể cả khi đang lọc sẵn.'+
+   '<div style="margin-top:6px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">'+
+   '<span class="chip'+(dcTab3?' on':'')+'" data-x="dcLoc">✎ Chỉ tiết đã đính chính · '+nDc+'</span>'+
+   '<span style="font-size:11.5px">Đính chính sau mốc chốt do chính giáo viên thực dạy làm ở M2.2, có vết — <b>thông tin để tiếp nhận, không phải lỗi</b>: '+
+   'không tô đỏ, không đếm vào số tồn. Lọc cả năm ở tab <b>📓 Theo dõi nề nếp lớp</b>.</span></div></div>';
  h+='<div class="listw"><table><thead><tr>'+
   '<th>Ngày · Tiết</th><th>Môn · Lớp · Phòng</th><th>Giáo viên</th>'+
-  '<th>② Sổ đầu bài</th><th>③ BTVN giao</th><th>④ BTVN chấm</th><th>⑤ Điểm TX của cặp</th><th>Thao tác</th>'+
+  '<th>② Sổ đầu bài</th><th>③ BTVN giao</th><th>④ BTVN chấm</th><th>⑤ Điểm TX của cặp</th>'+
+  /* TDHT-1B — cột ⑥ ở tab 3 là trạng thái ký của ĐÚNG CẶP của tiết, không phải số đếm */
+  '<th>⑥ Ký kết quả môn</th><th>Thao tác</th>'+
   '</tr></thead><tbody>';
- if(!ts.length)h+='<tr><td colspan="8" class="empty">Không có tiết nào đã qua giờ trong khoảng đang chọn.</td></tr>';
+ if(!ts.length)h+='<tr><td colspan="9" class="empty">'+(dcTab3?'Không có tiết nào đã đính chính trong khoảng đang chọn — tiết đính chính ở tuần khác xem ở tab 📓 Theo dõi nề nếp lớp (lọc cả năm).'
+   :'Không có tiết nào đã qua giờ trong khoảng đang chọn.')+'</td></tr>';
  ts.slice(0,60).forEach(t=>{
   const g=gvOf(t.thay||t.gv), b=BT.find(x=>x.tiet===t.id);
-  const dk=DTX[(t.thay||t.gv)+'|'+t.lop+'|'+t.mon]||DTX[t.gv+'|'+t.lop+'|'+t.mon];
+  const kCle=DTX[(t.thay||t.gv)+'|'+t.lop+'|'+t.mon]?(t.thay||t.gv):t.gv;
+  const dk=DTX[kCle+'|'+t.lop+'|'+t.mon];
+  const kCap=CAP9[kCle+'|'+t.lop+'|'+t.mon];   /* TDHT-1B — cột ⑥ của đúng cặp này */
   let so;
-  if(t.soTT==='chot')so='<span class="st2 o">✅ Đã ghi '+t.gioGhi+'</span><br><span style="color:var(--ink3);font-size:10.5px">đã chốt</span>';
+  if(t.soTT==='chot')so='<span class="st2 o">✅ Đã ghi '+t.gioGhi+'</span><br><span style="color:var(--ink3);font-size:10.5px">đã chốt</span>'+
+    (t.dc?'<br>'+nhanDC(t):'');
   else if(t.soTT==='ghi')so='<span class="st2 o">✅ Đã ghi '+t.gioGhi+'</span>';
   else if(t.soTT==='dang')so='<span class="st2 w">🟡 Đang ghi</span><br><span style="color:var(--ink3);font-size:10.5px">chưa tính là xong</span>';
   else so=t.gioQua>CFG.gioSo?'<span class="st2 r">⛔ Chưa ghi · quá '+CFG.gioSo+' giờ</span>'
@@ -758,8 +1046,17 @@ function viewTiet(){
             :'<span style="color:var(--ink3)">— không giao</span>')+'</td>'+
    '<td>'+(b&&b.quaHan?(b.cham+'/'+b.nop+(b.ngayCho>7&&b.cham<b.nop
             ?'<br><span class="st2 r">'+(b.nop-b.cham)+' bài quá 7 ngày</span>':''))
-            :'<span style="color:var(--ink3)">—</span>')+'</td>'+
+            :'<span style="color:var(--ink3)">—</span>')+
+     /* 🆕 DTHN-2D · P-3 — lượt giao trong tiết dạy thay: ④ thuộc CHỦ LƯỢT, nói ra tên khi khác người giao */
+     (b&&t.thay?'<br><span style="color:var(--ink3);font-size:10.5px">'+(daChuyenChu(b)
+       ?'chủ lượt: '+esc(gvOf(b.chu_luot).ten)+' — chuyển chủ sau mốc chốt sổ'
+       :'người dạy thay giữ lượt tới mốc chốt sổ')+'</span>':'')+'</td>'+
    '<td>'+(dk?(dk.co+'/'+dk.phai+' ô <span class="st2 n">cặp · HK I</span>'):'<span style="color:var(--ink3)">—</span>')+'</td>'+
+   '<td>'+(kCap
+     ? (kCap.ky ? '<span class="st2 o">⚖ Đã ký</span>'
+                : (QUA_MOC_KY ? '<span class="st2 r">⛔ Chưa ký · đã qua mốc chốt</span>'
+                              : '<span class="st2 n">Chưa ký</span><br><span style="color:var(--ink3);font-size:10.5px">chưa tới mốc chốt '+MOCCHOT+'</span>'))
+     : '<span style="color:var(--ink3)">—</span>')+'</td>'+
    '<td>'+(thieuSo?'<span class="rolnk" data-go="M2.2">↗ M2.2</span> ':'')+
           (thieuCham?'<span class="rolnk" data-go="M2.3">↗ M2.3</span> ':'')+
           (thieuDiem?'<span class="rolnk" data-go="M2.5">↗ M2.5'+(R().sc==='group'?' (xem)':'')+'</span>':'')+
@@ -880,9 +1177,11 @@ function viewCF(){
      '</span>':'')+'</td>'+
   '<td><span class="st2 o">🟢 M5.9 ⚙</span><br><span style="color:var(--ink3);font-size:10.5px">khai mới ở đây</span></td>'+
   '<td>'+(suaDuoc?'<b>Sửa được</b> — PHT_CM khai, HT duyệt':'Chỉ xem')+'</td></tr>';
+ /* KGLH-1F 23/9/2026 — ngưỡng 7 ngày ĐỔI CHỦ: tab ⚙ Chính sách BTVN rời M2.3 sang M5.10 (mã giữ
+    m2.3.chinh_sach_btvn). Con số không đổi, người khai không đổi (PHT_CM soạn · HT duyệt) — chỉ đổi chỗ khai. */
  h+='<tr><td><b>④ Chấm bài tập về nhà</b></td><td><b>7 ngày</b> kể từ hạn nộp</td>'+
-  '<td><span class="st2 n">🔗 M2.3 §8.8</span></td>'+
-  '<td><b>Chỉ đọc</b> <span class="rolnk" data-go="M2.3">↗ M2.3 ⚙</span></td></tr>';
+  '<td><span class="st2 n">🔗 M5.10 ⚙ Chính sách BTVN</span><br><span style="color:var(--ink3);font-size:10.5px">trước 23/9/2026: M2.3 §8.8</span></td>'+
+  '<td><b>Chỉ đọc</b> <span class="rolnk" data-go="M5.10">↗ M5.10 ⚙</span></td></tr>';
  h+='<tr><td><b>⑤ Nhập điểm thường xuyên</b></td><td><b>Mốc chốt kỳ</b> — HK I: '+MOCCHOT+'</td>'+
   '<td><span class="st2 n">🔗 M10.1 bước ⑥</span></td>'+
   '<td><b>Chỉ đọc</b> <span class="rolnk" data-go="M10.1">↗ M10.1</span></td></tr>';
@@ -907,6 +1206,1062 @@ function viewCF(){
   '</div></div>';
  return h;
 }
+
+/* ===================================================================
+   TAB 7 — THEO DÕI NỀ NẾP LỚP  ·  M5.9 v2.0 (22/9/2026, SDBG-1C)
+
+   Feature GIỮ MÃ `m2.2.theo_doi_ne_nep_lop` (SB-1) — chuyển từ M2.2 sang M5.9,
+   chỉ đổi cột menu. Đơn vị dòng: MỘT LỚP × MỘT TUẦN.
+   CHỈ ĐỌC (TD-1): tệp này không có một hàm nào ghi vào dữ liệu nghiệp vụ.
+   Không nút 🔔 Báo giáo viên bộ môn (S5 — bỏ hẳn). Không nút duyệt (S6 —
+   sửa sổ sau chốt là ĐÍNH CHÍNH CÓ VẾT do chính người thực dạy làm ở M2.2;
+   ở đây quản lý chỉ TIẾP NHẬN thông tin: nhãn ✎ Đã đính chính, lọc được).
+   =================================================================== */
+
+/* ---------- 0. Vệ sinh dữ liệu mẫu — KHÔNG gọi rnd(), không đổi hạt giống ----------
+   Bộ sinh tiết v1.0 có 10 tiết TRÙNG Ô (cùng lớp hoặc cùng người dạy, cùng ngày, cùng tiết)
+   và gắn «đã chốt» cho tiết chưa qua 24 giờ. Tab 3 giấu được hai lỗi đó; tab nề nếp — gom
+   theo lớp, theo ngày — thì không: một lớp học hai môn ở cùng tiết 3 là dữ liệu vô lý.
+   Sửa SAU khi sinh, không dùng số ngẫu nhiên ⇒ số lượng tiết, thứ tự, BTVN, điểm TX, điểm
+   danh, chấm công giữ nguyên; chỉ số tiết của 10 dòng dời sang ô trống gần nhất (giữ nguyên
+   «đã qua giờ» hay chưa), và trạng thái Đã ghi / Đã chốt DẪN XUẤT theo mốc 24 giờ (M2.2 §8.6.1). */
+const hh=x=>(x<10?'0':'')+Math.floor(x)+':'+String(Math.round((x%1)*60)).padStart(2,'0');
+(function(){
+ const L={},G={};
+ TIET.forEach(t=>{
+  t.w=2;
+  const ai=s=>t.di+'|'+s+'|'+t.lop, gi=s=>t.di+'|'+s+'|'+(t.thay||t.gv);
+  const qua=s=>(t.di<NGAY.length-1)||(GIOTIET[s][1]<GIONAY);
+  if(L[ai(t.so)]||G[gi(t.so)]){
+   const thu=[1,-1,2,-2,3,-3,4,-4,5,-5,6,-6,7,-7].map(d=>t.so+d)
+     .filter(s=>s>=1&&s<=8&&!L[ai(s)]&&!G[gi(s)]&&qua(s)===t.daQua);
+   if(thu.length){
+    const s=thu[0], [b,e]=GIOTIET[s];
+    t.doiTu=t.so; t.so=s; t.gio=hh(b)+'–'+hh(e);
+    t.gioQua=t.daQua?((NGAY.length-1-t.di)*24+(GIONAY-e)):0;
+    if(t.gioGhi)t.gioGhi=(Math.floor(e)+1)+':'+t.gioGhi.split(':')[1];
+   }
+  }
+  L[ai(t.so)]=t.id; G[gi(t.so)]=t.id;
+  /* Đã ghi ↔ Đã chốt là trạng thái DẪN XUẤT từ mốc 24 giờ kể từ giờ kết thúc tiết */
+  if(t.soTT==='ghi'||t.soTT==='chot')t.soTT=t.gioQua>=24?'chot':'ghi';
+ });
+})();
+
+/* ---------- 1. Nền riêng của tab: lịch tuần, học sinh, nội dung tiết ---------- */
+let sd2=20260922;
+const rn2=()=>{sd2=(sd2*1103515245+12345)&0x7fffffff;return sd2/0x7fffffff};
+const pk2=a=>a[Math.floor(rn2()*a.length)];
+
+/* tuần của NĂM HỌC — khai giảng 5/9/2026, tuần 1 học từ thứ Hai 7/9 */
+const TUANNN=[{n:1,lb:'Tuần 1 · 7/9 – 11/9',tl:-1},{n:2,lb:'Tuần 2 · 14/9 – 18/9',tl:0}];
+const TUANNAY_NN=2;
+const NGAY1=[{d:'7/9',t:'Thứ Hai'},{d:'8/9',t:'Thứ Ba'},{d:'9/9',t:'Thứ Tư'},
+             {d:'10/9',t:'Thứ Năm'},{d:'11/9',t:'Thứ Sáu'}];
+const MUCNN=['Tốt','Khá','Trung bình','Yếu'];
+const HVNN={HV1:'Không thuộc bài, không làm bài tập về nhà',HV4:'Ngủ trong giờ học',
+ HV5:'Gây mất trật tự trong lớp',HV7:'Không hợp tác khi làm việc nhóm',
+ HV11:'Sử dụng điện thoại sai mục đích trong giờ học'};      /* bản chiếu Master M2.7 — mã HV* */
+const BAI={
+ 'Ngữ văn':['Bài 1 — Đọc hiểu văn bản truyện','Bài 1 — Thực hành tiếng Việt','Bài 2 — Viết bài văn nghị luận'],
+ 'Vật lí':['Bài 2 — Chuyển động đều. Luyện tập','Bài 3 — Tốc độ. Bài tập 3.1 – 3.4','Bài 4 — Đo tốc độ bằng đồng hồ bấm giây'],
+ 'Toán':['§2 — Phương trình bậc nhất hai ẩn','Luyện tập — hệ hai phương trình','§3 — Giải hệ bằng phương pháp thế'],
+ 'Hoá học':['Bài 2 — Oxide. Phân loại','Bài 3 — Acid. Thí nghiệm với quỳ tím','Luyện tập chương 1'],
+ 'Tiếng Anh':['Unit 1 — Getting started','Unit 1 — A closer look 1','Unit 1 — Skills 1'],
+ 'Sinh học':['Bài 2 — Tế bào — đơn vị cơ sở của sự sống','Bài 3 — Thực hành quan sát tế bào'],
+ 'Lịch sử':['Bài 1 — Nước Việt Nam thời nguyên thủy','Bài 2 — Các quốc gia sơ kì'],
+ 'Địa lí':['Bài 1 — Dân tộc và dân số','Bài 2 — Phân bố dân cư và các loại hình quần cư'],
+ 'Công nghệ':['Bài 1 — Tiêu chuẩn trình bày bản vẽ kĩ thuật','Bài 2 — Hình chiếu vuông góc']};
+const KHEN=['Phát biểu xây dựng bài tốt','Giải đúng bài khó trên bảng','Giúp bạn cùng nhóm hoàn thành thí nghiệm',
+ 'Chuẩn bị bài chu đáo'];
+const NHAC=[['HV5','Nói chuyện riêng khi cô giảng'],['HV1','Không làm bài tập về nhà'],
+ ['HV11','Dùng điện thoại trong giờ'],['HV4','Ngủ gật cuối tiết'],['HV7','Không tham gia hoạt động nhóm']];
+const _HO2=['Nguyễn','Trần','Lê','Phạm','Hoàng','Vũ','Đặng','Bùi','Đỗ','Ngô','Dương','Đinh'];
+const _DEM2=['Minh','Thu','Gia','Bảo','Khánh','Ngọc','Quốc','Hoài','Anh','Thanh'];
+const _TEN2=['An','Bình','Chi','Dũng','Giang','Hà','Khoa','Linh','Mai','Nam','Phúc','Quân','Trang','Vy','Thảo','Nhi','Kiên','Duy'];
+const HSNN={};
+LOP.forEach(l=>{HSNN[l.id]=[];for(let i=0;i<10;i++)HSNN[l.id].push(pk2(_HO2)+' '+pk2(_DEM2)+' '+pk2(_TEN2))});
+
+/* phân công dùng lại đúng bảng của bộ sinh tiết v1.0 (app.js) — M4.5 */
+const PCNN=[['gv01',['9A1','9A3','8A1']],['gv02',['9A1','8A1','7A1']],['gv03',['9A1','7A1','6A1']],
+ ['gv04',['8A1','9A3','7A1']],['gv05',['9A1','8A1','6A1']],['gv06',['7B1','9B1']],
+ ['gv07',['6A1','7A1','9A3']],['gv08',['9B1','7B1']],['gv09',['9A3','9A1','6A1']],['gv10',['8A1','6A1']]];
+
+/* bổ sung nội dung sổ cho một tiết — nội dung dạy · xếp loại ý thức · khen · nhắc nhở · vắng */
+function boSung(t){
+ if(t.soTT==='huy')return;
+ const coNd=t.soTT==='ghi'||t.soTT==='chot'||t.soTT==='dang';
+ t.nd=coNd?(t.soTT==='dang'?'Phần 1 — '+pk2(BAI[t.mon]||['Nội dung theo kế hoạch']):pk2(BAI[t.mon]||['Nội dung theo kế hoạch'])):'';
+ const r=rn2();
+ t.muc=(t.soTT==='ghi'||t.soTT==='chot')?(r<0.55?'Tốt':r<0.86?'Khá':r<0.97?'Trung bình':'Yếu'):'';
+ t.khen=[];t.nhac=[];
+ if(t.muc&&rn2()<0.2)t.khen.push([pk2(HSNN[t.lop]),pk2(KHEN)]);
+ if(t.muc&&rn2()<0.18){const n=pk2(NHAC);t.nhac.push([pk2(HSNN[t.lop]),n[0],n[1]])}
+ t.vang=coNd?Math.floor(rn2()*2.6):0;
+ t.xn=(t.so===1&&coNd)?(t.vang?{du:0,ds:[pk2(HSNN[t.lop])]}:{du:1}):null;   /* ô xác nhận sĩ số — GY18-H1, chỉ tiết đầu buổi */
+}
+
+/* ---------- 2. Tuần 1 (7/9 – 11/9) — sinh riêng, ĐỨNG NGOÀI mảng TIET ----------
+   Sáu tab cũ đọc TIET và chỉ có dữ liệu của tuần đang học; tuần 1 là của tab nề nếp để
+   «lùi tuần» và «tiết chưa ghi quét cả năm» có thật. Đặt vào TIET thì tab 1–5 đổi số. */
+let W1=[];
+(function(){
+ const L={},G={};let n=0;
+ const them=(o)=>{
+  const [b,e]=GIOTIET[o.so], ng=NGAY1[o.di], l=lopOf(o.lop), g=gvOf(o.gv);
+  const t=Object.assign({id:'W1-'+String(++n).padStart(3,'0'),w:1,ngay:ng.d,thu:ng.t,
+   gio:hh(b)+'–'+hh(e),mon:g.mon,to:g.to,dt:l.dt,
+   phong:(l.dt==='Điểm trường A'?'P.A':'P.B')+(100+l.k*10),
+   daQua:true,gioQua:(7+NGAY1.length-1-o.di)*24+(GIONAY-e),thay:'',
+   gioGhi:(o.soTT==='chot'||o.soTT==='ghi')?(Math.floor(e)+1)+':'+String(3+(n*7)%50).padStart(2,'0'):''},o);
+  L[t.di+'|'+t.so+'|'+t.lop]=1; G[t.di+'|'+t.so+'|'+t.gv]=1; W1.push(t); return t;
+ };
+ /* 🔑 tiết mẫu ĐÃ ĐÍNH CHÍNH — Vật lí 9A1 · Thứ Hai tuần 1 · tiết 1 (dòng tương đương của mẫu M2.2) */
+ them({di:0,so:1,lop:'9A1',gv:'gv02',soTT:'chot',
+  dc:{truong:'Xếp loại ý thức lớp',cu:'Tốt',moi:'Khá',
+      ly:'Chọn nhầm mức khi ghi. Cuối tiết có 3 em làm việc riêng, đã nhắc chung cả lớp — mức đúng là Khá.',
+      boi:'Lê Minh Tuấn',luc:'10/9/2026 16:20',moc:'8/9/2026 07:45'}});
+ /* tiết HỦY — dòng sổ rút gọn; ghi chú tình hình lớp nay ghi ở M4.7 (SDBG-1B), đây chỉ chiếu 🔗 */
+ them({di:2,so:2,lop:'9A3',gv:'gv04',soTT:'huy',xuly:'Lớp tự học có giám sát',
+  ghiChu:'Lớp tự học tại phòng, sĩ số đủ, không có sự việc.',boiGC:'Lê Văn Thái (Giám thị)',lucGC:'9/9/2026 08:40'});
+ /* tiết QUÊN GHI từ tuần trước — phải còn hiện ở con số «chưa ghi» khi đang xem tuần này */
+ them({di:3,so:2,lop:'8A1',gv:'gv01',soTT:'chua'});
+ NGAY1.forEach((ng,di)=>{
+  PCNN.forEach(([gid,lops])=>{
+   lops.forEach(lid=>{
+    if(rn2()>0.5)return;
+    const tu=1+Math.floor(rn2()*8);
+    const o=[0,1,-1,2,-2,3,-3,4,-4,5,-5,6,-6,7,-7].map(d=>tu+d)
+      .find(s=>s>=1&&s<=8&&!L[di+'|'+s+'|'+lid]&&!G[di+'|'+s+'|'+gid]);
+    if(!o)return;
+    const r=rn2();
+    them({di:di,so:o,lop:lid,gv:gid,soTT:r<0.93?'chot':r<0.97?'dang':'chua'});
+   });
+  });
+ });
+})();
+
+/* nội dung sổ cho mọi tiết — chạy SAU khi hai tuần đã đủ, bằng rn2() riêng */
+TIET.forEach(boSung); W1.forEach(boSung);
+
+/* 🔑 tiết mẫu ĐÃ ĐÍNH CHÍNH thứ hai — Vật lí 8A1 · Thứ Năm 17/9 · tiết 4 (T052)
+   Dòng tương đương của mẫu M2.2 «8A1 Vật lí Thứ Ba tuần 2 tiết 5»: bộ tiết của M5.9 không có tiết đó;
+   T052 đã qua mốc chốt 24 giờ lúc 10:39 hôm nay nên đính chính lúc 13:40 là đúng luật §2b. */
+(function(){
+ const t=TIET.find(x=>x.id==='T052');
+ if(!t)return;
+ t.soTT='chot';
+ t.nd='Bài 4 — Đo tốc độ. Thực hành mặt phẳng nghiêng (đổi do phòng thiếu bộ ròng rọc)';
+ t.dc={truong:'Nội dung dạy thực tế',cu:'Bài 4 — Đo tốc độ. Thực hành ròng rọc',moi:t.nd,
+  ly:'Ghi nhầm tên bài thực hành. Thực tế làm mặt phẳng nghiêng vì bộ ròng rọc hỏng, đã báo quản lý CSVC.',
+  boi:'Lê Minh Tuấn',luc:'18/9/2026 13:40',moc:'18/9/2026 10:39'};
+ const w=W1.find(x=>x.id==='W1-001'); if(w){w.muc='Khá';w.nd=w.nd||'Bài 2 — Chuyển động đều. Luyện tập'}
+})();
+
+/* ---------- 3. Trạng thái + phạm vi ---------- */
+const tietNN=w=>(w===1?W1:TIET);
+const tatCaNN=()=>W1.concat(TIET);
+const byIdNN=id=>tatCaNN().find(t=>t.id===id);
+let NN={lop:null,w:TUANNAY_NN,loc:'lop',tu:'',dai:''};
+
+function ttNN(t){
+ if(t.soTT==='huy')return {k:'huy',t:'✕ Tiết hủy',c:'n'};
+ if(t.soTT==='chot')return {k:'chot',t:'🔒 Đã chốt',c:'n'};
+ if(t.soTT==='ghi')return {k:'ghi',t:'✓ Đã ghi xong',c:'o'};
+ if(t.soTT==='dang')return {k:'dang',t:'🟡 Đang ghi dở',c:'w'};
+ if(!t.daQua)return {k:'chua',t:'Chưa tới giờ',c:'n'};
+ /* đỏ CHỈ khi đã quá mốc nhắc thật ở ⚙ (TD-2) — trong hạn thì vàng nhạt, nói còn bao lâu */
+ return t.gioQua>CFG.gioSo?{k:'qua',t:'⛔ Chưa ghi · quá '+CFG.gioSo+' giờ',c:'r'}
+                          :{k:'han',t:'Chưa ghi · còn '+Math.max(0,Math.round(CFG.gioSo-t.gioQua))+' giờ',c:'w'};
+}
+/* Group neo vào TIẾT (§8.2) — Tổ trưởng thấy tiết của môn thuộc tổ, ở mọi lớp */
+function pvNN(t){
+ const r=R();
+ if(r.sc==='group'&&t.to!==r.to)return false;
+ if(r.sc==='branch'&&t.dt!==r.dt)return false;
+ if(r.sc==='school'&&fDt!=='ALL'&&t.dt!==fDt)return false;
+ return true;
+}
+/* lớp trong phạm vi — dựng từ PHẠM VI (phân công · điểm trường), không gom từ dòng sổ */
+function lopNN(){
+ const r=R();
+ return LOP.filter(l=>{
+  if(r.sc==='branch'&&l.dt!==r.dt)return false;
+  if(r.sc==='school'&&fDt!=='ALL'&&l.dt!==fDt)return false;
+  if(r.sc==='group')return PCNN.some(([g,ls])=>ls.includes(l.id)&&gvOf(g).to===r.to);
+  return true;
+ });
+}
+/* hàng đợi QUÉT CẢ NĂM — không cắt theo tuần đang xem, không cắt theo lớp đang chọn (M2.2 §8.1.2b) */
+const quaNN=()=>tatCaNN().filter(t=>pvNN(t)&&ttNN(t).k==='qua'&&lopNN().some(l=>l.id===t.lop));
+const dcNN=()=>tatCaNN().filter(t=>t.dc&&pvNN(t)&&lopNN().some(l=>l.id===t.lop));
+const tuanLb=w=>TUANNN[w-1].lb;
+const coKLNN=()=>co('kl');                                  /* M2.7 — chỉ HT (TT 19/2025 Đ.17) */
+
+function chonMacDinh(){
+ const ls=lopNN(); if(!ls.length){NN.lop=null;return}
+ if(NN.lop&&ls.some(l=>l.id===NN.lop))return;
+ const q=quaNN().sort((a,b)=>a.w-b.w||a.di-b.di||a.so-b.so)[0];
+ NN.lop=q?q.lop:ls[0].id;
+}
+
+/* ---------- 4. Bộ lọc riêng của tab (thay thanh lọc chung) ---------- */
+function locNN(){
+ const r=R(), nDc=dcNN().length;
+ let h='<div class="tfl">';
+ h+='<label class="lbl">Tuần</label>'+
+  '<button class="btn xs" data-x="nnW" data-k="'+(NN.w-1)+'"'+(NN.w<=1?' disabled':'')+'>◀</button>'+
+  '<select class="sel" id="nnw">'+TUANNN.map(t=>'<option value="'+t.n+'"'+(NN.w===t.n?' selected':'')+'>'+
+    t.lb+(t.n===TUANNAY_NN?' · tuần này':'')+'</option>').join('')+'</select>'+
+  '<button class="btn xs" data-x="nnW" data-k="'+(NN.w+1)+'"'+(NN.w>=TUANNN.length?' disabled':'')+'>▶</button>'+
+  (NN.w!==TUANNAY_NN?'<button class="btn xs p" data-x="nnW" data-k="'+TUANNAY_NN+'">⟳ Về tuần này</button>':'');
+ h+='<label class="lbl">Điểm trường</label><select class="sel" id="fdt"'+(r.sc==='branch'?' disabled':'')+'>';
+ if(r.sc==='branch')h+='<option>'+esc(r.dt)+'</option>';
+ else h+=['ALL','Điểm trường A','Điểm trường B'].map(v=>'<option value="'+v+'"'+(fDt===v?' selected':'')+'>'+
+   (v==='ALL'?'Toàn trường':v)+'</option>').join('');
+ h+='</select>';
+ h+='<span class="spacer"></span>'+
+  '<span class="chip'+(NN.loc==='lop'?' on':'')+'" data-x="nnLoc" data-k="lop">📓 Tiết của lớp trong tuần</span>'+
+  '<span class="chip'+(NN.loc==='dc'?' on':'')+'" data-x="nnLoc" data-k="dc">✎ Đã đính chính · '+nDc+'</span>';
+ h+='</div>';
+ return h;
+}
+
+/* ---------- 5. Sidebar lớp: Điểm trường → Khối → Lớp ---------- */
+function sideNN(){
+ const ls=lopNN(), q=quaNN();
+ const dem=(l,f)=>f.filter(t=>t.lop===l).length;
+ const dang=tietNN(NN.w).filter(t=>pvNN(t)&&ttNN(t).k==='dang');
+ let h='<div class="nnside"><div class="nnsh">Lớp <span>'+ls.length+'</span></div>'+
+  '<div class="nnsp">'+(R().sc==='group'?'Lớp có tiết của '+esc(TO[R().to].ten)
+    :R().sc==='branch'?esc(R().dt):(fDt==='ALL'?'Toàn trường':esc(fDt)))+
+  '<br><b>Nề nếp là của cả lớp</b> — tab này không lọc theo môn.</div>';
+ let dt='',k=0;
+ ls.slice().sort((a,b)=>a.dt.localeCompare(b.dt)||a.k-b.k||a.id.localeCompare(b.id)).forEach(l=>{
+  if(l.dt!==dt){dt=l.dt;k=0;h+='<div class="nndt">▾ '+esc(dt).toUpperCase()+'</div>'}
+  if(l.k!==k){k=l.k;h+='<div class="nnkh">Khối '+k+'</div>'}
+  const a=dem(l.id,q), b=dem(l.id,dang);
+  h+='<div class="nnl'+(NN.loc==='lop'&&NN.lop===l.id?' on':'')+'" data-x="nnLop" data-k="'+l.id+'">'+
+   '<b>'+l.id+'</b>'+(a?'<span class="st2 r" title="Tiết đã quá mốc nhắc mà chưa ghi — quét cả năm">'+a+' chưa ghi</span>':'')+
+   (b?'<span class="st2 w" title="Tuần đang xem">'+b+' ghi dở</span>':'')+'</div>';
+ });
+ if(!ls.length)h+='<div class="empty" style="padding:18px">Không có lớp nào trong phạm vi.</div>';
+ /* khung hẹp ≤ 900px: sidebar thành ô chọn mang con số việc */
+ h+='</div><select class="sel nnsel" id="nnlop">'+ls.map(l=>{const a=dem(l.id,q);
+   return '<option value="'+l.id+'"'+(NN.lop===l.id?' selected':'')+'>'+l.id+' · '+esc(l.dt)+(a?' · '+a+' chưa ghi':'')+'</option>'}).join('')+'</select>';
+ return h;
+}
+
+/* ---------- 6. Khung phải ---------- */
+function daiNN(){
+ const r=R();
+ return '<div class="ro"><b>Bạn đang xem:</b> '+
+  (NN.loc==='dc'?'mọi tiết <b>đã đính chính</b> trong phạm vi — quét cả năm học, mọi lớp':
+   'Lớp <b>'+esc(NN.lop||'—')+'</b> · '+tuanLb(NN.w)+' · '+(r.sc==='group'?'<b>chỉ tiết của '+esc(TO[r.to].ten)+'</b>':'mọi môn của lớp'))+
+  ' · '+(r.sc==='branch'?esc(r.dt):(fDt==='ALL'?'toàn trường':esc(fDt)))+'.'+
+  (r.sc==='group'?' Phạm vi <b>Tổ bộ môn</b> neo vào <b>TIẾT</b> (§8.2): lớp có tiết của tổ, và trong lớp chỉ thấy tiết của tổ.':'')+
+  '<br><span style="color:var(--ink3)">Menu <b>CHỈ ĐỌC</b>: dòng sổ do <b>giáo viên thực dạy</b> ghi ở M2.2; '+
+  'GVCN xem lớp mình ở M2.9 T3. Khác tab <b>Theo lớp</b>: bên đó một dòng là một lớp × khoảng ngày với năm tín hiệu nhập liệu — '+
+  'ở đây là <b>một lớp × một tuần</b> với nội dung sổ: ý thức, sự việc, bản in từng tiết.</span></div>';
+}
+function daiQua(){
+ const q=quaNN(); if(!q.length)return '';
+ const s=q.slice().sort((a,b)=>a.w-b.w||a.di-b.di||a.so-b.so);
+ return '<div class="danger">⛔ <b>'+q.length+' tiết đã quá mốc nhắc '+CFG.gioSo+' giờ mà chưa ghi sổ</b> trong phạm vi của bạn '+
+  '<span style="font-weight:400">— quét <b>cả năm học, mọi lớp</b>, không bị tuần hay lớp đang chọn cắt.</span>'+
+  '<div style="margin-top:4px;font-weight:400">Hệ thống <b>không đẩy thông báo</b> việc này cho quản lý (M2.2 Q10) — con số nằm ở đây để bạn tự thấy. '+
+  'Giáo viên đã nhận nhắc ở M2.2. Đây là số <b>tiết</b>, không phải số người (TD-2).</div>'+
+  '<div style="margin-top:6px">'+s.slice(0,8).map(t=>'<button class="btn xs" style="margin:0 5px 5px 0" data-x="nnGo" data-k="'+t.id+'">→ '+
+   esc(t.mon)+' '+t.lop+' · '+t.thu+' '+t.ngay+' tiết '+t.so+(t.w!==NN.w?' <span class="st2 w">tuần '+t.w+'</span>':'')+'</button>').join('')+
+  (s.length>8?'<span style="font-size:11.5px">…và '+(s.length-8)+' tiết nữa</span>':'')+'</div></div>';
+}
+function nhanDC(t){
+ return t.dc?'<span class="st2 v oc2" data-x="dc" data-k="'+t.id+'" title="Bấm để xem bản gốc cạnh bản đính chính">✎ Đã đính chính</span>':'';
+}
+function mucBadge(m){return m?'<span class="st2 '+(m==='Tốt'?'o':m==='Khá'?'b':m==='Yếu'?'r':'w')+'">'+m+'</span>':''}
+
+function viewNN(){
+ chonMacDinh();
+ let h=daiTD2()+
+  '<div class="info">⚖ <b>Xếp loại ý thức là của LỚP trong từng tiết</b> — màn hình này <b>không đặt các lớp cạnh nhau thành bảng xếp hạng</b>. '+
+  'Bảng so sánh nhiều lớp chỉ có ở bản xuất «Báo cáo nề nếp tuần» (M2.2 điểm 15 — giữ nguyên khi chuyển menu). '+
+  'Tiết <b>đã đính chính</b> là thông tin để bạn tiếp nhận, <b>không phải lỗi</b> của giáo viên: không tô đỏ, không đếm vào số tồn.</div>';
+ if(NN.dai)h+='<div class="warn" style="display:flex;gap:9px;align-items:center"><span>'+NN.dai+'</span>'+
+  '<button class="btn xs" data-x="nnDai" style="margin-left:auto">✕</button></div>';
+ if(NN.tu)h+='<div class="ro" style="display:flex;gap:9px;align-items:center">↩ Mở từ <b>'+esc(NN.tu)+'</b>'+
+  '<span class="rolnk" data-go="'+esc(NN.tu)+'" style="margin-left:auto">‹ Quay lại '+esc(NN.tu)+'</span></div>';
+ h+=daiNN()+daiQua();
+ h+='<div class="nnstage">'+sideNN()+'<div class="nnmain">'+(NN.loc==='dc'?listDC():listLop())+'</div></div>';
+ return h;
+}
+
+function listLop(){
+ const lp=NN.lop;
+ if(!lp)return '<div class="listw"><div class="empty">Không có lớp nào trong phạm vi.</div></div>';
+ const l=lopOf(lp);
+ const L=tietNN(NN.w).filter(t=>t.lop===lp&&pvNN(t)).sort((a,b)=>a.di-b.di||a.so-b.so);
+ const day=L.filter(t=>t.soTT!=='huy'), c=k=>day.filter(t=>ttNN(t).k===k).length;
+ const mucs=MUCNN.map(m=>day.filter(t=>t.muc===m).length), tong=mucs.reduce((a,b)=>a+b,0)||1;
+ const col=['var(--green)','var(--brand)','var(--amber)','var(--red)'];
+ const khen=day.reduce((a,t)=>a+t.khen.length,0), nh=day.reduce((a,t)=>a+t.nhac.length,0);
+ const huy=L.length-day.length, nDc=day.filter(t=>t.dc).length;
+ let h='<div class="nnhd"><h2>Lớp '+esc(lp)+'</h2><span>'+esc(l.dt)+' · Khối '+l.k+' · sĩ số '+l.ss+' · GVCN '+esc(gvOf(l.cn).ten)+'</span></div>';
+ h+='<div class="listw"><div class="nntong">'+
+  '<div class="lp"><b>'+tuanLb(NN.w)+'</b><span>'+(R().sc==='group'?'chỉ tiết của '+esc(TO[R().to].ten):'mọi môn của lớp')+'</span></div>'+
+  '<div class="num"><b>'+day.length+'</b>tiết/tuần</div>'+
+  '<div class="num g"><b>'+(c('ghi')+c('chot'))+'</b>đã ghi xong</div>'+
+  '<div class="num w"><b>'+c('dang')+'</b>đang ghi dở</div>'+
+  '<div class="num"><b>'+(c('han')+c('chua'))+'</b>chưa ghi · chưa tới hạn</div>'+
+  '<div class="num'+(c('qua')?' r':'')+'"><b>'+c('qua')+'</b>quá hạn chưa ghi</div>'+
+  '<div class="num"><b>'+khen+' · '+nh+'</b>khen · nhắc nhở</div>'+
+  (nDc?'<div class="num v"><b>'+nDc+'</b>đã đính chính</div>':'')+
+  (huy?'<div class="num"><b>'+huy+'</b>tiết hủy</div>':'')+
+  '<div class="bar4" title="Phân bố xếp loại ý thức trong tuần">'+mucs.map((n,i)=>'<i style="width:'+(n/tong*100)+'%;background:'+col[i]+'"></i>').join('')+'</div>'+
+  '</div>';
+ let last=-1;
+ L.forEach(t=>{
+  if(t.di!==last){last=t.di;h+='<div class="grow"><span>'+t.thu+' '+t.ngay+(t.w===TUANNAY_NN&&t.di===NGAY.length-1?' · hôm nay':'')+'</span>'+
+   '<span class="ct">'+L.filter(y=>y.di===t.di).length+' tiết</span></div>'}
+  h+=rowNN(t,false);
+ });
+ if(!L.length)h+='<div class="empty">Lớp này không có tiết nào '+(R().sc==='group'?'của tổ ':'')+'trong tuần đang xem.</div>';
+ h+='<div class="lgd"><i style="background:var(--green)"></i> Tốt <i style="background:var(--brand)"></i> Khá '+
+  '<i style="background:var(--amber)"></i> Trung bình <i style="background:var(--red)"></i> Yếu'+
+  '<span style="margin-left:auto">Bấm một tiết → <b>bản in chỉ đọc</b> · ý thức và sự việc là input của Báo cáo học tập tuần (M2.9/T6)</span></div></div>';
+ return h;
+}
+function rowNN(t,moRong){
+ const s=ttNN(t), g=gvOf(t.thay||t.gv);
+ if(t.soTT==='huy')return '<div class="nnrow" data-x="nnTiet" data-k="'+t.id+'"><div class="tm"><b>Tiết '+t.so+'</b><span>'+t.gio+'</span></div>'+
+  '<div class="bd"><b>'+esc(t.mon)+'</b><div class="sub">'+esc(gvOf(t.gv).ten)+' · '+esc(t.xuly||'')+
+  ' · <span class="st2 n">🔗 ghi chú tình hình lớp ở M4.7</span></div></div>'+
+  '<div class="rt"><span class="st2 n">'+s.t+'</span></div></div>';
+ return '<div class="nnrow" data-x="nnTiet" data-k="'+t.id+'">'+
+  '<div class="tm"><b>'+(moRong?t.lop+' · ':'')+'Tiết '+t.so+'</b><span>'+(moRong?t.thu+' '+t.ngay+' · ':'')+t.gio+'</span></div>'+
+  '<div class="bd"><b>'+esc(t.mon)+'</b><div class="sub">'+esc(g.ten)+
+   (t.thay?' · <span class="st2 w">🔁 Dạy thay cho '+esc(gvOf(t.gv).ten)+'</span>':'')+
+   (t.khen.length||t.nhac.length?' · '+(t.khen.length?t.khen.length+' khen ':'')+(t.nhac.length?t.nhac.length+' nhắc nhở':''):'')+'</div></div>'+
+  '<div class="rt">'+mucBadge(t.muc)+'<span class="st2 '+s.c+'">'+s.t+'</span>'+nhanDC(t)+'</div></div>';
+}
+function listDC(){
+ const L=dcNN().sort((a,b)=>b.w-a.w||b.di-a.di||a.so-b.so);
+ let h='<div class="nnhd"><h2>✎ Tiết đã đính chính</h2><span>quét cả năm học · mọi lớp trong phạm vi · lựa chọn lớp ở sidebar không cắt danh sách này</span></div>';
+ h+='<div class="listw"><div class="ro" style="margin:10px">🔗 <b>Chỉ đọc — không có nút duyệt.</b> Đính chính sau mốc chốt 24 giờ do <b>chính giáo viên thực dạy</b> làm ở M2.2, '+
+  'bắt buộc lý do, <b>bản gốc giữ nguyên</b> (SDBG §2b). Đây là chỗ quản lý <b>tiếp nhận thông tin</b> thay cho hàng đợi duyệt cũ — '+
+  'bước duyệt đã bỏ vì người duyệt không có mặt ở tiết đó, không có căn cứ nói bản sửa đúng hay sai.</div>';
+ let last='';
+ L.forEach(t=>{const k='Tuần '+t.w;
+  if(k!==last){last=k;h+='<div class="grow"><span>'+tuanLb(t.w)+'</span><span class="ct">'+L.filter(y=>y.w===t.w).length+' tiết</span></div>'}
+  h+=rowNN(t,true);
+ });
+ if(!L.length)h+='<div class="empty">Không có tiết nào đã đính chính trong phạm vi.</div>';
+ return h+'</div>';
+}
+
+/* ---------- 7. Bản in chỉ đọc của một tiết · so sánh đính chính ---------- */
+function banInNN(id){
+ const t=byIdNN(id); if(!t)return;
+ const s=ttNN(t), g=gvOf(t.thay||t.gv), l=lopOf(t.lop);
+ if(t.soTT==='huy'){
+  modal('📄 Sổ đầu bài — '+esc(t.mon)+' · lớp '+t.lop+' · tiết hủy',
+   '<div class="ro">👁 <b>Dòng sổ rút gọn của tiết hủy</b> — không có nội dung dạy, không xếp loại ý thức, không tính vào tiết thực dạy.</div>'+
+   '<table><tr><th>Tiết</th><td>'+t.thu+' '+t.ngay+' · tiết '+t.so+' · '+t.gio+'</td></tr>'+
+   '<tr><th>Giáo viên theo lịch</th><td>'+esc(gvOf(t.gv).ten)+' — vắng, không bố trí được dạy thay</td></tr>'+
+   '<tr><th>Cách xử lý</th><td>'+esc(t.xuly)+' <span class="st2 n">🔗 M4.7</span></td></tr>'+
+   '<tr><th>Ghi chú tình hình lớp</th><td>'+esc(t.ghiChu)+'<br><span style="color:var(--ink3);font-size:11px">'+esc(t.boiGC)+' · '+esc(t.lucGC)+'</span></td></tr></table>'+
+   '<div class="info" style="margin-top:10px">Ghi chú tiết giáo viên vắng <b>đã chuyển về M4.7</b> — menu chủ của tiết Hủy (SDBG S1). Ở đây chỉ chiếu 🔗.</div>',
+   /* khớp chuỗi của SDBG-1B §4.4b.4: vai GHI được ô ghi chú (Giám thị · PHT_DT) đi thẳng hộp ghi; vai khác chỉ mở tiết để xem */
+   [(role==='GT'||role==='PHT_DT'||role==='FULL')
+     ?['↗ Ghi chú tại M4.7',()=>toast('Deep-link /M4.7?ctx='+t.id+'&action=sua&loai=ghi_chu_tiet_huy&return=M5.9 — mở hộp ghi chú của tiết hủy ở menu chủ. M5.9 không ghi gì.'),'']
+     :['↗ Mở tiết ở M4.7',()=>toast('Deep-link /M4.7?ctx='+t.id+'&return=M5.9 — mở đúng tiết hủy để xem. Menu này không sửa gì.'),''],
+    ['Đóng',0]]);
+  return;
+ }
+ const dc=t.dc;
+ const giaTri=(tr,v)=>dc&&dc.truong===tr?v+' <span class="st2 v">✎ bản đính chính</span>':v;
+ let b='<div class="ro">👁 <b>Chế độ chỉ đọc.</b> Sổ đầu bài là ghi chép của <b>người đứng lớp tiết đó</b> — quản lý không sửa được. '+
+  'Thấy sai thì trao đổi với giáo viên; sau mốc chốt 24 giờ chính giáo viên đó <b>đính chính có vết</b> ở M2.2.</div>'+
+  '<table><tr><th style="width:190px">Tiết</th><td>'+t.thu+' '+t.ngay+' · tiết '+t.so+' · '+t.gio+' · phòng '+esc(t.phong)+'</td></tr>'+
+  '<tr><th>Giáo viên thực dạy</th><td>'+esc(g.ten)+(t.thay?' <span class="st2 w">🔁 dạy thay cho '+esc(gvOf(t.gv).ten)+'</span>':'')+'</td></tr>'+
+  '<tr><th>Trạng thái sổ</th><td><span class="st2 '+s.c+'">'+s.t+'</span> '+nhanDC(t)+'</td></tr>'+
+  '<tr><th>✓ Kết thúc</th><td>'+(t.gioGhi?t.gioGhi+' ngày '+t.ngay:'<span style="color:var(--ink3)">chưa có</span>')+'</td></tr>'+
+  '<tr><th>Nội dung dạy thực tế</th><td>'+(t.nd?giaTri('Nội dung dạy thực tế',esc(t.nd)):'<span style="color:var(--ink3)">chưa điền</span>')+'</td></tr>'+
+  '<tr><th>Sĩ số có mặt</th><td>'+(t.nd?'<b>'+(l.ss-t.vang)+'</b> / '+l.ss+' — dẫn xuất, không nhập tay':'—')+'</td></tr>'+
+  (t.xn?'<tr><th>Xác nhận sĩ số của tiết</th><td>'+(t.xn.du?'✓ Lớp đủ':'Có em vắng — '+esc(t.xn.ds.join(', ')))+
+    ' <span style="color:var(--ink3);font-size:11px">(tiết đầu buổi — gợi ý cho M2.9 T2, GVCN chốt)</span></td></tr>':'')+
+  '<tr><th>Xếp loại ý thức</th><td>'+(t.muc?giaTri('Xếp loại ý thức lớp',mucBadge(t.muc)):'<span style="color:var(--ink3)">—</span>')+'</td></tr>'+
+  '<tr><th>Sự việc trong tiết</th><td>'+((t.khen.length||t.nhac.length)
+    ?t.khen.map(k=>'👍 '+esc(k[0])+' — '+esc(k[1])).concat(t.nhac.map(n=>'⚠ '+esc(n[0])+' — '+n[1]+' · '+esc(HVNN[n[1]]||'')+': '+esc(n[2]))).join('<br>')
+    :'<span style="color:var(--ink3)">không có</span>')+'</td></tr></table>';
+ if(dc)b+=soSanhDC(t);
+ if(t.nhac.length&&!coKLNN())b+='<div class="ro" style="margin-top:10px">Nút lập quyết định kỷ luật (M2.7) chỉ hiện với <b>Hiệu trưởng</b> ở menu này — '+
+  'TT 19/2025 Đ.17: GVCN lập, HT duyệt; GVCN làm việc đó từ M2.9 T3 của lớp mình.</div>';
+ modal('📄 Sổ đầu bài — '+esc(t.mon)+' · lớp '+t.lop,b,
+  [t.nhac.length&&coKLNN()?['↗ Lập quyết định kỷ luật tại M2.7',()=>toast('Deep-link /M2.7?action=tao&ctx='+t.id+'&return=M5.9 — mang sẵn học sinh, mã loại vi phạm '+t.nhac[0][1]+', tiết học. M5.9 không tạo gì.'),'']:null,
+   ['Đóng',0]]);
+}
+function soSanhDC(t){
+ const d=t.dc;
+ return '<div class="sech">✎ Đính chính sau mốc chốt</div>'+
+  '<div class="dcw"><div class="dcc"><div class="dch">Bản gốc <span>giữ nguyên, không ghi đè</span></div>'+
+   '<div class="dct">'+esc(d.truong)+'</div><div class="dcv">'+esc(d.cu)+'</div></div>'+
+  '<div class="dcc moi"><div class="dch">Bản đính chính <span>đang hiện hành</span></div>'+
+   '<div class="dct">'+esc(d.truong)+'</div><div class="dcv">'+esc(d.moi)+'</div></div></div>'+
+  '<table style="margin-top:8px"><tr><th style="width:190px">Lý do (bắt buộc)</th><td>'+esc(d.ly)+'</td></tr>'+
+  '<tr><th>Người đính chính</th><td>'+esc(d.boi)+' — <b>giáo viên thực dạy</b> tiết này</td></tr>'+
+  '<tr><th>Thời điểm</th><td>'+esc(d.luc)+' · sổ đã tự chốt lúc '+esc(d.moc)+'</td></tr></table>'+
+  '<div class="ro" style="margin-top:8px">🔗 <b>Chỉ đọc, không có nút duyệt</b> — đính chính có hiệu lực ngay, người đính chính chịu trách nhiệm bằng tên và lý do của mình. '+
+  'Đính chính <b>thêm / bớt dòng nhắc nhở</b> thì hệ thống báo GVCN lớp (thông báo, không phải duyệt); M6.13 giữ số nền nếp đã chốt tuần.</div>';
+}
+function moDC(id){
+ const t=byIdNN(id); if(!t||!t.dc)return;
+ modal('✎ Đã đính chính — '+esc(t.mon)+' · '+t.lop+' · '+t.thu+' '+t.ngay+' tiết '+t.so,
+  '<div class="info">Giáo viên thực dạy: <b>'+esc(gvOf(t.thay||t.gv).ten)+'</b>. Tiết đã đính chính <b>không phải lỗi</b> — '+
+  'không tô đỏ, không vào số tồn của giáo viên (TD-2).</div>'+soSanhDC(t),
+  [['📄 Mở bản in của tiết',()=>banInNN(id),''],['Đóng',0]]);
+}
+
+/* ---------- 8. Thao tác (chỉ điều hướng — không ghi gì) ---------- */
+function actNN(a,d){
+ if(a==='nnLop'){NN.lop=d.k;NN.loc='lop';render();return true}
+ if(a==='nnW'){const w=+d.k;if(w>=1&&w<=TUANNN.length){NN.w=w;tuanLech=TUANNN[w-1].tl}render();return true}
+ if(a==='nnLoc'){NN.loc=d.k;render();return true}
+ if(a==='nnTiet'){banInNN(d.k);return true}
+ if(a==='dc'){moDC(d.k);return true}
+ if(a==='nnDai'){NN.dai='';render();return true}
+ if(a==='nnGo'){const t=byIdNN(d.k); if(t){NN.lop=t.lop;NN.w=t.w;tuanLech=TUANNN[t.w-1].tl;NN.loc='lop';render();banInNN(t.id)}return true}
+ if(a==='dcLoc'){dcTab3=!dcTab3;render();return true}
+ return false;
+}
+function changeNN(el){
+ if(el.id==='nnw'){NN.w=+el.value;tuanLech=TUANNN[NN.w-1].tl;render();return true}
+ if(el.id==='nnlop'){NN.lop=el.value;NN.loc='lop';render();return true}
+ return false;
+}
+let dcTab3=false;                           /* tab 3 — lọc «chỉ tiết đã đính chính» */
+
+/* ---------- 9. Deep-link NHẬN (SDBG §3) ----------
+   /M5.9?tab=ne_nep_lop&ctx={lop}&tuan={n}&return={menu-goc}   ← chọn sẵn lớp, mở đúng tuần
+   /M5.9?tab=ne_nep_lop&tiet={tiet_id}&return={menu-goc}        ← lớp + tuần của tiết, mở BẢN IN
+   `vai=` chỉ để người duyệt thử demo. */
+function nhanLinkNN(qs){
+ let q; try{q=new URLSearchParams(qs)}catch(e){return}
+ const v=q.get('vai');
+ if(v&&ROLE[v]){role=v;document.querySelectorAll('.rb').forEach(b=>b.classList.toggle('on',b.dataset.r===role));
+  if(R().sc==='branch')fDt=R().dt}
+ if(q.get('tab')!=='ne_nep_lop')return;
+ tab='nn';
+ if(!co('nn'))return;                       /* vai không có quyền: render() ra khối khóa của chính tab này */
+ NN.tu=q.get('return')||'';
+ const tiet=q.get('tiet'), ctx=q.get('ctx'), tuan=q.get('tuan');
+ if(tiet){
+  const t=byIdNN(tiet);
+  if(!t){NN.dai='⚠ Không tìm thấy tiết <b>'+esc(tiet)+'</b> trong dữ liệu — mở lớp mặc định.';return}
+  if(!pvNN(t)||!lopNN().some(l=>l.id===t.lop)){NN.dai='⚠ Tiết <b>'+esc(tiet)+'</b> không thuộc phạm vi của bạn — không mở gì trái phạm vi.';return}
+  NN.lop=t.lop;NN.w=t.w;tuanLech=TUANNN[t.w-1].tl;
+  setTimeout(()=>banInNN(t.id),0);
+  return;
+ }
+ if(ctx){
+  if(lopNN().some(l=>l.id===ctx))NN.lop=ctx;
+  else NN.dai='⚠ Lớp <b>'+esc(ctx)+'</b> không thuộc phạm vi của bạn hoặc không có trong dữ liệu mẫu — đang mở lớp mặc định.';
+ }
+ if(tuan){
+  const n=+tuan;
+  if(n>=1&&n<=TUANNN.length){NN.w=n;tuanLech=TUANNN[n-1].tl}
+  else NN.dai=(NN.dai?NN.dai+'<br>':'')+'⚠ Tuần '+esc(tuan)+' nằm ngoài dữ liệu mẫu (tuần 1 – '+TUANNN.length+') — đang mở tuần này.';
+ }
+}
+nhanLinkNN(location.search);          /* hàm có tên để kiểm được cả khi trình xem bỏ mất chuỗi truy vấn */
+
+/* ═══════════ M5.9 — 🆕 DTHN-2D · BẢN CHIẾU BTVN MANG HAI TRƯỜNG `nguoi_tao` ⟂ `chu_luot` ═══════════
+   Nguồn: bản CHỐT 24/9/2026 `5-Dieu-phoi/Thao-luan-y-kien/CHOT-24-09-day-thay-giang-day-hang-ngay-DTHN.md` §7.3 — điểm P-3
+   (phiếu PHIEU-DTHN-Z mục P): cột ③ «Giao BTVN» đếm theo NGƯỜI TẠO lượt · cột ④ «Chấm BTVN» đếm theo CHỦ LƯỢT.
+   Hai trường là của M2.3 (§2.5b.2 — `nguoi_tao` bất biến · `chu_luot` đổi đúng MỘT lần theo DT-A); menu này CHỈ ĐỌC.
+   Tệp đặt SAU app.35 vì app.35 vệ sinh giờ tiết (gioQua) — giá trị mẫu của chu_luot đọc giờ đã vệ sinh.
+   🛑 KHÔNG gọi rnd(): chuỗi ngẫu nhiên của app.js giữ nguyên; lượt mẫu mới NỐI THÊM CUỐI mảng BT (luật DH-4)
+      ⇒ app.37 (hạt giống riêng sd3) sinh trạng thái nộp cho mọi lượt cũ y như trước, lượt mới rút số sau cùng. */
+
+/* Giá trị mẫu MÔ PHỎNG bản ghi của M2.3 — ở hệ thống thật M2.3 ghi chu_luot khi chuyển chủ, M5.9 chỉ đọc.
+   DT-A: lượt giao từ tiết dạy thay thuộc người dạy thay TỚI mốc chốt sổ 24 giờ (tính từ giờ kết thúc tiết — M2.2 §8.6.1,
+   giá trị chiếu từ M5.10); qua mốc thì chuyển chủ hẳn một lần sang giáo viên của lớp — trừ khi người dạy thay chọn «tôi». */
+const MOC_CHOT_SO_MAU=24;
+(function(){
+ BT.forEach(b=>{
+  const t=TIET.find(x=>x.id===b.tiet)||{};
+  b.nguoi_tao=t.thay||b.gv;                                  /* người bấm ▶ Giao bài = người đứng lớp tiết đó */
+  b.chuSauChot='lop';                                        /* mặc định của DT-A */
+  b.chu_luot=(t.thay&&t.gioQua>=MOC_CHOT_SO_MAU&&b.chuSauChot==='lop')?b.gv:b.nguoi_tao;
+ });
+ /* Ca mẫu nối thêm cuối — lượt giao từ tiết dạy thay ĐÃ QUA mốc chốt sổ, đã quá hạn nộp ⇒ đã chuyển chủ.
+    Dữ liệu cũ chỉ có đúng một lượt trên tiết dạy thay (6A1 · Công nghệ, mới 4,85 giờ ⇒ CHƯA chuyển chủ, chưa quá hạn nộp),
+    nên cột ④ không có ca nào để thấy luật «đếm theo chủ lượt». Chọn tiết dạy thay SỚM NHẤT chưa có lượt (không gắn mã cứng). */
+ const t=TIET.find(x=>x.thay&&x.daQua&&x.di<=2&&lopOf(x.lop).k>=6&&!BT.some(b=>b.tiet===x.id));
+ if(!t) return;
+ const ss=lopOf(t.lop).ss;
+ BT.push({tiet:t.id,gv:t.gv,lop:t.lop,mon:t.mon,ngay:t.ngay,han:NGAY[Math.min(4,t.di+2)].d,quaHan:true,
+  nop:Math.round(ss*0.875),cham:Math.round(ss*0.625),ngayCho:3,
+  nguoi_tao:t.thay,chuSauChot:'lop',chu_luot:t.gv,mau:'DTHN-2D'});
+})();
+const daChuyenChu=b=>b.chu_luot!==b.nguoi_tao;
+
+/* ===================================================================
+   TAB 8 — THEO DÕI TÌNH HÌNH NỘP BÀI  ·  M5.9 v2.1 (23/9/2026, KGLH-1F)
+
+   Feature GIỮ MÃ `m2.3.theo_doi_nop_bai` (KG-1) — chuyển từ M2.3 sang M5.9,
+   chỉ đổi cột menu. Đơn vị dòng mặc định: MỘT HỌC SINH (ba trục: học sinh · lớp · môn).
+   CHỈ ĐỌC (TD-1): tệp này không có một hàm nào ghi vào dữ liệu nghiệp vụ —
+   không luu(), không duyet(), không nhac(). Mọi ô bấm được là deep-link hoặc hộp đọc.
+
+   🛑 RANH GIỚI với cột ③ «Giao BTVN» của tab 1 (câu hỏi bắt buộc trả lời của phiên 1F):
+      cột ③ đếm LƯỢT GIAO của một GIÁO VIÊN (số đếm, không mẫu số — §5.1.3);
+      tab này đo BÀI NỘP của HỌC SINH (phân số, mẫu số là lượt giao × sĩ số).
+      Hai câu hỏi khác nhau, hai chủ thể khác nhau ⇒ hai chỗ, không trùng.
+   =================================================================== */
+
+/* ---------- 1. Danh sách học sinh theo SĨ SỐ THẬT của lớp ----------
+   Hạt giống riêng (sd3) để không chạm bộ sinh của app.js (seed) và app.35 (sd2):
+   số của bảy tab cũ giữ nguyên từng con số. */
+let sd3=20260923;
+const rn3=()=>{sd3=(sd3*1103515245+12345)&0x7fffffff;return sd3/0x7fffffff};
+const pk3=a=>a[Math.floor(rn3()*a.length)];
+const _H3=['Nguyễn','Trần','Lê','Phạm','Hoàng','Vũ','Đặng','Bùi','Đỗ','Ngô','Dương','Đinh','Phan','Lý'];
+const _D3=['Minh','Thu','Gia','Bảo','Khánh','Ngọc','Quốc','Hoài','Anh','Thanh','Hữu','Thị'];
+const _T3=['An','Bình','Chi','Dũng','Giang','Hà','Khoa','Linh','Mai','Nam','Phúc','Quân','Trang','Vy','Thảo','Nhi','Kiên','Duy','Sơn','Yến'];
+const HSNB={};
+LOP.forEach(l=>{HSNB[l.id]=[];for(let i=0;i<l.ss;i++)HSNB[l.id].push(pk3(_H3)+' '+pk3(_D3)+' '+pk3(_T3))});
+
+/* ---------- 2. Trạng thái nộp của TỪNG EM trên từng lượt ----------
+   Tổng của tầng này khớp ĐÚNG con số `nop` · `cham` mà app.js đã sinh cho mỗi lượt
+   ⇒ cột ④ «Chấm BTVN» của tab 1 · 2 và tab này đọc cùng một bộ số, không lệch nhau. */
+const NBST={};                       /* chỉ số lượt → mảng trạng thái theo thứ tự học sinh */
+BT.forEach((b,bi)=>{
+ b._i=bi;
+ const ss=HSNB[b.lop].length, ord=HSNB[b.lop].map((h,i)=>i);
+ for(let i=ord.length-1;i>0;i--){const j=Math.floor(rn3()*(i+1));const t=ord[i];ord[i]=ord[j];ord[j]=t}
+ const st=new Array(ss).fill('chua');
+ const nop=Math.min(b.nop,ss), tre=Math.round(nop*0.12);
+ ord.forEach((ix,k)=>{if(k<nop)st[ix]=(k<tre?'tre':'nop')});
+ if(b.quaHan){                       /* vắng CÓ PHÉP trong hạn nộp — tách riêng, không gộp vào «chưa nộp» */
+  const ch=ord.filter(ix=>st[ix]==='chua');
+  if(ch.length&&rn3()<0.45)st[ch[0]]='vang';
+ }
+ const daNop=ord.filter(ix=>st[ix]==='nop'||st[ix]==='tre');
+ b._cd=daNop.slice(0,Math.round(Math.min(b.cham,daNop.length)*0.12));   /* chấm rồi mà «Chưa đạt» */
+ NBST[bi]=st;
+});
+
+/* ---------- 3. Trạng thái tab ---------- */
+let NB={truc:'hs',sap:'ten',tu:'',dai:''};
+const nbLuot=()=>BT.filter(b=>quaLoc(TIET.find(t=>t.id===b.tiet)||{}));
+
+/* Gom một lượt đo — ba trục cùng một tầng dữ liệu, chỉ khác đơn vị dòng.
+   🛑 «Chưa nộp» CHỈ đếm lượt ĐÃ QUÁ HẠN NỘP (TD-2 — đỏ chỉ khi đã quá mốc thật;
+   cùng luật ba trạng thái của M2.9 T4: «chưa nộp — còn hạn» ≠ «chưa nộp — đã quá hạn»). */
+function doNB(){
+ const ls=nbLuot(), hs={}, lop={}, mon={};
+ lopTrongPV().forEach(l=>{lop[l.id]={lop:l.id,luot:0,luotQH:0,giao:0,mau:0,nop:0,chua:0,mon:{},no3:0}});
+ ls.forEach(b=>{
+  const st=NBST[b._i], L=lop[b.lop], M=mon[b.mon]||(mon[b.mon]={mon:b.mon,to:monTo(b.mon),luot:0,luotQH:0,giao:0,mau:0,nop:0,chua:0,lop:{},cho:0});
+  if(L){L.luot++;L.mon[b.mon]=1;if(b.quaHan)L.luotQH++}
+  M.luot++; M.lop[b.lop]=1; M.cho+=Math.max(0,b.nop-b.cham); if(b.quaHan)M.luotQH++;
+  HSNB[b.lop].forEach((ten,i)=>{
+   const k=b.lop+'|'+i, H=hs[k]||(hs[k]={lop:b.lop,i:i,ten:ten,giao:0,giaoQH:0,nop:0,tre:0,chua:0,vang:0,cd:0});
+   H.giao++; M.giao++; if(L)L.giao++;
+   if(b.quaHan)H.giaoQH++;
+   const s=st[i];
+   /* MẪU SỐ của tỷ lệ nộp: chỉ lượt ĐÃ QUÁ HẠN, trừ lượt em vắng có phép trong cả kỳ hạn nộp */
+   if(b.quaHan&&s!=='vang'){M.mau++;if(L)L.mau++}
+   if(s==='nop'||s==='tre'){H.nop++;M.nop++;if(L)L.nop++;if(s==='tre')H.tre++;if(b._cd.indexOf(i)>=0)H.cd++}
+   else if(b.quaHan){ if(s==='vang')H.vang++; else {H.chua++;M.chua++;if(L)L.chua++} }
+  });
+ });
+ Object.keys(hs).forEach(k=>{if(hs[k].chua>=NGUONG_NO&&lop[hs[k].lop])lop[hs[k].lop].no3++});
+ return {hs:hs,lop:lop,mon:mon,ls:ls};
+}
+/* Ngưỡng nhãn cam «Chưa nộp ≥ n» — mang nguyên con số của M2.3 §8.7.2.
+   ✅ TDHT-1B 23/9/2026 — điểm treo 1F-P1 ĐÃ ĐÓNG: chốt T3 của cụm KGL2 khai nó thành
+   THAM SỐ ở M5.10 — khối ③ của tab ⚙ Chính sách BTVN (M5.10 §4b.2b), mặc định 3,
+   giữ nguyên hành vi. Phiên nhận KGL2-1C đã chạy, KGL2-2Z đã tích hợp.
+   ⇒ Menu này nay là BẢN CHIẾU 🔗: giá trị vẫn đọc ra 3, lối ⚙ BẬT theo cổng D3.
+   ⛔ KHÔNG khai lại thành tham số của M5.9 (D1 · rb 34). */
+const NGUONG_NO=3;
+
+/* ---------- 4. Vẽ ---------- */
+/* TDHT-1A 23/9/2026 — câu «đo HỌC SINH, không đo giáo viên» nay nằm ở DẢI KHỐI ② dùng chung
+   (app.20 daiKhoi2 — §4.4), không lặp lại ở đây. Dải riêng của tab giữ đúng phần RANH GIỚI
+   với cột ③ · ④ của khối ①, là thứ chỉ tab này mới cần nói. */
+function daiNB(){
+ return '<div class="info">📥 <b>Đơn vị dòng của tab này là một HỌC SINH</b> — tab 📈 Tình hình học tập của lớp '+
+  '(cùng khối ②) gom mức <b>LỚP</b>, còn tab này đi xuống <b>từng em</b>.<br>'+
+  '🛑 <b>Không trùng cột ③ «Giao BTVN» của tab Theo giáo viên:</b> cột ③ đếm <b>lượt giao của một giáo viên</b> '+
+  '(số đếm, không mẫu số — §5.1.3); ở đây là <b>tỷ lệ nộp của học sinh</b> (mẫu số = lượt giao × sĩ số). '+
+  'Cũng không trùng cột ④ «Chấm BTVN» — cột ④ đo <b>việc chấm của giáo viên</b> trên bài <b>đã nộp</b>.</div>'+
+  (NB.dai?'<div class="warn">'+NB.dai+' <span class="rolnk" data-x="nbDai">✕ Ẩn</span></div>':'')+
+  (NB.tu?'<div class="ro">↩ Mở từ <b>'+esc(NB.tu)+'</b> — <span class="rolnk" data-go="'+esc(NB.tu)+'">‹ Quay lại</span></div>':'');
+}
+function trucNB(){
+ const T=[['hs','👦 Theo học sinh','em nào đang nợ bài'],
+          ['lop','🏫 Theo lớp','lớp nào nộp bài kém'],
+          ['mon','📘 Theo môn','môn nào giao nhiều, môn nào không giao']];
+ return '<div class="tfl"><label class="lbl">Trục xem</label>'+
+  T.map(t=>'<button class="chip'+(NB.truc===t[0]?' on':'')+'" data-x="nbTruc" data-k="'+t[0]+'" title="'+t[2]+'">'+t[1]+'</button>').join('')+
+  '<span class="pill">Ba trục <b>cùng một tầng dữ liệu</b>, khác đơn vị dòng — nên là bộ chuyển trục trong một tab, không phải ba tab</span></div>';
+}
+function tongNB(d){
+ const ls=d.ls, qh=ls.filter(b=>b.quaHan);
+ let mau=0,nop=0,chua=0; Object.keys(d.lop).forEach(k=>{mau+=d.lop[k].mau;nop+=d.lop[k].nop;chua+=d.lop[k].chua});
+ const no=Object.keys(d.hs).filter(k=>d.hs[k].chua>=NGUONG_NO).length;
+ return '<div class="tong">'+
+  '<span><b>'+ls.length+'</b> lượt giao <span style="color:var(--ink3)">('+qh.length+' đã quá hạn nộp)</span></span>'+
+  '<span><b>'+nop+'/'+mau+'</b> bài đã nộp <span style="color:var(--ink3)">(mẫu số: lượt đã quá hạn, trừ lượt vắng có phép)</span></span>'+
+  '<span><b style="color:'+(chua?'var(--red)':'var(--ink)')+'">'+chua+'</b> bài chưa nộp <span style="color:var(--ink3)">(chỉ lượt đã quá hạn)</span></span>'+
+  '<span><b style="color:'+(no?'var(--amber)':'var(--ink)')+'">'+no+'</b> em chưa nộp ≥ '+NGUONG_NO+'</span>'+
+  '<span style="margin-left:auto;color:var(--ink3)">🛑 đếm <b>bài</b> và <b>em</b>, không có cột điểm, không có thứ hạng</span></div>';
+}
+function viewNB(){
+ const d=doNB();
+ let h=daiTD2()+daiKhoi2()+daiTuan()+daiPV()+daiNB()+trucNB()+tongNB(d);
+ h+= NB.truc==='hs'?bangHS(d): NB.truc==='lop'?bangLopNB(d):bangMonNB(d);
+ return h;
+}
+/* Trục 1 — MỘT HỌC SINH. Mọi lớp thì chỉ hiện em đang nợ bài (danh sách dài vô ích);
+   chọn một lớp ở bộ lọc thì hiện ĐỦ danh sách lớp đó. */
+function bangHS(d){
+ const all=Object.keys(d.hs).map(k=>d.hs[k]);
+ const loc=fLop!=='ALL', ds=(loc?all:all.filter(x=>x.chua>0));
+ if(NB.sap==='no')ds.sort((a,b)=>b.chua-a.chua||a.lop.localeCompare(b.lop)||a.ten.localeCompare(b.ten,'vi'));
+ else ds.sort((a,b)=>a.lop.localeCompare(b.lop)||a.ten.localeCompare(b.ten,'vi'));
+ let h='';
+ if(NB.sap==='no')h+='<div class="info">↕ Đang sắp theo <b>số bài chưa nộp giảm dần</b> — thứ tự tạm thời của bảng để tìm việc, '+
+   '<b>không phải xếp loại học sinh</b>. <span class="rolnk" data-x="nbSap" data-k="ten">↩ Về thứ tự lớp · tên</span></div>';
+ h+='<div class="listw"><div class="grow" style="cursor:default">👦 Một dòng = <b>một học sinh</b>'+
+  '<span class="ct">'+(loc?'đủ danh sách lớp '+esc(fLop):'đang hiện <b>'+ds.length+'</b> em có ít nhất một bài chưa nộp — chọn một lớp ở bộ lọc để xem đủ danh sách')+'</span></div>'+
+  '<table><thead><tr><th>Học sinh</th><th class="c">Được giao</th><th class="c">Đã nộp</th><th class="c">Nộp trễ</th>'+
+  '<th class="c">Chưa nộp</th><th class="c">Chưa đạt</th><th class="c">Vắng trong hạn</th>'+
+  '<th class="c"><span class="rolnk" data-x="nbSap" data-k="'+(NB.sap==='ten'?'no':'ten')+'">↕ sắp</span></th></tr></thead><tbody>';
+ if(!ds.length)h+='<tr><td colspan="8" class="empty">Không có em nào nợ bài trong khoảng đang chọn — <b>«không tồn việc» cũng là một câu trả lời cần thấy</b>.</td></tr>';
+ ds.forEach(x=>{
+  h+='<tr><td><b>'+esc(x.ten)+'</b><br><span style="color:var(--ink3);font-size:11px">'+esc(x.lop)+' · '+esc(lopOf(x.lop).dt)+'</span></td>'+
+   '<td class="c">'+x.giao+'<br><span style="color:var(--ink3);font-size:10.5px">'+x.giaoQH+' đã quá hạn</span></td>'+
+   '<td class="c"><b>'+x.nop+'</b></td>'+
+   '<td class="c">'+(x.tre?'<span class="st2 w">'+x.tre+'</span>':'—')+'</td>'+
+   '<td class="c">'+(x.chua?'<b style="color:var(--'+(x.chua>=NGUONG_NO?'amber':'ink')+')">'+x.chua+'</b>'+
+     (x.chua>=NGUONG_NO?' <span class="st2 w">chưa nộp ≥ '+NGUONG_NO+'</span>':''):'—')+'</td>'+
+   '<td class="c">'+(x.cd?'<span class="st2 r">'+x.cd+'</span>':'—')+'</td>'+
+   '<td class="c">'+(x.vang?'<span class="st2 n">'+x.vang+'</span>':'—')+'</td>'+
+   '<td class="c"><span class="rolnk" data-x="nbHS" data-k="'+esc(x.lop)+'|'+x.i+'">xem ›</span></td></tr>';
+ });
+ h+='</tbody></table>'+chuNB()+'</div>';
+ return h;
+}
+/* ===== TDHT-1B · sửa 1A-P3 — Ô TỶ LỆ NỘP của trục Theo lớp và Theo môn =====
+   🔴 Bản cũ tô thanh theo THANG BA BẬC % (≥85 xanh · ≥70 vàng · còn lại đỏ) —
+   trái rb 4 và §5.1.2: «đỏ CHỈ khi đã quá mốc thật; chưa quá mốc thì không màu,
+   dù tỉ lệ thấp đến đâu». Thang ấy sơn hai lớp cùng cảnh ra hai màu khác nhau
+   chỉ vì tỉ lệ: 84% thành vàng, 69% thành đỏ, trong khi CẢ HAI đều có đúng một
+   loại bài thiếu — bài đã quá hạn mà chưa nộp.
+
+   🔑 Mốc thật ở đây CÓ, và nó nằm ở MẪU SỐ chứ không ở tỉ lệ: rb 32 đã bắt mẫu số
+   chỉ gồm LƯỢT ĐÃ QUÁ HẠN NỘP, nên mọi bài trong `x.chua` đều ĐÃ qua hạn của chính
+   lượt bài ấy (hạn do giáo viên đặt ở M2.3). ⇒ Đỏ được phép, nhưng phải gắn vào
+   SỐ ĐẾM bài quá hạn, ⛔ không gắn vào dải phần trăm.
+
+   Khuôn lấy nguyên của `oPS()` (app.20) — khối ① đã làm đúng từ v1.0:
+   số chính không màu trừ khi có quá hạn, và nhãn đỏ mang một CON SỐ ĐẾM. */
+function oTyLeNop(x){
+ if(!x.mau){
+  return x.luot
+   ? '<span style="color:var(--ink3)">'+x.luot+' lượt <b>đều còn trong hạn nộp</b> — chưa có gì để đếm</span>'
+   : '<span style="color:var(--ink3)">chưa có lượt giao nào trong khoảng — <b>trống vì chưa giao</b>, không phải vì bị chặn</span>';
+ }
+ const tl=Math.round(x.nop/x.mau*100);
+ return '<div class="qcell"><div class="bar2"><i style="width:'+tl+'%;background:var(--brand)"></i></div>'+
+  '<b'+(x.chua?' style="color:var(--red)"':'')+'>'+tl+'%</b> '+
+  '<span style="color:var(--ink3)">'+x.nop+'/'+x.mau+'</span></div>'+
+  (x.chua?'<span class="st2 r">'+x.chua+' bài quá hạn chưa nộp</span>':'<span class="st2 o">✅ đã nộp đủ</span>');
+}
+
+function bangLopNB(d){
+ const ds=lopTrongPV().map(l=>d.lop[l.id]).filter(Boolean);
+ let h='<div class="listw"><div class="grow" style="cursor:default">🏫 Một dòng = <b>một lớp</b>'+
+  '<span class="ct">danh sách lớp lấy từ <b>PHẠM VI</b>, không lấy từ dữ liệu bài tập</span></div>'+
+  '<table><thead><tr><th>Lớp</th><th>GVCN</th><th class="c">Môn có giao</th><th class="c">Lượt giao</th>'+
+  '<th>Tỷ lệ nộp <span style="font-weight:400">— lượt đã quá hạn</span></th>'+
+  '<th class="c">Em chưa nộp ≥ '+NGUONG_NO+'</th><th>Ngưỡng khối lượng 🔗</th></tr></thead><tbody>';
+ ds.forEach(x=>{
+  const l=lopOf(x.lop);          /* TDHT-1B — `tl` chuyển vào oTyLeNop() */
+  h+='<tr><td><b>'+esc(x.lop)+'</b><br><span style="color:var(--ink3);font-size:11px">'+esc(l.dt)+' · sĩ số '+l.ss+'</span></td>'+
+   '<td>'+esc(gvOf(l.cn).ten)+'</td>'+
+   '<td class="c">'+Object.keys(x.mon).length+'</td>'+
+   '<td class="c"><b>'+x.luot+'</b><br><span style="color:var(--ink3);font-size:10.5px">'+x.luotQH+' đã quá hạn</span></td>'+
+   '<td>'+oTyLeNop(x)+'</td>'+
+   '<td class="c">'+(x.no3?'<b style="color:var(--amber)">'+x.no3+'</b>':'—')+'</td>'+
+   '<td><span class="st2 n">'+(l.k>=6?'THCS · 1 buổi/ngày ⇒ 3 lượt':'Tiểu học')+'</span> '+
+   /* TDHT-1B — cổng D3: trước đây lối này hiện với MỌI vai. Ngưỡng nay có chủ thật ở M5.10
+      (khối ③ tab ⚙ Chính sách BTVN — chốt T3 cụm KGL2), nên áp đúng quy tắc «vai không có
+      quyền ở menu chủ thì không hiện deep-link». */
+   (co('m510')?'<span class="rolnk" data-go="M5.10 · Chính sách BTVN">↗ M5.10</span>'
+             :'<span class="ct" title="Chức danh của bạn không có ô quyền ở M5.10 — quy tắc D3">🔒</span>')+'</td></tr>';
+ });
+ h+='</tbody></table>'+
+  '<div class="lgd"><span>🛑 <b>Lớp không có lượt giao nào vẫn hiện một dòng</b> — nếu dựng bảng từ dữ liệu bài tập thì lớp ấy '+
+  '<b>biến mất</b>, và người đọc hiểu sự vắng mặt thành «thiếu dữ liệu» thay vì «đúng luật».</span>'+
+  '<span style="margin-left:auto">Lớp <b>Tiểu học học 2 buổi/ngày</b> có ngưỡng <b>0 lượt</b> (Chỉ thị 5105) — dòng mang nhãn '+
+  '<b>⛔ Chặn</b> kèm câu «Không giao bài tập về nhà — đúng quy định». Dữ liệu mẫu của demo không có lớp Tiểu học nên ca này chỉ mô tả ở §5.9.</span></div></div>';
+ return h;
+}
+function bangMonNB(d){
+ const ds=Object.keys(d.mon).map(k=>d.mon[k]).sort((a,b)=>a.mon.localeCompare(b.mon,'vi'));
+ let h='<div class="listw"><div class="grow" style="cursor:default">📘 Một dòng = <b>một môn</b>'+
+  '<span class="ct">để Phó hiệu trưởng chuyên môn rà khối lượng bài giữa các môn</span></div>'+
+  '<table><thead><tr><th>Môn</th><th>Tổ bộ môn</th><th class="c">Lớp có giao</th><th class="c">Lượt giao</th>'+
+  '<th>Tỷ lệ nộp <span style="font-weight:400">(lượt đã quá hạn)</span></th><th class="c">Bài còn chờ chấm</th></tr></thead><tbody>';
+ if(!ds.length)h+='<tr><td colspan="6" class="empty">Không có lượt giao nào trong khoảng đang chọn.</td></tr>';
+ ds.forEach(x=>{
+  /* TDHT-1B — `tl` chuyển vào oTyLeNop() */
+  h+='<tr><td><b>'+esc(x.mon)+'</b></td><td>'+esc(TO[x.to]?TO[x.to].ten:'—')+'</td>'+
+   '<td class="c">'+Object.keys(x.lop).length+'</td>'+
+   '<td class="c"><b>'+x.luot+'</b><br><span style="color:var(--ink3);font-size:10.5px">'+x.luotQH+' đã quá hạn</span></td>'+
+   '<td>'+oTyLeNop(x)+'</td>'+
+   '<td class="c">'+(x.cho?x.cho:'—')+'</td></tr>';
+ });
+ h+='</tbody></table>'+chuNB()+'</div>';
+ return h;
+}
+const chuNB=()=>'<div style="padding:8px 12px;font-size:11.5px;color:var(--ink2);border-top:1px solid var(--line);background:#f8fafc">'+
+ '🛑 <b>«Chưa nộp» chỉ đếm lượt ĐÃ QUÁ HẠN NỘP.</b> Lượt còn trong hạn không vào cột này — gộp hai thứ thì quản lý và '+
+ 'giáo viên chủ nhiệm sẽ nhắc nhầm em đang còn hạn, và lời nhắc sai làm mất uy tín của những lời nhắc đúng (M2.9 T4 · ba trạng thái).<br>'+
+ '🛑 <b>«Vắng trong hạn» tách riêng</b>, không gộp vào «Chưa nộp» — em nghỉ có phép trong cả kỳ hạn nộp thì không nợ ai cái gì (M2.3 §8.3.2).<br>'+
+ '⏳ Ngưỡng nhãn cam <b>«Chưa nộp ≥ '+NGUONG_NO+'»</b> mang nguyên con số của M2.3 §8.7.2 và hiện <b>để cứng</b>: nó không nằm trong hai khối '+
+ 'đã chuyển sang M5.10, cũng không phải tham số của ⚙ menu này — <b>điểm treo 1F-P1</b>.</div>';
+
+/* ---------- 5. Hộp đọc chi tiết của một em — CHỈ ĐỌC, hai nút đều là deep-link ---------- */
+function hopHS(k){
+ const [lop,ix]=k.split('|'), i=+ix, ten=HSNB[lop][i];
+ const ls=nbLuot().filter(b=>b.lop===lop);
+ const rows=ls.map(b=>{
+  const s=NBST[b._i][i];
+  const tt=!b.quaHan?'<span class="st2 n">Chưa nộp — còn hạn</span>'
+   :s==='nop'?'<span class="st2 o">✓ Đã nộp</span>'
+   :s==='tre'?'<span class="st2 w">✓ Nộp trễ</span>'
+   :s==='vang'?'<span class="st2 n">Vắng có phép trong hạn</span>'
+   :'<span class="st2 r">✕ Chưa nộp — đã quá hạn</span>';
+  return '<tr><td>'+esc(b.mon)+'</td><td>'+esc(gvOf(b.nguoi_tao).ten)+'</td><td>'+esc(b.ngay)+'</td><td>'+esc(b.han)+'</td><td>'+tt+
+   (b._cd.indexOf(i)>=0?' <span class="st2 r">Chưa đạt</span>':'')+'</td></tr>';
+ }).join('');
+ modal('👦 '+esc(ten)+' · lớp '+esc(lop)+' — từng lượt bài trong khoảng đang xem',
+  '<div class="ro">Ô trên bảng chỉ nói <b>một con số</b>; câu hỏi tiếp theo luôn là <b>«thiếu bài nào»</b>. '+
+  'Hộp này <b>chỉ đọc</b> — sửa trạng thái nộp là việc của giáo viên bộ môn ở <b>M2.3</b>.</div>'+
+  '<table><tr><th>Môn</th><th>Giáo viên giao</th><th>Ngày giao</th><th>Hạn nộp</th><th>Trạng thái nộp</th></tr>'+
+  (rows||'<tr><td colspan="5">Không có lượt bài nào của lớp này trong khoảng đang chọn.</td></tr>')+'</table>'+
+  '<div class="info" style="margin-top:10px">🛑 <b>Ba trạng thái chứ không phải hai:</b> <i>Chưa nộp — còn hạn</i> khác hẳn '+
+  '<i>Chưa nộp — đã quá hạn</i>. Chỉ trạng thái thứ hai vào cột «Chưa nộp».</div>',
+  [['↗ M2.3 — mở lượt bài của môn',()=>{toast('Deep-link /M2.3?ctx='+lop+'&mon={mon}&tab=cho_cham&return=M5.9 — sửa ở menu chủ')},''],
+   ['↗ M2.9 · T4 — cả lớp, mọi môn',()=>{toast('Deep-link /M2.9?ctx='+lop+'&tab=T4&return=M5.9 — bảng chéo học sinh × bài của giáo viên chủ nhiệm')},''],
+   ['Đóng',0,'']]);
+}
+
+/* ---------- 6. Hành động (không có hành động nào GHI) ---------- */
+function actNB(a,d){
+ if(a==='nbTruc'){NB.truc=d.k;render();return true}
+ if(a==='nbSap'){NB.sap=d.k;render();return true}
+ if(a==='nbHS'){hopHS(d.k);return true}
+ if(a==='nbDai'){NB.dai='';render();return true}
+ if(a==='nbGo'){tab='np';panel=null;render();return true}
+ return false;
+}
+/* Bản xuất của tab 8 — ba bản đi theo `XD` của chính Feature này khi rời M2.3 (M2.3 §8.9).
+   Đối chiếu M9.3 tab 3 (§5.9.5): ở đó là CON SỐ THEO KỲ, ở đây là DANH SÁCH TÊN để nhắc trong tuần. */
+function bxNB(){
+ return ['Tình hình nộp bài theo lớp — họp giao ban chuyên môn (Excel)',
+         'Danh sách học sinh chưa nộp — cả lớp, mọi môn (PDF)',
+         'Thống kê BTVN theo môn — rà khối lượng bài giữa các môn (Excel)'];
+}
+
+/* ---------- 7. Deep-link NHẬN (sổ KGLH §3) ----------
+   /M5.9?tab=theo_doi_nop_bai&ctx={lop}&return={menu-goc} */
+function nhanLinkNB(qs){
+ let q; try{q=new URLSearchParams(qs)}catch(e){return}
+ if(q.get('tab')!=='theo_doi_nop_bai')return;
+ tab='np'; NB.tu=q.get('return')||'';
+ if(!co('np'))return;                        /* vai không có quyền: render() ra khối khóa của chính tab này */
+ const ctx=q.get('ctx');
+ if(ctx){
+  if(lopTrongPV().some(l=>l.id===ctx))fLop=ctx;
+  else NB.dai='⚠ Lớp <b>'+esc(ctx)+'</b> không thuộc phạm vi của bạn hoặc không có trong dữ liệu mẫu — đang mở mọi lớp trong phạm vi.';
+ }
+}
+nhanLinkNB(location.search);
+
+/* ===================================================================
+   TAB 9 — 📈 TÌNH HÌNH HỌC TẬP CỦA LỚP   ·  Feature MỚI m5.9.tinh_hinh_hoc_tap
+   TDHT-1A · 23/9/2026 · khối ② (§5.10)
+
+   🛑 TD-5a — KHÔNG một cột giáo viên nào, KHÔNG tên MÔN trên dòng chính.
+      Cặp Lớp × Môn có ĐÚNG MỘT người dạy ⇒ hiện tên môn cạnh tên lớp là gọi
+      tên giáo viên bằng đường vòng. Cột ⑤ · ⑦ · ⑩ chỉ mang CON SỐ ĐẾM; cột ⑩
+      cũng không mang tỉ lệ % (M2.5 §5.9.1 — «% cạnh tên lớp đọc ra như điểm
+      đánh giá lớp», ở bảng so hàng ngang giữa các lớp thì nặng hơn nữa).
+   🛑 TD-5b — tab này KHÔNG có một cột nào của khối ①, và không có lối nào
+      đi thẳng sang tab 1 · 2 · 3. Lối duy nhất trong menu là sang tab 8.
+   🛑 TD-5c — nhịp TUẦN. Hai cột buộc đọc theo KỲ (⑤ · ⑩) mang nhãn kỳ ngay
+      trên ô, để lùi tuần mà chúng đứng yên thì người đọc không tưởng là hỏng.
+   🛑 TD-1  — 0 nút ghi, 0 nút Nhắc (rb 21), 0 nút «Đã xử lý». Mọi ô là deep-link.
+   🛑 §5.10.5 — KHÔNG có panel tầng 2: panel «chi tiết một lớp» buộc phải liệt
+      kê theo MÔN để nói được «thiếu ở đâu» ⇒ phá TD-5a (rb 39).
+
+   HẠT GIỐNG RIÊNG sd4 ⇒ tám tab cũ KHÔNG đổi một con số nào (khuôn của sd3).
+   =================================================================== */
+
+let sd4=20260924;
+const rn4=()=>{sd4=(sd4*1103515245+12345)&0x7fffffff;return sd4/0x7fffffff};
+
+/* ---------- 1. Chuyên cần của TỪNG EM (đọc M2.9 T2 — nguồn ⑧) ----------
+   ⛔ KHÁC cột ① của tab 1 · 2: cột ① hỏi «lớp đã điểm danh chưa» (việc của GVCN,
+   khối ①); ở đây hỏi «tuần này lớp vắng bao nhiêu lượt» (hành vi của học sinh). */
+const CC9={};
+LOP.forEach(l=>{
+ const n=Math.floor(rn4()*9);                    /* lượt vắng trong tuần */
+ const kp=Math.floor(n*(rn4()<0.45?0.5:0.2));    /* trong đó không phép */
+ CC9[l.id]={
+  luot:n, kp:kp, cp:n-kp,
+  muon:Math.floor(rn4()*4),
+  /* RSHS-2C — em «Chờ chuyển đi» ĐÃ CÓ ngày rời lớp: đếm RIÊNG, ⛔ không trộn
+     vào mẫu số. Bấm nút ấy làm ĐẸP tỉ lệ chuyên cần của lớp (M1.5 §3.1d). */
+  roiLop: rn4()<0.28?1:0,
+  /* Chạm hạn mức nghỉ — 🔗 mốc đọc từ M2.4 §4.5, KHÔNG phải tham số của menu này:
+     trần 45 buổi/năm của TT 22/2021 Điều 12. 60% = 27 buổi · 80% = 36 buổi. */
+  m60:0, m80:0, m100:0
+ };
+ const r=rn4();
+ if(r<0.55){CC9[l.id].m60=1+Math.floor(rn4()*3)}
+ if(r>0.72){CC9[l.id].m80=1+Math.floor(rn4()*2)}
+ if(r>0.94){CC9[l.id].m100=1}
+});
+
+/* ---------- 2. Cặp Lớp × Môn: đã ký kết quả môn chưa · có đạt ngưỡng dưới TB không ----------
+   🔄 TDHT-1B 23/9/2026 — `CAP9` và hạt giống của nó ĐÃ CHUYỂN sang **app.15-ky-mon.js**,
+   vì sau chốt `1A-E2` («làm CẢ HAI») tầng dữ liệu này được đọc ở CẢ HAI KHỐI: cột ⑥ của
+   tab 1 · 2 · 3 (khối ①, chủ thể GIÁO VIÊN) và vế thứ ba của cột ⑤ tab này (khối ②).
+   Để nó ở đây thì tab của khối ① phải đọc ngược vào tệp của tab 9 — sai chiều phụ thuộc.
+   🛑 Hai thứ này ở KHỐI ② chỉ được ĐẾM theo lớp. Khóa của DTX là 'gv|lop|mon' — tên người
+   và tên môn nằm sẵn trong khóa, và TD-5a cấm đưa cả hai lên màn hình của khối ②. */
+
+/* Ngưỡng tỉ lệ dưới trung bình — 🔗 BẢN CHIẾU, chủ là M5.10 (chốt T5 cụm KGL2, 23/9/2026;
+   trước đó ở ⚙ của M2.5 §4.1c — phiên KGL2-1D đã gỡ).
+   ✅ TDHT-1B: phiên nhận KGL2-1C đã chạy và KGL2-2Z đã tích hợp (chiều 23/9) — Feature MỚI
+   m5.10.nguong_canh_bao, tab 3 của M5.10, PHT_CM soạn · HT duyệt ⇒ điểm treo 1A-P2 ĐÓNG.
+   🔑 Khóa tab là 'nguong_canh_bao' — ⛔ đừng đổi (M5.10 §5: M2.5 v3.6 đã phát sẵn chuỗi ấy).
+   Cổng D3: lối ⚙ chỉ hiện với vai có ô ở M5.10 (năng lực 'm510' — app.js). */
+const NGUONG_TB=30, NGUONG_TB_SAN=true;
+const NGUONG_TB_AI='Hoàng Văn Khoa · 2/9/2026';
+
+/* ---------- 3. Đo một lượt — dòng là một LỚP ---------- */
+function doHT(){
+ const d=doNB();                                  /* dùng lại tầng dữ liệu của tab 8 (nợ bài) */
+ return lopTrongPV().map(function(l){
+  const cc=CC9[l.id];
+  /* ⑤ Điểm TX — theo KỲ. Lọc tổ CẮT CỘT: chỉ tính cặp có môn thuộc tổ đang lọc. */
+  let phai=0, co_=0, chuaDu=0, chuaKy=0, canBan=0;
+  Object.keys(DTX).forEach(function(k){
+   const x=DTX[k];
+   if(x.lop!==l.id)return;
+   if(fTo!=='ALL'&&monTo(x.mon)!==fTo)return;
+   if(R().sc==='group'&&monTo(x.mon)!==R().to)return;
+   phai+=x.phai; co_+=x.co;
+   chuaDu+=Math.max(0,Math.ceil((x.phai-x.co)/3));   /* N = 3 ô/em — M10.1 bước ⑥ */
+   if(!CAP9[k].ky)chuaKy++;
+   if(CAP9[k].duoiTB)canBan++;
+  });
+  const nb=d.lop[l.id]||{no3:0,luot:0,luotQH:0};
+  return {lop:l.id, l:l, cc:cc, phai:phai, co:co_, chuaDu:chuaDu, chuaKy:chuaKy,
+          canBan:canBan, no3:nb.no3, luot:nb.luot, luotQH:nb.luotQH};
+ });
+}
+
+/* ---------- 4. Vẽ ---------- */
+let HT={sap:'lop', hl:'', dai:''};
+
+function viewHT(){
+ const ds=doHT();
+ /* Thanh tổng đếm EM và LƯỢT — ⛔ không đếm lớp theo cách gợi ý xếp loại (§5.10.8) */
+ const T=ds.reduce(function(a,x){
+  a.luot+=x.cc.luot; a.kp+=x.cc.kp; a.m80+=x.cc.m80+x.cc.m100; a.m60+=x.cc.m60;
+  a.no3+=x.no3; a.canBan+=x.canBan; return a;
+ },{luot:0,kp:0,m80:0,m60:0,no3:0,canBan:0});
+
+ let h=daiTD2()+daiKhoi2()+daiPV()+daiTuan()+(HT.dai||'');
+
+ h+='<div class="info">📈 Tab này trả lời <b>«tuần này lớp nào đang cần để mắt»</b> — chuyên cần · nợ bài · điểm. '+
+  '⛔ Khác tab <b>🏫 Theo lớp</b> của khối ① (<i>«lớp nào đang thủng DỮ LIỆU»</i> — đo việc nhập liệu của giáo viên) '+
+  'và khác tab <b>📥 Nộp bài</b> (<i>một</i> tín hiệu, đơn vị dòng là học sinh). '+
+  'Một lớp có thể <b>thủng dữ liệu mà học tốt</b>, hoặc <b>dữ liệu đủ mà đang đuối</b> — hai chuyện rời nhau.</div>';
+
+ h+='<div class="tot"><b>Tuần này, trong phạm vi:</b> '+
+  '<span class="kpi">'+T.luot+'</span> lượt vắng <span class="ct">('+T.kp+' không phép)</span> · '+
+  '<span class="kpi">'+T.m60+'</span> em đã dùng ≥ 60% hạn mức · '+
+  '<span class="kpi'+(T.m80?' rd':'')+'">'+T.m80+'</span> em ≥ 80% · '+
+  '<span class="kpi">'+T.no3+'</span> em nợ ≥ '+NGUONG_NO+' bài · '+
+  '<span class="kpi">'+T.canBan+'</span> cặp cần bàn'+
+  '<span class="ct" style="display:block;margin-top:4px">🛑 Thanh tổng đếm <b>em</b> và <b>lượt</b> — '+
+  '⛔ không có dòng kiểu «3 lớp yếu». Đếm lớp theo cách gợi ý xếp loại là bước đầu của một bảng xếp hạng.</span></div>';
+
+ /* Sắp mặc định: điểm trường → khối → tên lớp (thứ tự trung tính) */
+ ds.sort(function(a,b){
+  if(HT.sap==='hm'){const d=(b.cc.m80*10+b.cc.m60)-(a.cc.m80*10+a.cc.m60); if(d)return d}
+  return a.l.dt.localeCompare(b.l.dt,'vi')||a.l.k-b.l.k||a.lop.localeCompare(b.lop,'vi');
+ });
+
+ const nhanTo=(fTo!=='ALL'||R().sc==='group')
+   ? '<span class="ct">tổ '+esc(fTo!=='ALL'?TO[fTo].ten:TO[R().to].ten).replace('Tổ ','')+'</span>' : '';
+
+ h+='<div class="listw"><div class="grow" style="cursor:default">🏫 Một dòng = <b>một LỚP</b>'+
+  '<span class="ct">danh sách lớp lấy từ <b>PHẠM VI</b> — lớp không có gì bất thường vẫn hiện một dòng</span></div>'+
+  '<table><thead><tr>'+
+  '<th>Lớp</th>'+
+  '<th class="c">⑧ Chuyên cần tuần</th>'+
+  '<th class="c">⑧b Chạm hạn mức nghỉ 🔗</th>'+
+  '<th class="c">⑦ Nợ bài</th>'+
+  '<th>⑤ Điểm TX <span class="hk">HK I</span></th>'+
+  '<th class="c">⑩ Cặp cần bàn <span class="hk">HK I</span></th>'+
+  '</tr></thead><tbody>';
+
+ ds.forEach(function(x){
+  const c=x.cc, ss=x.l.ss;
+  /* Tên lớp bấm được ⇒ M2.9 T5 «Bảng điểm lớp» — CHỈ với vai có ô ở m2.9.bang_diem_lop (D3).
+     ✅ TDHT-1D 23/9/2026 — điểm treo 1A-P4 ĐÓNG: anh Ninh mở KGLH-P1 phương án ①, TTCM và
+     TPCM nay CÓ ô ở M2.9 (bảy tab, trong đó có T5) ⇒ lối này TỰ BẬT cho cả năm vai của F9.
+     🔑 Đúng như §5.10.5 đã dự: «KGLH-P1 mở thì lối này tự bật, ⛔ không cần sửa M5.9» —
+     câu ấy đúng về CƠ CHẾ, chỉ còn phải gỡ điều kiện chặn tạm ở đây. */
+  const moT5=true;
+  h+='<tr data-lop="'+x.lop+'"'+(HT.hl===x.lop?' class="hl"':'')+'>';
+  h+='<td>'+(moT5
+      ?'<b class="rolnk" data-go="M2.9">'+esc(x.lop)+'</b>'
+      :'<b>'+esc(x.lop)+'</b> <span class="ct" title="Chức danh của bạn không có ô ở Feature m2.9.bang_diem_lop nên lối này không hiện — quy tắc D3">🔒</span>')+
+     '<br><span class="sub">'+esc(x.l.dt)+' · sĩ số '+ss+' · GVCN '+esc(gvOf(x.l.cn).ten)+'</span></td>';
+
+  /* ⑧ — con số MÔ TẢ, KHÔNG màu: không văn bản nào đặt ngưỡng vắng theo tuần (rb 4) */
+  h+='<td class="c"><span class="rolnk" data-go="M2.9">'+'<b>'+c.luot+'</b> lượt</span>'+
+     '<br><span class="sub">'+c.cp+' có phép · '+c.kp+' không phép'+(c.muon?' · '+c.muon+' đi muộn':'')+'</span>'+
+     (c.roiLop?'<br><span class="sub rl">+'+c.roiLop+' em Chờ chuyển đi, đã có ngày rời lớp — đếm riêng</span>':'')+
+     '<br><span class="ct">toàn lớp</span></td>';
+
+  /* ⑧b — CÓ đỏ: trần 45 buổi TT 22/2021 Đ.12 là mốc thật nhất của cả tab */
+  h+='<td class="c">'+
+     (c.m100?'<span class="st2 r">'+c.m100+' em vượt trần 45 buổi</span><br>':'')+
+     (c.m80 ?'<span class="st2 r">'+c.m80+' em ≥ 80%</span> ':'')+
+     (c.m60 ?'<span class="st2 w">'+c.m60+' em ≥ 60%</span>':'')+
+     (!(c.m60||c.m80||c.m100)?'<span class="sub">—<br>chưa em nào chạm mốc 60%</span>':
+       '<br><span class="rolnk" data-go="M2.4">↗ M2.4</span>')+'</td>';
+
+  /* ⑦ — nhãn cam, ngưỡng N chiếu 🔗 từ M5.10; bấm mở TAB 8 (không rời menu) */
+  h+='<td class="c">'+(x.no3
+      ?'<span class="rolnk" data-x="htNb" data-k="'+x.lop+'"><b class="am">'+x.no3+'</b> em nợ ≥ '+NGUONG_NO+' bài</span>'
+      :(x.luotQH?'<span class="sub">—</span>':'<span class="sub">'+(x.luot?'lượt đều còn trong hạn':'chưa có lượt giao')+'</span>'))+
+     (x.no3?'<br><span class="ct">mở tab 📥 Nộp bài</span>':'')+'</td>';
+
+  /* ⑤ — theo KỲ, nhãn HK I ngay trên ô. «chưa ký» TRƯỚC mốc chốt ⇒ KHÔNG tô đỏ (khuôn M0.4).
+     🛑 THANH TIẾN ĐỘ TRUNG TÍNH, ⛔ KHÔNG tô màu theo tỉ lệ — rb 4 · §5.1.2: «chưa quá mốc thì
+     không màu, dù tỉ lệ thấp đến đâu». Mốc thật của cột này là MỐC CHỐT KỲ của M10.1; demo đang
+     ở 18/9, mốc là 22/12 ⇒ chưa lớp nào quá mốc ⇒ 0 thanh có màu cảnh báo. Sau mốc thì thanh
+     của lớp còn ô trống chuyển đỏ — một dòng điều kiện, không phải một thang ba bậc theo %. */
+  const tl=x.phai?Math.round(x.co/x.phai*100):0;
+  const quaMocKy=false;                            /* dẫn xuất từ M10.1 — demo: 18/9 < 22/12 */
+  h+='<td>'+(x.phai
+      ?'<div class="qcell"><div class="bar2"><i style="width:'+tl+'%;background:var(--'+
+        (quaMocKy&&x.co<x.phai?'red':'brand')+')"></i></div>'+
+        '<span class="rolnk" data-go="M2.5"><b>'+x.co+'/'+x.phai+'</b> ô</span></div>'+
+        '<span class="sub">'+x.chuaDu+' em chưa đủ ô'+nhanTo+'</span>'+
+        (x.chuaKy?'<br><span class="sub gr">'+x.chuaKy+' cặp chưa ký kết quả môn — <b>chưa tới mốc chốt '+MOCCHOT+'</b>, không tô đỏ</span>':'')
+      :'<span class="sub">— chưa có cặp nào trong lát cắt đang lọc</span>')+'</td>';
+
+  /* ⑩ — ĐẾM CẶP. ⛔ không tỉ lệ %, ⛔ không tên môn. KHÔNG màu: ngưỡng là mốc để BÀN. */
+  h+='<td class="c">'+(x.canBan
+      ?'<span class="rolnk" data-go="M2.5"><b>'+x.canBan+'</b> cặp</span><br><span class="ct">≥ '+NGUONG_TB+'% dưới TB</span>'
+      :'<span class="sub">—</span>')+'</td>';
+  h+='</tr>';
+ });
+
+ h+='</tbody></table>';
+
+ h+='<div class="lgd">'+
+  '<span>🛑 <b>Không cột giáo viên, không tên MÔN trên dòng chính</b> (TD-5a) — cặp Lớp × Môn có đúng một người dạy, '+
+  'nên hiện tên môn cạnh tên lớp là <b>gọi tên giáo viên bằng đường vòng</b>. Chi tiết theo môn ở <b>M2.5</b>, nơi NB-2 đang gác; '+
+  'chi tiết theo em ở <b>tab 📥 Nộp bài</b> và <b>M2.9</b>.</span>'+
+  '<span>🛑 <b>Đỏ chỉ khi quá mốc THẬT:</b> chỉ cột ⑧b có đỏ — <b>trần 45 buổi</b>, TT 22/2021 Điều 12. '+
+  'Cột ⑧ và ⑩ <b>không màu</b> (không có mốc pháp lý theo tuần; ngưỡng ⑩ là mốc để <i>bàn</i>, không phải hạn để tô đỏ). '+
+  'Cột ⑤ chỉ đỏ <b>sau</b> mốc chốt kỳ '+MOCCHOT+'.</span>'+
+  '<span>🔗 <b>Ngưỡng đang chạy:</b> tỉ lệ dưới trung bình <b>≥ '+NGUONG_TB+'%</b> '+
+  '<span class="ct">(M5.10 · tab Ngưỡng cảnh báo)</span> · nợ bài <b>≥ '+NGUONG_NO+' bài</b> '+
+  '<span class="ct">(M5.10 · tab ⚙ Chính sách BTVN, khối ③)</span> — cả hai <b>khai ở M5.10</b>, menu này chỉ đọc. '+
+  /* Cổng D3 — vai không có ô ở đích thì ⛔ không hiện lối, và NÓI RÕ vì sao («ẩn thì phải nói») */
+  (NGUONG_TB_SAN&&co('m510')
+    ?'<span class="rolnk" data-go="M5.10 · Ngưỡng cảnh báo">⚙ Ngưỡng cảnh báo</span> '+
+     '<span class="rolnk" data-go="M5.10 · Chính sách BTVN">⚙ Chính sách BTVN</span>'
+    :'<span class="ct">🔒 Chức danh của bạn không có ô quyền ở M5.10 nên lối ⚙ không hiện — quy tắc D3</span>')+
+  ' <span class="ct">đặt bởi '+esc(NGUONG_TB_AI)+'</span></span>'+
+  '</div></div>';
+
+ h+='<div class="tfl" style="margin-top:10px"><label class="lbl">Sắp xếp</label>'+
+  '<select class="sel" id="fsapht">'+
+  '<option value="lop"'+(HT.sap==='lop'?' selected':'')+'>Điểm trường → Khối → Tên lớp (trung tính)</option>'+
+  '<option value="hm"'+(HT.sap==='hm'?' selected':'')+'>Số em chạm hạn mức nghỉ — giảm dần</option>'+
+  '</select>'+
+  (HT.sap==='hm'?'<span class="pill" style="background:var(--amber-soft);border-color:#fde68a;color:#92400e">'+
+    '⚠ Đang sắp theo số em chạm hạn mức — <b>thứ tự tạm thời của bảng để tìm việc, không phải xếp loại lớp</b></span>':'')+
+  '</div>';
+
+ return h;
+}
+
+/* ---------- 5. Thao tác ----------
+   🛑 ZERO WRITE. Mọi lối ra menu khác đi qua data-go (khuôn chung của menu này).
+   Ở đây chỉ còn HAI việc trong nội bộ tab: nhảy sang tab 8, và đổi cách sắp xếp. */
+function actHT(a,d){
+ if(a==='htNb'){                                  /* ⑦ mở TAB 8 — không rời menu, TD-5b cho phép
+                                                     vì cả hai đều là tab của KHỐI ② */
+  if(!co('np')){toast('Chức danh của bạn không có ô ở Feature m2.3.theo_doi_nop_bai — lối này không mở.');return true}
+  tab='np'; NB.truc='lop'; fLop=d.k; HT.hl=d.k; render(); return true;
+ }
+ return false;
+}
+function changeHT(t){
+ if(t.id==='fsapht'){HT.sap=t.value;render();return true}
+ return false;
+}
+
+/* ---------- 6. Bản xuất — MỘT bản, hai mục đích (§5.10.7) ----------
+   🛑 Bản xuất kèm tên GVCN (người sẽ nhận việc) nhưng ⛔ KHÔNG kèm tên giáo viên bộ môn
+   và ⛔ KHÔNG kèm tên môn — TD-5a áp cho cả bản xuất, không chỉ cho màn hình. */
+function bxHT(){
+ return ['Danh sách lớp cần để mắt — tuần '+khoangChu()+', mỗi lớp một dòng, kèm tên GVCN (Excel)'];
+}
+
+/* ---------- 7. Deep-link NHẬN: /M5.9?tab=tinh_hinh_hoc_tap&ctx={lop}&tuan={n} ----------
+   🛑 ctx chỉ CUỘN TỚI và làm NỔI dòng, ⛔ KHÔNG lọc mất các lớp khác — khác hẳn ca
+   tab=theo_doi_nop_bai ở app.37. Lý do: bảng này dựng từ PHẠM VI (rb 40) và giá trị của
+   nó nằm ở chỗ nhìn được CẢ phạm vi cùng lúc; lọc còn một dòng là làm hỏng công dụng. */
+function nhanLinkHT(qs){
+ let q; try{q=new URLSearchParams(qs)}catch(e){return}
+ if(q.get('tab')!=='tinh_hinh_hoc_tap')return;
+ tab='tt';
+ const tn=parseInt(q.get('tuan')||'',10);
+ if(tn>=1&&tn<=3)tuanLech=tn-3;                   /* 1 → -2 · 2 → -1 · 3 → 0 (tuần này) */
+ if(!co('tt'))return;                             /* vai không có quyền: render() ra khối khóa của tab */
+ const ctx=q.get('ctx'); if(!ctx)return;
+ if(lopTrongPV().some(l=>l.id===ctx)){
+  HT.hl=ctx;
+  setTimeout(function(){
+   const tr=document.querySelector('tr[data-lop="'+ctx+'"]');
+   if(tr)tr.scrollIntoView({block:'center'});
+  },80);
+ }else{
+  HT.dai='<div class="warn">⚠ Lớp <b>'+esc(ctx)+'</b> không thuộc phạm vi của bạn hoặc không có trong dữ liệu mẫu — '+
+   'bảng vẫn mở <b>đủ các lớp trong phạm vi</b>, không cuộn tới dòng nào.</div>';
+ }
+}
+nhanLinkHT(location.search);
 
 /* ===================== PANEL TẦNG 2 — chi tiết MỘT thực thể, CHỈ ĐỌC =====================
    Mỗi dòng trong panel nêu đủ tiết · môn · lớp · giáo viên · ngày (chốt số 7). */
@@ -952,14 +2307,25 @@ function panelHTML(){
   h+='</tbody></table>';
  }
  else if(k==='bt'||k==='cham'){
-  const bs=BT.filter(b=>(theoLop?b.lop===id:b.gv===id)&&quaLoc(TIET.find(t=>t.id===b.tiet)||{}))
+  /* 🆕 DTHN-2D · chốt P-3 — panel ③ lọc theo NGƯỜI TẠO, panel ④ lọc theo CHỦ LƯỢT: panel phải ra đúng con số của ô vừa bấm */
+  const ai=b=>k==='bt'?b.nguoi_tao:b.chu_luot;
+  const bs=BT.filter(b=>(theoLop?b.lop===id:ai(b)===id)&&quaLoc(TIET.find(t=>t.id===b.tiet)||{}))
             .filter(b=>k==='bt'?true:b.quaHan);
-  h+='<table><thead><tr><th>Ngày giao · Tiết</th><th>Môn · Lớp</th><th>Giáo viên</th><th>Hạn nộp</th>'+
+  if(bs.some(daChuyenChu)||bs.some(b=>b.nguoi_tao!==b.gv))
+   h+='<div class="ro">🔁 <b>Lượt giao trong tiết dạy thay</b> — cột ③ đếm cho <b>người giao</b> (người đứng lớp tiết đó), '+
+    'cột ④ đếm cho <b>chủ lượt</b> (người có quyền chấm). Lượt thuộc người dạy thay tới <b>mốc chốt sổ 24 giờ</b>, qua mốc thì '+
+    '<b>chuyển chủ một lần</b> sang giáo viên của lớp, trừ khi người dạy thay chọn giữ (DT-A · M2.3 §2.5b).</div>';
+  h+='<table><thead><tr><th>Ngày giao · Tiết</th><th>Môn · Lớp</th><th>'+(k==='bt'?'Người giao':'Chủ lượt')+'</th><th>Hạn nộp</th>'+
     (k==='cham'?'<th class="c">Đã chấm / đã nộp</th>':'')+'<th></th></tr></thead><tbody>';
   if(!bs.length)h+='<tr><td colspan="6" class="empty">Không có lượt nào — <b>đây cũng là một câu trả lời</b>, không phải màn hình lỗi.</td></tr>';
-  bs.forEach(b=>{const t=TIET.find(x=>x.id===b.tiet)||{}, g=gvOf(b.gv);
+  bs.forEach(b=>{const t=TIET.find(x=>x.id===b.tiet)||{}, g=gvOf(ai(b));
+   const ghi=k==='bt'
+    ?(b.nguoi_tao!==b.gv?'<br><span class="st2 w">🔁 giao khi dạy thay '+esc(gvOf(b.gv).ten)+'</span>'
+      +(daChuyenChu(b)?'<br><span style="color:var(--ink3);font-size:10.5px">chủ lượt nay: '+esc(gvOf(b.chu_luot).ten)+'</span>':''):'')
+    :(daChuyenChu(b)?'<br><span class="st2 n">🔁 do '+esc(gvOf(b.nguoi_tao).ten)+' giao khi dạy thay · chuyển chủ sau mốc chốt sổ</span>'
+      :b.nguoi_tao!==b.gv?'<br><span class="st2 w">🔁 người dạy thay giữ lượt</span>':'');
    h+='<tr><td>'+b.ngay+' · Tiết '+(t.so||'?')+'</td><td><b>'+esc(b.mon)+'</b> · <b>'+b.lop+'</b></td>'+
-    '<td>'+esc(g.ten)+'</td><td>'+b.han+(b.quaHan?'':' <span class="st2 n">còn hạn</span>')+'</td>'+
+    '<td>'+esc(g.ten)+ghi+'</td><td>'+b.han+(b.quaHan?'':' <span class="st2 n">còn hạn</span>')+'</td>'+
     (k==='cham'?'<td class="c">'+b.cham+' / '+b.nop+
       (b.ngayCho>7&&b.cham<b.nop?' <span class="st2 r">quá '+b.ngayCho+' ngày</span>':'')+'</td>':'')+
     '<td><span class="rolnk" data-go="M2.3">↗ M2.3</span></td></tr>';
@@ -981,7 +2347,7 @@ function panelHTML(){
    h+='<tr><td>'+t.thu+' '+t.ngay+'<br><span style="color:var(--ink3);font-size:11px">Tiết '+t.so+' · '+t.gio+'</span></td>'+
     '<td><b>'+esc(t.mon)+'</b> · <b>'+t.lop+'</b><br><span style="color:var(--ink3);font-size:11px">'+t.phong+'</span></td>'+
     '<td>'+esc(g.ten)+(t.thay?'<br><span class="st2 w">🔁 Dạy thay</span>':'')+'</td>'+
-    '<td>'+s+'</td><td>'+(soXong(t)?'':'<span class="rolnk" data-go="M2.2">↗ M2.2</span>')+'</td></tr>';
+    '<td>'+s+(t.dc?' '+nhanDC(t):'')+'</td><td>'+(soXong(t)?'':'<span class="rolnk" data-go="M2.2">↗ M2.2</span>')+'</td></tr>';
   });
   h+='</tbody></table>';
  }
@@ -996,22 +2362,46 @@ function render(){
  thanhLoc();
  if(!R().q.length){
   $('#loc').innerHTML='';
-  $('#content').innerHTML=daiTD2()+khoiKhoa('Theo dõi hoạt động giảng dạy',
+  $('#content').innerHTML=daiTD2()+khoiKhoa('Theo dõi hoạt động dạy – học',
    'Chức danh <b>«'+esc(R().ten)+'»</b> <b>không có ô quyền nào</b> ở menu này.<br><br>'+
-   'Đây là menu của <b>tuyến quản lý chuyên môn</b> — Tổ trưởng · Tổ phó · Phó hiệu trưởng · Hiệu trưởng. '+
+   'Đây là menu của <b>tuyến quản lý chuyên môn</b> — Tổ trưởng · Tổ phó · Phó hiệu trưởng · Hiệu trưởng '+
+   '(và Giám thị — chỉ tab <b>Theo dõi nề nếp lớp</b>, từ 22/9/2026). '+
    'Tổ chức nhân sự và nhân viên chấm công xem dữ liệu chấm công ở <b>menu chủ M4.9</b>, nơi họ có đủ quyền kết luận, '+
    'chứ không qua một bản chiếu thiếu thao tác.<br><br>'+
-   '🛑 <b>Giáo viên bộ môn và Giáo viên chủ nhiệm cũng không có ô nào</b> (chốt C6) — phần «của tôi» nằm ở '+
+   '🛑 <b>Giáo viên bộ môn và Giáo viên chủ nhiệm cũng không có ô nào</b> (chốt C6 — nay đúng KHÔNG ngoại lệ, '+
+   'sau khi chốt S12 gỡ dòng GVCN cuối cùng ở tab Nộp bài) — phần «của tôi» nằm ở '+
    '<b>M0.4 · mục Nhiệm vụ của tôi</b>, phạm vi Own.');
   return;
  }
  if(!T||!co(T[2])){
   $('#content').innerHTML=(tab==='cc')?viewCC():daiTD2()+khoiKhoa(T?T[1]:'Tab',
-   'Chức danh <b>«'+esc(R().ten)+'»</b> chưa có quyền xem Feature này.');
+   tab==='nn'
+   ?'Chức danh <b>«'+esc(R().ten)+'»</b> không có dòng nào ở Feature <code>m2.2.theo_doi_ne_nep_lop</code>.<br><br>'+
+    'Tab này chuyển từ M2.2 sang M5.9 ngày 22/9/2026 và <b>giữ đúng hàng quyền cũ</b>: Tổ trưởng chuyên môn · Tổ phó chuyên môn <i>(mở thêm — chốt 22/9)</i> · Giám thị · '+
+    'Phó hiệu trưởng điểm trường · Phó hiệu trưởng chuyên môn · Hiệu trưởng. '+
+    'Giáo viên chủ nhiệm xem nề nếp lớp mình ở <b>M2.9 · T3 Sổ đầu bài</b>.'
+   :tab==='np'
+   /* TDHT-1A — rb 42: khối khóa CŨ («Tổ trưởng chưa từng có dòng nào») HẾT HIỆU LỰC từ chốt S13. */
+   ?'Chức danh <b>«'+esc(R().ten)+'»</b> không có dòng nào ở Feature <code>m2.3.theo_doi_nop_bai</code>.<br><br>'+
+    'Tab này chuyển từ M2.3 sang M5.9 ngày 23/9/2026. Hàng quyền sau hai chốt của anh Ninh cùng ngày có <b>đúng bốn dòng</b>: '+
+    'Hiệu trưởng · Phó hiệu trưởng chuyên môn <i>(toàn trường)</i> · <b>Tổ trưởng · Tổ phó chuyên môn</b> <i>(theo tổ — mở theo chốt S13, '+
+    'đóng mâu thuẫn M2.3 §6 ⇄ §10 có từ Đợt 1)</i>.<br><br>'+
+    'Dòng <b>Giáo viên chủ nhiệm đã GỠ</b> (chốt S12): họ xem bài nộp của lớp mình ở <b>M2.9 · T4</b>, nơi có thêm khung thời gian '+
+    '2 tuần / 4 tuần / cả kỳ và nay sắp xếp được theo số bài chưa nộp.'
+   :tab==='tt'
+   ?'Chức danh <b>«'+esc(R().ten)+'»</b> không có dòng nào ở Feature <code>m5.9.tinh_hinh_hoc_tap</code>.<br><br>'+
+    'Feature này <b>mới có từ 23/9/2026</b> (khối ② — tình hình học tập của học sinh) và mở cho <b>năm dòng</b>: '+
+    'Tổ trưởng · Tổ phó chuyên môn <i>(lớp có tiết của tổ)</i> · Phó hiệu trưởng điểm trường · Phó hiệu trưởng chuyên môn · Hiệu trưởng.<br><br>'+
+    '🛑 <b>Giám thị không có</b> — kết quả học tập không phải việc của giám thị (M9.3 §14). '+
+    '🛑 <b>Giáo vụ không có</b> — TT 22/2022 giao vị trí này «phối hợp» và «theo dõi»; hai ô đã mở (Theo tiết · Điểm danh) '+
+    'đúng nghĩa theo dõi, còn một bảng tổng hợp tình hình học tập của cả phạm vi là <b>công cụ quản lý</b>. '+
+    '🛑 <b>Giáo viên chủ nhiệm không có</b> — với lớp mình họ đã có M2.9 T5 · T4 · T6 đầy đủ hơn.'
+   :'Chức danh <b>«'+esc(R().ten)+'»</b> chưa có quyền xem Feature này.');
   return;
  }
  $('#content').innerHTML = tab==='gv'?viewGV(): tab==='lop'?viewLop(): tab==='tiet'?viewTiet():
-                           tab==='dd'?viewDD(): tab==='cc'?viewCC(): viewCF();
+                           tab==='dd'?viewDD(): tab==='cc'?viewCC(): tab==='nn'?viewNN():
+                           tab==='np'?viewNB(): tab==='tt'?viewHT(): viewCF();
 }
 
 /* ===================== MODAL · TOAST ===================== */
@@ -1028,20 +2418,39 @@ let tmr; const toast=m=>{const e=$('#toast');e.textContent=m;e.classList.add('on
  clearTimeout(tmr);tmr=setTimeout(()=>e.classList.remove('on'),4200)};
 
 /* ===================== XUẤT BÁO CÁO — bắt buộc chọn mục đích (TD-2 · rb 14) ===== */
-let mucDich='';
+let mucDich='', banXuat='';
+/* SDBG-1C — bản xuất đi theo tab 7 (bảng SB-2 phiên 1A mục 4). «Ghi sổ muộn theo giáo viên» đơn vị dòng là
+   GIÁO VIÊN nên chỉ mở cho vai có tab 1 Theo giáo viên — Giám thị không có. */
+function bxNN(){
+ const B=[['Báo cáo nề nếp tuần — bảng so sánh các lớp, sắp theo tên lớp (Excel)','nn'],
+  ['Sổ đầu bài một lớp theo tuần — lớp '+(NN.lop||'đang chọn')+', '+tuanLb(NN.w)+' (PDF)','nn'],
+  ['Danh sách tiết chưa ghi sổ — quét cả năm học, trong phạm vi (Excel)','nn'],
+  ['Thống kê ghi sổ muộn theo giáo viên — sắp theo tên, không xếp hạng (Excel)','gv']];
+ return B.filter(b=>co(b[1])).map(b=>b[0]);
+}
 function moXuat(){
- mucDich='';
- const MD=['Họp tổ chuyên môn định kỳ','Báo cáo Ban giám hiệu','Rà soát dữ liệu cuối học kỳ','Giải trình theo yêu cầu của Phòng / Sở'];
+ mucDich=''; banXuat='';
+ const MD=['Họp tổ chuyên môn định kỳ','Báo cáo Ban giám hiệu','Rà soát dữ liệu cuối học kỳ','Giải trình theo yêu cầu của Phòng / Sở']
+  /* KGLH-1F — hai mục đích đi theo ba bản xuất rời M2.3 cùng tab 8 (M2.3 §8.9) */
+  .concat(tab==='np'?['Họp giao ban chuyên môn','Rà khối lượng bài giữa các môn']:[])
+  /* TDHT-1A — hai mục đích của tab 9 (§5.10.7) */
+  .concat(tab==='tt'?['Họp giao ban chuyên môn','Bàn biện pháp hỗ trợ lớp']:[]);
+ const BX=tab==='nn'&&co('nn')?bxNN():(tab==='np'&&co('np')?bxNB():(tab==='tt'&&co('tt')?bxHT():[]));
+ if(BX.length)banXuat=BX[0];
  modal('⬇ Xuất báo cáo — '+(TABS.find(t=>t[0]===tab)||['','?'])[1],
   '<div class="warn">⚖ <b>Bản xuất mang nguyên câu cảnh báo của màn hình:</b> con số là tình trạng nhập dữ liệu, '+
   '<b>không phải chất lượng giảng dạy</b>, và <b>không được dùng để xếp loại giáo viên</b>.</div>'+
+  (BX.length?'<div class="f"><div class="k">Bản xuất</div><div>'+BX.map((b,i)=>'<label class="chkl" style="display:block;margin-bottom:5px">'+
+    '<input type="radio" name="bx" value="'+i+'"'+(i?'':' checked')+'> '+esc(b)+'</label>').join('')+
+    '<div class="hint">Bảng so sánh nhiều lớp <b>chỉ có ở bản xuất</b>, không đặt lên màn hình (M2.2 điểm 15). '+
+    'Bản có tên học sinh (sự việc trong tiết) là dữ liệu cá nhân trẻ em.</div></div></div>':'')+
   '<div class="info">Luật BVDLCN 91/2025 — mọi lượt xuất <b>bắt buộc chọn mục đích</b> và <b>ghi audit</b> '+
   '(người xuất · thời điểm · phạm vi · mục đích).</div>'+
   '<div class="f"><div class="k">Mục đích xuất</div><div>'+
   MD.map((m,i)=>'<label class="chkl" style="display:block;margin-bottom:5px">'+
     '<input type="radio" name="md" value="'+i+'"> '+m+'</label>').join('')+'</div></div>',
-  [['⬇ Xuất',()=>{toast('Đã ghi audit: '+R().ten+' xuất '+(TABS.find(t=>t[0]===tab)||['','?'])[1]+
-     ' — mục đích «'+mucDich+'». Bản thật tải tệp .xlsx.')},'p',true],['Đóng',0,'']]);
+  [['⬇ Xuất',()=>{toast('Đã ghi audit: '+R().ten+' xuất '+(banXuat?'«'+banXuat+'»':(TABS.find(t=>t[0]===tab)||['','?'])[1])+
+     ' — mục đích «'+mucDich+'». Bản thật tải tệp.')},'p',true],['Đóng',0,'']]);
 }
 
 /* ===================== BIND ===================== */
@@ -1050,13 +2459,15 @@ document.body.addEventListener('click',e=>{
  let x;
  if(x=g('data-r')){role=x.dataset.r;
   document.querySelectorAll('.rb').forEach(b=>b.classList.toggle('on',b.dataset.r===role));
-  panel=null;
+  panel=null; NN.lop=null; NN.dai=''; NN.loc='lop';
   const r=R();
   if(r.sc==='group'){fTo='ALL'} if(r.sc==='branch'){fDt=r.dt} else if(fDt!=='ALL'&&role!=='PHT_DT'){}
   if(!co(tab)){const f=TABS.find(t=>co(t[2])); if(f)tab=f[0]}
   fLop='ALL';
   render();return}
- if(x=g('data-tab')){tab=x.dataset.tab;panel=null;render();return}
+ if(x=g('data-tab')){tab=x.dataset.tab;panel=null;
+  if(tab==='nn'){const w=TUANNN.find(t=>t.tl===tuanLech);NN.w=w?w.n:1}   /* giữ khoảng ngày đang xem khi sang tab tuần */
+  render();return}
  if(x=g('data-mf')){const fn=window.__mf[+x.dataset.mf];closeM();if(fn)fn();return}
  if(x=g('data-go')){toast('Deep-link sang '+x.dataset.go+' — mang theo bộ lọc đang chọn và &return=M5.9, '+
    'mở đúng dòng cần xử lý. Menu này không sửa gì.');return}
@@ -1069,11 +2480,17 @@ document.body.addEventListener('change',e=>{
  if(t.id==='fdt'){fDt=t.value;fLop='ALL';panel=null;render()}
  if(t.id==='flop'){fLop=t.value;panel=null;render()}
  if(t.id==='ftuan'){tuanLech=+t.value;panel=null;render()}
+ if(changeNN(t))return;
+ if(changeHT(t))return;
+ if(t.name==='bx'){banXuat=t.parentNode.textContent.trim()}
  if(t.name==='md'){mucDich=t.parentNode.textContent.trim();
   const b=$('#mf').querySelector('[data-mf="0"]'); if(b)b.disabled=false}
 });
 
 function act(a,d){
+ if(actNN(a,d))return;
+ if(actNB(a,d))return;
+ if(actHT(a,d))return;
  if(a==='mo'){panel=(panel===d.k?null:d.k);render();return}
  if(a==='dong'){panel=null;render();return}
  if(a==='sap'){sapTheo=d.k;render();return}
