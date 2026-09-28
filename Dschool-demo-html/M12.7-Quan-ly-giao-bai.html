@@ -2666,6 +2666,40 @@ const nguoiDung=()=>role==='FULL'?null:role;                    /* mã người 
 const ST={tab:'luot',dt:'ALL',nam:NAM_HOC,q:'',locTT:'mo',locMon:'all',chiTiet:null,sub:'bai',bai:null,lanXem:null,locBai:'all',qBai:'',
  wiz:null,nhom:null,locNhom:'dung',ccSap:'som',ccBai:null,ret:null,roleCu:'FULL',sv:null,demoGo:{}};
 
+/* ══════════════════ v1.5 · cụm `BTSH` (26/9/2026) — HS-2 HAI ĐƯỜNG VÀO MỘT BÀI LÀM ══════════════════
+   Bản CHỐT CHOT-26-09-...-TKHS.md §2.3 · hợp đồng HDTH ⑪ · kiến trúc v1.6 quy tắc 12 · M12.7 §10b · §11b.
+   ★ NỐI CUỐI — KHÔNG sửa một byte dữ liệu cũ: L01…L08 vẫn sinh mã cho MỌI em (những lượt ấy giao trước 26/9,
+     và không có đường nào xóa một mã đã phát). Lượt MỚI L09 là lượt duy nhất dựng theo luật mới.
+   ★ Trường `k` của Bài giao KHÔNG đổi (HDTH ⑪ mục 1) — chỉ `ma` được phép để TRỐNG: trống = em đi đường ĐĂNG NHẬP.
+   ★ 0 Feature · 0 ô quyền · 0 trường dữ liệu mới. */
+
+/* ── L09: nhóm NLB02 (3 HS của trường + 2 khách) — hai đường vào cùng chạy trên MỘT bảng bài (ca B12) ──
+   Giao 18/10 19:30, TRƯỚC khi Q36 bị hủy (19/10 15:30) — nên lượt tồn tại hợp lý, y như L04.
+   ⚠ Hệ quả đo được: bài giao 172 → 177 · lần làm 109 → 109 (L09 chưa em nào làm — cố ý, để ca B14 làm bài từ đầu
+     và để KHÔNG chạm badge «n bài chờ tôi chấm») · số lần dùng đề D05 trong DEMO NÀY: 2 + đã in → 3 + đã in. */
+VET_LUOT.L09=[{luc:'2026-10-18 19:30',ai:'TPCM',viec:'▶ Giao bài',
+  ct:'Sinh 2 mã cho 2 khách — 3 học sinh của trường đăng nhập, không sinh mã (HS-2)'}];
+if(!luotTamCo('L09')){
+ LUOT.push({id:'L09',ten:'Đọc hiểu thơ Đường luật — vòng 2 (nhóm bồi dưỡng)',mon:'van',coChe:'hannop',phanPhoi:'dongnhat',de:['D05'],
+  doiTuong:{nhom:'NLB02'},mangTruong:false,tt:'giao',tg:'TPCM',taoLuc:'2026-10-18 19:10',giaoLuc:'2026-10-18 19:30',
+  hanNop:'2026-10-28 21:00',soLan:1,xaoCau:false,xaoDa:false,hatGiong:20261019,hienLoiGiai:false,
+  congBoCheDo:'ngay',dongSom:null,giaHan:[],dinhChinh:[],vet:VET_LUOT.L09,nam:NAM_HOC});
+ /* HS của trường: ma = null (đăng nhập) · khách: mã như cũ. Chưa em nào làm bài. */
+ BAI.push(...taoBaiGiao(luotById('L09'),'2026-10-18 19:30').map(b=>b.hs?Object.assign(b,{ma:null}):b));
+}
+
+/* ── VẾT `cap_lai_hs` — dữ liệu của M10.5 / M2.9, KHÔNG phải vết của lượt (HDTH ⑨ · M10.7 §5.1.5) ──
+   M12.7 chỉ ĐỌC rồi VẼ một dòng trên thẻ 🕘 Lịch sử của những lượt có id trong luotDangMo[] (§7.3b).
+   ⛔ Không vết nào mang mật khẩu — kể cả mật khẩu tạm, kể cả dạng đã băm (HDTH ⑩ mục 1).
+   ⛔ M12.7 không sinh · không sửa · không xóa vết; nhật ký là CHỈ ĐỌC TUYỆT ĐỐI (M10.7 §1). */
+const VET_TK=[
+ {loai:'cap_lai_hs',luc:'2026-10-20 07:35',hs:'7A2-05',ai:'GVCN',tuMenu:'M2.9',luotDangMo:['L03']},
+ /* `aiTen` chỉ có khi NS của tệp nền không có mã người ấy (Văn thư không thuộc sáu vai của menu này — nền không gieo tên).
+    ⛔ Không thêm người vào NS: NS là tệp nền dùng chung của cả nhóm M12 (luật S3). */
+ {loai:'cap_lai_hs',luc:'2026-10-19 08:10',hs:'8A1-02',ai:'VT',aiTen:'Văn thư',tuMenu:'M10.5',luotDangMo:['L09']}
+];
+const vetTKCua=l=>VET_TK.filter(x=>(x.luotDangMo||[]).includes(l.id));
+
 
 /* ══════════════ M12.7 — TAB 1 · LƯỢT GIAO BÀI (danh sách bốn khối · tầng 2 màn hình đầy đủ · vòng đời) ══════════════ */
 const pill=(t,m)=>'<span class="st2 '+m[1]+'">'+m[0]+'</span>';
@@ -2781,7 +2815,7 @@ function veChiTiet(l){
  h+=bannerLuot(l);
  if(l.tt==='nhap') return h+veNhapTomTat(l);
  const cDC=(l.dinhChinh||[]).length;
- h+='<div class="gb-sub">'+[['bai','👥 Bài theo học sinh',bs.length],['cau','📊 Phân tích câu'],['dc','✎ Đính chính',cDC||''],['ls','🕘 Lịch sử',(l.vet||[]).length]].map(([k,n,c])=>
+ h+='<div class="gb-sub">'+[['bai','👥 Bài theo học sinh',bs.length],['cau','📊 Phân tích câu'],['dc','✎ Đính chính',cDC||''],['ls','🕘 Lịch sử',(l.vet||[]).length+vetTKCua(l).length]].map(([k,n,c])=>
   '<button class="'+(ST.sub===k?'on':'')+'" data-a="sub" data-v="'+k+'">'+n+(c!==undefined&&c!==''?' <span class="b">'+c+'</span>':'')+'</button>').join('')
   +'<div class="gb-subsum">'+thanhTD(d,bs.length)+'<div class="gb-td">'+chuTD(d)+'</div></div></div>';
  if(ST.sub==='cau') h+=vePhanTichCau(l,bs);
@@ -2847,23 +2881,39 @@ function veBangBai(l,bs){
   const t=ttBai(b,l), lc=lanCuoi(b), ld=lanDau(b), ln=lanNop(b);
   const nopChu=lc?(lc.nop?gs(lc.nop)+({tu:' <span class="tg c">tự nộp hết giờ</span>',thu:' <span class="tg c">GV thu</span>',huy:' <span class="tg c">dừng khi hủy</span>'}[lc.cach]||''):'<span class="tg a">đang làm · lưu '+gs(lc.luu)+'</span>'):'—';
   h+='<tr class="'+(b.k===ST.bai?'gb-on':'')+'" data-a="mobai" data-v="'+esc(b.k)+'"><td>'+(++i)+'</td>'
-   +'<td><b>'+esc(tenBai(b))+'</b><div class="gb-m">'+(b.hs?hsById(b.hs).ma+' · '+b.lop:'<span class="tg b">khách</span> '+esc(b.khach.truong))+(b.maCu.length?' · <span class="tg c" title="Mã đã cấp lại">↺ mã cấp lại '+b.maCu.length+'</span>':'')+'</div></td>'
+   +'<td><b>'+esc(tenBai(b))+'</b><div class="gb-m">'+(b.hs?hsById(b.hs).ma+' · '+b.lop:'<span class="tg b">khách</span> '+esc(b.khach.truong))
+   /* v1.5 · HS-2 — `ma` để TRỐNG nghĩa là em đi đường ĐĂNG NHẬP; đây KHÔNG phải giá trị thiếu nên KHÔNG hiện «—» (§10b) */
+   +(b.ma?'':' · <span class="tg a" title="Học sinh của trường — vào bài bằng tài khoản, không sinh mã lúc ▶ Giao bài (HS-2)">🎓 đăng nhập</span>')
+   +(b.maCu.length?' · <span class="tg c" title="Mã đã cấp lại">↺ mã cấp lại '+b.maCu.length+'</span>':'')+'</div></td>'
    +'<td>'+pill(t,TT_BAI[t])+'</td><td class="num">'+(b.lans.length?ln.length+(l.soLan>1&&l.coChe!=='khung'?'/'+(l.soLan||'∞'):'')+(b.lans.some(x=>!x.nop)?' +1':''):'—')+'</td>'
    +'<td class="num">'+(ln.length?kqChu(l,b,ln[ln.length-1]):'—')+'</td><td class="num hcol">'+(ld&&!th?kqChu(l,b,ld):ld?kqChu(l,b,ld):'—')+'</td>'
    +'<td class="hcol">'+nopChu+'</td><td class="hcol gb-m">'+esc(b.thietBi||'—')+'</td>'
    +'<td class="gb-ra">'+(t==='chocham'&&chamDuoc(l)?'<button class="btn xs p" data-a="mobai" data-v="'+esc(b.k)+'">📝 Chấm</button> ':'')
-   +(suaDuoc(l)&&l.tt==='giao'?'<button class="btn xs" data-a="xemma" data-v="'+esc(b.k)+'" title="Xem mã — ghi audit">🔑</button> <button class="btn xs" data-a="caplai" data-v="'+esc(b.k)+'" title="Cấp lại mã">↺</button>':'')+'</td></tr>';
+   /* v1.5 — MỘT nút, hai nhãn theo trạng thái dòng (§10b): chưa có mã ⇒ «Cấp mã» (đường thoát) · đã có mã ⇒ «Cấp lại mã».
+      Chưa có mã thì KHÔNG có 🔑 — không có gì để xem. */
+   +(suaDuoc(l)&&l.tt==='giao'?(b.ma?'<button class="btn xs" data-a="xemma" data-v="'+esc(b.k)+'" title="Xem mã — ghi audit">🔑</button> ':'')
+     +'<button class="btn xs" data-a="caplai" data-v="'+esc(b.k)+'" title="'+(b.ma?'Cấp lại mã':'Cấp mã — đường thoát (em quên mật khẩu)')+'">↺</button>':'')+'</td></tr>';
  });
  if(!sx.length) h+='<tr><td colspan="9"><div class="empty">Không có em nào khớp bộ lọc.</div></td></tr>';
  h+='</tbody></table>'+chuGiaiTD+'</div><div class="panel">'+(mo?vePanelBai(l,mo):'')+'</div></div>';
  return h;
 }
 
+/* v1.5 (§7.3b) — dòng vết `cap_lai_hs` do M10.5 / M2.9 sinh; M12.7 chỉ VẼ, không sinh · không sửa · không xóa.
+   KHÔNG in mật khẩu (kể cả tạm, kể cả đã băm — HDTH ⑩ mục 1) · KHÔNG in lý do khóa (nội bộ của M10.5) · 0 nút · 0 thông báo. */
+function dongVetTK(l){
+ return vetTKCua(l).map(x=>{const h=hsById(x.hs)||{ten:x.hs,ma:x.hs};
+  return {luc:x.luc,ai:x.aiTen||x.ai,viec:'🔑 Cấp lại mật khẩu học sinh',ng:x.tuMenu,
+   ct:h.ten+' · '+h.ma+' — mật khẩu tạm máy sinh, hiện một lần ở màn người cấp (không ghi vào bất kỳ nhật ký nào)'}});
+}
 function veLichSu(l){
- const v=(l.vet||[]).slice().sort((a,b)=>b.luc.localeCompare(a.luc));
+ const v=(l.vet||[]).concat(dongVetTK(l)).slice().sort((a,b)=>b.luc.localeCompare(a.luc));
+ const nTK=dongVetTK(l).length;
  return '<div class="tbw"><table><thead><tr><th>Lúc</th><th>Người</th><th>Việc</th><th>Chi tiết</th></tr></thead><tbody>'
-  +v.map(x=>'<tr'+(/⚠/.test(x.viec)?' class="warnrow"':'')+'><td>'+gs(x.luc)+'</td><td>'+esc(tenNS(x.ai))+'</td><td><b>'+esc(x.viec)+'</b></td><td>'+esc(x.ct||'')+'</td></tr>').join('')
-  +'</tbody></table></div><div class="gb-m" style="margin-top:8px">Lịch sử lượt ghi mọi thao tác của người tạo — kể cả <b>cảnh báo mà vẫn giao</b> (khung §15.1). Xem · in · xuất mã và xem bài làm ghi thêm vào nhật ký audit của hệ thống.</div>';
+  +v.map(x=>'<tr'+(/⚠/.test(x.viec)||x.ng?' class="warnrow"':'')+'><td>'+gs(x.luc)+'</td><td>'+esc(tenNS(x.ai))+'</td><td><b>'+esc(x.viec)+'</b>'
+   +(x.ng?' <span class="tg c" title="Dòng này do menu khác ghi — M12.7 chỉ vẽ ra">từ '+esc(x.ng)+'</span>':'')+'</td><td>'+esc(x.ct||'')+'</td></tr>').join('')
+  +'</tbody></table></div><div class="gb-m" style="margin-top:8px">Lịch sử lượt ghi mọi thao tác của người tạo — kể cả <b>cảnh báo mà vẫn giao</b> (khung §15.1). Xem · in · xuất mã và xem bài làm ghi thêm vào nhật ký audit của hệ thống.'
+  +(nTK?'<br>🔑 <b>'+nTK+' dòng «Cấp lại mật khẩu học sinh»</b> do <b>M10.5</b> / <b>M2.9</b> ghi — M12.7 <b>chỉ vẽ ra</b>, không sinh và không sửa được. Dòng hiện ở đây vì lần cấp lại ấy xảy ra <b>trong lúc lượt này đang mở</b>: người cấp lại mật khẩu là người vào được bài làm của em, nên việc đó phải <b>tra lại được</b> (hợp đồng HDTH ⑨). Ô này <b>không bao giờ</b> chứa mật khẩu.':'')+'</div>';
 }
 function ghiVet(l,viec,ct){(l.vet=l.vet||[]).push({luc:GIO,ai:role,viec,ct:ct||''})}
 
@@ -2921,16 +2971,18 @@ HD.themem=v=>{const l=luotById(v), co=new Set(baiCua(l).map(b=>b.k));
    +'. Em thêm vào <b>vẫn nhận đúng đề như cả lớp</b> — không chặn, vì chặn thì em chuyển đến không có bài trong khi các bạn đã có điểm, '
    +'mà đề thì không sửa được nữa <i>(lượt đã đóng băng)</i>. Xử lý câu hỏng <b>cho toàn lượt</b> để cả lớp và em mới được đối xử giống nhau.</div>'
    +(boDuoc(l)?'<button class="btn sm" data-a="bomo" data-v="'+esc(l.id+'|'+(hy[0]||bc[0]).id)+'">⊘ Không tính điểm câu này</button>':'')+'</div>':'';
- modal('＋ Thêm em — '+esc(l.ten),canhBao+(moi.length?'<div class="info">Em <b>chưa có trong danh sách chụp lúc giao</b> — '+(l.doiTuong.lop?'chuyển đến sau khi giao (🔗 hồ sơ M1.x)':'thêm vào nhóm sau khi giao')+'. Mỗi em được <b>sinh mã riêng</b>; đề theo phân phối của lượt.</div>'
+ modal('＋ Thêm em — '+esc(l.ten),canhBao+(moi.length?'<div class="info">Em <b>chưa có trong danh sách chụp lúc giao</b> — '+(l.doiTuong.lop?'chuyển đến sau khi giao (🔗 hồ sơ M1.x)':'thêm vào nhóm sau khi giao')+'. Đề theo phân phối của lượt. <b>Học sinh của trường đăng nhập</b> — không sinh mã; <b>khách ngoài trường</b> được <b>sinh mã riêng</b> (HS-2).</div>'
   +'<table><thead><tr><th></th><th>Học sinh</th><th>Lớp / nguồn</th><th>Vào lớp</th></tr></thead><tbody>'+moi.map(x=>'<tr><td><input type="checkbox" class="themcb" value="'+esc(x.k)+'" checked></td><td><b>'+esc(x.hs?hsById(x.hs).ten:x.khach.ten)+'</b></td><td>'+(x.lop||'khách')+'</td><td>'+(HS_VAO_LOP_CHIEU[x.k]?k2s(HS_VAO_LOP_CHIEU[x.k]):'—')+'</td></tr>').join('')+'</tbody></table>'
-  :'<div class="okbox">Mọi em '+(l.doiTuong.lop?'đang học của '+l.doiTuong.lop.join(', '):'của nhóm')+' đã có mã trong lượt này.</div>')
+  :'<div class="okbox">Mọi em '+(l.doiTuong.lop?'đang học của '+l.doiTuong.lop.join(', '):'của nhóm')+' đã có bài trong lượt này.</div>')
   +'<div class="gb-m" style="margin-top:8px">Không có «bỏ em» — em chuyển đi thì bài giữ nguyên, mã hết hạn theo lượt. Đổi đối tượng khác hẳn thì hủy và tạo lượt mới (§6.4).</div>',
-  '<button class="btn" data-mb="close">Đóng</button>'+(moi.length?'<button class="btn p" data-a="thememok" data-v="'+v+'">＋ Sinh mã cho em đã chọn</button>':''))};
+  '<button class="btn" data-mb="close">Đóng</button>'+(moi.length?'<button class="btn p" data-a="thememok" data-v="'+v+'">＋ Thêm em đã chọn</button>':''))};
 HD.thememok=v=>{const l=luotById(v), chon=$$('.themcb').filter(x=>x.checked).map(x=>x.value); if(!chon.length){toast('Chưa chọn em nào');return}
  const moi=chupDoiTuong(l,GIO).filter(x=>chon.includes(x.k));
- moi.forEach((x,i)=>BAI.push(Object.assign({luot:l.id,de:l.de[(baiCua(l).length+i)%l.de.length],ma:sinhMa(l.id+'|'+x.k+'|1'),maCu:[],thietBi:null,lans:[],nhanXet:'',vet:[]},x)));
- ghiVet(l,'＋ Thêm em',moi.map(x=>x.k).join(', ')+' — sinh '+moi.length+' mã'); closeM(); doi(); render();
- toast('＋ Đã thêm <b>'+moi.length+' em</b> — bấm 🔑 trên dòng em để xem / in mã')};
+ /* v1.5 (§10b ca ②) — chỉ sinh mã cho em CẦN mã: học sinh của trường đi đường đăng nhập, ô mã để trống */
+ moi.forEach((x,i)=>BAI.push(Object.assign({luot:l.id,de:l.de[(baiCua(l).length+i)%l.de.length],ma:x.hs?null:sinhMa(l.id+'|'+x.k+'|1'),maCu:[],thietBi:null,lans:[],nhanXet:'',vet:[]},x)));
+ const nMa=moi.filter(x=>!x.hs).length, nDN=moi.length-nMa;
+ ghiVet(l,'＋ Thêm em',moi.map(x=>x.k).join(', ')+' — sinh '+nMa+' mã'+(nDN?' · '+nDN+' em của trường đăng nhập, không sinh mã':'')); closeM(); doi(); render();
+ toast('＋ Đã thêm <b>'+moi.length+' em</b>'+(nMa?' — bấm 🔑 trên dòng em có mã để xem / in':' — các em <b>đăng nhập</b>, không có mã'))};
 HD.dongsom=v=>{const l=luotById(v), dl=baiCua(l).filter(b=>b.lans.some(x=>!x.nop));
  modal('⏹ Đóng sớm / Thu bài — '+esc(l.ten),'<div class="warn">Lượt đóng ngay bây giờ ('+gsN(GIO)+'). '+(dl.length?'<b>'+dl.length+' em đang làm</b> — máy chủ <b>tự nộp phần đã lưu</b> của các em (nộp = «GV thu»): '+dl.map(b=>esc(tenBai(b))).join(', ')+'.':'Không em nào đang làm.')+'</div>'
   +'<label class="lbl">Lý do <span style="color:var(--red)">*</span></label><input class="fldi" id="dsly" placeholder="vd: hết tiết, cả lớp đã nộp">',
@@ -2965,22 +3017,43 @@ HD.xemma=k=>{const l=luotById(ST.chiTiet), b=baiById(l.id,k);
 HD.saolkr=k=>{const l=luotById(ST.chiTiet); ghiAudit('Sao chép liên kết riêng',l.id+' · '+k); toast('⎘ Đã sao chép liên kết riêng (kèm mã) — chỉ gửi đúng em / phụ huynh em qua kênh của trường')};
 HD.inmaem=k=>{closeM();inPhieu(luotById(ST.chiTiet),[baiById(ST.chiTiet,k)])};
 HD.inma=v=>inPhieu(luotById(v),baiCua(luotById(v)));
-function inPhieu(l,bs){
+function inPhieu(l,bsAll){
+ /* v1.5 (§10b) — chỉ in em CÓ mã: dải cắt của em đăng nhập là một tờ giấy trắng vô nghĩa.
+    ⛔ M12.7 KHÔNG in phiếu MẬT KHẨU — đó là việc của Văn thư ở M10.5 tab ② (bit XD, bắt chọn mục đích + nhật ký). */
+ const bs=bsAll.filter(b=>b.ma), dn=bsAll.length-bs.length;
+ if(!bs.length) return modal('🖨 In phiếu mã — '+esc(l.ten),'<div class="info">Lượt này <b>không có em nào cần phiếu mã</b>: cả '+dn+' em đều là <b>học sinh của trường</b> — các em <b>đăng nhập</b> bằng tài khoản của mình (HS-2).</div>'
+  +'<div class="gb-m">Phiếu <b>mật khẩu</b> theo lớp là việc của <b>Văn thư</b> ở <b>M10.5 tab ②</b> (bắt chọn mục đích + ghi nhật ký) — không phải ở menu này.</div>',
+  '<button class="btn p" data-mb="close">Đóng</button>');
  const g={}; bs.forEach(b=>{const k=b.lop&&!b.nhom?'Lớp '+b.lop:'Nhóm '+(nlbById(b.nhom)||{}).ten; (g[k]=g[k]||[]).push(b)});
  modal('🖨 In phiếu mã — '+esc(l.ten)+' ('+bs.length+' em)','<div class="gb-m">Dải cắt theo lớp — tiền lệ phiếu phách M2.8 bước ⑤. Mỗi dải: tên em · tên lượt · liên kết · mã.</div>'
+  +(dn?'<div class="info"><b>'+dn+' em của trường đăng nhập — không có phiếu mã.</b> Các em vào bài bằng tài khoản của mình (HS-2); phiếu <b>mật khẩu</b> là việc của Văn thư ở <b>M10.5 tab ②</b>.</div>':'')
   +Object.keys(g).map(k=>'<div class="gb-pgrp">'+esc(k)+' · '+g[k].length+' em</div>'+g[k].slice(0,6).map(b=>'<div class="gb-phieu"><span class="gb-cut">✂</span><div><b>'+esc(tenBai(b))+'</b> · '+(b.lop||'khách')+'<div class="gb-m">'+esc(l.ten)+' · '+esc(lienKetChung(l))+'</div></div><div class="gb-ma sm">'+b.ma.replace(/(.{4})/,'$1 ')+'</div></div>').join('')
    +(g[k].length>6?'<div class="gb-m" style="padding:4px 8px">… và '+(g[k].length-6)+' dải nữa</div>':'')).join(''),
   '<button class="btn" data-mb="close">Thôi</button><button class="btn p" data-a="inmaok" data-v="'+l.id+'|'+bs.length+'">🖨 In</button>')}
 HD.inmaok=v=>{const [id,n]=v.split('|'), l=luotById(id); ghiVet(l,'🖨 In phiếu mã',n+' em'); ghiAudit('In phiếu mã',id+' · '+n+' em'); closeM(); render(); toast('🖨 Đã gửi lệnh in <b>'+n+' phiếu</b> — ghi audit')};
 HD.saolk=v=>{toast('⎘ Đã sao chép liên kết chung: <b>'+esc(lienKetChung(luotById(v)))+'</b> — em mở liên kết rồi nhập mã riêng')};
 HD.caplai=k=>{const l=luotById(ST.chiTiet), b=baiById(l.id,k), dl=b.lans.some(x=>!x.nop), nl=b.lans.reduce((s,x)=>s+Object.keys(x.tl).length,0);
+ /* v1.5 (§10b) — MỘT nút, hai nhãn: chưa có mã ⇒ «Cấp mã» (ĐƯỜNG THOÁT của HS-2) · đã có mã ⇒ «Cấp lại mã» (luật cũ, không đổi một chữ).
+    Cùng hành vi trên dữ liệu (sinh một mã cho một bài giao), cùng hàng rào (chỉ người chủ lượt · lý do · Lịch sử · audit) ⇒ cùng một hộp. */
+ if(!b.ma) return modal('↺ Cấp mã (đường thoát) — '+esc(tenBai(b)),
+  '<div class="info">Em là <b>học sinh của trường</b> nên đường vào mặc định của em là <b>đăng nhập</b> — lượt này <b>không sinh mã</b> cho em (HS-2).<br>'
+  +'Mã cấp ở đây là <b>đường thoát</b>: nó mở <b>đúng bài này của em</b> — <b>không phải mật khẩu</b>, không mở bài của lượt khác, không mở trang tài khoản của em.</div>'
+  +'<div class="okbox">Câu trả lời em đã lưu bằng đăng nhập <b>giữ nguyên</b>'+(nl?' ('+nl+' câu)':'')+'. Đồng hồ <b>không dừng</b> (tính ở máy chủ).</div>'
+  +'<div class="warn">Đây <b>không phải cấp lại mật khẩu</b>. Em quên mật khẩu thì <b>giáo viên chủ nhiệm</b> cấp lại ở <b>M2.9 · Học sinh của lớp</b>, hoặc <b>phòng văn thư</b> ở <b>M10.5 tab ②</b>.</div>'
+  +'<label class="lbl">Lý do <i>(bắt buộc — ghi Lịch sử lượt + audit)</i></label><select class="fldi" id="clly"><option value="">— chọn lý do —</option>'
+  +'<option>Em quên mật khẩu, đang ở phòng kiểm tra</option><option>Tài khoản của em đang khóa</option><option>Cấp học của em chưa bật tài khoản</option><option>Khác</option></select>',
+  '<button class="btn" data-mb="close">Thôi</button><button class="btn p" data-a="caplaiok" data-v="'+esc(k)+'">↺ Cấp mã</button>');
  modal('↺ Cấp lại mã — '+esc(tenBai(b)),'<div class="info">Mã mới + <b>gỡ thiết bị</b> đang gắn'+(b.thietBi?' (<b>'+esc(b.thietBi)+'</b>)':'')+'. Mã cũ <b>vô hiệu ngay</b>. Câu trả lời đã lưu <b>giữ nguyên</b>'+(nl?' ('+nl+' câu)':'')+(dl?' — em làm tiếp trên máy mới, <b>đồng hồ không dừng</b> (tính ở máy chủ)':'')+'.</div>'
   +'<label class="lbl">Lý do</label><select class="fldi" id="clly"><option>Em đổi máy giữa giờ (máy treo, hết pin)</option><option>Em mất phiếu mã</option><option>Mã bị lộ — nghi người khác dùng</option><option>Khác</option></select>',
   '<button class="btn" data-mb="close">Thôi</button><button class="btn p" data-a="caplaiok" data-v="'+esc(k)+'">↺ Cấp mã mới</button>')};
-HD.caplaiok=k=>{const l=luotById(ST.chiTiet), b=baiById(l.id,k), ly=$('#clly').value;
- b.maCu.push({ma:b.ma,den:GIO,ly}); b.ma=sinhMa(l.id+'|'+k+'|'+(b.maCu.length+1)); const tb=b.thietBi; b.thietBi=null; b.mayMP=null;
- ghiVet(l,'↺ Cấp lại mã',k+' — '+ly+(tb?' · gỡ «'+tb+'»':'')); ghiAudit('Cấp lại mã làm bài',l.id+' · '+k);
- closeM(); render(); HD.xemma(k); toast('↺ Đã cấp mã mới — mã cũ vô hiệu')};
+HD.caplaiok=k=>{const l=luotById(ST.chiTiet), b=baiById(l.id,k), ly=$('#clly').value, moi=!b.ma;
+ if(moi&&!ly) return toast('⛔ Chọn lý do — mỗi lượt cấp mã đều ghi Lịch sử và audit');
+ /* mã cấp cho em CÓ tài khoản KHÔNG tạo bài làm thứ hai: `k` không đổi, câu đã lưu giữ nguyên (HDTH ⑪ mục 4) */
+ if(!moi) b.maCu.push({ma:b.ma,den:GIO,ly});
+ b.ma=sinhMa(l.id+'|'+k+'|'+(b.maCu.length+1)); const tb=b.thietBi; b.thietBi=null; b.mayMP=null;
+ ghiVet(l,moi?'↺ Cấp mã (đường thoát)':'↺ Cấp lại mã',k+' — '+ly+(tb?' · gỡ «'+tb+'»':''));
+ ghiAudit(moi?'Cấp mã làm bài — đường thoát':'Cấp lại mã làm bài',l.id+' · '+k);
+ closeM(); render(); HD.xemma(k); toast(moi?'↺ Đã cấp mã — đường thoát, <b>không phải mật khẩu</b>':'↺ Đã cấp mã mới — mã cũ vô hiệu')};
 
 
 /* ══════════════ M12.7 — TẠO LƯỢT BỐN BƯỚC (kiến trúc §6.3) — tầng 2 màn hình đầy đủ ══════════════
@@ -3008,6 +3081,9 @@ function lopDuocChon(){
  return LOP.filter(x=>role==='FULL'||dayLopMon(x.id,m));
 }
 const soEmW=()=>W().loai==='nhom'?(W().nhom?nlbById(W().nhom).tv.length:0):W().lop.reduce((s,x)=>s+chupDoiTuong({doiTuong:{lop:[x]}},GIO).length,0);
+/* v1.5 · HS-2 (§10b) — bao nhiêu em CẦN mã: lớp chính khóa toàn HS của trường ⇒ 0; nhóm ⇒ đúng số KHÁCH.
+   Học sinh của trường đi đường đăng nhập, KHÔNG sinh mã lúc ▶ Giao bài. */
+const soMaW=()=>{const w=W(); if(w.loai!=='nhom') return 0; const n=w.nhom&&nlbById(w.nhom); return n?n.tv.filter(t=>t.loai==='khach').length:0};
 const hanW=()=>W().coChe==='khung'?W().kt:W().hanNop;
 
 /* ── các cảnh báo — một nguồn, dùng ở bước ③ ④ và ghi Lịch sử khi vẫn giao ── */
@@ -3137,12 +3213,12 @@ function buoc4(){
   +'<div><span>Tiêu đề</span><b>'+esc(w.ten)+'</b></div>'
   +'<div><span>Cơ chế</span><b>'+CO_CHE[w.coChe].ic+' '+CO_CHE[w.coChe].ten+'</b><i>'+(w.coChe==='khung'?gsN(w.bd)+'–'+w.kt.slice(11,16):(w.coChe==='thoiluong'?w.thoiLuong+'′ · ':'')+'hạn '+gsN(w.hanNop))+' · '+(w.coChe==='khung'?1:w.soLan||'∞')+' lần</i></div>'
   +'<div><span>Đề · '+(w.phanPhoi==='ngaunhien'?'ngẫu nhiên':'đồng nhất')+'</span><b>'+des.map(d=>d.id+' '+esc(d.ten)).join('<br>')+'</b></div>'
-  +'<div><span>Đối tượng</span><b>'+(w.loai==='lop'?'🏫 Lớp '+w.lop.join(' · '):'👥 '+esc(nlbById(w.nhom).ten))+'</b><i>'+n+' em — sinh '+n+' mã'+(th?' · Tiểu học: chỉ số câu đúng, không sheet M2.5':'')+'</i></div>'
+  +'<div><span>Đối tượng</span><b>'+(w.loai==='lop'?'🏫 Lớp '+w.lop.join(' · '):'👥 '+esc(nlbById(w.nhom).ten))+'</b><i>'+n+' em — '+(n-soMaW())+' em của trường <b>đăng nhập</b> · sinh <b>'+soMaW()+' mã</b>'+(th?' · Tiểu học: chỉ số câu đúng, không sheet M2.5':'')+'</i></div>'
   +'<div><span>Mạng</span><b>'+(w.mangTruong?'🏫 Chỉ trong mạng trường':'Trong trường và từ ngoài (⚙ cho phép)')+'</b></div>'
   +'<div><span>Kết quả</span><b>'+CONG_BO[w.congBoCheDo]+'</b><i>lời giải '+(w.hienLoiGiai?'hiện':'ẩn')+' · '+(w.xaoCau?'xáo câu':'giữ câu')+' · '+(w.xaoDa?'xáo đáp án':'giữ đáp án')+'</i></div></div>';
  if(w.phanPhoi==='ngaunhien'){const per=des.map((d,i)=>Math.floor(n/des.length)+(i<n%des.length?1:0));
   h+='<div class="info" style="margin-top:10px">🎲 Phân đề dự kiến — <b>chia đều</b> theo hạt giống ghi lại ở lượt: '+des.map((d,i)=>'<b>'+d.id+'</b> '+per[i]+' em').join(' · ')+'</div>'}
- h+='<div class="ro" style="margin-top:10px">▶ <b>Giao bài</b> = sinh <b>'+n+' mã</b> · chụp danh sách · lượt rời Nháp · '+des.map(d=>'đề <b>'+d.id+'</b>'+(deDaSuDung(d.id)?' (đã sử dụng từ trước)':' chuyển <b>Đã sử dụng — đóng băng</b>')).join(' · ')+'. Sau khi giao <b>không sửa đề và đối tượng</b> — muốn khác thì hủy, tạo lượt mới.</div>';
+ h+='<div class="ro" style="margin-top:10px">▶ <b>Giao bài</b> = sinh <b>'+soMaW()+' mã</b> <i>(chỉ khách ngoài trường — '+(n-soMaW())+' em của trường <b>đăng nhập</b>, HS-2)</i> · chụp danh sách · lượt rời Nháp · '+des.map(d=>'đề <b>'+d.id+'</b>'+(deDaSuDung(d.id)?' (đã sử dụng từ trước)':' chuyển <b>Đã sử dụng — đóng băng</b>')).join(' · ')+'. Sau khi giao <b>không sửa đề và đối tượng</b> — muốn khác thì hủy, tạo lượt mới.</div>';
  if(cb.length) h+='<div class="warn">'+cb.map(x=>'⚠ '+esc(x.t)).join('<br>')+'</div>';
  return h;
 }
@@ -3190,12 +3266,15 @@ HD.wizgiaook=()=>{const g=$('#cbghi').value; closeM(); W().daXacNhan=true; giaoT
 function giaoThat(ghi){
  const cb=canhBaoW(), l=luuLuotTuW('giao');
  l.giaoLuc=GIO; l.hatGiong=20260000+DC.hatCon(GIO,l.id)%9999; l.congBo=false;
- const bs=taoBaiGiao(l,GIO); BAI.push(...bs);
- ghiVet(l,'▶ Giao bài','Sinh '+bs.length+' mã · '+l.de.map(id=>'đề '+id+(deDaSuDung(id)?'':'')).join(', ')+' «Đã sử dụng» (đóng băng)');
+ /* v1.5 · HS-2 (§10b ca ①) — CHỈ sinh mã cho em CẦN mã (khách ngoài trường).
+    Học sinh của trường đi đường ĐĂNG NHẬP ⇒ ô mã để trống, KHÔNG sinh mã lúc ▶ Giao bài. */
+ const bs=taoBaiGiao(l,GIO).map(b=>b.hs?Object.assign(b,{ma:null}):b); BAI.push(...bs);
+ const nMa=bs.filter(b=>b.ma).length, nDN=bs.length-nMa;
+ ghiVet(l,'▶ Giao bài','Sinh '+nMa+' mã'+(nDN?' — '+nDN+' học sinh của trường đăng nhập, không sinh mã (HS-2)':'')+' · '+l.de.map(id=>'đề '+id+(deDaSuDung(id)?'':'')).join(', ')+' «Đã sử dụng» (đóng băng)');
  if(cb.length) ghiVet(l,'⚠ Giao dù có cảnh báo',cb.map(x=>x.t).join(' | ')+(ghi?' — «'+ghi+'»':''));
- ghiAudit('Giao bài',l.id+' · '+bs.length+' mã');
+ ghiAudit('Giao bài',l.id+' · '+nMa+' mã · '+nDN+' em đăng nhập');
  ST.wiz=null; ST.chiTiet=l.id; ST.sub='bai'; doi(); render();
- toast('▶ Đã giao <b>'+l.id+'</b> — sinh <b>'+bs.length+' mã</b>. Phát mã: 🖨 In phiếu mã hoặc 🔑 trên dòng em');
+ toast('▶ Đã giao <b>'+l.id+'</b> — '+(nMa?'sinh <b>'+nMa+' mã</b> cho khách':'<b>0 mã</b>')+(nDN?' · <b>'+nDN+' em của trường đăng nhập</b>':'')+'.'+(nMa?' Phát mã: 🖨 In phiếu mã hoặc 🔑 trên dòng em':''));
 }
 
 
@@ -4005,10 +4084,21 @@ HD.cfgluu=()=>{const m={cfgdai:['doDaiMa','Độ dài mã'],cfgsai:['saiMa','Nh�
    Phục vụ từ máy chủ trường (LAN) hoặc qua đường hầm khi ⚙ cho phép và lượt không khóa mạng trường. Không đăng nhập — một mã mở đúng một bài.
    Liên kết chung → nhập mã → (chặn dò · gắn thiết bị) → «Bạn là … — lớp …?» → khung giờ chưa tới: màn chờ, KHÔNG trả đề → làm bằng DC «lam»,
    lưu từng câu lên máy chủ → hết giờ máy chủ tự nộp phần đã lưu → kết quả theo chế độ công bố (Tiểu học: số câu đúng).
-   Demo dựng lại trang trong một lớp phủ; dải đen trên cùng là ĐIỀU KHIỂN MÔ PHỎNG (nguồn truy cập · thiết bị · mạng · đồng hồ) — trang thật không có. */
+   Demo dựng lại trang trong một lớp phủ; dải đen trên cùng là ĐIỀU KHIỂN MÔ PHỎNG (nguồn truy cập · thiết bị · mạng · đồng hồ) — trang thật không có.
+
+   ★ v1.5 · cụm BTSH (26/9/2026) — HS-2 HAI ĐƯỜNG VÀO (§11b · kiến trúc §6.7b):
+     `vao` = 'ma'  → nhánh cũ, KHÔNG đổi một dòng nào: liên kết chung → nhập mã → «Bạn là …?» → làm bài.
+     `vao` = 'dn'  → nhánh ĐÃ ĐĂNG NHẬP: BỎ đúng ba bước đầu (⛔ không màn nhập mã · ⛔ không màn «Bạn là …?» ·
+                     ⛔ không chống dò mã — chống dò MẬT KHẨU là ngưỡng của M10.5 tab ③, KHÔNG dựng lần hai ở đây).
+     🛑 MỌI THỨ CÒN LẠI GIỮ NGUYÊN: đồng hồ máy chủ · lưu từng câu · hết giờ tự nộp · `Chỉ trong mạng trường` vẫn CHẶN
+        (đăng nhập là một DANH TÍNH, không phải giấy phép về CHỖ NGỒI — TT 09/2021 Đ.6 k2) · màn chờ khung giờ không trả đề ·
+        ⛔ không camera · ⛔ KHÔNG nút báo lỗi câu hỏi (§3.5.3 — kết luận không đổi).
+     ⚠ Gắn thiết bị là luật của MÃ: nhánh đăng nhập không có mã để gắn ⇒ không kiểm thiết bị, em đăng nhập ở máy khác
+        làm tiếp đúng bài của mình. Đây là hệ quả của việc bỏ mã, KHÔNG phải một chỗ nới lỏng.
+     ★ Khách ngoài trường KHÔNG có tài khoản của trường ⇒ chỉ vào được bằng MÃ. */
 ST.svSai={};
 const MAY={A:'Thiết bị A',B:'Thiết bị B'};
-HD.svmo=v=>{ST.sv={luot:v,man:'vao',k:null,mang:'trong',may:'A',online:true,tb:'',pend:new Set(),moiLam:false,lanKQ:null}; veSV()};
+HD.svmo=v=>{ST.sv={luot:v,man:'vao',k:null,mang:'trong',may:'A',online:true,tb:'',pend:new Set(),moiLam:false,lanKQ:null,vao:'ma'}; veSV()};
 HD.svdong=()=>{ST.sv=null; const e=$('#svw'); if(e) e.remove(); render()};
 const svChan=l=>ST.sv.mang==='ngoai'&&(l.mangTruong||!CFG.ngoaiTruong);
 const svBai=()=>ST.sv.k?baiById(ST.sv.luot,ST.sv.k):null;
@@ -4027,7 +4117,15 @@ function veSV(){
   +'<span>Mạng '+B('svnet','1','📶 Có',S.online)+B('svnet','0','🚫 Mất',!S.online)+'</span>'
   +'<span>Giờ máy chủ <b style="color:#fff">'+gsN(GIO)+'</b> '+B('svtua','1','⏩ +1′')+B('svtua','5','+5′')+B('svtua','60','+1 giờ')
   +(t==='chuamo'?B('svtua','bd','⏩ Tới giờ bắt đầu'):'')+(lan?B('svtua','het','⏩ Tới hết giờ'):'')+'</span>'
-  +'<span>Mã các em <select id="svchonma" class="sv-sel"><option value="">— chọn —</option>'+baiCua(l).slice(0,40).map(x=>'<option value="'+x.ma+'">'+esc(tenBai(x))+' · '+x.ma+(x.thietBi?' · đã gắn máy':'')+'</option>').join('')+'</select></span>'
+  /* v1.5 — bộ chọn ĐƯỜNG VÀO (HS-2). Trang thật không có: em đến bằng đúng một đường, tùy em là ai. */
+  +'<span>Đường vào '+B('svvaoduong','ma','🔑 Nhập mã',S.vao==='ma')+B('svvaoduong','dn','🎓 Đã đăng nhập',S.vao==='dn')+'</span>'
+  +(S.vao==='dn'
+   ? '<span>Em đang đăng nhập <select id="svchonhs" class="sv-sel"><option value="">— chọn —</option>'
+     +baiCua(l).filter(x=>x.hs).slice(0,40).map(x=>'<option value="'+esc(x.k)+'"'+(S.k===x.k?' selected':'')+'>'+esc(tenBai(x))+' · '+x.k+'</option>').join('')+'</select>'
+     +' <i>khách ngoài trường không có tài khoản của trường — vào bằng mã</i></span>'
+   : '<span>Mã các em <select id="svchonma" class="sv-sel"><option value="">— chọn —</option>'
+     +baiCua(l).filter(x=>x.ma).slice(0,40).map(x=>'<option value="'+x.ma+'">'+esc(tenBai(x))+' · '+x.ma+(x.thietBi?' · đã gắn máy':'')+'</option>').join('')
+     +'</select>'+(baiCua(l).some(x=>!x.ma)?' <i>'+baiCua(l).filter(x=>!x.ma).length+' em của trường chưa có mã — các em đăng nhập</i>':'')+'</span>')
   +'<button class="sv-b x" data-a="svdong">✕ Đóng</button></div>';
  el.innerHTML=dk+'<div class="sv-br"><div class="sv-url">🔒 '+esc(lienKetChung(l))+'</div><div class="sv-page">'+thanSV(l,b,lan,t)+'</div></div>';
  S.moiLam=false;
@@ -4038,14 +4136,19 @@ function thanSV(l,b,lan,t){
   +'<div class="sv-ghi">Trang không hiện tên bài, tên em hay nội dung đề khi truy cập từ ngoài'+(l.mangTruong?' — lượt đặt «Chỉ trong mạng trường»':' — trường chưa cho phép làm bài từ ngoài (⚙)')+'.</div></div>';
  if(t==='huy') return dau+'<div class="sv-card sv-mid"><div class="sv-big">⊘</div><h2>Bài này đã bị hủy</h2><p>Mã của lượt này không còn dùng được. Hỏi thầy cô nếu cần.</p></div>';
  const info='<div class="sv-luot"><h2>'+esc(l.ten)+'</h2><div>'+MON[l.mon].ten+' · '+CO_CHE[l.coChe].ic+' '+CO_CHE[l.coChe].ten+' · '+thoiGianLuot(l)+'</div></div>';
- if(S.man==='vao'||!b){
+ /* ── v1.5 · NHÁNH ĐÃ ĐĂNG NHẬP (§11b): ⛔ 0 màn nhập mã · ⛔ 0 màn «Bạn là …?» — máy chủ đã biết em là ai ── */
+ if(S.vao==='dn'&&!b) return dau+'<div class="sv-card sv-mid">'+info+'<div class="sv-big">🎓</div><h2>Em đăng nhập rồi chọn bài ở màn «Bài tập» của Web học sinh</h2>'
+  +'<p>Demo: chọn em ở ô <b>«Em đang đăng nhập»</b> trên dải mô phỏng đen phía trên.</p>'
+  +'<div class="sv-ghi">Trang thật: em vào từ danh sách bài của chính mình — <b>không có màn nhập mã</b> và <b>không có câu «Bạn là …?»</b>. '
+  +'Màn bài tập của Web học sinh là việc của cụm <b>WEBHS</b> / <b>BTSH-3D</b>, không phải của menu này.</div></div>';
+ if((S.man==='vao'&&S.vao!=='dn')||!b){
   return dau+'<div class="sv-card">'+info+'<label class="sv-lb">Mã làm bài của em</label><input id="svma" class="sv-in" maxlength="14" placeholder="VD: K7QX 2M4P" autocomplete="off">'
    +'<button class="sv-go" data-a="svvao">Vào bài</button>'+(S.tb?'<div class="sv-tb">'+S.tb+'</div>':'')
-   +'<div class="sv-ghi">Mã có trên phiếu thầy cô phát — mỗi em một mã riêng, chỉ dùng cho bài này. Không cần tài khoản.</div></div>';
+   +'<div class="sv-ghi">Mã có trên phiếu thầy cô phát — mỗi em một mã riêng, chỉ dùng cho bài này. Mã dành cho <b>khách ngoài trường</b> và làm <b>đường thoát</b>; học sinh của trường thì <b>đăng nhập</b> (HS-2).</div></div>';
  }
  if(S.man==='xn') return dau+'<div class="sv-card sv-mid">'+info+'<p class="sv-hoi">Bạn là <b>'+esc(tenBai(b))+'</b> — '+(b.hs?'lớp <b>'+b.lop+'</b>':'<b>'+esc(b.khach.truong)+'</b>')+'?</p>'
   +'<button class="sv-go" data-a="svdung">Đúng, tiếp tục</button> <button class="sv-go p2" data-a="svkhong">Không phải tôi</button><div class="sv-ghi">Kiểm tra để khỏi nhập nhầm mã của bạn bên cạnh.</div></div>';
- const ten='<div class="sv-em">👤 '+esc(tenBai(b))+(b.hs?' · '+b.lop:'')+'</div>';
+ const ten='<div class="sv-em">'+(S.vao==='dn'?'🎓 '+esc(tenBai(b))+(b.hs?' · '+b.lop:'')+' — <i>đã đăng nhập</i>':'👤 '+esc(tenBai(b))+(b.hs?' · '+b.lop:''))+'</div>';
  if(t==='chuamo') return dau+'<div class="sv-card sv-mid">'+info+ten+'<div class="sv-big">⏳</div><h2>Chưa tới giờ làm bài</h2><p>Bắt đầu lúc <b>'+gsN(moLuc(l))+'</b> — còn <b>'+conLai(moLuc(l))+'</b>.</p>'
   +'<div class="sv-ghi">Đề chưa được gửi tới máy của em — trang chỉ nhận đề khi tới giờ bắt đầu. Để trang mở, tới giờ đề tự hiện.</div></div>';
  if(lan&&t==='dangmo') return dau+veSVLam(l,b,lan)+'';
@@ -4099,7 +4202,18 @@ function veSVKQ(l,b,t,nop,toiDa){
 
 /* ── thao tác trên trang học sinh ── */
 HD.svmang=v=>{ST.sv.mang=v;ST.sv.tb='';veSV()};
-HD.svmay=v=>{ST.sv.may=v;ST.sv.man='vao';ST.sv.k=null;ST.sv.tb='Đã đổi sang '+MAY[v]+' — nhập mã để vào bài.';veSV()};
+/* v1.5 — đổi thiết bị: nhánh MÃ phải nhập lại mã (mã gắn thiết bị — §6.6). Nhánh ĐĂNG NHẬP thì không:
+   gắn thiết bị là luật của MÃ, ở đây không có mã để gắn; em đăng nhập ở máy khác làm tiếp đúng bài của mình (§11b). */
+HD.svmay=v=>{const S=ST.sv; S.may=v;
+ if(S.vao==='dn'){S.tb='Đã đổi sang '+MAY[v]+' — em <b>đã đăng nhập</b> nên làm tiếp ngay, không cần ai cấp lại gì.'; veSV(); return}
+ S.man='vao'; S.k=null; S.tb='Đã đổi sang '+MAY[v]+' — nhập mã để vào bài.'; veSV()};
+/* v1.5 — chuyển đường vào (chỉ có trong demo). Đổi đường thì bỏ danh tính đang mở: hai đường là hai luồng xác thực khác nhau. */
+HD.svvaoduong=v=>{const S=ST.sv; S.vao=v; S.k=null; S.man='vao'; S.tb=''; S.lanKQ=null; S.pend.clear();
+ if(v==='dn'){const ds=baiCua(luotById(S.luot)).filter(x=>x.hs); if(ds.length===1){S.k=ds[0].k; S.man='bai'; S.moiLam=true}}
+ veSV()};
+/* chọn em đang đăng nhập (mô phỏng) — ⛔ KHÔNG có màn nhập mã, ⛔ KHÔNG có màn «Bạn là …?» */
+HD.svchonhs=k=>{const S=ST.sv, b=k?baiById(S.luot,k):null;
+ S.k=b?b.k:null; S.man=b?'bai':'vao'; S.tb=''; S.lanKQ=null; S.moiLam=true; veSV()};
 HD.svnet=v=>{const S=ST.sv; S.online=v==='1';
  if(S.online&&S.pend.size){const b=svBai(), lan=b&&svLanMo(b); if(lan){const kp=khoaSV(luotById(S.luot),b,lan); S.pend.forEach(id=>{lan.tl[id]=DC.traLoi(kp+id)}); lan.luu=GIO; doi(); S.tb='Đã kết nối lại — lưu bù '+S.pend.size+' câu.'} S.pend.clear()}
  veSV()};
@@ -4119,7 +4233,8 @@ HD.svdung=()=>{const S=ST.sv, b=svBai(); S.man='bai'; S.moiLam=true; S.tb=''; S.
  if(b&&!b.thietBi&&svLanMo(b)){b.thietBi=MAY[S.may]+' (mô phỏng)'; b.mayMP=S.may}          /* mã vừa cấp lại: lần vào đầu tiên gắn thiết bị mới */
  veSV()};
 HD.svbatdau=()=>{const S=ST.sv, l=luotById(S.luot), b=svBai(); if(ttLuot(l)!=='dangmo') return veSV();
- if(!b.thietBi){b.thietBi=MAY[S.may]+' (mô phỏng)'; b.mayMP=S.may}
+ /* gắn thiết bị CHỈ ở nhánh mã — nhánh đăng nhập không có mã để gắn (§11b) */
+ if(S.vao==='ma'&&!b.thietBi){b.thietBi=MAY[S.may]+' (mô phỏng)'; b.mayMP=S.may}
  b.lans.push({so:b.lans.length+1,bd:GIO,nop:null,cach:null,tl:{},diemTay:{},cham:null,lsu:[],luu:GIO});
  S.moiLam=true; S.tb=''; doi(); veSV()};
 HD.svlankq=v=>{ST.sv.lanKQ=+v;veSV()};
@@ -4137,7 +4252,8 @@ HD.svtua=v=>{const S=ST.sv, l=luotById(S.luot), b=svBai(), lan=b&&svLanMo(b);
  dongBoGio();
  if(lan&&lan.nop){S.tb='⏰ Hết giờ — máy chủ đã <b>tự nộp phần đã lưu</b> lúc '+lan.nop.slice(11,16)+(S.pend.size?' · <b>'+S.pend.size+' câu chưa kịp lưu</b> (mất mạng) không được tính':'')+'.'; S.pend.clear(); S.lanKQ=null}
  veSV()};
-document.addEventListener('change',e=>{if(e.target.id==='svchonma'&&$('#svma')){$('#svma').value=e.target.value}});
+document.addEventListener('change',e=>{if(e.target.id==='svchonma'&&$('#svma')){$('#svma').value=e.target.value}
+ if(e.target.id==='svchonhs') HD.svchonhs(e.target.value)});
 document.addEventListener('keydown',e=>{if(e.target.id==='svma'&&e.key==='Enter'){e.preventDefault();HD.svvao()}});
 /* lưu từng câu lên máy chủ ngay khi trả lời — nghe sự kiện của bộ máy dạng câu */
 document.addEventListener('dc:doi',e=>{const S=ST.sv, d=e.detail; if(!S||!d||d.cheDo!=='lam'||!String(d.khoa).startsWith('sv.')) return;

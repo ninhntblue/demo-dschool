@@ -2401,6 +2401,12 @@ function giaoBai(preLop,preMon,preTiet){
     <div class="hint">Đếm từ <b>ngày của tiết</b>, không từ hôm nay.</div>
     <div class="roblk dnote" style="margin-top:7px">Nhập bù bài của tiết tuần trước mà hạn vẫn tính từ hôm nay
      thì lớp được thêm ngày một cách vô lý.</div></div>
+   <div class="fld"><label>🆕 Kiểu đề <span class="req">*</span></label>
+    <select class="fldi" id="gkieu" onchange="btshKieu()">
+     <option value="de_bai">Giao đề bài — chữ + tệp đính kèm (như hiện nay)</option>
+     <option value="so_hoa">Giao đề số hóa — em làm và nộp ngay trên máy</option></select>
+    <div class="roblk dnote" style="margin-top:7px" id="gkieuhint">Chọn <b>Giao đề số hóa</b> thì mở <b>biểu mẫu của M12.7</b>
+     ngay tại đây — <b>cửa vào thứ hai</b> (quy tắc 16). Bản ghi lượt làm bài <b>thuộc M12.7</b>, M2.3 giữ một liên kết.</div></div>
    <div class="fld"><label>Chế độ nộp <span class="req">*</span></label>
     <select class="fldi" id="gnop"><option value="online">Nộp online</option>
      <option value="offline">Nộp offline — mang vở lên lớp</option>
@@ -2411,8 +2417,12 @@ function giaoBai(preLop,preMon,preTiet){
     <option value="0">Không chấm</option></select>
    <div class="roblk dnote" style="margin-top:7px" id="glock">Chọn <b>Không nộp</b> thì ô này <b>tự khóa về Không chấm</b> —
     không có gì để chấm. Hệ thống không để bạn chọn một tổ hợp vô nghĩa rồi mới báo lỗi.</div></div>
+  <div id="gsohoa" style="display:none">${btshKhoiDe()}</div>
   <div class="ro dnote" style="margin-bottom:0">💯 <b>Không có ô điểm.</b> Muốn bài này có điểm thì tạo lượt
-   Kiểm tra thường xuyên ở <b>M2.5</b> — 1 điểm số = 1 lượt kiểm tra chính thức.</div>`}`}`;
+   Kiểm tra thường xuyên ở <b>M2.5</b> — 1 điểm số = 1 lượt kiểm tra chính thức.
+   <span id="gsohoanote" style="display:none"><br>🆕 Lượt <b>đề số hóa</b>: máy chấm trả <b>«Đúng x/y câu»</b>,
+   <b>giáo viên tự đặt mức đánh giá</b>. ⛔ Điểm thang 10 <b>không hiện ở bất kỳ đâu trong M2.3</b> —
+   nó chỉ có ở màn chi tiết lượt của <b>M12.7</b> và trong tệp xuất (ràng buộc 46).</span></div>`}`}`;
 
  modal('+ Giao bài tập về nhà', body,
   !ts.length
@@ -2424,6 +2434,9 @@ function giaoBai(preLop,preMon,preTiet){
        if(!gtt){toast('⛔ Chưa gắn được tiết học — không tạo được lượt giao bài');return}
        const td=$('#gtd').value.trim(), nd=$('#gnd').value.trim();
        if(!td||!nd){toast('⛔ Tiêu đề và nội dung đều bắt buộc');return}
+       /* BTSH-3B — HÀNG RÀO Ở HANDLER, ⛔ không chỉ khóa nút. Ba luật của nhóm Học liệu
+          (M2.3 ràng buộc 47) phải chặn được cả khi ai đó gỡ `disabled` trên nút. */
+       if(typeof btshChan==='function'){const c=btshChan(); if(c){toast(c);return}}
        const l=$('#glop').value, nop=$('#gnop').value;
        const m=$('#gmonv')?$('#gmonv').value:$('#gmon').value;   /* mon theo phan cong, khong suy tu GV */
        const tk=tietById(gtt.value);
@@ -3100,6 +3113,175 @@ function chonKhoang(){
 sblDocUrl();
 docTietUrl();
 render();
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BTSH-3B — M2.3 · CỬA «GIAO ĐỀ SỐ HÓA» = CỬA VÀO THỨ HAI CỦA M12.7
+   Tài liệu: M2.3 §8.2.2b · §8.2.2c · §8f.1 · ràng buộc 45–50
+             bản CHỐT CHOT-26-09-…-TKHS.md §7
+
+   🛑 Bản ghi LƯỢT LÀM BÀI thuộc M12.7 (quy tắc 1) — M2.3 giữ MỘT LIÊN KẾT.
+      Đây là «cửa vào thứ hai của menu chủ» (quy tắc 16), ⛔ không phá D1.
+   🛑 Ràng buộc 1 ⛔ KHÔNG nới: máy trả «Đúng x/y câu», ⛔ không điểm thang 10.
+   🛑 Ba luật mang theo nguyên vẹn: câu phải Đã duyệt khi chia sẻ Tổ/Trường ·
+      đề có câu ✕ Đã hủy ⇒ CHẶN CỨNG, ⛔ không có đường «vẫn giao» ·
+      giao xong ⇒ đề đóng băng cấu trúc.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ===== đề của M12.2 — bản CHIẾU chỉ đọc, ⛔ M2.3 không sở hữu ===== */
+var BTSH_DE = [
+ {ma:'D01', ten:'Toán 9 — Ôn tập chương II (Hàm số bậc nhất)', mon:'Toán', khoi:9,
+  chiaSe:'to', soCau:12, duyet:'ok', tt:'san_sang'},
+ {ma:'D02', ten:'Toán 9 — 15 phút: Hệ phương trình', mon:'Toán', khoi:9,
+  chiaSe:'rieng', soCau:8, duyet:'ok', tt:'san_sang'},
+ {ma:'D03', ten:'Ngữ văn 9 — Đọc hiểu văn bản nghị luận', mon:'Ngữ văn', khoi:9,
+  chiaSe:'truong', soCau:10, duyet:'ok', tt:'san_sang'},
+ {ma:'D04', ten:'Toán 9 — Luyện tập chương II (bản nháp)', mon:'Toán', khoi:9,
+  chiaSe:'to', soCau:10, duyet:'thieu', thieuCau:['Q18','Q21'], tt:'san_sang'},
+ {ma:'D05', ten:'Toán 9 — Đề ôn giữa kỳ I', mon:'Toán', khoi:9,
+  chiaSe:'to', soCau:14, duyet:'ok', tt:'co_cau_huy',
+  cauHuy:{ma:'Q22', ly:'Sai đáp án — hình vẽ kèm theo không có trong đề in',
+          boi:'Tổ trưởng chuyên môn Tổ Tự nhiên', luc:'24/09/2026'}}];
+
+var BTSH_CS = {rieng:['Chỉ tôi','gr'], nguoi:['Người cụ thể','gr'],
+               to:['Tổ chuyên môn','b'], truong:['Toàn trường','o']};
+
+function btshDe(ma){return BTSH_DE.filter(function(d){return d.ma===ma})[0]}
+function btshDeMo(){   /* bộ lọc chia sẻ của M12.2 — quy tắc 5, ⛔ không dựng bộ lọc thứ hai */
+ return BTSH_DE}      /* demo: vai GVBM/GVCN là tác giả hoặc thuộc tổ ⇒ thấy cả năm */
+
+/* ===== khối chọn đề trong biểu mẫu giao bài ===== */
+function btshKhoiDe(){
+ var ds = btshDeMo();
+ var h = '<div class="fld"><label>Đề bài số hóa <span class="req">*</span></label>'+
+  '<select class="fldi" id="gde" onchange="btshChonDe()"><option value="">— chọn đề từ Ngân hàng đề bài (M12.2) —</option>'+
+  ds.map(function(d){return '<option value="'+d.ma+'">'+d.ma+' · '+d.ten+' ('+d.soCau+' câu)</option>'}).join('')+
+  '</select>'+
+  '<div class="hint">Danh sách theo <b>phạm vi chia sẻ của M12.2</b> (quy tắc 5: quyền Feature theo chức danh '+
+  '<b>∩</b> chia sẻ theo bản ghi) — ⛔ M2.3 không dựng bộ lọc thứ hai.</div>'+
+  '<div id="gdehop" style="margin-top:9px"></div></div>'+
+
+  '<div class="fld"><label>Số lần làm</label>'+
+  '<select class="fldi" id="gsolan"><option value="1">1 lần</option>'+
+  '<option value="2" selected>2 lần (mặc định)</option><option value="3">3 lần</option></select>'+
+  '<div class="roblk dnote" style="margin-top:7px">Mặc định <b>2</b> (Đ4). Mức đánh giá và sheet import '+
+  '<b>đọc LẦN NỘP ĐẦU</b> — lần sau là để em <b>tự sửa</b>.<br>'+
+  '🔑 Ép một lần thì mất hết ý nghĩa luyện tập của bài về nhà; cho vô hạn thì em bấm tới khi đúng hết và '+
+  'con số ⛔ không nói lên gì.</div></div>'+
+
+  '<div class="ro dnote">⏱ <b>Cơ chế: 📅 Làm tới hạn nộp</b> — <b>khóa</b>, ⛔ không đổi được ở cửa này. '+
+  'Hai cơ chế <code>⏰ Làm theo khung giờ</code> và <code>⏱ Làm có thời lượng</code> của M12.7 ⛔ <b>không có</b> ở đây: '+
+  'bài tập về nhà ⛔ không có khung giờ. Muốn khung giờ thì đó là <b>kiểm tra</b> — giao thẳng ở M12.7 '+
+  '<i>(và lượt ấy ⛔ không tính vào ngưỡng khối lượng)</i>.</div>'+
+
+  '<div class="ro dnote">🔗 <b>Hai đường vào một bài làm</b> (HS-2): học sinh của trường <b>đăng nhập Web học sinh</b> '+
+  '(mặc định, ⛔ không sinh mã); <b>mã làm bài</b> giữ cho <b>khách ngoài trường</b> và làm <b>đường thoát</b> — '+
+  'giáo viên bấm <code>↺ Cấp mã</code> ở M12.7 khi em quên mật khẩu giữa giờ.</div>';
+ return h}
+
+/* ===== bấm chọn một đề ⇒ hiện hộp kiểm ba luật ===== */
+function btshChonDe(){
+ var sel=document.querySelector('#gde'), hop=document.querySelector('#gdehop');
+ if(!sel||!hop)return;
+ var d=btshDe(sel.value);
+ if(!d){hop.innerHTML='';btshNutGiao(true);return}
+
+ /* luật ② — câu ✕ Đã hủy ⇒ CHẶN CỨNG, ⛔ không có đường «vẫn giao» (chốt P-1) */
+ if(d.tt==='co_cau_huy'){
+  hop.innerHTML='<div class="danger" style="line-height:1.7">⛔ <b>KHÔNG GIAO ĐƯỢC đề này.</b><br>'+
+   'Câu <b>'+d.cauHuy.ma+'</b> đã bị kết luận <b>✕ Đã hủy</b> — <i>'+d.cauHuy.ly+'</i><br>'+
+   '<b>'+d.cauHuy.boi+'</b> kết luận lúc <b>'+d.cauHuy.luc+'</b>.<br>'+
+   '🛑 <b>⛔ Không có đường «vẫn giao»</b> (chốt P-1 của M12.7, 19/9/2026) — lùi lại còn kịp vì '+
+   '<b>chưa em nào chạm vào bài</b>. <i>(Khác hẳn lượt ĐANG CHẠY: ở đó ⛔ không rút câu, ⛔ không hủy lượt — C3.)</i><br>'+
+   '<button class="btn xs" onclick="toast(\'Mở <b>M12.2</b> — deep-link <code>/M12.2?ctx='+d.ma+'&return=M2.3</code>\')">↗ Mở đề ở M12.2</button> '+
+   '<button class="btn xs" onclick="document.querySelector(\'#gde\').value=\'\';btshChonDe()">✎ Đổi đề</button></div>';
+  btshNutGiao(false);return}
+
+ /* luật ① — đề chia sẻ Tổ/Trường thì mọi câu phải Đã duyệt */
+ if((d.chiaSe==='to'||d.chiaSe==='truong')&&d.duyet==='thieu'){
+  hop.innerHTML='<div class="warn" style="line-height:1.7">⛔ <b>Đề chia sẻ mức '+BTSH_CS[d.chiaSe][0]+
+   '</b> thì <b>mọi câu phải Đã duyệt</b> (quy tắc 5).<br>Còn <b>'+d.thieuCau.length+'</b> câu chưa duyệt: <b>'+
+   d.thieuCau.join(' · ')+'</b>.<br>'+
+   '<button class="btn xs p" onclick="toast(\'Đã gửi duyệt '+d.thieuCau.length+' câu — tổ trưởng chuyên môn nhận việc ở M12.5\')">Gửi duyệt '+
+   d.thieuCau.length+' câu</button></div>';
+  btshNutGiao(false);return}
+
+ hop.innerHTML='<div class="okbox" style="line-height:1.7">✅ <b>'+d.ma+'</b> · '+d.soCau+' câu · môn <b>'+d.mon+'</b> · '+
+  'chia sẻ <span class="st2 '+BTSH_CS[d.chiaSe][1]+'">'+BTSH_CS[d.chiaSe][0]+'</span> · mọi câu <b>Đã duyệt</b>.</div>'+
+  '<div class="ro dnote" style="margin-top:7px">🧊 Bấm <b>▶ Giao bài</b> là đề <b>đóng băng CẤU TRÚC</b> '+
+  '(câu nào · điểm bao nhiêu · phần nào — quy tắc 2). Muốn đổi cấu trúc về sau thì <b>nhân bản</b> thành đề mới ở M12.2.</div>';
+ btshNutGiao(true)}
+
+function btshNutGiao(cho){
+ var b=Array.prototype.filter.call(document.querySelectorAll('#mf .btn'),
+        function(e){return /Giao bài/.test(e.textContent)})[0];
+ if(b){b.disabled=!cho; b.style.opacity=cho?'':'.4'}}
+
+/* ===== đổi kiểu đề ===== */
+function btshKieu(){
+ var k=(document.querySelector('#gkieu')||{}).value;
+ var kh=document.querySelector('#gsohoa'), note=document.querySelector('#gsohoanote');
+ var nop=document.querySelector('#gnop'), hint=document.querySelector('#gkieuhint');
+ var soHoa=(k==='so_hoa');
+ if(kh)kh.style.display=soHoa?'':'none';
+ if(note)note.style.display=soHoa?'':'none';
+ if(nop){   /* số hóa ⇒ khóa ở Nộp online — em làm và nộp ngay trên trang làm bài */
+  nop.value=soHoa?'online':nop.value; nop.disabled=soHoa;
+  nop.style.opacity=soHoa?'.6':''}
+ if(hint)hint.innerHTML=soHoa
+  ? 'Bản ghi <b>lượt làm bài thuộc M12.7</b> — M2.3 giữ <b>một liên kết</b>, audit ghi <i>«tạo từ M2.3»</i>. '+
+    '⛔ M2.3 <b>không dựng luồng số hóa riêng</b> (quy tắc 1: một thực thể một chủ).<br>'+
+    '🔁 Lượt này <b>TÍNH VÀO ngưỡng khối lượng bài tập</b> — qua cửa này nó <b>là bài tập về nhà thật</b>. '+
+    'Lượt giao <b>thẳng ở M12.7</b> thì ⛔ không tính.'
+  : 'Chọn <b>Giao đề số hóa</b> thì mở <b>biểu mẫu của M12.7</b> ngay tại đây — <b>cửa vào thứ hai</b> (quy tắc 16). '+
+    'Bản ghi lượt làm bài <b>thuộc M12.7</b>, M2.3 giữ một liên kết.';
+ if(soHoa)btshChonDe()}
+
+/* ═════════ HÀNG RÀO Ở HANDLER — ⛔ không chỉ khóa nút (M2.3 ràng buộc 47) ═════════
+   🔑 Khóa nút là lớp MỎNG: ai gỡ `disabled` là qua. Ba luật của nhóm Học liệu phải
+   chặn được ở chính chỗ GHI. Trả về chuỗi lỗi nếu chặn, chuỗi rỗng nếu cho qua. */
+function btshChan(){
+ var k=(document.querySelector('#gkieu')||{}).value;
+ if(k!=='so_hoa')return '';
+ var sel=document.querySelector('#gde');
+ if(!sel||!sel.value)return '⛔ Kiểu đề <b>số hóa</b> thì <b>bắt buộc chọn đề</b> từ Ngân hàng đề bài (M12.2)';
+ var d=btshDe(sel.value);
+ if(!d)return '⛔ Đề không còn trong phạm vi chia sẻ của bạn — chọn lại';
+ if(d.tt==='co_cau_huy')
+  return '⛔ <b>CHẶN CỨNG</b> — đề <b>'+d.ma+'</b> có câu <b>'+d.cauHuy.ma+
+   ' ✕ Đã hủy</b>. ⛔ <b>Không có đường «vẫn giao»</b> (chốt P-1)';
+ if((d.chiaSe==='to'||d.chiaSe==='truong')&&d.duyet==='thieu')
+  return '⛔ Đề chia sẻ mức <b>'+BTSH_CS[d.chiaSe][0]+'</b> còn <b>'+d.thieuCau.length+
+   '</b> câu chưa duyệt (quy tắc 5)';
+ return ''}
+
+
+/* ═════ WEBHS-2Z — LƯUỢT PHẢI GHI RA «Kiểu đề», ⛔ không chỉ hỏi trên biểu mẫu ═════
+   🔴 Phép nghiệm thu ② của cụm 2 đo bằng máy: chọn `Giao đề số hóa` rồi giao xong,
+      lượt tạo ra ⛔ KHÔNG mang một trường nào cho biết nó là đề số hóa
+      (`BT[0]` chỉ có gv,mon,lop,td,nd,giao,han,nop,cham,tt,subs,da,log,id,chu,tiet)
+      ⇒ nó lẫn hoàn toàn vào lượt đề ảnh, và `BTSH-3D` ⛔ không có gì để nối sang M12.7.
+   🔑 Đúng bài học ⑦ của chương trình `TKHS`: biểu mẫu có ô, xứ lý có hàng rào — nhưng
+      KHÔNG AI GHI. «Có ô để chọn» ⛔ không phải «dữ liệu có trường ấy».
+   Vá bằng cách BỌC `B()` — ⛔ không sửa một byte của `app.10-bai-tap.js`.
+   `B()` chạy khi hộp thoại còn mở nên đọc được `#gkieu` / `#gde` / `#gsolan`; bốn lượt
+   gieo sẵn gọi `B()` lúc chưa có biểu mẫu ⇒ rơi về `de_bai`, đúng hiện trạng. */
+var _Bgoc85 = B;
+B = function(o){
+ var el = document.querySelector('#gkieu');
+ o.kieu = (el && el.value === 'so_hoa') ? 'so_hoa' : 'de_bai';
+ if(o.kieu === 'so_hoa'){
+  var sel = document.querySelector('#gde'), sl = document.querySelector('#gsolan');
+  var d   = sel ? btshDe(sel.value) : null;
+  /* M2.3 giữ ĐÚNG MỘT LIÊN KẾT — bản ghi lượt làm bài thuộc M12.7 (quy tắc 1 · quy tắc 16) */
+  o.de    = d ? d.ma  : (sel ? sel.value : '');
+  o.deTen = d ? d.ten : '';
+  o.soCau = d ? d.soCau : null;
+  o.soLan = (sl && sl.value) ? +sl.value : 1;
+  o.luotM127 = 'L' + (100 + SEQ);   /* khóa của lượt bên M12.7 — M2.3 ⛔ không sở hứu bản ghi ấy */
+  /* 🛑 ⛔ KHÔNG gán một trường điểm nào (ràng buộc 1 · `HS-1`): máy trả «Đúng x/y câu»,
+     giáo viên tự đặt mức đánh giá. Điểm thang 10 chỉ có ở M12.7 và tệp xuất. */
+ }
+ return _Bgoc85(o)};
 </script>
 </body>
 </html>

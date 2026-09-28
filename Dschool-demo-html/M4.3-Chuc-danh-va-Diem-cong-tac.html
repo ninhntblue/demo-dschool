@@ -352,15 +352,25 @@ let NS=[
  {id:'N27',ten:'Võ Văn Hùng',     ma:'NS027',vao:'01/08/2018',tk:1,to:'T5',dt:'DT1'},
  {id:'N28',ten:'Đoàn Thị Mến',    ma:'NS028',vao:'01/08/2023',tk:1,to:'T6',dt:'DT1'},
  {id:'N29',ten:'Kiều Văn Hoàng',  ma:'NS029',vao:'01/08/2017',tk:1,to:'T6',dt:'DT1'},
- {id:'N30',ten:'Đặng Thị Hoài',  ma:'NS030',vao:'01/08/2019',tk:1,to:'T3',dt:'DT1'}];
+ {id:'N30',ten:'Đặng Thị Hoài',  ma:'NS030',vao:'01/08/2019',tk:1,to:'T3',dt:'DT1'},
+ /* CDDM 26/9/2026 — hai hồ sơ vừa tạo ở M4.1 bằng biểu mẫu bảy ô: có chức danh, CHƯA có phạm vi (§3.4.1) */
+ {id:'N31',ten:'Mai Thị Vân',     ma:'NS031',vao:'17/08/2026',tk:1,to:'',  dt:'DT2'},
+ {id:'N32',ten:'Hồ Văn Khoa',     ma:'NS032',vao:'17/08/2026',tk:1,to:'T1',dt:'DT1'}];
 const nsBy=i=>NS.filter(x=>x.id===i)[0];
 const conLam=p=>!p.roi||key(p.roi)>=key(HOMNAY);
 const vt=t=>{const w=String(t).trim().split(/\s+/);return (w[w.length-2]||'').charAt(0)+(w[w.length-1]||'').charAt(0)};
 
 /* ===== BẢN GHI CHỨC DANH — có Từ ngày / Đến ngày ===== */
 let BN=[],BSEQ=0,QSEQ=100;
-function bn(ns,cd,dv,qd,tu,den,lyDo){BN.push({id:'B'+(++BSEQ),ns:ns,cd:cd,dv:dv||'',qd:qd,tep:qd?1:0,
- tu:tu,den:den||null,lyDo:lyDo||'',boi:'Hệ thống khởi tạo',tuCap:0});return BN[BN.length-1]}
+function bn(ns,cd,dv,qd,tu,den,lyDo,nguon){BN.push({id:'B'+(++BSEQ),ns:ns,cd:cd,dv:dv||'',qd:qd,tep:qd?1:0,
+ tu:tu,den:den||null,lyDo:lyDo||'',boi:'Hệ thống khởi tạo',tuCap:0,nguon:nguon||''});return BN[BN.length-1]}
+/* ═══ CDDM 26/9/2026 — trạng thái «⏳ Chờ gắn phạm vi» (M4.3 §3.4.1, nới ràng buộc 5) ═══
+   Bản ghi chức danh ĐẦU TIÊN do M4.1 F11 ghi (biểu mẫu bảy ô · mẫu B04). Chức danh loại 1
+   GẮN ĐƠN VỊ thì biểu mẫu ⛔ không có ô phạm vi ⇒ bản ghi sinh ra để TRỐNG dv.
+   🛑 Ba đường ghi của chính M4.3 (F2 · F5 · lô B05) GIỮ NGUYÊN chặn cứng — chúng có ô phạm vi. */
+function bnM41(ns,cd,tu){return bn(ns,cd,'','',tu,null,'','M4.1')}
+const choPV=b=>{const c=cdBy(b.cd);return !!(c&&c.nhom<3&&c.dv&&!b.dv&&b.nguon==='M4.1')};
+const dsChoPV=()=>BN.filter(b=>choPV(b)&&hieuLuc(b,NGAY));
 /* nhóm ① toàn trường */
 bn('N01','HT','','118/QĐ-UBND','01/08/2015');
 bn('N02','PHT_CM','','126/QĐ-UBND','01/08/2016');
@@ -407,6 +417,12 @@ bn('N08','TTVP','VP','120/QĐ-NTT','01/09/2024');   /* 15/9/2026 — Văn thư C
  bn(x,'GVCN','', '', '15/08/2026')});
 ['N09','N10','N11','N12','N13','N14','N15','N18','N19','N27','N28','N03','N04','N29','N30'].forEach(function(x){
  bn(x,'GVBM','', '', '15/08/2026')});
+
+/* CDDM 26/9/2026 — hai bản ghi «⏳ Chờ gắn phạm vi» sinh từ M4.1 F11 (§3.4.1).
+   🛑 dt của người (DT2 · DT1) là ĐIỂM TRƯỜNG CÔNG TÁC — ⛔ KHÔNG suy thành phạm vi chức danh:
+   cùng tên cột, hai nghĩa (§6.5.2). Văn thư ngồi ở cơ sở B vẫn có thể được giao văn thư cả ba cơ sở. */
+bnM41('N31','VT','17/08/2026');
+bnM41('N32','TTCM','17/08/2026');
 
 /* số lớp đang được phân công cho GVCN — chiếu từ M4.5 */
 const PC={N09:1,N11:1,N13:1,N14:1,N18:1,N10:1,N27:1,N28:1,N19:0,N12:0};
@@ -483,6 +499,8 @@ const FGOM=['Không gom','Gom: chức danh','Gom: điểm trường','Gom: tổ'
 function chips(){
  const k=khuyet(),h=[];
  if(k.length)h.push('<button class="rolnk rd" data-x="xemKhuyet">🔴 '+k.length+' chức danh khuyết</button>');
+ const cho=dsChoPV().filter(b=>base().some(p=>p.id===b.ns)).length;
+ if(cho)h.push('<button class="rolnk am" data-x="xemChoPV">⏳ '+cho+' bản ghi chờ gắn phạm vi</button>');
  const cp=base().filter(p=>chuaPC(p).length).length;
  if(cp)h.push('<button class="rolnk am" data-x="xemChuaPC">⏰ '+cp+' người chưa phân công lớp</button>');
  h.push('<button class="rolnk'+(AIS.length>2?' rd':'')+'" data-x="aiSua">🔑 '+AIS.length+' người có quyền sửa</button>');
@@ -544,7 +562,8 @@ function nsRow(p){
  return '<div class="hrow'+(cur===p.id?' on':'')+'" data-p="'+p.id+'">'+
   '<div class="who2"><div class="ava2">'+esc(vt(p.ten))+'</div><div class="i"><b>'+esc(p.ten)+'</b>'+
    '<span>'+p.ma+' · '+esc(dtBy(p.dt).vt)+'</span></div></div>'+
-  '<div>'+(c?'<span class="cdchip main">'+esc(cdBy(c.cd).ten)+(c.dv?' <span class="pv2">'+esc(dvVt(c.dv))+'</span>':'')+'</span>'
+  '<div>'+(c?'<span class="cdchip main">'+esc(cdBy(c.cd).ten)+(c.dv?' <span class="pv2">'+esc(dvVt(c.dv))+'</span>':'')+'</span>'+
+            (choPV(c)?'<br><span class="st2 w">⏳ Chờ gắn phạm vi</span>':'')
           :'<span class="st2 n">chưa có chức danh</span>')+'</div>'+
   '<div class="hcol">'+(km.length?km.map(b=>'<span class="cdchip'+(laBN(b.cd)?' bn':'')+'">'+esc(cdBy(b.cd).ten)+
     (b.dv?' <span class="pv2">'+esc(dvVt(b.dv))+'</span>':'')+'</span>').join(''):'<span style="color:var(--ink3)">—</span>')+
@@ -574,17 +593,23 @@ function pCD(p){
  c.forEach(function(b){const cd=cdBy(b.cd);
   h+='<span class="cdchip'+(laBN(b.cd)?' bn':'')+'"><b>'+esc(cd.ten)+'</b>'+
    (b.dv?'<span class="pv2">'+esc(dvTen(b.dv))+'</span>':'')+
+   (choPV(b)?'<span class="st2 w">⏳ Chờ gắn phạm vi</span>'+(suaDuoc()?'<button class="rolnk" data-x="mGanPV" data-b="'+b.id+'">✎ Gắn phạm vi</button>':''):'')+
    '<span class="pv2">từ '+esc(b.tu)+'</span>'+
    (b.qd?'<button class="rolnk" data-x="xemQD" data-b="'+b.id+'">👁 '+esc(b.qd)+'</button>':'')+
    (suaDuoc()?'<span class="x" data-x="mGo" data-b="'+b.id+'">✕</span>':'')+'</span>'});
  if(suaDuoc())h+='<button class="cdadd" data-x="mThem">＋ Thêm chức danh</button>';
  h+='</div></div>';
+ const cho=cdTai(p.id,NGAY).filter(choPV);
+ if(cho.length)h+='<div class="warn">⏳ <b>'+cho.length+' bản ghi chờ gắn phạm vi</b> — sinh từ <b>M4.1</b> khi tạo hồ sơ bằng biểu mẫu bảy ô '+
+  '<i>(chức danh gắn đơn vị, mà biểu mẫu ⛔ không có ô phạm vi — M4.3 §3.4.1)</i>. '+
+  'Người này <b>đã có vai trò</b> nhưng phạm vi <b>rỗng</b> ⇒ vào menu thấy <b>danh sách rỗng</b> — 🛑 ⛔ <b>không</b> rơi về Toàn trường. '+
+  'Gắn phạm vi ở đây, hoặc nạp <b>B05</b>.</div>';
  const cp=chuaPC(p);
  if(cp.length)h+='<div class="warn">⏰ Có chức danh <b>Giáo viên chủ nhiệm</b> nhưng <b>chưa được phân công lớp nào</b>. '+
   'Người này vào được Không gian lớp học nhưng <b>danh sách lớp rỗng</b> — đây là trạng thái trung gian hợp lệ. '+dlink('M4.5','Phân công lớp')+'</div>';
  h+='<div class="card"><div class="ch">Quyền truy cập sinh ra</div><div style="padding:10px 12px;font-size:12.5px;color:var(--ink2)">'+
   (c.length?'Mở được tối đa <b style="color:var(--ink)">'+soMenu(p)+' menu</b>. Phạm vi dữ liệu: '+
-    [...new Set(c.map(b=>b.dv?(dtBy(b.dv)?'Branch — '+dtBy(b.dv).vt:'Group — '+toBy(b.dv).ten):(cdBy(b.cd).nhom===3?'Class':'School')))]
+    [...new Set(c.map(b=>choPV(b)?'⏳ rỗng — chưa gắn phạm vi':(b.dv?(dtBy(b.dv)?'Branch — '+dtBy(b.dv).vt:'Group — '+toBy(b.dv).ten):(cdBy(b.cd).nhom===3?'Class':'School'))))]
     .map(x=>'<span class="st2 v">'+esc(x)+'</span>').join(' ')
    :'Không có phạm vi nào.')+
   '<div style="margin-top:7px">Ma trận <code>Role × Feature × Scope</code> định nghĩa ở '+dlink('M10.4')+' — màn hình này <b>không đụng vào ma trận</b>.</div></div></div>';
@@ -603,8 +628,13 @@ function pLS(p){
 function bmTab(){
  const rows=dongBM();
  let h='';
- h+='<div class="stage'+(curDV?' open':'')+'"><div class="listw">'+
-  '<div class="hdrow"><div>Chức danh · Đơn vị</div><div>Người giữ</div><div class="hcol">Từ ngày</div>'+
+ h+='<div class="stage'+(curDV?' open':'')+'"><div class="listw">';
+ const cho=dsChoPV();
+ if(cho.length)h+='<div class="warn" style="margin:0 0 9px">⏳ <b>'+cho.length+' bản ghi chờ gắn phạm vi</b> — '+
+  cho.map(b=>esc(nsBy(b.ns).ten)+' · <b>'+esc(cdBy(b.cd).ten)+'</b>').join(' · ')+
+  '. 🛑 Đây <b>⛔ không phải «chức danh khuyết»</b>: <i>khuyết</i> là <b>không có ai</b>, <i>chờ</i> là <b>có người nhưng chưa biết ở đâu</b> — '+
+  'gộp hai con số là nói sai cả hai <i>(§3.4.1 · §7.2)</i>. Bước <b>B05</b> của luồng khởi tạo <b>chưa xong</b> khi còn dòng này.</div>';
+ h+='<div class="hdrow"><div>Chức danh · Đơn vị</div><div>Người giữ</div><div class="hcol">Từ ngày</div>'+
   '<div class="hcol">Quyết định</div><div class="hcol"></div></div>';
  const k=kd(q);
  [1,2].forEach(function(n){
@@ -813,6 +843,47 @@ function luuThem(){
  closeModal();render();
  toast('Đã cấp <b>'+esc(c.ten)+'</b> cho <b>'+esc(p.ten)+'</b> từ '+cc.hl+
   ' · mở thêm quyền vào <b>'+c.mn+' menu</b>'+(b.tuCap?' · <b>⚑ tự cấp</b> đã ghi audit':''))}
+
+/* ===== CDDM 26/9/2026 — MODAL: GẮN PHẠM VI cho bản ghi đang chờ (§3.4.1) ===== */
+let GPV=null;
+function mGanPV(bId){
+ GPV={b:bId,dv:''};
+ const b=BN.filter(x=>x.id===bId)[0],p=nsBy(b.ns),c=cdBy(b.cd);
+ modal('✎ Gắn phạm vi — '+esc(c.ten)+' · '+esc(p.ten),'<div id="gpvBody"></div>',
+  '<button class="btn" data-x="close">Hủy</button><button class="btn p" data-x="doGanPV">💾 Gắn phạm vi</button>');
+ drawGPV()}
+function drawGPV(){
+ const b=BN.filter(x=>x.id===GPV.b)[0],p=nsBy(b.ns),c=cdBy(b.cd);
+ let h='<div class="info">Bản ghi này do <b>M4.1</b> ghi ngày '+esc(b.tu)+' — chức danh đã có, <b>phạm vi chưa có</b>. '+
+  'Gắn xong thì truy vấn mới trả về dữ liệu <i>(§3.4.1)</i>.</div>'+
+  '<label class="lbl">'+(c.dv==='dt'?'Điểm trường':(c.dv==='vp'?'Tổ':'Tổ chuyên môn'))+' <b>*</b></label>'+
+  '<select class="din" data-f="gpv"><option value="">— chọn đơn vị —</option>'+
+  dsDV(c.ma).map(d=>'<option value="'+d+'"'+(GPV.dv===d?' selected':'')+'>'+esc(dvTen(d))+'</option>').join('')+'</select>';
+ if(GPV.dv){
+  const gk=giuTai(c.ma,GPV.dv,HOMNAY).filter(x=>x.id!==b.id);
+  if(c.don&&gk.length)h+='<div class="danger">⛔ <b>Chặn — chức danh đơn nhất.</b> <b>'+esc(nsBy(gk[0].ns).ten)+
+   '</b> đang giữ <b>'+esc(c.ten)+' — '+esc(dvTen(GPV.dv))+'</b> từ '+esc(gk[0].tu)+'.'+
+   '<div style="margin-top:6px">🛑 Phép kiểm đơn nhất <b>dời tới đúng lúc này</b> — trước khi có đơn vị thì máy ⛔ không biết đếm vào đâu <i>(§3.4.1 · ràng buộc 28)</i>.</div></div>';
+  else h+='<div class="ro" style="margin-top:9px">✓ <b>'+esc(dvTen(GPV.dv))+'</b> chưa có người giữ <b>'+esc(c.ten)+'</b> — gắn được.</div>';
+ }
+ $('#gpvBody').innerHTML=h}
+function doGanPV(){
+ const b=BN.filter(x=>x.id===GPV.b)[0],p=nsBy(b.ns),c=cdBy(b.cd);
+ if(!GPV.dv){toast('⚠ Chưa chọn đơn vị');return}
+ const gk=giuTai(c.ma,GPV.dv,HOMNAY).filter(x=>x.id!==b.id);
+ if(c.don&&gk.length){toast('⛔ Chặn — <b>'+esc(nsBy(gk[0].ns).ten)+'</b> đang giữ chức danh này ở <b>'+esc(dvTen(GPV.dv))+'</b>');return}
+ b.dv=GPV.dv; b.nguon=''; b.boi=nsBy(ME[role]).ten+' ('+R().ten+')';
+ closeModal();render();
+ toast('Đã gắn phạm vi <b>'+esc(dvTen(GPV.dv))+'</b> cho <b>'+esc(p.ten)+'</b> — truy vấn của <b>'+esc(c.ten)+'</b> nay trả về dữ liệu của đơn vị này')}
+function xemChoPV(){
+ const l=dsChoPV();
+ modal('⏳ Bản ghi chờ gắn phạm vi',
+  '<div class="info">Sinh từ <b>M4.1 F11</b> — biểu mẫu bảy ô ⛔ không có ô phạm vi <i>(M4.1 §6.11.1)</i>. '+
+  'Ba đường ghi của chính M4.3 <i>(F2 · F5 · lô B05)</i> <b>vẫn chặn cứng</b> như cũ.</div>'+
+  (l.length?'<div class="logl">'+l.map(function(b){return '<div class="logi g"><b>'+esc(nsBy(b.ns).ten)+' — '+esc(cdBy(b.cd).ten)+'</b>'+
+    '<div class="mm">ghi ngày '+esc(b.tu)+' · phạm vi <b>rỗng</b> ⇒ truy vấn trả về rỗng — ⛔ không rơi về Toàn trường</div></div>'}).join('')+'</div>'
+   :'<div class="ro">Không còn bản ghi nào chờ.</div>'),
+  '<button class="btn p" data-x="close">Đóng</button>')}
 
 /* ===== MODAL: GỠ CHỨC DANH (T1) ===== */
 function mGo(bId){
@@ -1114,6 +1185,9 @@ document.addEventListener('click',function(e){
   if(x==='msTog'){$('#mspCD').classList.toggle('on');return}
   if(x==='mThem'){mThem();return}
   if(x==='luuThem'){luuThem();return}
+  if(x==='mGanPV'){mGanPV(el.dataset.b);return}
+  if(x==='doGanPV'){doGanPV();return}
+  if(x==='xemChoPV'){xemChoPV();return}
   if(x==='mGo'){mGo(el.dataset.b);return}
   if(x==='doGo'){doGo(el.dataset.b);return}
   if(x==='moHS'){cur=id;tab='cd';closeModal();render();return}
@@ -1155,6 +1229,7 @@ document.addEventListener('change',function(e){
   const o=$('#mspCD')&&$('#mspCD').classList.contains('on');render();if(o)$('#mspCD').classList.add('on');return}
  if(t.dataset.sel){t.checked?selNS.add(t.dataset.sel):selNS.delete(t.dataset.sel);render();return}
  if(t.dataset.x==='chonHet'){base().forEach(p=>t.checked?selNS.add(p.id):selNS.delete(p.id));render();return}
+ if(t.dataset.f==='gpv'&&$('#gpvBody')){GPV.dv=t.value;drawGPV();return}   /* CDDM 26/9/2026 */
  if(t.dataset.f&&$('#themBody')){F[t.dataset.f]=t.value;if(t.dataset.f==='cd')F.dv='';drawThem();return}
  if(t.id==='fHL'&&$('#themBody')){drawThem();return}
  if(t.id==='fHL'&&$('#pvThay')){vThay($('[data-x=doThay]').dataset.c,$('[data-x=doThay]').dataset.d);return}

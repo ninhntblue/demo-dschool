@@ -259,7 +259,7 @@ const ngTen=k=>(NG.filter(x=>x[0]===k)[0]||['','?'])[1];
    Nhóm lối tắt «Lớp tôi chủ nhiệm» KHÔNG có ở đây — lối tắt không sinh Feature (quyền là của M2.9/Tn). */
 const NHOMSB=[
  ['dh','🏠 Trung tâm điều hành',['M0.1','M0.2','M0.3','M0.4','M0.5']],
- ['hs','👥 Học sinh',['M1.1','M1.2','M1.3','M1.4','M1.5','M1.6','M1.7','M1.9','M2.4','M2.10','M2.7','M1.11']],   /* XLHL-1 23/9/2026: + M1.9 Nhập danh sách và Xếp lớp hàng loạt — đứng ngay sau M1.7, đúng vị trí tài liệu M1.9 khai từ 8/9/2026 («cuối nhóm 👥, sau M1.7 Chuyển lớp»); đặt trong dải M1.x vì nó là menu vòng đời hồ sơ · lớp, không phải menu sự vụ như M2.4 · M2.7 · M2.10 */
+ ['hs','👥 Học sinh',['M1.1','M1.2','M1.3','M1.4','M1.5','M1.6','M1.7','M2.4','M2.10','M2.7','M1.11']],   /* GCHS-1B 27/9/2026: − M1.9 RỜI nhóm này sang ⚙️ Quản trị & cấu hình (anh Ninh chốt P2 + Đ3a — menu đổi tên «Nạp dữ liệu trường lên hệ thống», nó là cửa NẠP DỮ LIỆU của trường lên hệ thống, dùng đậm nhất ở năm triển khai đầu, KHÔNG phải menu nghiệp vụ hằng ngày; để cạnh M1.1 · M1.4 là dựng ba cửa cạnh nhau cho câu «thêm học sinh hàng loạt vào đâu»). Mã M1.9 GIỮ NGUYÊN — đổi mã là 10 dòng quyền đổi khóa và 98 tệp đổi đích, ⛔ tương xứng. Chú thích cũ XLHL-1 23/9/2026: + M1.9 — đứng ngay sau M1.7, đúng vị trí tài liệu M1.9 khai từ 8/9/2026 («cuối nhóm 👥, sau M1.7 Chuyển lớp»); đặt trong dải M1.x vì nó là menu vòng đời hồ sơ · lớp, không phải menu sự vụ như M2.4 · M2.7 · M2.10 */
  ['gd','📚 Giảng dạy hằng ngày',['M2.1','M2.2','M2.3','M2.5','M2.11']],   /* KGLH-3Z 23/9/2026: M2.9 Danh sách lớp học RỜI nhóm (chốt S3 — menu của nhóm quản lý, sang 📖 ngay sau M5.9); + M2.11 Lớp tôi giảng dạy vào CUỐI nhóm (PHIEU-KGLH-1B E-3: bốn menu đầu là trục VIỆC, M2.11 là trục LỚP). Nhóm 5 menu · 11 Feature, cả 11 đều có ô GVBM — nghiệm thu KG-7 */
  ['kq','🎓 Kết quả & cuối năm',['M2.8','M3.1','M3.2','M3.3','M3.4']],
  ['ns','👨‍🏫 Nhân sự',['M4.1','M4.2','M4.3','M4.8','M4.9','M4.10','M4.11','M6.18']],   /* M6.18 sang Nhân sự — PZ3 15/9/2026 (cột ng của m6.18.* GIỮ 'dv' — cụm gieo) */
@@ -273,7 +273,7 @@ const NHOMSB=[
  ['tc','💰 Tài chính',['M7.1','M7.2','M7.3','M7.4','M7.5','M7.6']],
  ['gt','💬 Giao tiếp',['M8.1','M8.2','M8.4','M8.5','M8.6','M8.7']],   /* TKCT-Z 24/9/2026: − M8.3 (gỡ hẳn, mã để trống) · + M8.7 Quản lý nhóm chat — nhóm giữ 6 menu */
  ['bc','📊 Báo cáo & thống kê',['M9.1','M9.8','M9.3','M9.2','M9.4','M9.5','M9.11','M9.12','M9.6','M9.13','M9.14','M9.7']],   /* BCM9-Z 21/9/2026 — 1 → 12 menu, thứ tự theo NHÓM NGHIỆP VỤ (sổ BCM9 §11), không theo số mã; M9.9 · M9.10 chưa dựng (4A · 4B → Z2); M9.15–M9.17 KHÔNG cấp */
- ['qt','⚙️ Quản trị & cấu hình',['M10.1','M10.2','M10.4','M10.5','M10.6','M10.7','M10.8','M10.9','M10.10','M10.11','M10.12']]];   /* KTLD-3Z 23/9/2026: + M10.12 Khởi tạo hệ thống lần đầu (cuối nhóm) */
+ ['qt','⚙️ Quản trị & cấu hình',['M10.1','M10.2','M10.4','M10.5','M10.6','M10.7','M10.8','M10.9','M10.10','M10.11','M10.12','M1.9']]];   /* KTLD-3Z 23/9/2026: + M10.12 Khởi tạo hệ thống lần đầu (cuối nhóm). GCHS-1B 27/9/2026: + M1.9 Nạp dữ liệu trường lên hệ thống — đứng NGAY SAU M10.12 vì hai menu cùng phục vụ việc đưa một trường lên hệ thống (M10.12 là bảng tiến độ 14 bước, M1.9 là cửa nạp dữ liệu của bước 9 · 10). Mã M1.x nằm ở nhóm ⚙️ là NGOẠI LỆ QUY ƯỚC có chủ ý — khung-menu ghi một dòng. Nhóm 11 → 12 menu; ⛔ 0 Feature · 0 ô quyền đổi vì việc chuyển nhóm (cùng tiền lệ M2.9 sang 📖 — KGLH-3Z) */
 const MNHOM={},MTT={};NHOMSB.forEach(function(g){g[2].forEach(function(m,i){MNHOM[m]=g[0];MTT[m]=i})});
 const nhOf=m=>MNHOM[m]||'?';
 const nhTen=k=>(NHOMSB.filter(x=>x[0]===k)[0]||['','?'])[1];
@@ -336,18 +336,18 @@ const F=[
  ['m1.6.hs_dang_bao_luu','👥 HS đang bảo lưu','M1.6','Bảo lưu / Tái nhập / Thôi học','hs',4,'',0,''],
  ['m1.6.yeu_cau_tai_nhap','↩ Yêu cầu tái nhập','M1.6','Bảo lưu / Tái nhập / Thôi học','hs',4,'',0,'A'],
  ['m1.6.thoi_hoc','✕ Thôi học','M1.6','Bảo lưu / Tái nhập / Thôi học','hs',4,'Quyết định thôi học — căn cứ pháp lý; loại Có đơn / Bỏ học suy ra, nguồn của HS.12',0,'A'],
- ['m1.7.yeu_cau_chuyen_lop','🔄 Yêu cầu chuyển lớp','M1.7','Chuyển lớp','hs',4,'',0,''],
- ['m1.7.lich_su_chuyen_lop','🕘 Lịch sử chuyển lớp','M1.7','Chuyển lớp','hs',4,'',0,''],
+ ['m1.7.yeu_cau_chuyen_lop','🔄 Yêu cầu chuyển lớp','M1.7','Xếp lớp và Chuyển lớp','hs',4,'',0,''],
+ ['m1.7.lich_su_chuyen_lop','🕘 Lịch sử chuyển lớp','M1.7','Xếp lớp và Chuyển lớp','hs',4,'',0,''],
  /* XLHL-1 23/9/2026 — M1.9 NỐI LẠI vào danh mục. Menu có tài liệu và demo từ 8/9/2026 nhưng chưa bao giờ được cấp mã
     (rà soát toàn hệ thống 23/9, điểm P1): không mã Feature, không ô quyền, không mục sidebar, không dòng khung-menu.
     Sáu mã = sáu tab (phương án A2): tab «🧩 Bù dữ liệu» cũ tách làm ba vì §12 chia quyền theo CƠ CHẾ — gộp thì GVBM
     đang chỉ đọc lô điểm sẽ đọc luôn lô nhân thân · địa chỉ · hoàn cảnh gia đình. Xem M1.9 §3.1. */
- ['m1.9.nhap_danh_sach','📥 Nhập danh sách','M1.9','Nhập danh sách và Xếp lớp hàng loạt','hs',4,'Tạo hồ sơ học sinh hàng loạt — hoàn tác 7 ngày; sinh tài khoản App PH-HS (nh6.3)',0,''],
- ['m1.9.xep_lop','🎯 Xếp lớp','M1.9','Nhập danh sách và Xếp lớp hàng loạt','hs',3,'Hàng đợi Chờ xếp lớp mọi khối 1–12, mọi nguồn; không duyệt, không ký — M1.9 rb 7',0,''],
- ['m1.9.bo_sung_ho_so','🧩 Bổ sung hồ sơ','M1.9','Nhập danh sách và Xếp lớp hàng loạt','hs',4,'Lô CHỈ GHI, không bao giờ tạo hồ sơ (rb 4); chạm dữ liệu nhân thân — Luật BVDLCN 91/2025',0,''],
- ['m1.9.diem_nhap_truc_tiep','⌨ Điểm nhập trực tiếp','M1.9','Nhập danh sách và Xếp lớp hàng loạt','hs',4,'Chỉ kỳ kết thúc TRƯỚC Ngày bắt đầu vận hành (M10.1); tiểu học bị loại — TT 27/2020 Đ.6',1,''],
- ['m1.9.chuyen_can_tong_hop','📅 Chuyên cần tổng hợp','M1.9','Nhập danh sách và Xếp lớp hàng loạt','hs',3,'Nhập ở mức TỔNG, không sinh bản ghi điểm danh từng ngày (rb 12)',0,''],
- ['m1.9.lich_su_lo','🕘 Lịch sử lô','M1.9','Nhập danh sách và Xếp lớp hàng loạt','hs',3,'Chỉ đọc + hoàn tác 7 ngày; không vai nào có XO — xóa lô là mất vết cả một đợt khai báo',1,''],
+ ['m1.1.nhap_danh_sach','📥 Nhập danh sách','M1.1','Hồ sơ học sinh','hs',4,'Tạo hồ sơ học sinh hàng loạt — hoàn tác 7 ngày; SĐT cha · mẹ · người giám hộ là nguồn cho link liên kết App (M10.5 tab ②)',0,''],
+ ['m1.7.xep_lop','🎯 Xếp lớp','M1.7','Xếp lớp và Chuyển lớp','hs',3,'Hàng đợi Chờ xếp lớp mọi khối 1–12, ba nguồn; không duyệt, không ký — M1.7 §7.5.1; tự ẩn khi hàng đợi rỗng',0,''],
+ ['m1.1.bo_sung_ho_so','🧩 Bổ sung hồ sơ','M1.1','Hồ sơ học sinh','hs',4,'Lô CHỈ GHI, không bao giờ tạo hồ sơ (rb 4); chạm dữ liệu nhân thân — Luật BVDLCN 91/2025',0,''],
+ ['m1.9.diem_nhap_truc_tiep','⌨ Điểm nhập trực tiếp','M1.9','Nạp dữ liệu trường lên hệ thống','qt',4,'Chỉ kỳ kết thúc TRƯỚC Ngày bắt đầu vận hành (M10.1); tiểu học bị loại — TT 27/2020 Đ.6',1,''],
+ ['m1.9.chuyen_can_tong_hop','📅 Chuyên cần tổng hợp','M1.9','Nạp dữ liệu trường lên hệ thống','qt',3,'Nhập ở mức TỔNG, không sinh bản ghi điểm danh từng ngày (rb 12)',0,''],
+ ['m1.9.lich_su_lo','🕘 Lịch sử lô','M1.9','Nạp dữ liệu trường lên hệ thống','qt',3,'Chỉ đọc + hoàn tác 7 ngày; không vai nào có XO — xóa lô là mất vết cả một đợt khai báo',1,''],
  ['m1.11.dot_xet','Đợt xét học bổng','M1.11','Xét duyệt học bổng','hs',4,'A',1,'A'],
  ['m1.11.hoc_sinh_nhan','Học sinh nhận học bổng','M1.11','Xét duyệt học bổng','hs',3,'',1,''],
  ['m1.11.hang_muc','Hạng mục & tiêu chí','M1.11','Xét duyệt học bổng','hs',3,'',0,''],
@@ -1004,9 +1004,9 @@ const GQ={
  'm1.6.thoi_hoc':{HT:'xtsde@School',PHT_DT:'xtse@Branch',KT:'xe@Branch',VT:'xtsoe@Branch',GVCN:'xte@Class'},
  'm1.7.yeu_cau_chuyen_lop':{HT:'xsde@School',PHT_DT:'xtsode@Branch',GVCN:'xtso@Class'},
  'm1.7.lich_su_chuyen_lop':{HT:'xe@School',PHT_DT:'xe@Branch',VT:'xe@Branch',GVCN:'xe@Class'},
- 'm1.9.nhap_danh_sach':{HT:'xtsie@School',PHT_DT:'xtsie@Branch',VT:'xe@Branch'},
- 'm1.9.xep_lop':{HT:'xtsie@School',PHT_DT:'xtsie@Branch',VT:'x@Branch',GVCN:'x@Class'},
- 'm1.9.bo_sung_ho_so':{HT:'xtsie@School',PHT_DT:'xtsie@Branch',VT:'xtsie@Branch'},
+ 'm1.1.nhap_danh_sach':{HT:'xtsie@School',PHT_DT:'xtsie@Branch',VT:'xe@Branch'},
+ 'm1.7.xep_lop':{HT:'xtsie@School',PHT_DT:'xtsie@Branch',VT:'x@Branch',GVCN:'x@Class'},
+ 'm1.1.bo_sung_ho_so':{HT:'xtsie@School',PHT_DT:'xtsie@Branch',VT:'xtsie@Branch'},
  'm1.9.diem_nhap_truc_tiep':{PHT_CM:'xtsie@School',VT:'xtie@Branch',GVCN:'x@Class#assigned',GVBM:'x@Class#assigned'},
  'm1.9.chuyen_can_tong_hop':{PHT_CM:'xtsie@School',VT:'xtie@Branch'},
  'm1.9.lich_su_lo':{HT:'xse@School',PHT_CM:'xse@School',PHT_DT:'xse@Branch',VT:'xe@Branch#authored'},

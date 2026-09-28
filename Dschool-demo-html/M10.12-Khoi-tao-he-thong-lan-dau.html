@@ -858,9 +858,13 @@ const BUOC = [
   {ma:'B07',  ten:'Lịch nghỉ · tham số vận hành',  tang:'Master',    loai:'form',       hang:'N', menu:'M10.9 · M10.6', cd:'VT · HT',   nhanh:'chinh', pt:['B06']},
   {ma:'B08b', ten:'Chi tiết năm học → ✓ Tạo hồ sơ năm học', tang:'Năm học', loai:'form + nạp + quyết định', hang:'N', menu:'M10.1 to_chuc · nhan_su · lop · F5', cd:'PHT_DT · PHT_CM · HT', nhanh:'chinh', pt:['B03','B07'], dt:true},
   {ma:'B08⑦', ten:'Điều kiện đảm bảo & hạ tầng',   tang:'Năm học',   loai:'form',       hang:'N', menu:'M10.1 dieu_kien', cd:'IT',        nhanh:'chinh', pt:['B08b'], tuyChon:true},
-  /* hạng N từ 23/9 (phiên 1G · M1.9 §3.2.2) — bảng cũ còn ghi M, sửa cùng lượt TNHM */
-  {ma:'B09',  ten:'Học sinh vào lớp — nạp + xếp lớp', tang:'Học sinh', loai:'nạp',      hang:'N', menu:'M1.9 ① ②', cd:'HT · PHT_DT',    nhanh:'hs',    pt:['B08b'], dt:true},
-  {ma:'B10',  ten:'Bù hồ sơ · điểm · chuyên cần',  tang:'Học sinh',  loai:'nạp',        hang:'N', menu:'M1.9 ③④⑤', cd:'VT · PHT_CM',    nhanh:'hs',    pt:['B09'], tuyChon:true},
+  /* hạng N từ 23/9 (phiên 1G · M1.9 §3.2.2) — bảng cũ còn ghi M, sửa cùng lượt TNHM.
+     GCHS-2D 27/9/2026 — menu_chu khai THEO PHẦN vì hai bước nay nằm ở nhiều menu:
+       B09① nạp danh sách → M1.1 §6.7   ·  B09② xếp lớp   → M1.7 §7.5
+       B10③ bù hồ sơ      → M1.1 §6.8   ·  B10④⑤ điểm·CC → M1.9
+     🛑 Hạng và phép đo ⛔ đổi một chữ — đổi CHỖ ĐỨNG, ⛔ đổi PHÉP ĐO. Bảng vẫn 14 bước. */
+  {ma:'B09',  ten:'Học sinh vào lớp — nạp + xếp lớp', tang:'Học sinh', loai:'nạp',      hang:'N', menu:'M1.1 §6.7 + M1.7 §7.5', cd:'HT · PHT_DT',    nhanh:'hs',    pt:['B08b'], dt:true},
+  {ma:'B10',  ten:'Bù hồ sơ · điểm · chuyên cần',  tang:'Học sinh',  loai:'nạp',        hang:'N', menu:'M1.1 §6.8 + M1.9 ④⑤', cd:'VT · PHT_CM',    nhanh:'hs',    pt:['B09'], tuyChon:true},
   {ma:'B10b', ten:'Lô «kết quả năm trước»',        tang:'Học sinh',  loai:'nạp',        hang:'N', menu:'M1.3',     cd:'VT · PHT_CM',    nhanh:'hs',    pt:['B09'], tuyChon:true},
   {ma:'B11',  ten:'KHGD · phân công · thời khoá biểu', tang:'Chuyên môn', loai:'nạp',   hang:'M', menu:'M5.1 · M4.5 · M4.6', cd:'PHT_CM · TTCM', nhanh:'cm', pt:['B08b']},
   /* 🔁 H11 ①: B12 RA KHỎI luồng bắt buộc — khoản đã thu và đang thu trước mốc đi
@@ -1126,7 +1130,7 @@ function veKhungLuong(){
           ({'M10.2 ① ③':'KTLD-1E · CCTT-1A', 'M10.2 ② ④':'KTLD-1E · CCTT-1A', 'M4.1 F11':'KTLD-1D', 'M4.3':'KTLD-1D', 'M10.5':'KTLD-1D',
             'M10.9 · M10.6':'KTLD-1G', 'M10.1 thoi_gian · to_chuc':'KTLD-1C · TNHM-1A',
             'M10.1 to_chuc · nhan_su · lop · F5':'KTLD-1C · TNHM-1A', 'M10.1 dieu_kien':'KTLD-1C', 'M1.9 ① ②':'KTLD-1G',
-            'M1.9 ③④⑤':'KTLD-1G', 'M1.3':'KTLD-1J', 'M5.1 · M4.5 · M4.6':'KTLD-1G · 1H',
+            'M1.1 §6.8 + M1.9 ④⑤':'KTLD-1G · GCHS-2D', 'M1.3':'KTLD-1J', 'M5.1 · M4.5 · M4.6':'KTLD-1G · 1H',
             'M7.1 · M7.2':'KTLD-1I', 'M10.10 · M8.1':'KTLD-1G', 'M10.1 F6':'KTLD-1C · TNHM-1A'}[b.menu] || '—') + '</b></div>' +
         (b.ma === 'B08b' ? khoiB08b() : '') + '</div>' +
       '<div class="dkbox"><b>Điều kiện xong</b> <i>(hàm <code>dieuKienXong()</code> của menu chủ — <code>KT-2</code>)</i>: ' +
@@ -1170,7 +1174,7 @@ function khoiB08b(){
 function demGhiVaoNam(){
   const ds = [];
   const hs = tongDT(D.B09.theoDT);
-  if (hs) ds.push('M1.9 — ' + hs.toLocaleString('vi') + ' học sinh đã vào lớp');
+  if (hs) ds.push('M1.1 · M1.7 — ' + hs.toLocaleString('vi') + ' học sinh đã vào lớp');
   if (D.B11.lopCoTKB) ds.push('M4.6 — ' + D.B11.lopCoTKB + ' lớp đã có thời khoá biểu');
   if (D.B12.khoanThu) ds.push('M7.1 — ' + D.B12.khoanThu + ' khoản thu');
   return ds;

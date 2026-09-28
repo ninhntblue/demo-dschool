@@ -3661,7 +3661,12 @@ function hsvl(n){
  }
  const g=ghiOf(n),t=namTruoc(n);
  const can=t&&t.cfg?lopMo(t).filter(l=>CUOICAP.indexOf(l.khoi)<0).reduce((s,l)=>s+(l.hs||0),0):0;
- return {kc:{dung:!dau,da:g.kc.length+g.kcLo,can:can,ds:g.kc},ts:{dung:true,da:g.ts,can:g.tsCan||0},nhap:{dung:dau,da:g.nhap,can:g.nhapCan||0}};
+ /* GCHS 27/9/2026 — dong M1.9 ÂN KHI BANG 0, KHONG an theo nam (anh Ninh chot;
+    dao ve «tu tat» cua TN-7). Lo nhap chay duoc o BAT KY nam nao: nhan lo giua
+    nam, sap nhap them mot co so. De «dung:dau» thi nam thu ba nhap mot lo xong
+    con em chua xep lop ⇒ bang kiem tra KHONG dem, va truong bam Bat dau nam hoc
+    voi mot nhom em khong co ten o so diem danh nao. */
+ return {kc:{dung:!dau,da:g.kc.length+g.kcLo,can:can,ds:g.kc},ts:{dung:true,da:g.ts,can:g.tsCan||0},nhap:{dung:(g.nhapCan||0)>0,da:g.nhap,can:g.nhapCan||0}};
 }
 function tongHS(h){let da=0,can=0;['kc','ts','nhap'].forEach(k=>{if(h[k].dung){da+=h[k].da||0;can+=h[k].can||0}});return {da:da,can:can}}
 
@@ -3715,7 +3720,7 @@ const XNGUON={
  'm4.1.danh_sach_nhan_su':['FULL','HT','PHT_DT','PHT_CM'],'m4.3.ra_soat_bo_may':['FULL','HT','PHT_DT','PHT_CM'],
  'm4.4.mon_duoc_phep_day':['FULL','HT','PHT_CM'],'m4.5.khoi_lop_phu_trach':['FULL','HT','PHT_DT','PHT_CM'],
  'm10.1.to_nam_hoc':['FULL','HT','PHT_DT','PHT_CM','IT','GV'],
- 'm3.3.ket_chuyen_sang_nam_sau':['FULL','HT','PHT_DT','PHT_CM'],'m1.4.phan_lop_hs_moi':['FULL','HT','PHT_DT'],'m1.9.xep_lop':['FULL','HT','PHT_DT']};
+ 'm3.3.ket_chuyen_sang_nam_sau':['FULL','HT','PHT_DT','PHT_CM'],'m1.4.phan_lop_hs_moi':['FULL','HT','PHT_DT'],'m1.7.xep_lop':['FULL','HT','PHT_DT']};
 const coX=f=>(XNGUON[f]||[]).indexOf(role)>=0;
 const noacc=(f,m)=>'<div class="ro noacc">🔒 Bạn không có quyền xem <code>'+f+'</code> ở <b>'+m+'</b> — khối này <b>để trống</b>, ⛔ không phải «không có vấn đề».</div>';
 const MON_CHUA_GV=['NHAT','CDTOAN'];   /* du lieu mau M4.4 — mon cua nam chua co giao vien nao duoc phep day */
@@ -3763,7 +3768,11 @@ function secHS(n){
   (can('kichhoat')?'Bấm <button class="btn xs p" data-x="mKichHoat" data-i="'+n.id+'">⑤ ✓ Tạo hồ sơ năm học</button> khi sẵn sàng.':'')+'</div></div>';
  const h=hsvl(n);
  const R_=(ten,m,f,x,dien)=>{
-  if(!x.dung)return '<div class="ckr"><div class="ic">·</div><div class="nm">'+ten+'</div><div class="ds" style="color:var(--ink3)">không dùng ở năm này'+(m==='M1.9'?' — chỉ năm triển khai đầu (TN-7)':' — năm triển khai đầu đi một nguồn M1.9 (TN-7)')+'</div><div></div></div>';
+  /* GCHS 27/9: dong M1.9 khong bao gio di qua nhanh nay nua — can=0 thi secHS()
+     AN han dong. Nhanh nay con lai cho M3.3 o nam trien khai dau: o do phai
+     GIU dong giai thich, vi an di la giau mat cau tra loi «sao khong thay ket
+     chuyen?». Con so 0 cua M1.9 thi KHONG co gi de giai thich. */
+  if(!x.dung)return '<div class="ckr"><div class="ic">·</div><div class="nm">'+ten+'</div><div class="ds" style="color:var(--ink3)">không dùng ở năm này — năm triển khai đầu chưa có năm cũ để kết chuyển (TN-7)</div><div></div></div>';
   if(!coX(f))return '<div class="ckr usr"><div class="ic">🔒</div><div class="nm">'+ten+'</div><div class="ds">Bạn không có quyền xem <code>'+f+'</code> ở '+m+' — ⛔ không phải «đã xong»</div><div></div></div>';
   const ok=x.can&&x.da>=x.can;
   return '<div class="ckr '+(ok?'':(x.can?'wr':''))+'"><div class="ic">'+(ok?'✅':(x.can?'◐':'○'))+'</div><div class="nm">'+ten+'</div><div class="ds"><b>'+(x.da||0).toLocaleString('vi')+' / '+(x.can||0).toLocaleString('vi')+'</b> em đã vào lớp — thuộc diện: '+dien+
@@ -3771,7 +3780,9 @@ function secHS(n){
  s+='<div class="info">Xếp học sinh vào lớp là việc của <b>ba menu chủ</b> — mục này chỉ đếm và dẫn đường, ⛔ không thao tác tại chỗ. <b>Chặn 🚀 Bắt đầu năm học</b> (F6 dòng 10 · R84), ⛔ không chặn «Tạo hồ sơ». Một em vào lớp qua bất kỳ nguồn nào ⇒ ⛔ <b>↩ Đưa về Nháp</b>.</div>'+
   '<div class="ck">'+R_('Kết chuyển — M3.3','M3.3','m3.3.ket_chuyen_sang_nam_sau',h.kc,'đã có kết luận lên lớp ở năm liền trước (trừ khối cuối cấp)')+
   R_('Tuyển sinh đầu cấp — M1.4','M1.4','m1.4.phan_lop_hs_moi',h.ts,'đã xác nhận nhập học ở các đợt gắn năm')+
-  R_('Nhập danh sách — M1.9','M1.9','m1.9.xep_lop',h.nhap,'trong các lô đã nhập cho năm')+'</div>';
+  /* GCHS 27/9: AN HAN dong M1.9 khi khong co lo nao — khong render dong xam.
+     Cung khuon «tab chi hien khi co viec» dang chay o M1.4 tab Cho toi duyet. */
+  ((h.nhap.can||0)>0?R_('Nhập danh sách — M1.1 · xếp ở M1.7','M1.7','m1.7.xep_lop',h.nhap,'trong các lô đã nhập cho năm'):'')+'</div>';
  if(n.tt==='saptoi')s+='<div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap"><button class="btn xs demo" data-x="glKC" data-i="'+n.id+'">⚡ Giả lập: M3.3 kết chuyển 1 em (6A1 → 7A1)</button>'+
   '<span style="font-size:11px;color:var(--ink3);align-self:center">demo — mô phỏng một menu khác ghi vào năm, để thử ↩ Đưa về Nháp bị chặn</span></div>';
  return s+'</div>';

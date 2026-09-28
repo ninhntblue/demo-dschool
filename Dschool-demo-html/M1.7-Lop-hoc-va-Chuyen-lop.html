@@ -214,6 +214,102 @@ tr:last-child td{border-bottom:none}
 .cmp .lb{font-size:10.5px;color:var(--ink3);display:block;font-weight:400}
 .tli.no::before{background:var(--red)}
 .pbody{max-height:calc(100vh - 250px)}
+
+/* ═══ MNXL-0B — BỘ NHẬP / XUẤT DÙNG CHUNG · style.08-bo-nhap-xuat.css ═══
+   🔁 MNXL-Z 26/9/2026 (HDMX bản 2): + .bnx-bao (BNX.bao) · toast #toast và modal #mask.bnx-tren-hop của menu nổi TRÊN hộp.
+   🛑 TỆP NỀN (MX-4) — chép NGUYÊN BYTE sang demo khác, đo băm; ⛔ sửa ở bản chép.
+   Mọi lớp tiền tố .bnx-; màu tự khai trong .bnx-lop (⛔ dựa biến của menu). */
+.bnx-lop{--bnx-nen:#fff;--bnx-mo:#f1f5f9;--bnx-vien:#e2e8f0;--bnx-vien2:#cbd5e1;--bnx-chu:#0f172a;--bnx-chu2:#475569;--bnx-chu3:#94a3b8;
+ --bnx-xanh:#1d4ed8;--bnx-xanh-nhat:#eff6ff;--bnx-do:#dc2626;--bnx-do-nhat:#fef2f2;--bnx-vang:#b45309;--bnx-vang-nhat:#fffbeb;
+ --bnx-luc:#047857;--bnx-luc-nhat:#ecfdf5;--bnx-tim:#6d28d9;--bnx-tim-nhat:#f5f3ff;
+ position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:900;display:none;align-items:flex-start;justify-content:center;
+ padding:22px 12px;overflow:auto;font:13px/1.5 "Segoe UI",system-ui,sans-serif;color:var(--bnx-chu)}
+.bnx-lop.bnx-mo{display:flex}
+.bnx-lop-phu{z-index:910;background:rgba(15,23,42,.35)}
+.bnx-lop *{box-sizing:border-box}
+.bnx-hop{background:var(--bnx-nen);border-radius:12px;width:min(1180px,100%);box-shadow:0 20px 50px rgba(0,0,0,.25);display:flex;flex-direction:column;max-height:calc(100vh - 44px)}
+.bnx-hop-nho{width:min(820px,100%)}
+.bnx-dau{padding:13px 18px 10px;border-bottom:1px solid var(--bnx-vien);position:relative}
+.bnx-tieu-de{font-weight:700;font-size:15px;padding-right:30px}
+.bnx-x{position:absolute;top:10px;right:12px;width:28px;height:28px;border-radius:7px;border:none;background:none;cursor:pointer;font-size:15px;color:var(--bnx-chu2)}
+.bnx-x:hover{background:var(--bnx-mo)}
+.bnx-than{padding:14px 18px;overflow:auto;flex:1}
+.bnx-chan{padding:11px 18px;border-top:1px solid var(--bnx-vien);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.bnx-gian{flex:1}
+.bnx-mo-ta{font-size:11.5px;color:var(--bnx-chu2)}
+.bnx-muc{font-weight:600;margin:14px 0 6px}
+.bnx-nut{font:inherit;border:1px solid var(--bnx-vien2);background:#fff;color:var(--bnx-chu);border-radius:7px;padding:6px 12px;cursor:pointer}
+.bnx-nut:hover:not([disabled]){background:var(--bnx-mo)}
+.bnx-nut[disabled]{opacity:.45;cursor:not-allowed}
+.bnx-nut.bnx-chinh{background:var(--bnx-xanh);border-color:var(--bnx-xanh);color:#fff}
+.bnx-nut.bnx-chinh:hover:not([disabled]){background:#1e40af}
+.bnx-nut.bnx-do{border-color:var(--bnx-do);color:var(--bnx-do)}
+.bnx-nut.bnx-nho{padding:2px 8px;font-size:11.5px;border-radius:6px}
+.bnx-nut.bnx-bat{background:var(--bnx-xanh-nhat);border-color:var(--bnx-xanh);color:var(--bnx-xanh)}
+.bnx-nut-hang{white-space:nowrap}
+.bnx-o{font:inherit;font-size:12px;border:1px solid var(--bnx-vien2);border-radius:6px;padding:3px 6px;background:#fff;max-width:230px;margin:1px 0}
+.bnx-so-nho{width:58px}
+.bnx-bang-doi{display:block;width:210px;height:52px;font-family:Consolas,monospace}
+.bnx-them{color:var(--bnx-chu2)}
+.bnx-buoc{display:flex;align-items:center;gap:6px;margin-top:9px;flex-wrap:wrap}
+.bnx-b{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--bnx-chu3)}
+.bnx-b .bnx-so{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;border:1.5px solid var(--bnx-vien2);font-size:11px;font-weight:600}
+.bnx-b.bnx-bat{color:var(--bnx-xanh);font-weight:600}
+.bnx-b.bnx-bat .bnx-so{border-color:var(--bnx-xanh);background:var(--bnx-xanh);color:#fff}
+.bnx-b.bnx-xong{color:var(--bnx-luc)}
+.bnx-b.bnx-xong .bnx-so{border-color:var(--bnx-luc);color:var(--bnx-luc)}
+.bnx-noi{width:26px;height:1.5px;background:var(--bnx-vien2)}
+.bnx-hop-tin,.bnx-hop-xanh{background:var(--bnx-xanh-nhat);border-left:3px solid var(--bnx-xanh);padding:8px 11px;border-radius:6px;margin:0 0 9px}
+.bnx-hop-vang{background:var(--bnx-vang-nhat);border-left:3px solid var(--bnx-vang);padding:8px 11px;border-radius:6px;margin:0 0 9px}
+.bnx-hop-loi{background:var(--bnx-do-nhat);border-left:3px solid var(--bnx-do);padding:8px 11px;border-radius:6px;margin:9px 0}
+.bnx-hop-loi ul{margin:4px 0 0 18px}
+.bnx-hop-luc{background:var(--bnx-luc-nhat);border-left:3px solid var(--bnx-luc);padding:8px 11px;border-radius:6px;margin:9px 0}
+.bnx-the{display:inline-block;font-size:11px;font-weight:600;padding:1px 7px;border-radius:10px;white-space:nowrap}
+.bnx-the-luc{background:var(--bnx-luc-nhat);color:var(--bnx-luc)}
+.bnx-the-vang{background:var(--bnx-vang-nhat);color:var(--bnx-vang)}
+.bnx-the-xam{background:var(--bnx-mo);color:var(--bnx-chu2)}
+.bnx-the-xanh{background:var(--bnx-xanh-nhat);color:var(--bnx-xanh)}
+.bnx-the-tim{background:var(--bnx-tim-nhat);color:var(--bnx-tim)}
+.bnx-chu-do{color:var(--bnx-do)}
+.bnx-chu-vang{color:var(--bnx-vang)}
+.bnx-chu-luc{color:var(--bnx-luc)}
+.bnx-tep-ds{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:8px;margin-bottom:10px}
+.bnx-tep{display:flex;gap:9px;align-items:flex-start;border:1.5px solid var(--bnx-vien);border-radius:9px;padding:9px 11px;cursor:pointer}
+.bnx-tep.bnx-bat{border-color:var(--bnx-xanh);background:var(--bnx-xanh-nhat)}
+.bnx-gap{border:1px solid var(--bnx-vien);border-radius:9px;padding:7px 11px;margin:8px 0}
+.bnx-gap>summary{cursor:pointer;font-weight:600}
+.bnx-loc{display:flex;gap:5px;margin:8px 0;flex-wrap:wrap}
+.bnx-thanh-mau{padding:6px 0;font-size:12.5px}
+.bnx-phan{border:1px solid var(--bnx-vien);border-radius:9px;padding:9px 11px;margin:10px 0}
+.bnx-phan-dau{margin-bottom:7px}
+.bnx-bang{border-collapse:collapse;width:100%;font-size:12px;margin:4px 0}
+.bnx-bang th,.bnx-bang td{border-bottom:1px solid var(--bnx-vien);padding:5px 7px;text-align:left;vertical-align:top}
+.bnx-bang th{background:var(--bnx-mo);font-weight:600;font-size:11.5px}
+.bnx-anh-xa td:first-child{width:190px}
+.bnx-dong-do td{background:var(--bnx-do-nhat)}
+.bnx-bd{background:var(--bnx-mo);border-radius:6px;padding:3px 6px;margin:0 0 3px;font-size:11.5px}
+.bnx-gop{white-space:nowrap}
+.bnx-cuon{overflow:auto;max-width:100%}
+.bnx-xem td,.bnx-xem th{white-space:nowrap}
+.bnx-nguon{font-weight:400;font-size:10.5px;color:var(--bnx-chu3)}
+.bnx-xem .bnx-l4{background:var(--bnx-vang-nhat)}
+.bnx-xem th.bnx-l4{color:var(--bnx-vang)}
+.bnx-o-loi{background:var(--bnx-do-nhat)!important;color:var(--bnx-do);outline:1px dashed var(--bnx-do)}
+.bnx-tich{display:block;margin:12px 0 4px;padding:9px 11px;border:1.5px solid var(--bnx-xanh);border-radius:8px;background:var(--bnx-xanh-nhat);cursor:pointer}
+.bnx-tich.bnx-tich-tat{border-color:var(--bnx-vien2);background:var(--bnx-mo);color:var(--bnx-chu3);cursor:not-allowed}
+.bnx-luu{margin:10px 0;padding:9px 11px;border:1px dashed var(--bnx-vien2);border-radius:8px}
+.bnx-hang-x{margin:3px 0}
+.bnx-chup{font-size:12px}
+.bnx-csv{background:var(--bnx-mo);padding:8px;border-radius:6px;font:11.5px/1.4 Consolas,monospace;white-space:pre-wrap;max-height:180px;overflow:auto}
+.bnx-nut-tam{border:1.5px dashed #7c3aed;color:#6d28d9;background:#f5f3ff;border-radius:8px;padding:6px 11px;font:inherit;font-size:12.5px;cursor:pointer;margin-right:8px}
+/* 🔁 MNXL-Z — hộp bộ máy ⛔ che toast / modal của menu (quy ước demo #toast · #mask) + BNX.bao() */
+body.bnx-dang-mo #toast{z-index:960}
+#mask.bnx-tren-hop{z-index:950}
+.bnx-bao{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(12px);z-index:970;max-width:min(720px,calc(100% - 32px));
+ padding:10px 16px;border-radius:10px;background:#0f172a;color:#fff;font:13px/1.5 "Segoe UI",system-ui,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.3);
+ opacity:0;pointer-events:none;transition:opacity .18s,transform .18s}
+.bnx-bao.bnx-mo{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
+.bnx-bao-loi{background:#b91c1c}.bnx-bao-luc{background:#047857}.bnx-bao-vang{background:#b45309}
 </style>
 </head>
 <body>
@@ -577,6 +673,10 @@ function sideNav(){
 function tabsBar(){
  const A=[['yc','🔄 Yêu cầu chuyển lớp',T.filter(t=>inScopeT(t)&&!dong(t)&&t.tt!=='hl').length,viecCua().length],
           ['ls','🕘 Lịch sử chuyển lớp',LS.filter(inScopeLS).length,0]];
+ /* GCHS-2B 27/9/2026 — tab thứ ba TỰ ẨN khi hàng đợi rỗng (chốt Đ2a, M1.7 §7.5.2).
+    Ẩn ⛔ phải BỎ: có một em chưa xếp lớp là tab hiện lại, kể cả ở năm thứ mười.
+    Khuôn «tab chỉ hiện khi có việc» đang chạy ở M1.4 tab Chờ tôi duyệt. */
+ if(xlChuaLop().length&&R().sc!=='gvbm')A.push(['xl','🎯 Xếp lớp',xlChuaLop().length,0]);
  $('#tabs').innerHTML=A.map(([k,l,c,n])=>
   '<button class="tab1'+(tab===k?' on':'')+'" data-tab="'+k+'">'+l+
   '<span style="color:var(--ink3);font-weight:400">'+c+'</span>'+
@@ -861,7 +961,9 @@ function timeline(t){
 function render(){
  hdrBar();sideNav();tabsBar();
  if(tuDongCho&&fTT==='Tất cả'&&viecCua().length){fTT='Chờ tôi';tuDongCho=0}
- $('#content').innerHTML=tab==='yc'?viewYC():viewLS();
+ if(tab==='xl'&&!xlChuaLop().length)tab='yc';            /* tab vừa ẩn thì rơi về tab 1 */
+ $('#content').innerHTML=tab==='xl'?viewXL():tab==='yc'?viewYC():viewLS();
+ if(tab==='xl')bindXL();
 }
 
 /* ================= MODAL ================= */
@@ -944,6 +1046,7 @@ const tOf=d=>T.find(x=>x.id===d.t);
 
 function act(a,d){
  const t=d.t?tOf(d):null;
+ if(xlAct(a,d))return;                  /* GCHS-2B: tab 🎯 Xếp lớp — app.20-tab-xep-lop.js */
  if(a==='xoatim'){qTim='';cur=null;render();return}
  if(a==='dong'){cur=null;render();return}
  if(a==='moyc'){const y=T.find(x=>x.id===d.t);
@@ -1129,6 +1232,1670 @@ function tiepTuc(a,d,t){
 
  toast('Thao tác demo');
 }
+/* 🛑 render() KHỞI ĐỘNG chuyển sang cuối app.20-tab-xep-lop.js — tệp đó nạp SAU
+   tệp này, nên gọi render() ở đây thì dữ liệu của tab 🎯 còn chưa khởi tạo (TDZ).
+   gen-demo nối MỘT script theo thứ tự: app.js → app.08 → app.09 → app.10 → app.20. */
+
+/* ═══════════════════════════════════════════════════════════════════════
+   MNXL-0B — BỘ NHẬP / XUẤT DÙNG CHUNG · app.08-bo-nhap-xuat.js
+   🔁 MNXL-Z (26/9/2026) — theo 🔒 HDMX bản 2 (F177F948…175B): phai_gan ·
+      nhom_phai_gan · gia_tri_dac_biet · loai_ma (khuôn mã = tham số M10.8) ·
+      dieu_kien.kiem(gan) · nhan_loai (chỉ .xlsx) · kho mẫu theo (Feature ×
+      tên gốc mẫu đích) · data-* của bộ máy đổi tiền tố data-bnx-* · BNX.bao()
+      + toast / modal của menu ⛔ bị hộp che. (bản 1 85761CD8…D9A8 hết hiệu lực)
+   Nguồn nghiệp vụ: bản CHỐT MNXL §4 · 🔒 HDMX bản 2 (F177F948…175B) ①–⑬
+   🛑 TỆP NỀN (MX-4) — gốc ở demo-src/M1.9-*; demo khác CHÉP NGUYÊN BYTE, đo băm.
+      Cần sửa ⇒ mục D cho phiên Z, ⛔ sửa tại chỗ ở bản chép.
+   Bộ máy CHỈ lo bước ① chọn tệp · ② ánh xạ cột + chiều xuất.
+   Bước ③ đối chiếu ba mức và ④ ghi + bảng kết quả GỌI LẠI HÀM CỦA MENU (MX-5).
+
+   Hàm vào:
+     BNX.moNhap(duongNhap, {onDoiChieu, onGhi, onHoanTac, nguoi, truong})
+     BNX.moXuat(duongXuat, duLieu, {onXuat, nguoi, truong})
+   Menu khai đường nhập / đường xuất ở app.09-duong-nhap.js (hình dạng HDMX ② ⑫).
+   Mọi tên toàn cục nằm dưới BNX; CSS tiền tố .bnx-; nút dùng data-bnx (⛔ data-x);
+   MỌI thuộc tính data-* của bộ máy mang tiền tố data-bnx- (data-bnx-p · -c · -i ·
+   -id · -j · -k · -loc) — trình bắt sự kiện của menu đọc data-* trùng tên ⛔ dính.
+   ═══════════════════════════════════════════════════════════════════════ */
+(function(){
+'use strict';
+var B = window.BNX = window.BNX || {};
+B.PHIEN_BAN = 'MNXL-Z · 26/9/2026 · theo HDMX bản 2';
+/* ⑥ — tham số HỆ THỐNG, ⛔ trường sửa (P-2 phiếu 0A) */
+B.THAM_SO = {L2_NGUONG: 0.9, L2_MAU_SO_TOI_THIEU: 10, L3_SO_DONG: 10};
+/* ⑥ L1 ma_dinh_danh — KHUÔN SINH TỪ THAM SỐ, ⛔ CHÔN SỐ TRONG MÃ.
+   🛑 Thi hành ràng buộc 18 của M10.8: «Không hard-code độ dài mã định danh 20 ký
+   tự — đưa ra cấu hình, mặc định 20». Anh Ninh chốt phương án C ngày 27/9/2026
+   (điểm NL-1): ĐỘ DÀI LÀ THAM SỐ CỦA M10.8, ⛔ là hằng số của bộ máy.
+     · Giá trị THẬT của trường: 20 (TT 42/2021 — xem nh1.1 §2 · M1.5 §7.12).
+     · Giá trị DEMO: 12 — dữ liệu mẫu của các menu dùng mã 12 chữ số.
+   Demo ⛔ có màn hình M10.8 để đọc thật, nên bảng dưới ĐỨNG THAY tham số ấy.
+   Menu nào cần giá trị khác: đặt window.BNX.THAM_SO_M108 TRƯỚC khi nạp tệp này,
+   ⛔ sửa bảng khuôn. */
+B.THAM_SO_M108 = B.THAM_SO_M108 || {
+  do_dai_ma_hoc_sinh: 12,          /* THẬT: 20 — TT 42/2021. Demo dùng 12. */
+  nguon: 'M10.8 · tham số hệ thống (giá trị demo; mặc định thật 20)'
+};
+function khuonSo(n){ return '^\\d{' + n + '}$'; }
+B.khuonMa = B.khuonMa || {
+  hoc_sinh: {khuon: khuonSo(B.THAM_SO_M108.do_dai_ma_hoc_sinh),
+             mo_ta: B.THAM_SO_M108.do_dai_ma_hoc_sinh + ' chữ số — THAM SỐ của M10.8 (mặc định thật 20 theo TT 42/2021; demo đặt 12)'},
+  cccd:     {khuon: khuonSo(12), mo_ta:'12 chữ số (CCCD) — khuôn RIÊNG, ⛔ đi theo tham số trên'},
+  nhan_su:  {khuon:'^[0-9A-Z]{10,20}$', mo_ta:'10–20 ký tự chữ số / chữ in hoa — tham số M10.8 (⏳ khuôn giả định)'}
+};
+B.kho = B.kho || {mauNhap: [], mauXuat: [], nhatKyXuat: [], dem: {mn: 0, mx: 0}};
+B.duongNhap = B.duongNhap || {};
+B.duongXuat = B.duongXuat || {};
+
+/* ───────────── tiện ích ───────────── */
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function boDau(s){ return String(s == null ? '' : s).normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D'); }
+/* ④ chuan_hoa: bỏ dấu → chữ thường → bỏ khoảng trắng và . , / ( ) - * */
+function chuanHoa(s){ return boDau(s).toLowerCase().replace(/[\s.,\/()\-*]/g, ''); }
+function sao(o){ return o == null ? o : JSON.parse(JSON.stringify(o)); }
+function p2(n){ return (n < 10 ? '0' : '') + n; }
+function bayGio(){ var d = new Date(); return p2(d.getDate()) + '/' + p2(d.getMonth() + 1) + '/' + d.getFullYear() + ' ' + p2(d.getHours()) + ':' + p2(d.getMinutes()); }
+function laTrong(v){ return v == null || String(v).trim() === ''; }
+function lev(a, b){
+  var m = a.length, n = b.length, d = [], i, j;
+  for (i = 0; i <= m; i++){ d[i] = [i]; }
+  for (j = 0; j <= n; j++){ d[0][j] = j; }
+  for (i = 1; i <= m; i++) for (j = 1; j <= n; j++)
+    d[i][j] = Math.min(d[i-1][j] + 1, d[i][j-1] + 1, d[i-1][j-1] + (a[i-1] === b[j-1] ? 0 : 1));
+  return d[m][n];
+}
+function pt(x){ return Math.round(x * 100) + ' %'; }
+function tenMauGoc(s){ return String(s || '').replace(/-v\d+$/, ''); }
+B.chuanHoa = chuanHoa;
+
+var KIEU_TEN = {chuoi:'chuỗi', ho_ten:'họ tên', ngay:'ngày', so:'số', sdt:'SĐT', email:'email', ma_dinh_danh:'mã định danh', danh_muc:'danh mục', co_khong:'có / không'};
+var MUC_TEN = {bat_buoc:'bắt buộc', co_dieu_kien:'có điều kiện', tuy_chon:'tùy chọn'};
+function kieuCua(c){ var m = /^danh_muc\((.+)\)$/.exec(c.kieu || ''); return m ? {loai:'danh_muc', dm:m[1]} : {loai:c.kieu}; }
+function tenKieu(c){ var k = kieuCua(c); return k.loai === 'danh_muc' ? 'danh mục ' + k.dm : (KIEU_TEN[k.loai] || k.loai); }
+/* dieu_kien.kiem(gan) — nhận CÁCH GÁN hiện tại của phần (HDMX bản 2 ②) */
+function batBuoc(c, gan){ return c.muc === 'bat_buoc' || (c.muc === 'co_dieu_kien' && c.dieu_kien && typeof c.dieu_kien.kiem === 'function' && !!c.dieu_kien.kiem(gan || {})); }
+/* phai_gan: true | {loi, kiem(gan)} — cột PHẢI GÁN mà ô ĐƯỢC TRỐNG (HDMX bản 2 ② mục 5) */
+function phaiGan(c, gan){ var f = c.phai_gan; if (!f || c.muc === 'bat_buoc') return false; return f === true || (typeof f.kiem === 'function' ? !!f.kiem(gan || {}) : !!f); }
+function coGanCot(g){ return !!(g && ((g.cot_nguon || []).length || ((g.bien_doi || []).length && g.bien_doi[0].ma === 'gia_tri_hang'))); }
+/* gia_tri_dac_biet: "<chuỗi>" (khớp đúng, ⛔ phân biệt hoa thường) | {khuon, mo_ta} — qua L1, ra khỏi mẫu số L2 (⑥) */
+function laDacBiet(c, v){
+  var t = v == null ? '' : String(v).trim(); if (!t || !c.gia_tri_dac_biet) return false;
+  return c.gia_tri_dac_biet.some(function(x){ return typeof x === 'string' ? x.trim().toLowerCase() === t.toLowerCase() : !!(x && x.khuon && new RegExp(x.khuon).test(t)); });
+}
+function khuonMaCua(c){ var k = c.loai_ma && B.khuonMa[c.loai_ma]; return k ? k : (c.khuon ? {khuon:c.khuon, mo_ta:c.mo_ta_khuon} : null); }
+B.laDacBiet = laDacBiet; B.khuonMaCua = khuonMaCua;
+
+/* ───────────── ngày ───────────── */
+var KHUON = ['dd/mm/yyyy', 'd/m/yyyy', 'dd-mm-yyyy', 'yyyy-mm-dd', 'so_excel'];
+function ngayHopLe(d, m, y){ var t = new Date(y, m - 1, d); return y > 1900 && y < 2100 && t.getFullYear() === y && t.getMonth() === m - 1 && t.getDate() === d; }
+function docNgay(s, khuon){
+  s = String(s).trim(); var m, d, mo, y;
+  if (khuon === 'dd/mm/yyyy'){ m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(s); if (m){ d = +m[1]; mo = +m[2]; y = +m[3]; } }
+  else if (khuon === 'd/m/yyyy'){ m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(s); if (m){ d = +m[1]; mo = +m[2]; y = +m[3]; } }
+  else if (khuon === 'dd-mm-yyyy'){ m = /^(\d{2})-(\d{2})-(\d{4})$/.exec(s); if (m){ d = +m[1]; mo = +m[2]; y = +m[3]; } }
+  else if (khuon === 'yyyy-mm-dd'){ m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s); if (m){ y = +m[1]; mo = +m[2]; d = +m[3]; } }
+  else if (khuon === 'so_excel'){ m = /^\d{1,5}$/.exec(s); if (m){ var t = new Date(Date.UTC(1899, 11, 30) + (+s) * 86400000); d = t.getUTCDate(); mo = t.getUTCMonth() + 1; y = t.getUTCFullYear(); } }
+  if (!m || !ngayHopLe(d, mo, y)) return null;
+  return p2(d) + '/' + p2(mo) + '/' + y;
+}
+/* ⑤ — máy GỢI Ý khuôn chỉ khi mọi ô khác rỗng khớp ĐÚNG MỘT khuôn; ⛔ đoán */
+function khuonKhop(vals){
+  vals = vals.filter(function(v){ return !laTrong(v); });
+  if (!vals.length) return [];
+  var ds = KHUON.filter(function(k){ return vals.every(function(v){ return docNgay(v, k) !== null; }); });
+  if (ds.indexOf('dd/mm/yyyy') >= 0) ds = ds.filter(function(k){ return k !== 'd/m/yyyy'; });
+  return ds;
+}
+B.docNgay = docNgay;
+
+/* ───────────── ⑥ L1 — kiểm kiểu theo cột đích, từng ô ───────────── */
+function kiemL1(c, v, duong, gan){
+  var t = v == null ? '' : String(v).trim();
+  if (!t) return batBuoc(c, gan) ? 'Trống — cột bắt buộc' : null;
+  if (laDacBiet(c, t)) return null;                     /* giá trị đặc biệt hợp lệ — bước ③ của menu vẫn thấy chuỗi */
+  if (/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/.test(String(v))) return 'Có ký tự điều khiển';
+  var k = kieuCua(c), s;
+  switch (k.loai){
+    case 'chuoi':  return t.length > 255 ? 'Dài quá 255 ký tự' : null;
+    case 'ho_ten': return t.length > 100 ? 'Họ tên dài quá 100 ký tự' : null;
+    case 'ngay':   return docNgay(t, 'dd/mm/yyyy') ? null : '«' + t + '» không phải ngày dd/mm/yyyy có thật';
+    case 'so':     return /^-?\d+([.,]\d+)?$/.test(t) ? null : '«' + t + '» không phải số';
+    case 'sdt':
+      s = t.replace(/[\s.\-]/g, '');
+      if (/^[1-9]\d{8}$/.test(s)) return '«' + t + '» mất số 0 đầu (ô số) — ⛔ tự thêm';
+      return /^0\d{9}$/.test(s) ? null : '«' + t + '» không phải SĐT 10 chữ số bắt đầu bằng 0';
+    case 'email':  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(t) ? null : '«' + t + '» không phải email';
+    case 'ma_dinh_danh':
+      var km = khuonMaCua(c);
+      if (!km) return '«' + t + '» — cột chưa khai loai_ma, ⛔ có khuôn để kiểm';
+      return new RegExp(km.khuon).test(t) ? null : '«' + t + '» sai khuôn mã' + (km.mo_ta ? ' (' + km.mo_ta + ')' : '');
+    case 'danh_muc':
+      var ds = ((duong && duong.danh_muc) || {})[k.dm] || [];
+      return ds.indexOf(t) >= 0 ? null : '«' + t + '» không có trong danh mục ' + k.dm;
+    case 'co_khong': return (t === 'Có' || t === 'Không') ? null : '«' + t + '» — chỉ nhận Có / Không';
+  }
+  return null;
+}
+B.kiemL1 = kiemL1;
+
+/* ───────────── ⑤ PHÉP BIẾN ĐỔI — danh sách ĐÓNG (N3) ───────────── */
+var BD = {
+  tach_ho_ten: {ten:'Tách họ và tên', chay:function(v, p){
+    var s = String(v).trim().replace(/\s+/g, ' '); if (!s) return {v:''};
+    var i = s.lastIndexOf(' ');                          /* tách ở khoảng trắng CUỐI CÙNG */
+    var hd = i < 0 ? '' : s.slice(0, i), tn = i < 0 ? s : s.slice(i + 1);
+    return {v: p.lay === 'ho_dem' ? hd : tn};
+  }},
+  gop_cot: {ten:'Gộp cột'},                             /* chạy trước mọi phép khác — xem chay() */
+  doi_dinh_dang_ngay: {ten:'Đổi định dạng ngày', chay:function(v, p){
+    var s = String(v).trim(); if (!s) return {v:''};
+    var r = docNgay(s, p.khuon);
+    return r ? {v:r} : {v:s, loi:'«' + s + '» không khớp khuôn ' + p.khuon + ' — ⛔ đoán khuôn khác'};
+  }},
+  bang_doi_gia_tri: {ten:'Bảng đổi giá trị', chay:function(v, p){
+    var s = String(v).trim(); if (!s) return {v:''};
+    var ph = !!p.phan_biet_hoa_thuong;
+    var f = (p.cap || []).filter(function(c){ var tu = String(c.tu).trim(); return ph ? tu === s : tu.toLowerCase() === s.toLowerCase(); })[0];
+    return f ? {v:String(f.thanh)} : {v:s, la:s};          /* giá trị lạ GIỮ NGUYÊN để L1 bắt */
+  }},
+  chuan_hoa_chuoi: {ten:'Bỏ khoảng trắng / hoa thường', chay:function(v, p){
+    var s = String(v);
+    if (p.cat_khoang_trang !== false) s = s.trim().replace(/\s+/g, ' ');
+    var h = p.hoa_thuong || 'giu';
+    if (h === 'thuong') s = s.toLocaleLowerCase('vi');
+    else if (h === 'hoa') s = s.toLocaleUpperCase('vi');
+    else if (h === 'hoa_chu_dau') s = s.toLocaleLowerCase('vi').replace(/(^|\s)(\S)/g, function(m, a, b){ return a + b.toLocaleUpperCase('vi'); });
+    return {v:s};
+  }},
+  gia_tri_hang: {ten:'Giá trị hằng cho cả cột'}
+};
+var BD_THEM = ['gop_cot', 'tach_ho_ten', 'doi_dinh_dang_ngay', 'bang_doi_gia_tri', 'chuan_hoa_chuoi'];
+function bdMoi(ma){
+  if (ma === 'tach_ho_ten') return {ma:ma, lay:'ten'};
+  if (ma === 'gop_cot') return {ma:ma, noi:' '};
+  if (ma === 'doi_dinh_dang_ngay') return {ma:ma, khuon:'dd/mm/yyyy'};
+  if (ma === 'bang_doi_gia_tri') return {ma:ma, cap:[], phan_biet_hoa_thuong:false};
+  if (ma === 'chuan_hoa_chuoi') return {ma:ma, cat_khoang_trang:true, hoa_thuong:'giu'};
+  return {ma:'gia_tri_hang', gia_tri:''};
+}
+function laHang(g){ return !!(g && g.bien_doi && g.bien_doi.length && g.bien_doi[0].ma === 'gia_tri_hang'); }
+function coGop(g){ return !!(g && g.bien_doi && g.bien_doi.length && g.bien_doi[0].ma === 'gop_cot'); }
+/* một cột đích: {cot_nguon[], bien_doi[]} × một dòng ⇒ {v, loi, goc} — chạy THEO THỨ TỰ KHAI */
+function chay(g, o, ghiLa){
+  var bd = g.bien_doi || [];
+  if (laHang(g)) return {v:String(bd[0].gia_tri == null ? '' : bd[0].gia_tri), goc:''};
+  var vals = (g.cot_nguon || []).map(function(k){ return o[k] == null ? '' : String(o[k]); });
+  var v, loi = null, i0 = 0;
+  if (coGop(g)){ v = vals.map(function(s){ return s.trim(); }).filter(Boolean).join(bd[0].noi == null ? ' ' : bd[0].noi); i0 = 1; }
+  else v = vals.length ? vals[0] : '';
+  for (var i = i0; i < bd.length; i++){
+    var f = BD[bd[i].ma]; if (!f || !f.chay) continue;
+    var r = f.chay(v, bd[i]);
+    if (r.la != null && ghiLa) ghiLa(r.la);
+    if (r.loi && !loi) loi = r.loi;
+    v = r.v;
+  }
+  return {v:v, loi:loi, goc:vals.join(' | ')};
+}
+B.bienDoi = {danhSach:BD, chay:chay, moi:bdMoi};
+
+/* ───────────── đọc tệp giả · vân tay ④ ───────────── */
+function khoaTieuDe(hdr){
+  var raw = hdr.map(function(h, i){ return {i:i, goc:h == null ? '' : String(h).trim(), base:chuanHoa(h)}; });
+  var dem = {}, thu = {}, td = [];
+  raw.forEach(function(h){ if (h.base) dem[h.base] = (dem[h.base] || 0) + 1; });
+  raw.forEach(function(h){
+    if (!h.base) return;
+    var key = h.base;
+    if (dem[h.base] > 1){ thu[h.base] = (thu[h.base] || 0) + 1; key = h.base + '#' + thu[h.base]; }
+    td.push({i:h.i, goc:h.goc, base:h.base, key:key});
+  });
+  return td;
+}
+/* van_tay_tieu_de = TẬP (⛔ thứ tự) các chuan_hoa(tiêu đề) khác rỗng; trùng ⇒ #1 #2 */
+B.vanTay = function(hdr){ return khoaTieuDe(hdr).map(function(h){ return h.key; }).sort(); };
+function docSheet(sh, dongTD){
+  var rows = (sh && sh.o) || [], td = khoaTieuDe(rows[dongTD - 1] || []), dong = [];
+  for (var r = dongTD; r < rows.length; r++){
+    var row = rows[r] || [];
+    if (!row.some(function(v){ return !laTrong(v); })) continue;
+    var o = {};
+    td.forEach(function(h){ o[h.key] = row[h.i] == null ? '' : String(row[h.i]); });
+    dong.push({so_dong:r + 1, o:o});                   /* số DÒNG EXCEL, ⛔ STT */
+  }
+  return {tieuDe:td, dong:dong, vanTay:td.map(function(h){ return h.key; }).sort()};
+}
+function a1Cua(sh){ return String((((sh && sh.o) || [])[0] || [])[0] == null ? '' : sh.o[0][0]).trim(); }
+function dongTieuDeMacDinh(sh){
+  if (/^MAU-/.test(a1Cua(sh))) return 2;              /* tệp mẫu hệ thống ⇒ dòng 2 */
+  var rows = (sh && sh.o) || [];
+  for (var r = 0; r < rows.length; r++) if ((rows[r] || []).some(function(v){ return !laTrong(v); })) return r + 1;
+  return 1;
+}
+function vtBang(a, b){ return (a || []).slice().sort().join('|') === (b || []).slice().sort().join('|'); }
+function soChung(a, b){ var s = {}; (b || []).forEach(function(x){ s[x] = 1; }); return (a || []).filter(function(x){ return s[x]; }).length; }
+
+/* ───────────── ② kiểm khai báo đường nhập (HDMX ② mục 1–2) ───────────── */
+B.kiemKhaiBao = function(duong){
+  var loi = [];
+  (duong.phan || []).forEach(function(pd){
+    var cd = pd.cot_dich || [];
+    cd.forEach(function(c){
+      if (!c.kieu || !c.muc) loi.push('Cột đích «' + c.nhan + '» thiếu kieu hoặc muc — ⛔ dựng được L1 L2');
+      var k = kieuCua(c);
+      if (k.loai === 'danh_muc' && !((duong.danh_muc || {})[k.dm])) loi.push('Cột «' + c.nhan + '» trỏ danh mục «' + k.dm + '» mà đường nhập không khai');
+      if (k.loai === 'ma_dinh_danh' && !(c.loai_ma && B.khuonMa[c.loai_ma])) loi.push('Cột «' + c.nhan + '» kiểu ma_dinh_danh thiếu loai_ma (khuôn đọc tham số M10.8 — ⛔ khai khuôn số cứng)');
+      if (c.phai_gan && c.muc === 'bat_buoc') loi.push('Cột «' + c.nhan + '»: phai_gan chỉ đi với tuy_chon · co_dieu_kien (bat_buoc đã phải gán)');
+    });
+    (pd.nhom_phai_gan || []).forEach(function(n){
+      (n.cum || []).forEach(function(cm){ cm.forEach(function(ma){ if (!cd.some(function(c){ return c.ma === ma; })) loi.push('nhom_phai_gan trỏ cột «' + ma + '» không có trong phần'); }); });
+    });
+    ['sdt', 'ho_ten', 'ngay', 'email'].forEach(function(kk){
+      var ds = cd.filter(function(c){ return c.kieu === kk; });
+      for (var i = 0; i < ds.length; i++) for (var j = i + 1; j < ds.length; j++){
+        var cung = (pd.cap_de_nham || []).some(function(g){ return g.indexOf(ds[i].ma) >= 0 && g.indexOf(ds[j].ma) >= 0; });
+        if (!cung) loi.push('«' + ds[i].nhan + '» và «' + ds[j].nhan + '» cùng kiểu ' + kk + ' mà ⛔ chung nhóm cap_de_nham — khai báo thiếu');
+      }
+    });
+  });
+  return loi;
+};
+
+/* ───────────── kho mẫu ───────────── */
+function idMoi(loai){ B.kho.dem[loai]++; return (loai === 'mn' ? 'MN-' : 'MX-') + String(B.kho.dem[loai]).padStart(4, '0'); }
+function napCongTy(ds, kho, loai){
+  (ds || []).forEach(function(m){
+    var id = m[loai === 'mn' ? 'mau_nhap_id' : 'mau_xuat_id'];
+    if (kho.some(function(x){ return x[loai === 'mn' ? 'mau_nhap_id' : 'mau_xuat_id'] === id; })) return;
+    var b = sao(m); b.nguon = 'cong_ty'; b.trang_thai = b.trang_thai || 'dung'; b.lich_su = b.lich_su || []; b.tao_boi = b.tao_boi || 'Công ty — phát hành kèm bản cập nhật'; b.tao_luc = b.tao_luc || '—';
+    kho.push(b);
+  });
+}
+/* ⑨ — mẫu gắn số hiệu mẫu đích CŨ ⇒ «cần rà lại», ⛔ tự áp, ⛔ tự nâng */
+/* HDMX bản 2 ② mục 4 — một Feature NHIỀU mẫu đích: mẫu thuộc (ma_feature × tên gốc mẫu đích) */
+function cungDuong(m, duong){ return m.duong_nhap.ma_feature === duong.ma_feature && tenMauGoc(m.duong_nhap.mau_dich) === tenMauGoc(duong.mau_dich); }
+function raPhienBan(duong){
+  B.kho.mauNhap.forEach(function(m){
+    if (!cungDuong(m, duong) || m.trang_thai !== 'dung' || m.duong_nhap.mau_dich === duong.mau_dich) return;
+    m.lich_su.push({boi:'Hệ thống', luc:bayGio(), thay_doi:'Mẫu đích đổi ' + m.duong_nhap.mau_dich + ' → ' + duong.mau_dich + ' — chuyển «cần rà lại», ⛔ tự áp'});
+    m.trang_thai = 'can_ra_lai';
+  });
+}
+function mauCuaDuong(duong, truong){
+  return B.kho.mauNhap.filter(function(m){ return cungDuong(m, duong) && (m.nguon === 'cong_ty' || m.truong === truong); });
+}
+
+/* ═══════════════ KHUNG HIỂN THỊ (hai lớp: hộp chính · hộp phụ) ═══════════════ */
+var LOP = null, PHU = null;
+function dungLop(){
+  if (LOP) return;
+  LOP = document.createElement('div'); LOP.className = 'bnx-lop'; LOP.id = 'bnx-lop';
+  LOP.innerHTML = '<div class="bnx-hop" role="dialog" aria-modal="true"><div class="bnx-dau" id="bnx-dau"></div><div class="bnx-than" id="bnx-than"></div><div class="bnx-chan" id="bnx-chan"></div></div>';
+  PHU = document.createElement('div'); PHU.className = 'bnx-lop bnx-lop-phu'; PHU.id = 'bnx-phu';
+  PHU.innerHTML = '<div class="bnx-hop bnx-hop-nho"><div class="bnx-dau" id="bnx-pdau"></div><div class="bnx-than" id="bnx-pthan"></div><div class="bnx-chan" id="bnx-pchan"></div></div>';
+  document.body.appendChild(LOP); document.body.appendChild(PHU);
+  [LOP, PHU].forEach(function(el){
+    el.addEventListener('click', function(e){
+      var t = e.target.closest('[data-bnx]');
+      if (!t || !el.contains(t) || t.tagName === 'INPUT' || t.tagName === 'SELECT' || t.tagName === 'TEXTAREA') return;
+      xuLy(t.dataset.bnx, t, e);
+    });
+    el.addEventListener('change', function(e){
+      var t = e.target.closest('[data-bnx]');
+      if (!t || !el.contains(t)) return;
+      if (t.tagName === 'INPUT' || t.tagName === 'SELECT' || t.tagName === 'TEXTAREA') xuLy(t.dataset.bnx, t, e);
+    });
+  });
+}
+/* 🔁 MNXL-Z — hộp bộ máy ⛔ che TOAST / MODAL của menu (quy ước demo: #toast · #mask.on).
+   Trong lúc hộp mở: body mang lớp bnx-dang-mo ⇒ #toast nổi trên hộp (style.08); modal của menu MỞ
+   SAU khi hộp mở ⇒ gắn bnx-tren-hop, nổi trên hộp; modal đã mở TRƯỚC (vd hộp Import của M4.1) giữ dưới. */
+var QS_MASK = null;
+function theoDoiMask(){
+  var mk = document.getElementById('mask');
+  if (!mk || QS_MASK || !window.MutationObserver) return;
+  QS_MASK = new MutationObserver(function(){
+    var on = mk.classList.contains('on'), mo = LOP && LOP.classList.contains('bnx-mo');
+    var tren = mk.classList.contains('bnx-tren-hop');   /* ⛔ ghi lại lớp đã có — tránh vòng lặp của chính trình theo dõi */
+    if (on && mo && !mk._bnxTruoc && !tren) mk.classList.add('bnx-tren-hop');
+    if (!on){ if (tren) mk.classList.remove('bnx-tren-hop'); mk._bnxTruoc = false; }
+  });
+  QS_MASK.observe(mk, {attributes:true, attributeFilter:['class']});
+}
+function mo(){
+  dungLop(); theoDoiMask();
+  var mk = document.getElementById('mask'); if (mk) mk._bnxTruoc = mk.classList.contains('on');
+  LOP.classList.add('bnx-mo'); document.body.classList.add('bnx-dang-mo');
+}
+B.dong = function(){
+  if (LOP){ LOP.classList.remove('bnx-mo'); PHU.classList.remove('bnx-mo'); }
+  document.body.classList.remove('bnx-dang-mo');
+  var mk = document.getElementById('mask'); if (mk){ mk.classList.remove('bnx-tren-hop'); mk._bnxTruoc = false; }
+  B._che = null;
+};
+/* BNX.bao(chu, loai) — toast NẰM TRÊN hộp bộ máy, cho menu nói một câu khi hộp đang mở (⛔ phải dựng hộp phụ) */
+var BAO = null, BAO_T = null;
+B.bao = function(chu, loai){
+  if (!BAO){ BAO = document.createElement('div'); BAO.className = 'bnx-bao'; BAO.id = 'bnx-bao'; BAO.setAttribute('role', 'status'); document.body.appendChild(BAO); }
+  BAO.className = 'bnx-bao bnx-bao-' + (loai || 'tin') + ' bnx-mo';
+  BAO.innerHTML = chu;
+  clearTimeout(BAO_T); BAO_T = setTimeout(function(){ BAO.classList.remove('bnx-mo'); }, 3600);
+};
+/* hộp phụ dùng chung — menu cũng gọi được (vd nút tạm ở app.09) */
+B.hop = function(dau, than, chan){
+  dungLop();
+  document.getElementById('bnx-pdau').innerHTML = dau;
+  document.getElementById('bnx-pthan').innerHTML = than;
+  document.getElementById('bnx-pchan').innerHTML = chan || '<button class="bnx-nut" data-bnx="phu-dong">Đóng</button>';
+  PHU.classList.add('bnx-mo');
+};
+B.dongHop = function(){ if (PHU) PHU.classList.remove('bnx-mo'); };
+var hanhDongMenu = {};
+/* menu đăng ký nút riêng trong hộp phụ: <button data-bnx="menu:ten"> */
+B.dangKyNut = function(ten, fn){ hanhDongMenu[ten] = fn; };
+function veLai(){
+  if (!LOP) return;
+  var th = document.getElementById('bnx-than'), cuon = LOP.scrollTop, cuonThan = th.scrollTop;
+  if (B._che === 'nhap') veNhap(); else if (B._che === 'xuat') veXuat();
+  LOP.scrollTop = cuon; th.scrollTop = cuonThan;
+}
+function the(loai, chu){ return '<span class="bnx-the bnx-the-' + loai + '">' + chu + '</span>'; }
+function nhanTrangThai(m){
+  return m.trang_thai === 'dung' ? the('luc', 'Đang dùng') : m.trang_thai === 'can_ra_lai' ? the('vang', 'Cần rà lại') : the('xam', 'Đã ngừng');
+}
+function nhanNguon(m){ return m.nguon === 'cong_ty' ? the('tim', 'Mẫu của công ty') : the('xanh', 'Mẫu của trường'); }
+
+/* ═══════════════════════════ NHẬP ═══════════════════════════ */
+var S = null;
+B.moNhap = function(duong, cb){
+  cb = cb || {};
+  napCongTy(duong.mau_cong_ty, B.kho.mauNhap, 'mn');
+  raPhienBan(duong);
+  S = {duong:duong, cb:cb, buoc:1, tepChon:null, tep:null, phan:[], thongBao:[], mau:null, daSua:false,
+       cach_gan:'tay', l3:null, loc:'dung', moKho:false, raLai:null, khop:[], khaiBao:B.kiemKhaiBao(duong),
+       luuTen:'', ketQua3:null, ketQua4:null, hoanTac:null, maLo:null, chup:null};
+  if (S.khaiBao.length && window.console) console.warn('[BNX] khai báo đường nhập thiếu:', S.khaiBao);
+  B._che = 'nhap'; mo(); veLai();
+};
+function nguoiDung(cb){ var n = cb && cb.nguoi; return typeof n === 'function' ? n() : (n || 'Người dùng demo'); }
+function truongCua(cb){ var t = cb && cb.truong; return typeof t === 'function' ? t() : (t || 'Trường demo'); }
+function tenGoc(P, key){ var h = P.doc.tieuDe.filter(function(x){ return x.key === key; })[0]; return h ? h.goc + (key.indexOf('#') > 0 ? ' (' + key.split('#')[1] + ')' : '') : key; }
+function napPhan(P){ P.doc = docSheet(S.tep.sheet[P.sheet], P.dong_tieu_de); }
+
+/* ④ — tự gợi ý: khớp ĐÚNG MỘT cột nguồn ⇒ gán; nhiều / không ⇒ để trống, người chọn */
+function goiY(P){
+  P.gan = {}; P.goiY = {}; P.mauThieu = {};
+  var cd = P.def.cot_dich, ungVien = {}, nguonDen = {};
+  cd.forEach(function(c){
+    var ten = [chuanHoa(c.nhan)].concat((c.ten_goi_y || []).map(chuanHoa));
+    ungVien[c.ma] = P.doc.tieuDe.filter(function(h){ return ten.indexOf(h.base) >= 0; }).map(function(h){ return h.key; });
+    ungVien[c.ma].forEach(function(k){ (nguonDen[k] = nguonDen[k] || []).push(c.ma); });
+  });
+  cd.forEach(function(c){
+    var uv = ungVien[c.ma];
+    if (uv.length === 1 && nguonDen[uv[0]].length === 1){ P.gan[c.ma] = {cot_nguon:[uv[0]], bien_doi:[]}; P.goiY[c.ma] = {trang:'tu', uv:uv}; }
+    else if (uv.length > 1) P.goiY[c.ma] = {trang:'nhieu', uv:uv};
+    else if (uv.length === 1) P.goiY[c.ma] = {trang:'trung_nguon', uv:uv, dich:nguonDen[uv[0]]};
+    else P.goiY[c.ma] = {trang:'khong', uv:[]};
+  });
+}
+/* ④ mục 2 — tệp là MẪU TRỐNG hệ thống xuất: gán 100 % theo nhan (vẫn chạy L1…L5, vẫn bắt tích L3) */
+function ganTheoNhan(P){
+  P.gan = {}; P.goiY = {}; P.mauThieu = {};
+  P.def.cot_dich.forEach(function(c){
+    var h = P.doc.tieuDe.filter(function(x){ return x.base === chuanHoa(c.nhan); })[0];
+    if (h){ P.gan[c.ma] = {cot_nguon:[h.key], bien_doi:[]}; P.goiY[c.ma] = {trang:'mau_trong', uv:[h.key]}; }
+    else P.goiY[c.ma] = {trang:'khong', uv:[]};
+  });
+}
+function chonSheet(pd, tep, daDung){
+  var goi = (pd.ten_sheet_goi_y || []).map(chuanHoa), i;
+  for (i = 0; i < tep.sheet.length; i++) if (daDung.indexOf(i) < 0 && goi.indexOf(chuanHoa(tep.sheet[i].ten)) >= 0) return i;
+  for (i = 0; i < tep.sheet.length; i++) if (daDung.indexOf(i) < 0) return i;
+  return 0;
+}
+/* sheet nào của tệp mang đúng vân tay của một phần mẫu (theo dòng tiêu đề của mẫu) */
+function sheetKhop(tp){
+  for (var i = 0; i < S.tep.sheet.length; i++) if (vtBang(docSheet(S.tep.sheet[i], tp.dong_tieu_de).vanTay, tp.van_tay_tieu_de)) return i;
+  return -1;
+}
+function mauKhopVanTay(m){ return m.phan.every(function(tp){ return sheetKhop(tp) >= 0; }); }
+
+function docTep(tep){
+  var d = S.duong;
+  S.tep = tep; S.thongBao = []; S.mau = null; S.daSua = false; S.l3 = null; S.raLai = null; S.khop = []; S.cach_gan = 'tay';
+  var daDung = [];
+  S.phan = d.phan.map(function(pd){
+    var i = chonSheet(pd, tep, daDung); daDung.push(i);
+    var P = {ma_phan:pd.ma_phan, def:pd, sheet:i, dong_tieu_de:dongTieuDeMacDinh(tep.sheet[i]), gan:{}, goiY:{}, mauThieu:{}};
+    napPhan(P); return P;
+  });
+  var soMauTrong = 0;
+  S.phan.forEach(function(P){
+    var a1 = a1Cua(tep.sheet[P.sheet]);
+    if (a1 && a1 === d.mau_dich){ ganTheoNhan(P); P.mauTrong = true; soMauTrong++; return; }
+    goiY(P);
+    if (a1 && tenMauGoc(a1) === tenMauGoc(d.mau_dich)){
+      /* ④ mục 3 (P-1 ✅): số hiệu CŨ ⇒ ⛔ gán 100 %; câu KT-6 + chênh lệch, đi đường ánh xạ thường */
+      var co = P.doc.tieuDe.map(function(h){ return h.base; });
+      var nhan = P.def.cot_dich.map(function(c){ return chuanHoa(c.nhan); });
+      var moi = P.def.cot_dich.filter(function(c){ return co.indexOf(chuanHoa(c.nhan)) < 0; }).map(function(c){ return c.nhan; });
+      var bo = P.doc.tieuDe.filter(function(h){ return nhan.indexOf(h.base) < 0; }).map(function(h){ return h.goc; });
+      S.thongBao.push({loai:'vang', chu:'Tệp dùng mẫu <code>' + esc(a1) + '</code>, hệ thống đang dùng <code>' + esc(d.mau_dich) + '</code>' +
+        (moi.length ? ' — bản mới thêm cột: <b>' + moi.map(esc).join(', ') + '</b>' : '') +
+        (bo.length ? ' · cột tệp có mà mẫu mới ⛔ có: <b>' + bo.map(esc).join(', ') + '</b>' : '') +
+        '. ⛔ Gán 100 % tự động — đi <b>đường ánh xạ thường</b> (tự gợi ý · bạn chọn).'});
+    } else if (/^MAU-/.test(a1)){
+      S.thongBao.push({loai:'vang', chu:'Ô A1 mang số hiệu <code>' + esc(a1) + '</code> — đường nhập này là <code>' + esc(d.mau_dich) + '</code>. Đi đường ánh xạ thường.'});
+    }
+  });
+  if (soMauTrong === S.phan.length){
+    S.cach_gan = 'tu_dong_mau_trong';
+    S.thongBao.push({loai:'luc', chu:'Tệp mang đúng số hiệu <code>' + esc(d.mau_dich) + '</code> (mẫu trống hệ thống xuất) ⇒ <b>gán 100 % tự động theo tên cột</b>. Vẫn phải xem trước và tích ở dưới.'});
+    return;
+  }
+  /* ④ mục 5 — nhận mẫu đã lưu theo vân tay: một ⇒ tự áp (vẫn dừng ở ②) · nhiều ⇒ người chọn */
+  var ds = mauCuaDuong(d, truongCua(S.cb));
+  S.khop = ds.filter(function(m){ return m.trang_thai === 'dung' && m.duong_nhap.mau_dich === d.mau_dich && mauKhopVanTay(m); });
+  ds.filter(function(m){ return m.trang_thai === 'can_ra_lai' && mauKhopVanTay(m); }).forEach(function(m){
+    S.thongBao.push({loai:'vang', chu:'Mẫu <b>«' + esc(m.ten) + '»</b> khớp vân tay tệp nhưng đang <b>cần rà lại</b> (gắn <code>' + esc(m.duong_nhap.mau_dich) + '</code>) — ⛔ tự áp. ' +
+      (m.nguon === 'truong' ? '<button class="bnx-nut bnx-nho" data-bnx="ra-lai" data-bnx-id="' + m.mau_nhap_id + '">Rà lại mẫu này</button>' : 'Mẫu công ty chờ bản cập nhật sau — có thể <button class="bnx-nut bnx-nho" data-bnx="nhan-ban" data-bnx-id="' + m.mau_nhap_id + '">Nhân bản thành mẫu của trường</button> rồi rà lại bản nhân bản.')});
+  });
+  if (S.khop.length === 1){
+    apMau(S.khop[0]);
+    S.thongBao.push({loai:'xanh', chu:'Tệp cùng khuôn với mẫu <b>«' + esc(S.khop[0].ten) + '»</b> ⇒ <b>đã tự áp mẫu</b>. Máy vẫn dừng ở bước ② — xem trước và tích mới sang được ③.'});
+  } else if (S.khop.length > 1){
+    S.thongBao.push({loai:'vang', chu:'Tệp khớp <b>' + S.khop.length + ' mẫu</b> — ⛔ tự chọn. Bạn chọn một: ' +
+      S.khop.map(function(m){ return '<button class="bnx-nut bnx-nho" data-bnx="ap-mau" data-bnx-id="' + m.mau_nhap_id + '">' + esc(m.ten) + ' · ' + (m.nguon === 'cong_ty' ? 'công ty' : 'trường') + '</button>'; }).join(' ')});
+  }
+}
+function apMau(m){
+  S.mau = m; S.daSua = false; S.cach_gan = 'ap_mau'; S.l3 = null;
+  m.phan.forEach(function(tp){
+    var P = S.phan.filter(function(p){ return p.ma_phan === tp.ma_phan; })[0]; if (!P) return;
+    var i = sheetKhop(tp); if (i >= 0) P.sheet = i;
+    P.dong_tieu_de = tp.dong_tieu_de; napPhan(P);
+    P.gan = {}; P.goiY = {}; P.mauThieu = {}; P.mauTrong = false;
+    P.def.cot_dich.forEach(function(c){ P.goiY[c.ma] = {trang:'mau_khong', uv:[]}; });
+    var keys = P.doc.tieuDe.map(function(h){ return h.key; });
+    tp.cot.forEach(function(c){
+      var co = c.cot_nguon.filter(function(k){ return keys.indexOf(k) >= 0; });
+      var thieu = c.cot_nguon.filter(function(k){ return keys.indexOf(k) < 0; });
+      if (thieu.length) P.mauThieu[c.cot_dich] = thieu;
+      /* cột nguồn mẫu cần mà tệp không có ⇒ ô gán TRỐNG, ⛔ đoán (④ mục 5) */
+      if (co.length || laHang(c)) P.gan[c.cot_dich] = {cot_nguon:co, bien_doi:sao(c.bien_doi)};
+      P.goiY[c.cot_dich] = {trang:'mau', uv:co};
+    });
+  });
+}
+function suaGan(){ S.l3 = null; if (S.mau) S.daSua = true; if (S.cach_gan === 'tu_dong_mau_trong') S.cach_gan = 'tay'; }
+
+/* ───────────── tính toàn bộ bước ② (L1 · L2 · chặn · cột thừa · giá trị lạ) ───────────── */
+function tinhPhan(P){
+  var pd = P.def, d = S.duong, kq = {dong:[], l2:[], thieuBB:[], thieuPG:[], thieuNhom:[], dacBiet:{}, cotThua:[], la:{}, hangLoi:[], trungNguon:[], gopThieu:[], goiYNgay:{}};
+  var dung = {};
+  pd.cot_dich.forEach(function(c){
+    var g = P.gan[c.ma]; if (!g) return;
+    g.cot_nguon.forEach(function(k){ (dung[k] = dung[k] || []).push({c:c, truc:!(g.bien_doi || []).length}); });
+  });
+  kq.cotThua = P.doc.tieuDe.filter(function(h){ return !dung[h.key]; }).map(function(h){ return tenGoc(P, h.key); });
+  Object.keys(dung).forEach(function(k){
+    var tr = dung[k].filter(function(x){ return x.truc; });
+    if (tr.length >= 2) kq.trungNguon.push({nguon:tenGoc(P, k), dich:tr.map(function(x){ return x.c.nhan; })});
+  });
+  P.doc.dong.forEach(function(dg){
+    var gt = {}, loi = [];
+    pd.cot_dich.forEach(function(c){
+      var g = P.gan[c.ma];
+      var r = g ? chay(g, dg.o, function(la){ var m = kq.la[c.ma] = kq.la[c.ma] || {}; m[la] = (m[la] || 0) + 1; }) : {v:'', goc:''};
+      gt[c.ma] = r.v;
+      if (laDacBiet(c, r.v)){ var db = kq.dacBiet[c.ma] = kq.dacBiet[c.ma] || {}; var tv = String(r.v).trim(); db[tv] = (db[tv] || 0) + 1; }
+      var e = r.loi || kiemL1(c, r.v, d, P.gan);
+      if (e) loi.push({cot_dich:c.ma, nhan:c.nhan, gia_tri_goc:r.goc, loi:e});
+    });
+    kq.dong.push({so_dong:dg.so_dong, gia_tri:gt, loi_l1:loi});
+  });
+  pd.cot_dich.forEach(function(c){
+    var g = P.gan[c.ma], bb = batBuoc(c, P.gan);
+    if (!g || (!g.cot_nguon.length && !laHang(g))){ if (bb) kq.thieuBB.push(c); else if (phaiGan(c, P.gan)) kq.thieuPG.push(c); return; }
+    if (laHang(g)){
+      var hv = g.bien_doi[0].gia_tri;
+      var he = laTrong(hv) ? 'Giá trị hằng đang trống' : kiemL1(c, hv, d, P.gan);
+      if (he) kq.hangLoi.push({c:c, loi:he});           /* hằng kiểm L1 NGAY ở ② (phiếu 0A D.1 mục 5) */
+      return;
+    }
+    if (coGop(g) && g.cot_nguon.length < 2) kq.gopThieu.push(c);
+    var mau = 0, dat = 0;
+    kq.dong.forEach(function(r){
+      var v = String(r.gia_tri[c.ma] == null ? '' : r.gia_tri[c.ma]).trim();
+      var sai = r.loi_l1.some(function(e){ return e.cot_dich === c.ma; });
+      if (laDacBiet(c, v)) return;                       /* giá trị đặc biệt ⇒ RA KHỎI mẫu số L2 (HDMX bản 2 ⑥) */
+      if (bb){ mau++; if (v && !sai) dat++; } else if (v){ mau++; if (!sai) dat++; }
+    });
+    var tl = mau ? dat / mau : 1;
+    var ket = mau >= B.THAM_SO.L2_MAU_SO_TOI_THIEU ? (tl >= B.THAM_SO.L2_NGUONG ? 'dat' : 'chan') : 'chua_du';
+    kq.l2.push({cot_dich:c.ma, nhan:c.nhan, ti_le:tl, dat:dat, mau:mau, ket:ket, nguon:g.cot_nguon.map(function(k){ return tenGoc(P, k); }), c:c});
+    if (kieuCua(c).loai === 'ngay' && !(g.bien_doi || []).some(function(b){ return b.ma === 'doi_dinh_dang_ngay'; }) && dat < mau){
+      var vals = P.doc.dong.map(function(dg){ return dg.o[g.cot_nguon[0]]; });
+      kq.goiYNgay[c.ma] = khuonKhop(vals);
+    }
+  });
+  /* nhom_phai_gan — ÍT NHẤT MỘT cụm được gán ĐỦ (HDMX bản 2 ② mục 5) */
+  (pd.nhom_phai_gan || []).forEach(function(n){
+    var du = (n.cum || []).some(function(cm){ return cm.every(function(ma){ return coGanCot(P.gan[ma]); }); });
+    if (!du) kq.thieuNhom.push(n);
+  });
+  return kq;
+}
+/* gợi ý cột nguồn gần đúng — theo TÊN (lệch ≤ 2) và theo DỮ LIỆU (≥ 90 % ô qua L1 của cột đích) */
+function goiYNguon(P, c, boQua){
+  var ten = [chuanHoa(c.nhan)].concat((c.ten_goi_y || []).map(chuanHoa)), out = [];
+  var dangDung = {};
+  Object.keys(P.gan).forEach(function(m){ P.gan[m].cot_nguon.forEach(function(k){ dangDung[k] = 1; }); });
+  P.doc.tieuDe.forEach(function(h){
+    if (boQua && boQua.indexOf(h.key) >= 0) return;
+    /* ngưỡng theo ĐỘ DÀI (khuôn M1.9 §5.3.2): ≤ 4 ký tự ⛔ đoán · ≤ 8 lệch 1 · dài hơn lệch 2 */
+    var gan = ten.some(function(t){ if (!t || !h.base) return false; var n = Math.min(t.length, h.base.length); return lev(t, h.base) <= (n <= 4 ? 0 : n <= 8 ? 1 : 2); });
+    var k = kieuCua(c).loai, theoDL = false;
+    if (['ngay', 'sdt', 'email', 'ma_dinh_danh', 'danh_muc', 'co_khong', 'so'].indexOf(k) >= 0){
+      var vals = P.doc.dong.map(function(dg){ return dg.o[h.key]; }).filter(function(v){ return !laTrong(v); });
+      if (vals.length >= 3){
+        var ok = vals.filter(function(v){ return !laDacBiet(c, v) && !kiemL1({kieu:c.kieu, muc:'tuy_chon', loai_ma:c.loai_ma, khuon:c.khuon, mo_ta_khuon:c.mo_ta_khuon}, v, S.duong); }).length;
+        theoDL = ok / vals.length >= B.THAM_SO.L2_NGUONG;
+      }
+    }
+    if (gan || theoDL) out.push('«' + esc(tenGoc(P, h.key)) + '»' + (theoDL ? ' <i>(' + (dangDung[h.key] ? 'đang gán chỗ khác, ' : '') + 'dữ liệu đúng kiểu ' + esc(tenKieu(c)) + ')</i>' : ' <i>(tên gần giống)</i>'));
+  });
+  return out.slice(0, 3);
+}
+function tinhTatCa(){
+  var kq = S.phan.map(tinhPhan), chan = [];
+  kq.forEach(function(k, pi){
+    var P = S.phan[pi], ten = S.phan.length > 1 ? '[' + esc(P.def.ten || P.ma_phan) + '] ' : '';
+    if (!P.doc.dong.length) chan.push(ten + 'Sheet «' + esc(S.tep.sheet[P.sheet].ten) + '» ⛔ có dòng dữ liệu nào dưới dòng tiêu đề ' + P.dong_tieu_de + '.');
+    k.thieuBB.forEach(function(c){
+      var gy = goiYNguon(P, c);
+      chan.push(ten + 'Cột bắt buộc <b>«' + esc(c.nhan) + '»</b> chưa gán' + (gy.length ? ' — gần đúng: ' + gy.join(' · ') : '') + '.');
+    });
+    k.thieuPG.forEach(function(c){
+      var gy = goiYNguon(P, c), f = c.phai_gan;
+      chan.push(ten + 'Cột <b>«' + esc(c.nhan) + '»</b> phải gán một cột nguồn <span class="bnx-mo-ta">(ô được trống' + (f && f.loi ? ' — ' + esc(f.loi) : '') + ')</span> — chưa gán' + (gy.length ? ' — gần đúng: ' + gy.join(' · ') : '') + '.');
+    });
+    k.thieuNhom.forEach(function(n){
+      var nh = function(ma){ var x = P.def.cot_dich.filter(function(c){ return c.ma === ma; })[0]; return x ? x.nhan : ma; };
+      chan.push(ten + 'Phải gán <b>đủ ít nhất một cụm</b>' + (n.loi ? ' <span class="bnx-mo-ta">(' + esc(n.loi) + ')</span>' : '') + ': ' +
+        n.cum.map(function(cm){ return '«' + cm.map(function(ma){ return esc(nh(ma)); }).join(' + ') + '»'; }).join(' hoặc ') + '.');
+    });
+    k.l2.filter(function(x){ return x.ket === 'chan'; }).forEach(function(x){
+      var gy = goiYNguon(P, x.c, P.gan[x.cot_dich].cot_nguon);
+      chan.push(ten + 'Cột <b>«' + esc(x.nhan) + '»</b> chỉ có <b>' + x.dat + '/' + x.mau + ' dòng (' + pt(x.ti_le) + ')</b> đúng kiểu ' + esc(tenKieu(x.c)) +
+        ' — có phải đang nhận dữ liệu của cột <b>«' + x.nguon.map(esc).join(' + ') + '»</b>?' + (gy.length ? ' Cột trông đúng kiểu: ' + gy.join(' · ') + '.' : '') +
+        ' <span class="bnx-mo-ta">Gỡ bằng chọn lại cột hoặc thêm phép biến đổi — ⛔ có nút «vẫn tiếp tục».</span>');
+    });
+    k.hangLoi.forEach(function(x){ chan.push(ten + 'Giá trị hằng của <b>«' + esc(x.c.nhan) + '»</b>: ' + esc(x.loi) + '.'); });
+    k.gopThieu.forEach(function(c){ chan.push(ten + '<b>«' + esc(c.nhan) + '»</b>: «Gộp cột» cần ≥ 2 cột nguồn.'); });
+  });
+  return {kq:kq, chan:chan};
+}
+B._tinh = function(){ return S ? tinhTatCa() : null; };
+B._S = function(){ return S; };
+
+/* ───────────── ⑧ bản chụp ánh xạ theo lô (L5) ───────────── */
+function chupAnhXa(tt){
+  var nguoi = nguoiDung(S.cb);
+  var cach = S.cach_gan === 'ap_mau' && S.daSua ? 'tay' : S.cach_gan;
+  var l4 = [];
+  S.phan.forEach(function(P){
+    (P.def.cap_de_nham || []).forEach(function(g){ var co = g.filter(function(m){ return P.gan[m]; }); if (co.length >= 2) l4.push(co); });
+  });
+  return {
+    mau_dich: S.duong.mau_dich,
+    mau_nhap: S.mau ? {mau_nhap_id:S.mau.mau_nhap_id, ten:S.mau.ten, nguon:S.mau.nguon, so_dong_lich_su:S.mau.lich_su.length} : null,
+    cach_gan: cach,
+    phan: S.phan.map(function(P){
+      return {ma_phan:P.ma_phan, ten_sheet:S.tep.sheet[P.sheet].ten, dong_tieu_de:P.dong_tieu_de, van_tay_tieu_de:P.doc.vanTay.slice(),
+        cot:P.def.cot_dich.filter(function(c){ return P.gan[c.ma]; }).map(function(c){ return {cot_dich:c.ma, cot_nguon:P.gan[c.ma].cot_nguon.slice(), bien_doi:sao(P.gan[c.ma].bien_doi)}; })};
+    }),
+    cot_thua: [].concat.apply([], tt.kq.map(function(k){ return k.cotThua; })),
+    l2: [].concat.apply([], tt.kq.map(function(k){ return k.l2.map(function(x){ return {cot_dich:x.cot_dich, ti_le:Math.round(x.ti_le * 1000) / 1000}; }); })),
+    l3: {boi:S.l3 ? S.l3.boi : nguoi, luc:S.l3 ? S.l3.luc : bayGio()},
+    l4_da_hien: l4
+  };
+}
+function tenBD(b){
+  var f = BD[b.ma], t = f ? f.ten : b.ma;
+  if (b.ma === 'tach_ho_ten') t += ' → ' + (b.lay === 'ho_dem' ? 'họ đệm' : 'tên');
+  if (b.ma === 'gop_cot') t += ' nối «' + b.noi + '»';
+  if (b.ma === 'doi_dinh_dang_ngay') t += ' ' + b.khuon;
+  if (b.ma === 'bang_doi_gia_tri') t += ' ' + (b.cap || []).map(function(c){ return c.tu + '→' + c.thanh; }).join(', ');
+  if (b.ma === 'chuan_hoa_chuoi') t += ' (' + (b.hoa_thuong || 'giu') + ')';
+  if (b.ma === 'gia_tri_hang') t += ' = «' + b.gia_tri + '»';
+  return t;
+}
+/* menu gọi để hiện bản chụp ở chi tiết lô (tab lịch sử lô) */
+B.veChup = function(ch, duong){
+  if (!ch) return '<i>Lô không có bản chụp ánh xạ.</i>';
+  var nhan = function(pm, ma){ var pd = duong && (duong.phan || []).filter(function(p){ return p.ma_phan === pm; })[0]; var c = pd && pd.cot_dich.filter(function(x){ return x.ma === ma; })[0]; return c ? c.nhan : ma; };
+  return '<div class="bnx-chup"><div><b>Mẫu đích:</b> <code>' + esc(ch.mau_dich) + '</code> · <b>cách gán:</b> ' + esc(ch.cach_gan) +
+    ' · <b>mẫu:</b> ' + (ch.mau_nhap ? esc(ch.mau_nhap.ten) + ' (' + esc(ch.mau_nhap.mau_nhap_id) + ' · ' + esc(ch.mau_nhap.nguon) + ' · ' + ch.mau_nhap.so_dong_lich_su + ' dòng lịch sử)' : '<i>ánh xạ tay, không lưu mẫu</i>') + '</div>' +
+    ch.phan.map(function(p){
+      return '<div class="bnx-mo-ta">Sheet «' + esc(p.ten_sheet) + '» · dòng tiêu đề ' + p.dong_tieu_de + ' · vân tay ' + p.van_tay_tieu_de.length + ' tên</div>' +
+        '<table class="bnx-bang"><tr><th>Cột đích</th><th>Cột nguồn</th><th>Biến đổi</th></tr>' +
+        p.cot.map(function(c){ return '<tr><td>' + esc(nhan(p.ma_phan, c.cot_dich)) + '</td><td>' + (c.cot_nguon.map(esc).join(' + ') || '—') + '</td><td>' + (c.bien_doi.map(function(b){ return esc(tenBD(b)); }).join(' → ') || '—') + '</td></tr>'; }).join('') + '</table>';
+    }).join('') +
+    '<div class="bnx-mo-ta">Cột thừa: ' + (ch.cot_thua.map(esc).join(', ') || '—') + ' · L2: ' + ch.l2.map(function(x){ return esc(x.cot_dich) + ' ' + pt(x.ti_le); }).join(', ') +
+    ' · L3 tích bởi ' + esc(ch.l3.boi) + ' lúc ' + esc(ch.l3.luc) + ' · L4 đã hiện: ' + (ch.l4_da_hien.map(function(g){ return g.join(' ⇄ '); }).join('; ') || '—') + '</div></div>';
+};
+
+/* ───────────── vẽ ① ② ③ ④ ───────────── */
+function veBuoc(){
+  var ten = ['Chọn tệp', 'Ánh xạ cột', 'Đối chiếu (menu)', 'Ghi + kết quả (menu)'];
+  return '<div class="bnx-buoc">' + ten.map(function(t, i){
+    var n = i + 1, cls = S.buoc === n ? 'bnx-bat' : S.buoc > n ? 'bnx-xong' : '';
+    return '<span class="bnx-b ' + cls + '"><span class="bnx-so">' + (S.buoc > n ? '✓' : n) + '</span>' + t + '</span>';
+  }).join('<span class="bnx-noi"></span>') + '</div>';
+}
+function veNhap(){
+  var d = S.duong;
+  document.getElementById('bnx-dau').innerHTML = '<div class="bnx-tieu-de">📥 Nhập theo mẫu — ' + esc(d.ten || d.ma_feature) + '</div>' +
+    '<div class="bnx-mo-ta">Mẫu đích <code>' + esc(d.mau_dich) + '</code> · Feature <code>' + esc(d.ma_feature) + '</code> (bit <b>ID</b>) · bộ nhập dùng chung <code>BNX</code></div>' +
+    '<button class="bnx-x" data-bnx="dong" title="Đóng">✕</button>' + veBuoc();
+  var than = '', chan = '';
+  if (S.khaiBao.length) than += '<div class="bnx-hop-loi">🛠 <b>Khai báo đường nhập thiếu</b> (HDMX ② — lỗi của phiên dựng, ⛔ của người dùng):<br>' + S.khaiBao.map(esc).join('<br>') + '</div>';
+  if (S.buoc === 1){ than += ve1(); chan = '<button class="bnx-nut" data-bnx="dong">Hủy</button><span class="bnx-gian"></span><button class="bnx-nut bnx-chinh" data-bnx="doc-tep"' + (S.tepChon == null ? ' disabled' : '') + '>Đọc tệp →</button>'; }
+  else if (S.buoc === 2){ var r = ve2(); than += r.than; chan = r.chan; }
+  else if (S.buoc === 3){ var r3 = S.ketQua3 || {html:'', choGhi:false};
+    than += '<div class="bnx-hop-tin">Bước ③ là <b>của menu chủ</b> — luật đối chiếu ba mức <code>KT-8</code> ⛔ đổi (MX-5). Lỗi <code>L1</code> từ bước ② đã chuyển vào đây theo <b>số dòng Excel</b>.</div>' + r3.html;
+    chan = '<button class="bnx-nut" data-bnx="ve-2">← Về ② ánh xạ</button><span class="bnx-gian"></span><button class="bnx-nut bnx-chinh" data-bnx="ghi"' + (r3.choGhi ? '' : ' disabled') + '>' + esc(r3.nhanNutGhi || 'Xác nhận ghi →') + '</button>'; }
+  else if (S.buoc === 4){ var r4 = S.ketQua4 || {html:''};
+    than += r4.html + (S.hoanTac ? '<div class="bnx-hop-tin">' + S.hoanTac + '</div>' : '') +
+      '<details class="bnx-gap"><summary>📸 Bản chụp ánh xạ đã gửi kèm lô (L5 · HDMX ⑧)</summary>' + B.veChup(S.chup, S.duong) + '</details>';
+    chan = (S.cb.onHoanTac && S.maLo && !S.hoanTac ? '<button class="bnx-nut bnx-do" data-bnx="hoan-tac">↺ Hoàn tác lô ' + esc(S.maLo) + '</button>' : '') +
+      '<span class="bnx-gian"></span><button class="bnx-nut bnx-chinh" data-bnx="dong">Đóng</button>'; }
+  document.getElementById('bnx-than').innerHTML = than;
+  document.getElementById('bnx-chan').innerHTML = chan;
+}
+function loaiNhan(d){ return (d.phan || []).length > 1 ? ['xlsx'] : (d.nhan_loai && d.nhan_loai.length ? d.nhan_loai : ['xlsx', 'csv']); }
+function ve1(){
+  var ds = S.duong.tep_gia || [];
+  return '<div class="bnx-hop-tin">🧪 <b>Demo:</b> chọn một trong các <b>tệp giả dựng sẵn</b> — sản phẩm thật nhận ' + loaiNhan(S.duong).map(function(x){ return '<code>.' + x + '</code>'; }).join(' · ') + (loaiNhan(S.duong).length < 2 ? ' <b>(đường này chỉ nhận .xlsx)</b>' : '') + ' (⛔ API, ⛔ XML). Hệ thống <b>đọc, chưa ghi gì</b> tới khi menu xác nhận ở ④.</div>' +
+    '<div class="bnx-tep-ds">' + ds.map(function(t, i){
+      return '<label class="bnx-tep' + (S.tepChon === i ? ' bnx-bat' : '') + '"><input type="radio" name="bnx-tep" data-bnx="chon-tep" value="' + i + '"' + (S.tepChon === i ? ' checked' : '') + '>' +
+        '<span><b>📄 ' + esc(t.ten) + '</b> · ' + t.sheet.length + ' sheet' + '<br><span class="bnx-mo-ta">' + esc(t.mo_ta || '') + '</span></span></label>';
+    }).join('') + '</div>' + (S.loiTep ? '<div class="bnx-hop-loi">' + S.loiTep + '</div>' : '') + veKho();
+}
+function veKho(){
+  var ds = mauCuaDuong(S.duong, truongCua(S.cb));
+  var loc = S.loc, LOC = [['dung', 'Đang dùng'], ['can_ra_lai', 'Cần rà lại'], ['ngung', 'Đã ngừng'], ['cong_ty', 'Của công ty']];
+  var vt = S.tep ? [].concat.apply([], S.phan.map(function(P){ return P.doc.vanTay; })) : [];
+  var hien = ds.filter(function(m){ return loc === 'cong_ty' ? m.nguon === 'cong_ty' : m.trang_thai === loc; })
+    .map(function(m){ return {m:m, chung:soChung([].concat.apply([], m.phan.map(function(p){ return p.van_tay_tieu_de; })), vt)}; })
+    .sort(function(a, b){ return b.chung - a.chung; });
+  var h = '<details class="bnx-gap"' + (S.moKho ? ' open' : '') + '><summary data-bnx="mo-kho">📚 Mẫu nhập của đường này (' + ds.length + ') — xem · áp · nhân bản · ngừng dùng</summary>' +
+    '<div class="bnx-loc">' + LOC.map(function(l){ return '<button class="bnx-nut bnx-nho' + (loc === l[0] ? ' bnx-bat' : '') + '" data-bnx="loc" data-bnx-loc="' + l[0] + '">' + l[1] + ' (' + ds.filter(function(m){ return l[0] === 'cong_ty' ? m.nguon === 'cong_ty' : m.trang_thai === l[0]; }).length + ')</button>'; }).join('') + '</div>';
+  if (!hien.length) return h + '<div class="bnx-mo-ta">Không có mẫu nào ở bộ lọc này.</div></details>';
+  h += '<table class="bnx-bang"><tr><th>Tên mẫu</th><th>Nguồn</th><th>Trạng thái</th><th>Mẫu đích</th>' + (S.tep ? '<th>Cột chung với tệp</th>' : '') + '<th></th></tr>' +
+    hien.map(function(x){
+      var m = x.m, id = m.mau_nhap_id, nut = [];
+      if (S.tep && m.trang_thai === 'dung' && m.duong_nhap.mau_dich === S.duong.mau_dich) nut.push('<button class="bnx-nut bnx-nho" data-bnx="ap-mau" data-bnx-id="' + id + '">Áp</button>');
+      nut.push('<button class="bnx-nut bnx-nho" data-bnx="xem-mau" data-bnx-id="' + id + '">Xem</button>');
+      nut.push('<button class="bnx-nut bnx-nho" data-bnx="nhan-ban" data-bnx-id="' + id + '">' + (m.nguon === 'cong_ty' ? 'Nhân bản thành mẫu của trường' : 'Nhân bản') + '</button>');
+      if (m.nguon === 'truong'){
+        if (m.trang_thai === 'ngung') nut.push('<button class="bnx-nut bnx-nho" data-bnx="dung-lai" data-bnx-id="' + id + '">Dùng lại</button>');
+        else nut.push('<button class="bnx-nut bnx-nho" data-bnx="ngung" data-bnx-id="' + id + '">Ngừng dùng</button>');
+        if (m.trang_thai === 'can_ra_lai' && S.tep) nut.push('<button class="bnx-nut bnx-nho bnx-chinh" data-bnx="ra-lai" data-bnx-id="' + id + '">Rà lại</button>');
+      }
+      return '<tr><td><b>' + esc(m.ten) + '</b></td><td>' + nhanNguon(m) + '</td><td>' + nhanTrangThai(m) + '</td><td><code>' + esc(m.duong_nhap.mau_dich) + '</code></td>' +
+        (S.tep ? '<td>' + x.chung + '</td>' : '') + '<td class="bnx-nut-hang">' + nut.join(' ') + '</td></tr>';
+    }).join('') + '</table>' +
+    '<div class="bnx-mo-ta">⛔ Xóa mẫu — chỉ ngừng dùng (bản chụp L5 trỏ về mẫu). Mẫu của công ty ⛔ sửa, ⛔ ngừng dùng — chỉ nhân bản (P-3).</div></details>';
+  return h;
+}
+function veO(P, c){
+  var g = P.gan[c.ma], hang = laHang(g), gop = coGop(g);
+  var chon = g ? (hang ? '__hang__' : (g.cot_nguon[0] || '')) : '';
+  var opt = function(sel, loaiTru){ return '<option value="">— chưa gán —</option>' + P.doc.tieuDe.filter(function(h){ return !loaiTru || loaiTru.indexOf(h.key) < 0 || h.key === sel; }).map(function(h){
+    return '<option value="' + esc(h.key) + '"' + (h.key === sel ? ' selected' : '') + '>' + esc(tenGoc(P, h.key)) + '</option>'; }).join(''); };
+  var o = '<select class="bnx-o" data-bnx="nguon" data-bnx-p="' + S.phan.indexOf(P) + '" data-bnx-c="' + c.ma + '">' + opt(chon) +
+    '<option value="__hang__"' + (hang ? ' selected' : '') + '>＝ Giá trị hằng cho cả cột</option></select>';
+  if (hang) o += '<input class="bnx-o" data-bnx="hang" data-bnx-p="' + S.phan.indexOf(P) + '" data-bnx-c="' + c.ma + '" value="' + esc(g.bien_doi[0].gia_tri) + '" placeholder="giá trị cho mọi dòng">';
+  if (gop){
+    g.cot_nguon.slice(1).forEach(function(k, j){
+      o += '<span class="bnx-gop">+ <select class="bnx-o" data-bnx="nguon-gop" data-bnx-p="' + S.phan.indexOf(P) + '" data-bnx-c="' + c.ma + '" data-bnx-j="' + (j + 1) + '">' + opt(k) + '</select></span>';
+    });
+    o += '<button class="bnx-nut bnx-nho" data-bnx="them-gop" data-bnx-p="' + S.phan.indexOf(P) + '" data-bnx-c="' + c.ma + '">+ cột gộp</button>';
+  }
+  return o;
+}
+function veBD(P, c){
+  var g = P.gan[c.ma], pi = S.phan.indexOf(P);
+  if (!g || laHang(g)) return '<span class="bnx-mo-ta">' + (laHang(g) ? 'hằng — ⛔ ghép phép khác' : '—') + '</span>';
+  var h = (g.bien_doi || []).map(function(b, i){
+    var at = ' data-bnx-p="' + pi + '" data-bnx-c="' + c.ma + '" data-bnx-i="' + i + '"', s = '<div class="bnx-bd"><b>' + esc(BD[b.ma].ten) + '</b> ';
+    if (b.ma === 'tach_ho_ten') s += '<select class="bnx-o" data-bnx="bd-tham" data-bnx-k="lay"' + at + '><option value="ho_dem"' + (b.lay === 'ho_dem' ? ' selected' : '') + '>lấy họ đệm</option><option value="ten"' + (b.lay !== 'ho_dem' ? ' selected' : '') + '>lấy tên</option></select>';
+    if (b.ma === 'gop_cot') s += 'nối <select class="bnx-o" data-bnx="bd-tham" data-bnx-k="noi"' + at + '>' + [' ', ', ', ' - '].map(function(n){ return '<option value="' + n + '"' + (b.noi === n ? ' selected' : '') + '>«' + n + '»</option>'; }).join('') + '</select>';
+    if (b.ma === 'doi_dinh_dang_ngay') s += 'khuôn <select class="bnx-o" data-bnx="bd-tham" data-bnx-k="khuon"' + at + '>' + KHUON.map(function(k){ return '<option' + (b.khuon === k ? ' selected' : '') + '>' + k + '</option>'; }).join('') + '</select>';
+    if (b.ma === 'bang_doi_gia_tri') s += '<textarea class="bnx-o bnx-bang-doi" data-bnx="bd-bang"' + at + ' placeholder="mỗi dòng: từ=thành">' + esc((b.cap || []).map(function(x){ return x.tu + '=' + x.thanh; }).join('\n')) + '</textarea>' +
+      '<label class="bnx-mo-ta"><input type="checkbox" data-bnx="bd-tham" data-bnx-k="phan_biet_hoa_thuong"' + at + (b.phan_biet_hoa_thuong ? ' checked' : '') + '> phân biệt hoa thường</label>';
+    if (b.ma === 'chuan_hoa_chuoi') s += '<select class="bnx-o" data-bnx="bd-tham" data-bnx-k="hoa_thuong"' + at + '>' + [['giu', 'giữ hoa thường'], ['hoa_chu_dau', 'Hoa Chữ Đầu'], ['thuong', 'chữ thường'], ['hoa', 'CHỮ HOA']].map(function(x){ return '<option value="' + x[0] + '"' + (b.hoa_thuong === x[0] ? ' selected' : '') + '>' + x[1] + '</option>'; }).join('') + '</select>';
+    return s + ' <button class="bnx-nut bnx-nho" data-bnx="bd-bo"' + at + ' title="Bỏ phép này">✕</button></div>';
+  }).join('');
+  var co = (g.bien_doi || []).map(function(b){ return b.ma; });
+  var con = BD_THEM.filter(function(m){ return co.indexOf(m) < 0; });
+  if (con.length) h += '<select class="bnx-o bnx-them" data-bnx="bd-them" data-bnx-p="' + pi + '" data-bnx-c="' + c.ma + '"><option value="">+ biến đổi…</option>' + con.map(function(m){ return '<option value="' + m + '">' + BD[m].ten + '</option>'; }).join('') + '</select>';
+  return h;
+}
+function veTrangThai(P, c, k){
+  var gy = P.goiY[c.ma] || {trang:'tay'}, g = P.gan[c.ma], s = '';
+  if (gy.trang === 'mau_trong') s = the('luc', '✓ mẫu trống — theo tên cột');
+  else if (gy.trang === 'mau') s = the('xanh', '✓ theo mẫu');
+  else if (gy.trang === 'tu') s = the('luc', '✓ tự gán');
+  else if (gy.trang === 'nhieu') s = the('vang', '⚠ nhiều gợi ý') + '<div class="bnx-mo-ta">' + gy.uv.map(function(k){ return '«' + esc(tenGoc(P, k)) + '»'; }).join(' và ') + ' cùng có thể là «' + esc(c.nhan) + '» — bạn chọn một</div>';
+  else if (gy.trang === 'trung_nguon') s = the('vang', '⚠ cột nguồn khớp nhiều đích') + '<div class="bnx-mo-ta">«' + esc(tenGoc(P, gy.uv[0])) + '» có thể là ' + gy.dich.map(function(m){ var x = P.def.cot_dich.filter(function(cc){ return cc.ma === m; })[0]; return '«' + esc(x.nhan) + '»'; }).join(' hoặc ') + ' — bạn chọn</div>';
+  else if (gy.trang === 'khong') s = g ? '' : the('xam', 'chưa khớp tên');
+  else if (gy.trang === 'mau_khong') s = g ? '' : the('xam', 'mẫu ⛔ gán');
+  if (gy.trang === 'tay') s = the('xam', 'chọn tay');
+  if (P.mauThieu[c.ma]) s += '<div class="bnx-mo-ta bnx-chu-vang">Mẫu cần cột «' + P.mauThieu[c.ma].map(esc).join(', ') + '» — tệp ⛔ có ⇒ để trống, ⛔ đoán</div>';
+  var l2 = k.l2.filter(function(x){ return x.cot_dich === c.ma; })[0];
+  if (l2) s += '<div class="bnx-mo-ta ' + (l2.ket === 'chan' ? 'bnx-chu-do' : '') + '">L2: ' + l2.dat + '/' + l2.mau + ' (' + pt(l2.ti_le) + ')' + (l2.ket === 'chua_du' ? ' — dưới ' + B.THAM_SO.L2_MAU_SO_TOI_THIEU + ' ô, ⛔ kết luận' : l2.ket === 'chan' ? ' ⛔ chặn' : ' ✓') + '</div>';
+  var gn = k.goiYNgay[c.ma];
+  if (gn && gn.length === 1 && gn[0] !== 'dd/mm/yyyy') s += '<div class="bnx-mo-ta">Mọi ô khớp đúng khuôn <b>' + gn[0] + '</b> <button class="bnx-nut bnx-nho" data-bnx="goi-y-ngay" data-bnx-p="' + S.phan.indexOf(P) + '" data-bnx-c="' + c.ma + '" data-bnx-k="' + gn[0] + '">+ đổi định dạng ngày ' + gn[0] + '</button></div>';
+  else if (gn && gn.length > 1) s += '<div class="bnx-mo-ta">Ngày mơ hồ — hợp cả ' + gn.join(' · ') + ': bạn chọn khuôn, ⛔ đoán</div>';
+  return s;
+}
+function thuTuXem(P){
+  var ds = P.def.cot_dich.filter(function(c){ return P.gan[c.ma]; }), out = [], da = {};
+  ds.forEach(function(c){
+    if (da[c.ma]) return;
+    var g = (P.def.cap_de_nham || []).filter(function(gr){ return gr.indexOf(c.ma) >= 0; })[0];
+    if (g){
+      var tv = ds.filter(function(x){ return g.indexOf(x.ma) >= 0; });
+      if (tv.length >= 2){ tv.forEach(function(x, i){ da[x.ma] = 1; out.push({c:x, nhom:tv, dau:i === 0}); }); return; }
+    }
+    da[c.ma] = 1; out.push({c:c});
+  });
+  return out;
+}
+function veXemTruoc(P, k){
+  var cot = thuTuXem(P), n = B.THAM_SO.L3_SO_DONG, dong = k.dong.slice(0, n);
+  if (!cot.length) return '<div class="bnx-mo-ta">Chưa gán cột nào.</div>';
+  var hang1 = '', i = 0;
+  while (i < cot.length){
+    if (cot[i].nhom){ var sl = cot[i].nhom.length; hang1 += '<th colspan="' + sl + '" class="bnx-l4">⚠ L4 · cùng kiểu</th>'; i += sl; }
+    else { hang1 += '<th></th>'; i++; }
+  }
+  var h = '<div class="bnx-cuon"><table class="bnx-bang bnx-xem"><tr><th></th>' + hang1 + '</tr><tr><th>Dòng Excel</th>' + cot.map(function(x){
+    var g = P.gan[x.c.ma];
+    return '<th class="' + (x.nhom ? 'bnx-l4' : '') + '">' + esc(x.c.nhan) + '<div class="bnx-nguon">← ' + (laHang(g) ? 'hằng' : g.cot_nguon.map(function(kk){ return esc(tenGoc(P, kk)); }).join(' + ') || '—') + '</div></th>';
+  }).join('') + '</tr>' + dong.map(function(r){
+    return '<tr><td>' + r.so_dong + '</td>' + cot.map(function(x){
+      var e = r.loi_l1.filter(function(z){ return z.cot_dich === x.c.ma; })[0];
+      return '<td class="' + (x.nhom ? 'bnx-l4 ' : '') + (e ? 'bnx-o-loi' : '') + '"' + (e ? ' title="' + esc(e.loi) + '"' : '') + '>' + esc(r.gia_tri[x.c.ma]) + '</td>';
+    }).join('') + '</tr>';
+  }).join('') + '</table></div>';
+  var nhom = [], da = {};
+  cot.forEach(function(x){ if (x.nhom && x.dau && !da[x.c.ma]){ da[x.c.ma] = 1; nhom.push(x.nhom); } });
+  nhom.forEach(function(g){ h += '<div class="bnx-hop-vang">⚠ <b>L4</b> — ' + g.map(function(c){ return '«' + esc(c.nhan) + '»'; }).join(' · ') + ': hai cột cùng kiểu — máy ⛔ phân biệt được; kiểm bằng mắt rằng cột trái là <b>' + esc(g[0].nhan) + '</b>.</div>'; });
+  return h;
+}
+function ve2(){
+  var tt = tinhTatCa(), than = '';
+  if (S.tep.loai === 'csv') than += '<div class="bnx-hop-tin">Tệp <code>.csv</code> — đã dò BOM ✓. <code>.csv</code> ⛔ mang sheet danh mục tra cứu và kiểu ô: ngày đọc <b>nguyên chuỗi</b>, sai giá trị danh mục chỉ lộ ra ở đối chiếu.</div>';
+  S.thongBao.forEach(function(t){ than += '<div class="bnx-hop-' + t.loai + '">' + t.chu + '</div>'; });
+  if (S.raLai) than += '<div class="bnx-hop-vang">🔁 <b>Đang rà lại mẫu «' + esc(S.raLai.ten) + '»</b> (gắn <code>' + esc(S.raLai.duong_nhap.mau_dich) + '</code> → <code>' + esc(S.duong.mau_dich) + '</code>). ' + veChenhLech(S.raLai) + ' Gán xong, qua kiểm tra ⇒ bấm <b>Xác nhận rà lại</b>.</div>';
+  than += '<div class="bnx-thanh-mau">' + (S.mau ? 'Đang dùng mẫu <b>«' + esc(S.mau.ten) + '»</b> ' + nhanNguon(S.mau) + (S.daSua ? ' ' + the('vang', 'đã sửa ở phiên này') : '') : (S.cach_gan === 'tu_dong_mau_trong' ? 'Gán tự động theo mẫu trống hệ thống' : 'Ánh xạ tay — chưa dùng mẫu')) + '</div>';
+  than += veKho();
+  S.phan.forEach(function(P, pi){
+    var k = tt.kq[pi];
+    than += '<div class="bnx-phan"><div class="bnx-phan-dau">' + (S.phan.length > 1 ? '<b>Phần ' + (pi + 1) + ' — ' + esc(P.def.ten || P.ma_phan) + '</b> · ' : '') +
+      'Sheet <select class="bnx-o" data-bnx="sheet" data-bnx-p="' + pi + '">' + S.tep.sheet.map(function(sh, i){ return '<option value="' + i + '"' + (i === P.sheet ? ' selected' : '') + '>' + esc(sh.ten) + '</option>'; }).join('') + '</select>' +
+      ' · dòng tiêu đề <input type="number" min="1" class="bnx-o bnx-so-nho" data-bnx="dong-td" data-bnx-p="' + pi + '" value="' + P.dong_tieu_de + '">' +
+      ' · <b>' + P.doc.dong.length + '</b> dòng dữ liệu</div>';
+    than += '<table class="bnx-bang bnx-anh-xa"><tr><th>Cột đích</th><th>Cột nguồn trong tệp</th><th>Phép biến đổi</th><th>Trạng thái</th></tr>' +
+      P.def.cot_dich.map(function(c){
+        var pg = c.phai_gan && c.muc !== 'bat_buoc' ? ' · <b class="bnx-chu-vang">phải gán</b> <span>(ô được trống' + (c.phai_gan.loi ? ' — ' + esc(c.phai_gan.loi) : '') + ')</span>' : '';
+        var dbt = (c.gia_tri_dac_biet || []).length ? '<div>giá trị đặc biệt: ' + c.gia_tri_dac_biet.map(function(x){ return typeof x === 'string' ? '«' + esc(x) + '»' : esc(x.mo_ta || x.khuon); }).join(' · ') + '</div>' : '';
+        var km = kieuCua(c).loai === 'ma_dinh_danh' ? khuonMaCua(c) : null;
+        return '<tr class="' + (k.thieuBB.indexOf(c) >= 0 || k.thieuPG.indexOf(c) >= 0 ? 'bnx-dong-do' : '') + '"><td><b>' + esc(c.nhan) + '</b><div class="bnx-mo-ta">' + esc(tenKieu(c)) + (km ? ' <span title="khuôn đọc tham số M10.8">(' + esc(km.mo_ta || km.khuon) + ')</span>' : '') + ' · ' +
+          (c.muc === 'bat_buoc' ? '<b class="bnx-chu-do">bắt buộc</b>' : c.muc === 'co_dieu_kien' ? '<b class="bnx-chu-vang">có điều kiện</b>' + (c.dieu_kien && c.dieu_kien.loi ? ' — ' + esc(c.dieu_kien.loi) : '') : 'tùy chọn') + pg + dbt + '</div></td>' +
+          '<td>' + veO(P, c) + '</td><td>' + veBD(P, c) + '</td><td>' + veTrangThai(P, c, k) + '</td></tr>';
+      }).join('') + '</table>';
+    if (k.cotThua.length) than += '<div class="bnx-mo-ta">➖ <b>Cột thừa</b> — ⛔ vào hệ thống: ' + k.cotThua.map(function(t){ return '«' + esc(t) + '»'; }).join(', ') + '</div>';
+    k.trungNguon.forEach(function(x){ than += '<div class="bnx-hop-vang">⚠ Cột «' + esc(x.nguon) + '» đang đổ vào cả ' + x.dich.map(function(t){ return '«' + esc(t) + '»'; }).join(' và ') + '.</div>'; });
+    Object.keys(k.dacBiet).forEach(function(m){
+      var c = P.def.cot_dich.filter(function(x){ return x.ma === m; })[0];
+      than += '<div class="bnx-hop-tin">Giá trị đặc biệt hợp lệ ở «' + esc(c.nhan) + '»: ' + Object.keys(k.dacBiet[m]).map(function(v){ return '«' + esc(v) + '» × ' + k.dacBiet[m][v]; }).join(' · ') +
+        ' — qua <code>L1</code>, <b>ra khỏi mẫu số <code>L2</code></b>; bước ③ của menu vẫn thấy giá trị để xử lý.</div>';
+    });
+    Object.keys(k.la).forEach(function(m){
+      var c = P.def.cot_dich.filter(function(x){ return x.ma === m; })[0];
+      than += '<div class="bnx-hop-vang">Giá trị lạ ở «' + esc(c.nhan) + '» — bảng đổi chưa có, <b>giữ nguyên</b> để L1 bắt: ' + Object.keys(k.la[m]).map(function(v){ return '«' + esc(v) + '» × ' + k.la[m][v]; }).join(' · ') + '. Bổ sung bảng nếu cần.</div>';
+    });
+    than += '<div class="bnx-muc">👁 <b>L3 — xem trước ' + Math.min(B.THAM_SO.L3_SO_DONG, k.dong.length) + ' dòng đầu dưới TÊN CỘT ĐÍCH</b> (sau biến đổi; ô đỏ = lỗi L1)</div>' + veXemTruoc(P, k) + '</div>';
+  });
+  if (tt.chan.length) than += '<div class="bnx-hop-loi">⛔ <b>Chưa sang được ③:</b><ul>' + tt.chan.map(function(x){ return '<li>' + x + '</li>'; }).join('') + '</ul></div>';
+  var qua = !tt.chan.length;
+  than += '<label class="bnx-tich' + (qua ? '' : ' bnx-tich-tat') + '"><input type="checkbox" data-bnx="l3"' + (S.l3 ? ' checked' : '') + (qua ? '' : ' disabled') + '> <b>Tôi đã xem, dữ liệu đúng cột</b> <span class="bnx-mo-ta">(L3 — bắt buộc, kể cả mẫu đã lưu; đổi bất kỳ gán / biến đổi nào ⇒ tích tự bỏ)</span></label>';
+  than += veLuu(qua);
+  var chan = '<button class="bnx-nut" data-bnx="ve-1">← Chọn tệp khác</button><span class="bnx-gian"></span>' +
+    (S.raLai ? '<button class="bnx-nut bnx-chinh" data-bnx="xn-ra-lai"' + (qua ? '' : ' disabled') + '>✓ Xác nhận rà lại mẫu «' + esc(S.raLai.ten) + '»</button>' : '') +
+    '<button class="bnx-nut bnx-chinh" data-bnx="sang-3"' + (qua && S.l3 ? '' : ' disabled') + '>Sang ③ đối chiếu →</button>';
+  return {than:than, chan:chan};
+}
+function veChenhLech(m){
+  var d = S.duong, cu = (d.phien_ban_cu || []).filter(function(v){ return v.mau_dich === m.duong_nhap.mau_dich; })[0], out = [];
+  S.phan.forEach(function(P){
+    var tp = m.phan.filter(function(x){ return x.ma_phan === P.ma_phan; })[0] || {cot:[]};
+    var hienTai = P.def.cot_dich.map(function(c){ return c.ma; });
+    var bo = tp.cot.filter(function(c){ return hienTai.indexOf(c.cot_dich) < 0; }).map(function(c){ return '<s>' + esc(c.cot_dich) + '</s>'; });
+    var moi, doiMuc = [];
+    if (cu){
+      var cuMa = cu.cot_dich.map(function(c){ return c.ma; });
+      moi = P.def.cot_dich.filter(function(c){ return cuMa.indexOf(c.ma) < 0; }).map(function(c){ return esc(c.nhan); });
+      P.def.cot_dich.forEach(function(c){ var x = cu.cot_dich.filter(function(z){ return z.ma === c.ma; })[0]; if (x && x.muc !== c.muc) doiMuc.push(esc(c.nhan) + ' (' + MUC_TEN[x.muc] + ' → ' + MUC_TEN[c.muc] + ')'); });
+    }
+    if (moi && moi.length) out.push('Cột đích <b>mới</b> (để trống): ' + moi.join(', '));
+    if (bo.length) out.push('Cột đích <b>bị bỏ</b>: ' + bo.join(', '));
+    if (doiMuc.length) out.push('Đổi mức: ' + doiMuc.join(', '));
+  });
+  return out.join(' · ') + (out.length ? '.' : '');
+}
+function veLuu(qua){
+  var h = '<div class="bnx-luu"><b>💾 Lưu thành mẫu</b> <span class="bnx-mo-ta">— lưu ánh xạ + biến đổi + dòng tiêu đề + vân tay; ⛔ lưu dữ liệu tệp, ⛔ lưu tích L3. Chỉ bật khi ② đã qua.</span><br>';
+  if (S.raLai) return h + '<span class="bnx-mo-ta">Đang rà lại — dùng nút «Xác nhận rà lại» ở dưới.</span></div>';
+  var capNhat = S.mau && S.mau.nguon === 'truong' && S.daSua;
+  h += '<input class="bnx-o" data-bnx="ten-mau" placeholder="Tên mẫu mới (duy nhất trong trường)" value="' + esc(S.luuTen) + '"' + (qua ? '' : ' disabled') + '> ';
+  if (capNhat) h += '<button class="bnx-nut" data-bnx="cap-nhat-mau"' + (qua ? '' : ' disabled') + '>Cập nhật mẫu «' + esc(S.mau.ten) + '»</button> ';
+  h += '<button class="bnx-nut" data-bnx="luu-mau"' + (qua ? '' : ' disabled') + '>' + (S.mau ? 'Lưu thành mẫu mới' : 'Lưu thành mẫu') + '</button>';
+  if (S.mau && S.mau.nguon === 'cong_ty') h += ' <span class="bnx-mo-ta">Mẫu của công ty ⛔ sửa — chỉ lưu thành mẫu mới của trường.</span>';
+  if (S.baoLuu) h += '<div class="bnx-mo-ta bnx-chu-luc">' + S.baoLuu + '</div>';
+  return h + '</div>';
+}
+function ganHienTai(){
+  return S.phan.map(function(P){
+    return {ma_phan:P.ma_phan, dong_tieu_de:P.dong_tieu_de, van_tay_tieu_de:P.doc.vanTay.slice(),
+      cot:P.def.cot_dich.filter(function(c){ return P.gan[c.ma] && (P.gan[c.ma].cot_nguon.length || laHang(P.gan[c.ma])); })
+        .map(function(c){ return {cot_dich:c.ma, cot_nguon:P.gan[c.ma].cot_nguon.slice(), bien_doi:sao(P.gan[c.ma].bien_doi)}; })};
+  });
+}
+function moTaDoi(cu, moi){
+  var out = [];
+  moi.forEach(function(p){
+    var pc = cu.filter(function(x){ return x.ma_phan === p.ma_phan; })[0] || {cot:[]};
+    var ma = {};
+    pc.cot.concat(p.cot).forEach(function(c){ ma[c.cot_dich] = 1; });
+    Object.keys(ma).forEach(function(m){
+      var a = pc.cot.filter(function(c){ return c.cot_dich === m; })[0], b = p.cot.filter(function(c){ return c.cot_dich === m; })[0];
+      if (!a) out.push('gán mới ' + m + ' ← ' + (b.cot_nguon.join('+') || 'hằng'));
+      else if (!b) out.push('bỏ gán ' + m);
+      else {
+        if (a.cot_nguon.join('+') !== b.cot_nguon.join('+')) out.push('gán lại ' + m + ': ' + (a.cot_nguon.join('+') || 'hằng') + ' → ' + (b.cot_nguon.join('+') || 'hằng'));
+        var ta = a.bien_doi.map(tenBD), tb = b.bien_doi.map(tenBD);
+        tb.filter(function(x){ return ta.indexOf(x) < 0; }).forEach(function(x){ out.push('thêm biến đổi ' + m + ': ' + x); });
+        ta.filter(function(x){ return tb.indexOf(x) < 0; }).forEach(function(x){ out.push('bỏ biến đổi ' + m + ': ' + x); });
+      }
+    });
+    if (pc.dong_tieu_de && pc.dong_tieu_de !== p.dong_tieu_de) out.push('dòng tiêu đề ' + pc.dong_tieu_de + ' → ' + p.dong_tieu_de);
+  });
+  return out.join('; ') || 'không đổi gán';
+}
+function tenTrung(ten, boId){
+  return mauCuaDuong(S.duong, truongCua(S.cb)).some(function(m){ return m.nguon === 'truong' && m.trang_thai !== 'ngung' && m.ten === ten && m.mau_nhap_id !== boId; });
+}
+function veXemMau(m){
+  var d = S ? S.duong : null;
+  return '<div>' + nhanNguon(m) + ' ' + nhanTrangThai(m) + ' · mẫu đích <code>' + esc(m.duong_nhap.mau_dich) + '</code>' + (m.nhan_ban_tu ? ' · nhân bản từ <code>' + esc(m.nhan_ban_tu) + '</code>' : '') + '</div>' +
+    '<div class="bnx-mo-ta">Tạo bởi ' + esc(m.tao_boi) + ' · ' + esc(m.tao_luc) + '</div>' +
+    m.phan.map(function(p){
+      var pd = d && d.phan.filter(function(x){ return x.ma_phan === p.ma_phan; })[0];
+      return '<div class="bnx-muc">Phần <code>' + esc(p.ma_phan) + '</code> · dòng tiêu đề ' + p.dong_tieu_de + ' · vân tay: <span class="bnx-mo-ta">' + p.van_tay_tieu_de.map(esc).join(' · ') + '</span></div>' +
+        '<table class="bnx-bang"><tr><th>Cột đích</th><th>Cột nguồn</th><th>Biến đổi</th></tr>' + p.cot.map(function(c){
+          var cd = pd && pd.cot_dich.filter(function(x){ return x.ma === c.cot_dich; })[0];
+          return '<tr><td>' + esc(cd ? cd.nhan : c.cot_dich) + (cd ? '' : ' <i>(⛔ còn ở mẫu đích hiện hành)</i>') + '</td><td>' + (c.cot_nguon.map(esc).join(' + ') || '—') + '</td><td>' + (c.bien_doi.map(function(b){ return esc(tenBD(b)); }).join(' → ') || '—') + '</td></tr>';
+        }).join('') + '</table>';
+    }).join('') +
+    (m.ghi_chu_nguon ? '<div class="bnx-muc">Ghi chú nguồn (năm phần của «bộ chuyển đổi» cũ)</div><div><b>Nguồn:</b> ' + esc(m.ghi_chu_nguon.ten_nguon || '') + '</div>' +
+      '<div><b>Việc phải làm tay:</b> ' + (m.ghi_chu_nguon.viec_lam_tay || []).map(esc).join(' · ') + '</div><div><b>Ca đã gặp:</b> ' + (m.ghi_chu_nguon.ca_da_gap || []).map(esc).join(' · ') + '</div>' : '') +
+    '<div class="bnx-muc">Lịch sử sửa (⛔ xóa dòng)</div>' + (m.lich_su.length ? '<table class="bnx-bang"><tr><th>Lúc</th><th>Ai</th><th>Đổi gì</th></tr>' + m.lich_su.map(function(l){ return '<tr><td>' + esc(l.luc) + '</td><td>' + esc(l.boi) + '</td><td>' + esc(l.thay_doi) + '</td></tr>'; }).join('') + '</table>' : '<div class="bnx-mo-ta">Chưa có.</div>');
+}
+function timMau(id){ return B.kho.mauNhap.filter(function(m){ return m.mau_nhap_id === id; })[0]; }
+
+/* ───────────── xử lý sự kiện ───────────── */
+function xuLy(x, t, e){
+  if (x === 'phu-dong') return B.dongHop();
+  if (x.indexOf('menu:') === 0){ var f = hanhDongMenu[x.slice(5)]; if (f) f(t, e); return; }
+  if (x === 'dong') return B.dong();
+  if (B._che === 'xuat') return xuLyXuat(x, t, e);
+  if (!S) return;
+  var P = t.dataset.bnxP != null ? S.phan[+t.dataset.bnxP] : null, c = t.dataset.bnxC, g = P && c ? P.gan[c] : null;
+  switch (x){
+    case 'chon-tep': S.tepChon = +t.value; S.loiTep = ''; return veLai();
+    case 'doc-tep':
+      var tep = S.duong.tep_gia[S.tepChon], nl = loaiNhan(S.duong);
+      /* HDMX bản 2 ① mục 3 — nhan_loai; đường NHIỀU PHẦN luôn chỉ .xlsx (.csv chỉ mang một sheet) */
+      if (nl.indexOf(tep.loai) < 0){ S.loiTep = '⛔ <b>Từ chối tệp «' + esc(tep.ten) + '»</b> — đường nhập này chỉ nhận <code>' + nl.map(function(x){ return '.' + x; }).join('</code> · <code>') + '</code>' +
+        (S.duong.phan.length > 1 ? ': mẫu có <b>' + S.duong.phan.length + ' sheet dữ liệu</b>, <code>.csv</code> chỉ mang được một sheet — đọc một sheet cho mọi phần là sai.' : '.') + ' Lưu lại tệp dạng <code>.xlsx</code> rồi nạp lại.'; return veLai(); }
+      if (tep.hong_dau){ S.loiTep = '⛔ <b>Từ chối tệp «' + esc(tep.ten) + '»</b> — bảng mã ký tự hỏng dấu (⛔ có BOM, không đọc được UTF-8). Một dòng đọc ra: <code>' + esc(tep.hong_dau) + '</code>. Lưu lại tệp dạng <b>CSV UTF-8</b> rồi nạp lại — ⛔ nạp tệp mà mọi tên đều sai dấu.'; return veLai(); }
+      docTep(tep); S.buoc = 2; S.baoLuu = ''; return veLai();
+    case 've-1': S.buoc = 1; S.raLai = null; return veLai();
+    case 've-2': S.buoc = 2; return veLai();
+    case 'mo-kho': S.moKho = !S.moKho; return;
+    case 'loc': S.loc = t.dataset.bnxLoc; S.moKho = true; return veLai();
+    case 'ap-mau': apMau(timMau(t.dataset.bnxId)); S.moKho = false; S.thongBao = S.thongBao.filter(function(z){ return z.chu.indexOf('Tệp khớp') < 0; }); return veLai();
+    case 'xem-mau': var mx = timMau(t.dataset.bnxId); return B.hop('📚 Mẫu «' + esc(mx.ten) + '»', veXemMau(mx));
+    case 'nhan-ban':
+      var goc = timMau(t.dataset.bnxId), ban = sao(goc), ten = goc.ten + ' (bản của trường)', n = 2;
+      while (tenTrung(ten)) ten = goc.ten + ' (bản của trường ' + (n++) + ')';
+      ban.mau_nhap_id = idMoi('mn'); ban.truong = truongCua(S.cb); ban.nguon = 'truong'; ban.nhan_ban_tu = goc.mau_nhap_id; ban.ten = ten;
+      ban.tao_boi = nguoiDung(S.cb); ban.tao_luc = bayGio(); ban.trang_thai = goc.trang_thai === 'ngung' ? 'dung' : goc.trang_thai;
+      ban.lich_su = [{boi:ban.tao_boi, luc:ban.tao_luc, thay_doi:'Nhân bản từ «' + goc.ten + '» (' + goc.mau_nhap_id + ')'}];
+      B.kho.mauNhap.push(ban); S.moKho = true; S.loc = ban.trang_thai; return veLai();
+    case 'ngung': case 'dung-lai':
+      var mn = timMau(t.dataset.bnxId); if (mn.nguon !== 'truong') return;           /* P-3: mẫu công ty ⛔ ngừng dùng */
+      if (x === 'dung-lai' && tenTrung(mn.ten, mn.mau_nhap_id)){ alert('Đã có mẫu đang dùng cùng tên «' + mn.ten + '» — đổi tên mẫu kia trước.'); return; }
+      var den = x === 'ngung' ? 'ngung' : (mn.duong_nhap.mau_dich === S.duong.mau_dich ? 'dung' : 'can_ra_lai');
+      mn.lich_su.push({boi:nguoiDung(S.cb), luc:bayGio(), thay_doi:(x === 'ngung' ? 'Ngừng dùng' : 'Dùng lại') + ' → ' + den});
+      mn.trang_thai = den; S.moKho = true; return veLai();
+    case 'ra-lai': var mr = timMau(t.dataset.bnxId); apMau(mr); S.raLai = mr; S.cach_gan = 'ap_mau'; S.moKho = false; return veLai();
+    case 'xn-ra-lai':
+      if (tinhTatCa().chan.length) return;
+      var m = S.raLai, cu = m.phan, moi = ganHienTai();
+      m.lich_su.push({boi:nguoiDung(S.cb), luc:bayGio(), thay_doi:'Rà lại ' + m.duong_nhap.mau_dich + ' → ' + S.duong.mau_dich + ': ' + moTaDoi(cu, moi)});
+      m.phan = moi; m.duong_nhap = {ma_feature:S.duong.ma_feature, mau_dich:S.duong.mau_dich}; m.trang_thai = 'dung';
+      S.mau = m; S.daSua = false; S.raLai = null; S.baoLuu = '✓ Mẫu «' + esc(m.ten) + '» đã rà lại — nhận mẫu đích mới, về «Đang dùng».'; return veLai();
+    case 'sheet': P.sheet = +t.value; P.dong_tieu_de = dongTieuDeMacDinh(S.tep.sheet[P.sheet]); napPhan(P); goiY(P); P.mauTrong = false; suaGan(); return veLai();
+    case 'dong-td': P.dong_tieu_de = Math.max(1, +t.value || 1); napPhan(P); goiY(P); P.mauTrong = false; suaGan(); return veLai();
+    case 'nguon':
+      if (t.value === '') delete P.gan[c];
+      else if (t.value === '__hang__') P.gan[c] = {cot_nguon:[], bien_doi:[bdMoi('gia_tri_hang')]};
+      else if (g && !laHang(g)) g.cot_nguon[0] = t.value;
+      else P.gan[c] = {cot_nguon:[t.value], bien_doi:[]};
+      P.goiY[c] = {trang:'tay', uv:[]}; suaGan(); return veLai();
+    case 'nguon-gop': if (t.value === '') g.cot_nguon.splice(+t.dataset.bnxJ, 1); else g.cot_nguon[+t.dataset.bnxJ] = t.value; suaGan(); return veLai();
+    case 'them-gop': var chua = P.doc.tieuDe.filter(function(h){ return g.cot_nguon.indexOf(h.key) < 0; })[0]; if (chua) g.cot_nguon.push(chua.key); suaGan(); return veLai();
+    case 'hang': g.bien_doi[0].gia_tri = t.value; suaGan(); return veLai();
+    case 'bd-them':
+      if (!t.value) return;
+      if (t.value === 'gop_cot'){ g.bien_doi.unshift(bdMoi('gop_cot')); }       /* gộp cột luôn chạy trước */
+      else g.bien_doi.push(bdMoi(t.value));
+      suaGan(); return veLai();
+    case 'goi-y-ngay': var bn = bdMoi('doi_dinh_dang_ngay'); bn.khuon = t.dataset.bnxK; g.bien_doi.push(bn); suaGan(); return veLai();
+    case 'bd-bo':
+      var bo = g.bien_doi.splice(+t.dataset.bnxI, 1)[0];
+      if (bo && bo.ma === 'gop_cot') g.cot_nguon = g.cot_nguon.slice(0, 1);
+      suaGan(); return veLai();
+    case 'bd-tham': var b = g.bien_doi[+t.dataset.bnxI]; b[t.dataset.bnxK] = t.type === 'checkbox' ? t.checked : t.value; suaGan(); return veLai();
+    case 'bd-bang':
+      g.bien_doi[+t.dataset.bnxI].cap = t.value.split(/\r?\n/).map(function(l){ var i = l.indexOf('='); return i < 0 ? null : {tu:l.slice(0, i).trim(), thanh:l.slice(i + 1).trim()}; }).filter(function(z){ return z && z.tu !== ''; });
+      suaGan(); return veLai();
+    case 'l3': S.l3 = t.checked ? {boi:nguoiDung(S.cb), luc:bayGio()} : null; return veLai();
+    case 'ten-mau': S.luuTen = t.value; return;
+    case 'luu-mau': case 'cap-nhat-mau':
+      if (tinhTatCa().chan.length) return;
+      var gh = ganHienTai();
+      if (x === 'cap-nhat-mau'){
+        if (S.mau.nguon !== 'truong') return;                                   /* ⑩: mẫu công ty ⛔ sửa */
+        S.mau.lich_su.push({boi:nguoiDung(S.cb), luc:bayGio(), thay_doi:moTaDoi(S.mau.phan, gh)});
+        S.mau.phan = gh; S.daSua = false; S.cach_gan = 'ap_mau'; S.baoLuu = '✓ Đã cập nhật mẫu «' + esc(S.mau.ten) + '» (ghi lịch sử).'; return veLai();
+      }
+      var tm = (S.luuTen || '').trim();
+      if (!tm){ S.baoLuu = '⛔ Nhập tên mẫu.'; return veLai(); }
+      if (tenTrung(tm)){ S.baoLuu = '⛔ Đã có mẫu chưa ngừng tên «' + esc(tm) + '» — tên duy nhất trong trường × đường nhập.'; return veLai(); }
+      var mm = {mau_nhap_id:idMoi('mn'), truong:truongCua(S.cb), duong_nhap:{ma_feature:S.duong.ma_feature, mau_dich:S.duong.mau_dich}, ten:tm, nguon:'truong',
+        phan:gh, trang_thai:'dung', tao_boi:nguoiDung(S.cb), tao_luc:bayGio(), lich_su:[]};
+      if (S.mau){ mm.lich_su.push({boi:mm.tao_boi, luc:mm.tao_luc, thay_doi:'Tạo từ ' + (S.mau.nguon === 'cong_ty' ? 'mẫu công ty' : 'mẫu') + ' «' + S.mau.ten + '» đã sửa'}); if (S.mau.nguon === 'cong_ty') mm.nhan_ban_tu = S.mau.mau_nhap_id; if (S.mau.ghi_chu_nguon) mm.ghi_chu_nguon = sao(S.mau.ghi_chu_nguon); }
+      else mm.lich_su.push({boi:mm.tao_boi, luc:mm.tao_luc, thay_doi:'Tạo mẫu'});
+      B.kho.mauNhap.push(mm); S.mau = mm; S.daSua = false; S.cach_gan = 'ap_mau'; S.luuTen = ''; S.baoLuu = '✓ Đã lưu mẫu «' + esc(tm) + '» — lần sau tệp cùng khuôn sẽ tự áp (vẫn dừng ở ②).'; return veLai();
+    case 'sang-3':
+      var tt = tinhTatCa(); if (tt.chan.length || !S.l3) return;
+      S.chup = chupAnhXa(tt);
+      S.goiMenu = {duong_nhap:{ma_feature:S.duong.ma_feature, mau_dich:S.duong.mau_dich}, tep:{ten:S.tep.ten, loai:S.tep.loai},
+        phan:{}, anh_xa_chup:S.chup, boi:nguoiDung(S.cb), luc:bayGio()};
+      S.phan.forEach(function(P2, i){ S.goiMenu.phan[P2.ma_phan] = {ten_sheet:S.tep.sheet[P2.sheet].ten, dong:tt.kq[i].dong}; });
+      var r = S.cb.onDoiChieu ? S.cb.onDoiChieu(S.goiMenu) : {html:'<i>Menu chưa khai onDoiChieu.</i>', choGhi:false};
+      S.ketQua3 = typeof r === 'string' ? {html:r, choGhi:true} : r; S.buoc = 3; return veLai();
+    case 'ghi':
+      if (!S.cb.onGhi) return;
+      var r4 = S.cb.onGhi(S.goiMenu); S.ketQua4 = typeof r4 === 'string' ? {html:r4} : r4; S.maLo = S.ketQua4.ma_lo || null; S.hoanTac = null; S.buoc = 4; return veLai();
+    case 'hoan-tac':
+      var rh = S.cb.onHoanTac(S.maLo); S.hoanTac = typeof rh === 'string' ? rh : (rh && rh.html) || '↺ Đã hoàn tác lô ' + esc(S.maLo); return veLai();
+  }
+}
+
+/* ═══════════════════════════ XUẤT (N5 · HDMX ⑫) ═══════════════════════════ */
+var DD = {ngay:['dd/mm/yyyy', 'yyyy-mm-dd', 'dd-mm-yyyy'], sdt:['giu_0', 'bo_0', '+84', '84'], so:['thap_phan_cham', 'thap_phan_phay'], chuoi:['nguyen', 'hoa', 'thuong']};
+var DD_TEN = {'dd/mm/yyyy':'dd/mm/yyyy', 'yyyy-mm-dd':'yyyy-mm-dd', 'dd-mm-yyyy':'dd-mm-yyyy', giu_0:'giữ số 0 đầu', bo_0:'bỏ số 0 đầu', '+84':'+84…', '84':'84…', thap_phan_cham:'thập phân dấu chấm', thap_phan_phay:'thập phân dấu phẩy', nguyen:'giữ nguyên', hoa:'CHỮ HOA', thuong:'chữ thường'};
+function nhomDD(kieu){ return kieu === 'ngay' ? 'ngay' : kieu === 'sdt' ? 'sdt' : kieu === 'so' ? 'so' : 'chuoi'; }
+function dinhDang(v, kieu, dd){
+  var s = v == null ? '' : String(v); if (s === '') return '';
+  var n = nhomDD(kieu);
+  if (n === 'ngay'){ var d = docNgay(s, 'dd/mm/yyyy'); if (!d) return s; var a = d.split('/'); return dd === 'yyyy-mm-dd' ? a[2] + '-' + a[1] + '-' + a[0] : dd === 'dd-mm-yyyy' ? a.join('-') : d; }
+  if (n === 'sdt'){ var t = s.replace(/[\s.\-]/g, ''); if (!/^0\d{9}$/.test(t)) return s; return dd === 'bo_0' ? t.slice(1) : dd === '+84' ? '+84' + t.slice(1) : dd === '84' ? '84' + t.slice(1) : t; }
+  if (n === 'so') return dd === 'thap_phan_phay' ? s.replace('.', ',') : s.replace(',', '.');
+  return dd === 'hoa' ? s.toLocaleUpperCase('vi') : dd === 'thuong' ? s.toLocaleLowerCase('vi') : s;
+}
+var X = null;
+function mauXuatCua(dx, truong){ return B.kho.mauXuat.filter(function(m){ return m.duong_xuat.ma_feature === dx.ma_feature && m.duong_xuat.ma_ban_xuat === dx.ma_ban_xuat && (m.nguon === 'cong_ty' || m.truong === truong); }); }
+function choPhep(dx, ma){ return dx.cot_cho_phep.some(function(c){ return c.ma === ma; }); }
+function cotCP(dx, ma){ return dx.cot_cho_phep.filter(function(c){ return c.ma === ma; })[0]; }
+B.moXuat = function(dx, duLieu, cb){
+  cb = cb || {};
+  napCongTy(dx.mau_cong_ty, B.kho.mauXuat, 'mx');
+  /* ⑫ mục 4 — cột bị bỏ khỏi cot_cho_phep ⇒ mẫu «cần rà lại», ⛔ lặng lẽ bỏ cột */
+  mauXuatCua(dx, truongCua(cb)).forEach(function(m){
+    var ngoai = m.cot.filter(function(c){ return !choPhep(dx, c.truong_nguon); });
+    if (ngoai.length && m.trang_thai === 'dung'){ m.trang_thai = 'can_ra_lai'; m.lich_su.push({boi:'Hệ thống', luc:bayGio(), thay_doi:'Cột ' + ngoai.map(function(c){ return c.truong_nguon; }).join(', ') + ' ⛔ còn trong bản xuất mặc định — cần rà lại'}); }
+  });
+  X = {dx:dx, duLieu:duLieu || [], cb:cb, mau:null, daSua:false, cot:[], cot_hang:[], tep:{loai:'csv', csv_phan_cach:',', csv_bom:true}, muc_dich:'', ketQua:null, baoLuu:'', luuTen:'', loc:'dung'};
+  X.cot = dx.cot_cho_phep.map(function(c){ return {truong_nguon:c.ma, tieu_de:c.nhan, dinh_dang:DD[nhomDD(c.kieu)][0]}; });
+  B._che = 'xuat'; mo(); veLai();
+};
+B._X = function(){ return X; };
+function apMauXuat(m){
+  X.mau = m; X.daSua = false; X.ketQua = null;
+  X.cot = m.cot.filter(function(c){ return choPhep(X.dx, c.truong_nguon); }).map(sao);   /* ⛔ một cột ngoài danh sách */
+  X.cot_hang = sao(m.cot_hang || []); X.tep = sao(m.tep || {loai:'csv', csv_phan_cach:',', csv_bom:true});
+}
+function bangXuat(){
+  var dau = X.cot.map(function(c){ return {tieu_de:c.tieu_de, c:c}; });
+  X.cot_hang.slice().sort(function(a, b){ return (+a.vi_tri || 999) - (+b.vi_tri || 999); }).forEach(function(h){
+    var vt = Math.max(1, Math.min(dau.length + 1, +h.vi_tri || dau.length + 1));
+    dau.splice(vt - 1, 0, {tieu_de:h.tieu_de, hang:h});
+  });
+  var dong = X.duLieu.map(function(r){ return dau.map(function(x){ if (x.hang) return x.hang.gia_tri; var cp = cotCP(X.dx, x.c.truong_nguon); return dinhDang(r[x.c.truong_nguon], cp.kieu, x.c.dinh_dang); }); });
+  return {dau:dau.map(function(x){ return x.tieu_de; }), dong:dong};
+}
+function csv(b){
+  var sep = X.tep.csv_phan_cach || ',';
+  var q = function(v){ v = String(v == null ? '' : v); return /["\r\n]/.test(v) || v.indexOf(sep) >= 0 ? '"' + v.replace(/"/g, '""') + '"' : v; };
+  return (X.tep.csv_bom ? '﻿' : '') + [b.dau].concat(b.dong).map(function(r){ return r.map(q).join(sep); }).join('\r\n');
+}
+function coHoTen(){ return X.dx.luon_muc_dich || X.cot.some(function(c){ var cp = cotCP(X.dx, c.truong_nguon); return cp && cp.kieu === 'ho_ten'; }); }
+function veXuat(){
+  var dx = X.dx, ds = mauXuatCua(dx, truongCua(X.cb));
+  document.getElementById('bnx-dau').innerHTML = '<div class="bnx-tieu-de">📤 Xuất theo mẫu — ' + esc(dx.ten || dx.ma_ban_xuat) + '</div>' +
+    '<div class="bnx-mo-ta">Feature <code>' + esc(dx.ma_feature) + '</code> (bit <b>XD</b>) · bản xuất <code>' + esc(dx.ma_ban_xuat) + '</code></div><button class="bnx-x" data-bnx="dong">✕</button>';
+  var h = '<div class="bnx-hop-tin">🔒 <b>Mẫu xuất ⛔ mở rộng quyền</b> — chỉ chọn được <b>' + dx.cot_cho_phep.length + ' cột</b> của bản xuất mặc định. Dòng = lát cắt dữ liệu của bạn lúc xuất (<b>' + X.duLieu.length + '</b> dòng).</div>';
+  var hien = ds.filter(function(m){ return X.loc === 'cong_ty' ? m.nguon === 'cong_ty' : m.trang_thai === X.loc; });
+  h += '<div class="bnx-thanh-mau">' + (X.mau ? 'Đang dùng mẫu xuất <b>«' + esc(X.mau.ten) + '»</b> ' + nhanNguon(X.mau) + (X.daSua ? ' ' + the('vang', 'đã sửa') : '') : 'Cột mặc định — chưa dùng mẫu') + '</div>' +
+    '<details class="bnx-gap" open><summary>📚 Mẫu xuất (' + ds.length + ')</summary><div class="bnx-loc">' +
+    [['dung', 'Đang dùng'], ['can_ra_lai', 'Cần rà lại'], ['ngung', 'Đã ngừng'], ['cong_ty', 'Của công ty']].map(function(l){ return '<button class="bnx-nut bnx-nho' + (X.loc === l[0] ? ' bnx-bat' : '') + '" data-bnx="x-loc" data-bnx-loc="' + l[0] + '">' + l[1] + '</button>'; }).join('') + '</div>' +
+    (hien.length ? '<table class="bnx-bang"><tr><th>Tên</th><th>Nguồn</th><th>Trạng thái</th><th>Cột</th><th></th></tr>' + hien.map(function(m){
+      var id = m.mau_xuat_id, nut = [];
+      if (m.trang_thai === 'dung') nut.push('<button class="bnx-nut bnx-nho" data-bnx="x-ap" data-bnx-id="' + id + '">Áp</button>');
+      nut.push('<button class="bnx-nut bnx-nho" data-bnx="x-nhan-ban" data-bnx-id="' + id + '">' + (m.nguon === 'cong_ty' ? 'Nhân bản thành mẫu của trường' : 'Nhân bản') + '</button>');
+      if (m.nguon === 'truong') nut.push(m.trang_thai === 'ngung' ? '<button class="bnx-nut bnx-nho" data-bnx="x-dung-lai" data-bnx-id="' + id + '">Dùng lại</button>' : '<button class="bnx-nut bnx-nho" data-bnx="x-ngung" data-bnx-id="' + id + '">Ngừng dùng</button>');
+      if (m.nguon === 'truong' && m.trang_thai === 'can_ra_lai') nut.push('<button class="bnx-nut bnx-nho bnx-chinh" data-bnx="x-ra-lai" data-bnx-id="' + id + '">Rà lại</button>');
+      return '<tr><td><b>' + esc(m.ten) + '</b>' + (m.ghi_chu_nguon ? '<div class="bnx-mo-ta">' + esc(m.ghi_chu_nguon.ten_nguon || '') + '</div>' : '') + '</td><td>' + nhanNguon(m) + '</td><td>' + nhanTrangThai(m) + '</td><td class="bnx-mo-ta">' + m.cot.map(function(c){ return esc(c.tieu_de); }).join(' · ') + '</td><td class="bnx-nut-hang">' + nut.join(' ') + '</td></tr>';
+    }).join('') + '</table>' : '<div class="bnx-mo-ta">Không có mẫu ở bộ lọc này.</div>') + '</details>';
+  h += '<div class="bnx-muc">Cột sẽ xuất — thứ tự · tiêu đề · định dạng</div><table class="bnx-bang"><tr><th>#</th><th>Trường nguồn</th><th>Tiêu đề trong tệp</th><th>Định dạng</th><th></th></tr>' +
+    X.cot.map(function(c, i){
+      var cp = cotCP(dx, c.truong_nguon), ddl = DD[nhomDD(cp.kieu)];
+      return '<tr><td>' + (i + 1) + '</td><td>' + esc(cp.nhan) + ' <span class="bnx-mo-ta">' + esc(KIEU_TEN[cp.kieu] || cp.kieu) + '</span></td>' +
+        '<td><input class="bnx-o" data-bnx="x-tieu-de" data-bnx-i="' + i + '" value="' + esc(c.tieu_de) + '"></td>' +
+        '<td><select class="bnx-o" data-bnx="x-dd" data-bnx-i="' + i + '">' + ddl.map(function(v){ return '<option value="' + v + '"' + (c.dinh_dang === v ? ' selected' : '') + '>' + DD_TEN[v] + '</option>'; }).join('') + '</select></td>' +
+        '<td class="bnx-nut-hang"><button class="bnx-nut bnx-nho" data-bnx="x-len" data-bnx-i="' + i + '"' + (i ? '' : ' disabled') + '>↑</button><button class="bnx-nut bnx-nho" data-bnx="x-xuong" data-bnx-i="' + i + '"' + (i < X.cot.length - 1 ? '' : ' disabled') + '>↓</button><button class="bnx-nut bnx-nho" data-bnx="x-bo" data-bnx-i="' + i + '">✕</button></td></tr>';
+    }).join('') + '</table>';
+  var con = dx.cot_cho_phep.filter(function(c){ return !X.cot.some(function(z){ return z.truong_nguon === c.ma; }); });
+  h += '<select class="bnx-o" data-bnx="x-them" id="bnx-x-them"' + (con.length ? '' : ' disabled') + '><option value="">+ thêm cột (chỉ trong bản xuất mặc định)…</option>' + con.map(function(c){ return '<option value="' + esc(c.ma) + '">' + esc(c.nhan) + '</option>'; }).join('') + '</select>';
+  h += '<div class="bnx-muc">Cột hằng <span class="bnx-mo-ta">(vd mã mẫu tin của Zalo OA)</span></div>' + X.cot_hang.map(function(k, i){
+    return '<div class="bnx-hang-x">Tiêu đề <input class="bnx-o" data-bnx="x-hang" data-bnx-k="tieu_de" data-bnx-i="' + i + '" value="' + esc(k.tieu_de) + '"> giá trị <input class="bnx-o" data-bnx="x-hang" data-bnx-k="gia_tri" data-bnx-i="' + i + '" value="' + esc(k.gia_tri) + '"> ở vị trí <input type="number" min="1" class="bnx-o bnx-so-nho" data-bnx="x-hang" data-bnx-k="vi_tri" data-bnx-i="' + i + '" value="' + esc(k.vi_tri) + '"> <button class="bnx-nut bnx-nho" data-bnx="x-hang-bo" data-bnx-i="' + i + '">✕</button></div>';
+  }).join('') + '<button class="bnx-nut bnx-nho" data-bnx="x-hang-them">+ cột hằng</button>';
+  h += '<div class="bnx-muc">Tệp</div>Loại <select class="bnx-o" data-bnx="x-loai"><option value="csv"' + (X.tep.loai === 'csv' ? ' selected' : '') + '>.csv (UTF-8 có BOM)</option><option value="xlsx"' + (X.tep.loai === 'xlsx' ? ' selected' : '') + '>.xlsx</option></select>' +
+    (X.tep.loai === 'csv' ? ' phân cách <select class="bnx-o" data-bnx="x-sep"><option value=","' + (X.tep.csv_phan_cach === ',' ? ' selected' : '') + '>dấu phẩy ,</option><option value=";"' + (X.tep.csv_phan_cach === ';' ? ' selected' : '') + '>chấm phẩy ;</option></select>' : '');
+  var b = bangXuat();
+  h += '<div class="bnx-muc">Xem trước 5 dòng</div><div class="bnx-cuon"><table class="bnx-bang"><tr>' + b.dau.map(function(t){ return '<th>' + esc(t) + '</th>'; }).join('') + '</tr>' + b.dong.slice(0, 5).map(function(r){ return '<tr>' + r.map(function(v){ return '<td>' + esc(v) + '</td>'; }).join('') + '</tr>'; }).join('') + '</table></div>';
+  h += '<div class="bnx-luu"><b>💾 Lưu mẫu xuất</b> <span class="bnx-mo-ta">— ⛔ lưu mục đích (P-4)</span><br><input class="bnx-o" data-bnx="x-ten-mau" placeholder="Tên mẫu xuất" value="' + esc(X.luuTen) + '"> ' +
+    (X.mau && X.mau.nguon === 'truong' && X.daSua ? '<button class="bnx-nut" data-bnx="x-cap-nhat">Cập nhật mẫu «' + esc(X.mau.ten) + '»</button> ' : '') +
+    '<button class="bnx-nut" data-bnx="x-luu">' + (X.mau ? 'Lưu thành mẫu mới' : 'Lưu thành mẫu') + '</button>' + (X.baoLuu ? '<div class="bnx-mo-ta bnx-chu-luc">' + X.baoLuu + '</div>' : '') + '</div>';
+  var can = coHoTen(), md = X.dx.muc_dich || ['Liên lạc với phụ huynh (gửi link / thông báo)', 'Báo cáo cơ quan quản lý', 'Đối chiếu nội bộ'];
+  h += '<div class="bnx-luu"><b>🎯 Mục đích xuất</b> ' + (can ? '<b class="bnx-chu-do">bắt buộc</b> — tệp có họ tên (Luật BVDLCN 91/2025); chọn lại <b>mỗi lần</b>, ghi nhật ký' : '<span class="bnx-mo-ta">tệp ⛔ có họ tên — tùy chọn</span>') +
+    '<br><select class="bnx-o" data-bnx="x-muc-dich"><option value="">— chọn mục đích —</option>' + md.map(function(m){ return '<option' + (X.muc_dich === m ? ' selected' : '') + '>' + esc(m) + '</option>'; }).join('') + '</select></div>';
+  if (X.ketQua) h += X.ketQua;
+  document.getElementById('bnx-than').innerHTML = h;
+  document.getElementById('bnx-chan').innerHTML = '<button class="bnx-nut" data-bnx="dong">Đóng</button><span class="bnx-gian"></span><button class="bnx-nut bnx-chinh" data-bnx="x-xuat"' + ((can && !X.muc_dich) || !X.cot.length ? ' disabled' : '') + '>⬇ Xuất ' + X.tep.loai + '</button>';
+}
+function timMX(id){ return B.kho.mauXuat.filter(function(m){ return m.mau_xuat_id === id; })[0]; }
+function suaX(){ if (X.mau) X.daSua = true; X.ketQua = null; }
+function xuLyXuat(x, t){
+  var i = +t.dataset.bnxI, m, tmp;
+  switch (x){
+    case 'x-loc': X.loc = t.dataset.bnxLoc; return veLai();
+    case 'x-ap': apMauXuat(timMX(t.dataset.bnxId)); return veLai();
+    case 'x-nhan-ban':
+      m = timMX(t.dataset.bnxId); tmp = sao(m); tmp.mau_xuat_id = idMoi('mx'); tmp.truong = truongCua(X.cb); tmp.nguon = 'truong'; tmp.nhan_ban_tu = m.mau_xuat_id; tmp.ten = m.ten + ' (bản của trường)';
+      tmp.tao_boi = nguoiDung(X.cb); tmp.tao_luc = bayGio(); tmp.lich_su = [{boi:tmp.tao_boi, luc:tmp.tao_luc, thay_doi:'Nhân bản từ «' + m.ten + '»'}]; if (tmp.trang_thai === 'ngung') tmp.trang_thai = 'dung';
+      B.kho.mauXuat.push(tmp); X.loc = tmp.trang_thai; return veLai();
+    case 'x-ngung': case 'x-dung-lai':
+      m = timMX(t.dataset.bnxId); if (m.nguon !== 'truong') return;
+      var den = x === 'x-ngung' ? 'ngung' : (m.cot.every(function(c){ return choPhep(X.dx, c.truong_nguon); }) ? 'dung' : 'can_ra_lai');
+      m.lich_su.push({boi:nguoiDung(X.cb), luc:bayGio(), thay_doi:(x === 'x-ngung' ? 'Ngừng dùng' : 'Dùng lại') + ' → ' + den}); m.trang_thai = den; return veLai();
+    case 'x-ra-lai':
+      m = timMX(t.dataset.bnxId); X.mau = m; X.cot = m.cot.filter(function(c){ return choPhep(X.dx, c.truong_nguon); }).map(sao); X.cot_hang = sao(m.cot_hang || []); X.daSua = true;
+      X.baoLuu = 'Đang rà lại «' + esc(m.ten) + '» — cột ⛔ còn được phép đã gạch khỏi danh sách; bấm «Cập nhật mẫu» để xác nhận.'; return veLai();
+    case 'x-tieu-de': X.cot[i].tieu_de = t.value; suaX(); return veLai();
+    case 'x-dd': X.cot[i].dinh_dang = t.value; suaX(); return veLai();
+    case 'x-len': tmp = X.cot[i]; X.cot[i] = X.cot[i - 1]; X.cot[i - 1] = tmp; suaX(); return veLai();
+    case 'x-xuong': tmp = X.cot[i]; X.cot[i] = X.cot[i + 1]; X.cot[i + 1] = tmp; suaX(); return veLai();
+    case 'x-bo': X.cot.splice(i, 1); suaX(); return veLai();
+    case 'x-them':
+      if (!t.value || !choPhep(X.dx, t.value)) return;                        /* ⛔ cột ngoài bản xuất mặc định */
+      var cp = cotCP(X.dx, t.value); X.cot.push({truong_nguon:cp.ma, tieu_de:cp.nhan, dinh_dang:DD[nhomDD(cp.kieu)][0]}); suaX(); return veLai();
+    case 'x-hang-them': X.cot_hang.push({tieu_de:'Cột hằng', gia_tri:'', vi_tri:X.cot.length + X.cot_hang.length + 1}); suaX(); return veLai();
+    case 'x-hang': X.cot_hang[i][t.dataset.bnxK] = t.dataset.bnxK === 'vi_tri' ? (+t.value || 1) : t.value; suaX(); return veLai();
+    case 'x-hang-bo': X.cot_hang.splice(i, 1); suaX(); return veLai();
+    case 'x-loai': X.tep.loai = t.value; suaX(); return veLai();
+    case 'x-sep': X.tep.csv_phan_cach = t.value; suaX(); return veLai();
+    case 'x-muc-dich': X.muc_dich = t.value; return veLai();
+    case 'x-ten-mau': X.luuTen = t.value; return;
+    case 'x-luu': case 'x-cap-nhat':
+      var cot = sao(X.cot).filter(function(c){ return choPhep(X.dx, c.truong_nguon); });
+      if (x === 'x-cap-nhat'){
+        if (X.mau.nguon !== 'truong') return;
+        X.mau.lich_su.push({boi:nguoiDung(X.cb), luc:bayGio(), thay_doi:'Cột: ' + cot.map(function(c){ return c.tieu_de; }).join(' · ') + (X.cot_hang.length ? ' · hằng: ' + X.cot_hang.map(function(h2){ return h2.tieu_de; }).join(', ') : '')});
+        X.mau.cot = cot; X.mau.cot_hang = sao(X.cot_hang); X.mau.tep = sao(X.tep); X.mau.trang_thai = 'dung'; X.daSua = false; X.baoLuu = '✓ Đã cập nhật mẫu xuất «' + esc(X.mau.ten) + '».'; return veLai();
+      }
+      var ten = (X.luuTen || '').trim();
+      if (!ten){ X.baoLuu = '⛔ Nhập tên mẫu xuất.'; return veLai(); }
+      if (mauXuatCua(X.dx, truongCua(X.cb)).some(function(z){ return z.nguon === 'truong' && z.trang_thai !== 'ngung' && z.ten === ten; })){ X.baoLuu = '⛔ Trùng tên mẫu xuất đang dùng.'; return veLai(); }
+      m = {mau_xuat_id:idMoi('mx'), truong:truongCua(X.cb), duong_xuat:{ma_feature:X.dx.ma_feature, ma_ban_xuat:X.dx.ma_ban_xuat}, ten:ten, nguon:'truong',
+        cot:cot, cot_hang:sao(X.cot_hang), tep:sao(X.tep), trang_thai:'dung', tao_boi:nguoiDung(X.cb), tao_luc:bayGio(), lich_su:[]};
+      if (X.mau && X.mau.nguon === 'cong_ty') m.nhan_ban_tu = X.mau.mau_xuat_id;
+      m.lich_su.push({boi:m.tao_boi, luc:m.tao_luc, thay_doi:'Tạo mẫu xuất'});
+      B.kho.mauXuat.push(m); X.mau = m; X.daSua = false; X.luuTen = ''; X.baoLuu = '✓ Đã lưu mẫu xuất «' + esc(ten) + '».'; return veLai();
+    case 'x-xuat':
+      if ((coHoTen() && !X.muc_dich) || !X.cot.length) return;
+      var b = bangXuat(), nd = csv(b);
+      var nk = {luc:bayGio(), boi:nguoiDung(X.cb), duong_xuat:{ma_feature:X.dx.ma_feature, ma_ban_xuat:X.dx.ma_ban_xuat}, mau_xuat:X.mau ? X.mau.ten : null,
+        cot:b.dau.slice(), muc_dich:X.muc_dich || '(không bắt buộc)', so_dong:b.dong.length, loai:X.tep.loai};
+      B.kho.nhatKyXuat.push(nk); if (X.cb.onXuat) X.cb.onXuat(nk);
+      var ten2 = (X.dx.ten_tep || 'xuat') + '.' + X.tep.loai, url = '';
+      try { url = URL.createObjectURL(new Blob([nd], {type:'text/csv;charset=utf-8'})); } catch (er){ url = ''; }
+      X.ketQua = '<div class="bnx-hop-luc">✓ Đã xuất <b>' + b.dong.length + '</b> dòng · ' + b.dau.length + ' cột · mục đích «' + esc(nk.muc_dich) + '» — <b>ghi nhật ký</b> (tên mẫu + danh sách cột). ' +
+        (url && X.tep.loai === 'csv' ? '<a href="' + url + '" download="' + esc(ten2) + '">⬇ ' + esc(ten2) + '</a>' : '<i>Demo: tệp .xlsx mô phỏng — nội dung như bảng dưới.</i>') + '</div>' +
+        '<pre class="bnx-csv">' + esc(nd.replace(/^﻿/, '')) + '</pre>';
+      X.muc_dich = ''; return veLai();                                            /* P-4: mục đích chọn lại mỗi lần */
+  }
+}
+})();
+
+/* ═════════════════════════════════════════════════════════════════════════
+   M1.7 — ĐƯỜNG NHẬP của tab 🎯 Xếp lớp · cụm GCHS phiên 2B′ (27/9/2026)
+
+     m1.7.xep_lop      MAU-B09-gan-lop-v1      tab 🎯  «📄 Gán theo lô»
+
+   Đường này THEO TAB sang đây từ M1.9 tab ② (cụm GCHS chốt Đ2) — mẫu GIỮ
+   NGUYÊN SỐ HIỆU `MAU-B09-gan-lop-v1` (GC-9: đổi tập cột mới lên v2).
+   Bộ máy nhập là app.08-bo-nhap-xuat.js của cụm MNXL, chép nguyên byte
+   (băm B6A9A6B8…F53F) — nó chỉ lo bước ① chọn tệp và ② ánh xạ cột.
+
+   🛑 BƯỚC ③ ĐỐI CHIẾU BA MỨC và ④ GHI + BẢNG KẾT QUẢ LÀ CỦA MENU (luật MX-5
+   của cụm MNXL) — viết ở tệp này, ⛔ đổi một chữ của chuẩn: chặn / cảnh báo
+   mềm / ghi chú, và bảng kết quả hai phần (ghi được · bỏ qua kèm lý do).
+   ⛔ Sửa app.08 · style.08: cần sửa bộ máy thì ghi mục D cho phiên Z, sửa ở
+   GỐC demo-src/M1.9-* rồi chép lại cả NĂM demo đang dùng.
+   ═════════════════════════════════════════════════════════════════════════ */
+(function(){
+'use strict';
+var B = window.BNX; if (!B) return;
+
+var TRUONG = 'THCS & THPT Nguyễn Tất Thành';
+var M = B.menuM17 = {lo:{}, ls:[], dem:0};
+
+function e(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function maLoMoi(){ M.dem++; return 'LO-XL-' + String(1000 + M.dem).slice(-4); }
+function gio(){ var d = new Date(); return (d.getHours()<10?'0':'') + d.getHours() + ':' + (d.getMinutes()<10?'0':'') + d.getMinutes(); }
+
+/* ───────── khai báo đường (hình dạng HDMX ②) ───────── */
+function danhMuc(){ return {lop: LOP.map(function(l){ return l.id; })}; }
+
+function cotDich(){ return [
+  {ma:'ma_dinh_danh', nhan:'Mã định danh', kieu:'ma_dinh_danh', muc:'bat_buoc', loai_ma:'hoc_sinh',
+   ten_goi_y:['madinhdanh', 'madinhdanhcsdlnganh', 'mahs', 'mahocsinh', 'madinhdanhhocsinh']},
+  {ma:'lop', nhan:'Lớp', kieu:'danh_muc(lop)', muc:'bat_buoc',
+   ten_goi_y:['lop', 'tenlop', 'lopxep', 'lopmoi', 'lopdich']}
+]; }
+
+/* Tệp giả để thử — dựng TỪ dữ liệu thật của tab, cộng ba ca lỗi cố ý. */
+function tepGia(){
+  /* Tệp khóa bằng MÃ ĐỊNH DANH CSDL NGÀNH (11–12 chữ số) — khóa của tệp Sở và
+     phần mềm cũ. Em chưa có mã ấy ⛔ có mặt trong tệp được: đó là hệ quả thật
+     của chốt MYC-4, và là lý do tab vẫn phải giữ đường kéo thả. */
+  var cho = XLHS.filter(function(h){ return !h.lop && h.md; });
+  var dong = cho.map(function(h){
+    /* em nguồn ② (tuyển sinh) CŨNG có trong tệp — để thử đúng luật XL-1 */
+    var l = LOP.filter(function(x){ return x.k === h.kh && x.dt === h.dt; })[0];
+    return [h.md, l ? l.id : '9A1'];
+  });
+  dong.push(['013150299990', '9A1']);                  /* mã lạ — ⛔ khớp em nào đang chờ */
+  dong.push([cho.length ? cho[0].md : '013150218010', '12Z9']);   /* lớp ⛔ có trong danh mục */
+  dong.push(['012345', '9A1']);                        /* mã sai khuôn — L1 chặn */
+  return [
+   {ten:'MAU-B09-gan-lop-v1.xlsx', loai:'xlsx',
+    mo_ta:'Tệp hai cột hệ thống xuất (A1 mang số hiệu) — ' + dong.length + ' dòng: hàng đợi thật + ba ca lỗi cố ý',
+    sheet:[{ten:'Gán lớp', o:[['MAU-B09-gan-lop-v1'], ['Mã định danh', 'Lớp']].concat(dong)}]},
+   {ten:'BangPhanLop-PhongDaoTao.xlsx', loai:'xlsx',
+    mo_ta:'Bảng phân lớp tự làm — cột «Mã HS» · «Họ tên» · «Lớp xếp» ⇒ bộ máy tự gợi ý theo tên cột',
+    sheet:[{ten:'Sheet1', o:[['Mã HS', 'Họ tên', 'Lớp xếp']].concat(dong.map(function(x){
+      var h = XLHS.filter(function(z){ return z.md === x[0]; })[0];
+      return [x[0], h ? h.n : '', x[1]]; }))}]},
+   /* Ca thử LỚP L2 — TIÊU ĐỀ đúng thứ tự nhưng DỮ LIỆU bị đảo. Đây mới là «lệch
+      cột» thật: bộ máy gán theo TÊN cột nên gán đúng, rồi L2 mới bắt được vì
+      giá trị ⛔ đúng kiểu. (Tệp đảo CẢ tiêu đề LẪN dữ liệu thì ⛔ phải ca lỗi —
+      bộ máy khớp theo tên, vẫn đúng; bản đầu của phiếu này ra đúng bẫy đó.) */
+   {ten:'LechCot-dulieu-dao.xlsx', loai:'xlsx',
+    mo_ta:'⚠ Ca thử L2 — tiêu đề ĐÚNG nhưng dữ liệu hai cột bị ĐẢO (tên lớp rơi vào ô mã định danh)',
+    sheet:[{ten:'Gán lớp', o:[['MAU-B09-gan-lop-v1'], ['Mã định danh', 'Lớp']].concat(daoDuLieu())}]}
+  ];
+}
+
+/* Lớp L2 chỉ chạy khi tệp có ĐỦ MẪU SỐ (B.THAM_SO.L2_MAU_SO_TOI_THIEU = 10 dòng)
+   — dưới ngưỡng thì bộ máy im, và đó là ý đồ: vài dòng lệch ⛔ đủ căn cứ kết luận
+   cả cột sai. Nên tệp thử lệch cột phải đủ 12 dòng, ⛔ thì ca thử ⛔ chứng minh gì.
+   Bài học đo được ở phiên 2B′: bản đầu chỉ 9 dòng ⇒ L2 im, tưởng bộ máy hỏng. */
+function daoDuLieu(){
+  var g = XLHS.filter(function(h){ return !h.lop && h.md; }).map(function(h){
+    var l = LOP.filter(function(x){ return x.k === h.kh && x.dt === h.dt; })[0];
+    return [l ? l.id : '9A1', h.md];                    /* CỐ Ý đảo: lớp vào ô mã */
+  });
+  var them = ['9A2', '8A1', '8A2', '7A1', '6A1', '9B1', '8B1'];
+  for (var i = 0; g.length < 12; i++) g.push([them[i % them.length], '013150220' + (10 + i)]);
+  return g;
+}
+
+function duongGanLop(){ return {
+  ma_feature:'m1.7.xep_lop', mau_dich:'MAU-B09-gan-lop-v1', ten:'M1.7 🎯 Gán lớp theo lô',
+  phan:[{ma_phan:'gan_lop', ten:'Gán lớp', ten_sheet_goi_y:['Gán lớp', 'Gan lop', 'Sheet1'],
+         cot_dich:cotDich(), cap_de_nham:[]}],
+  danh_muc:danhMuc(), mau_cong_ty:[], tep_gia:tepGia()}; }
+
+/* ───────── BƯỚC ③ — phân loại ba mức (luật của MENU) ───────── */
+function phanLoai(kq){
+  var daGap = {};
+  return kq.phan.gan_lop.dong.map(function(r){
+    var g = r.gia_tri;
+    var ma = String(g.ma_dinh_danh == null ? '' : g.ma_dinh_danh).trim();
+    var lopId = String(g.lop == null ? '' : g.lop).trim();     /* «8A1 » → «8A1» */
+    var chan = [], canh = [], ghiChu = [];
+
+    r.loi_l1.forEach(function(x){ chan.push('<b>' + e(x.nhan) + '</b>: ' + e(x.loi) + ' <i>(L1)</i>'); });
+
+    var em = XLHS.filter(function(h){ return h.md && h.md === ma && !h.lop; })[0];
+    var lop = LOP.filter(function(l){ return l.id === lopId; })[0];
+
+    if (ma && !r.loi_l1.some(function(x){ return x.cot_dich === 'ma_dinh_danh'; }) && !em)
+      chan.push('<b>Mã định danh ⛔ khớp em nào đang chờ xếp lớp</b> — cửa này <b>⛔ tạo hồ sơ</b>: hồ sơ sinh ở <code>M1.1</code>, ' +
+                'em đã có lớp thì đổi lớp ở tab <code>🔄 Yêu cầu chuyển lớp</code>. ' +
+                '🔎 Cũng kiểm xem em có <b>chưa được cấp mã định danh</b> ⛔ — em như thế ⛔ có trong tệp, phải <b>kéo thả</b> <i>(chốt MYC-4)</i>.');
+
+    /* 🔴 LUẬT XL-1 — em đến từ đợt tuyển sinh thì ⛔ xếp ở menu này, kể cả qua lô.
+       Cho qua đây là mở một đường ĐI VÒNG QUA dây ký của M1.4 (PHT_ĐT duyệt →
+       HT ký công bố). Chặn ở cả ba cách xếp, ⛔ chỉ chặn kéo thả. */
+    if (em && em.ngv === 'ts')
+      chan.push('<b>Em đến từ đợt tuyển sinh</b> — xếp lớp cho em này là chặng cuối của việc tuyển, ' +
+                'có <b>PHT_ĐT duyệt và HT ký công bố</b> ở <code>M1.4</code> §6.8. ' +
+                'Ghi ở đây là <b>đi vòng qua dây ký</b> <i>(M1.7 §12 XL-1)</i>.');
+
+    if (lopId && !lop)
+      chan.push('<b>Lớp ⛔ có trong danh mục</b> — khai lớp ở <code>M10.1 · Lớp học</code> rồi nạp lại.');
+
+    if (em && lop && lop.k !== em.kh)
+      chan.push('<b>Lớp khác khối của em</b> — em khối ' + em.kh + ', lớp <code>' + e(lop.id) + '</code> là khối ' + lop.k + '.');
+
+    if (em && lop && lop.dt !== em.dt)
+      canh.push('<b>Khác điểm trường</b> — em ở ' + e(em.dt) + ', lớp ở ' + e(lop.dt) + '. Vẫn ghi được, nhưng hãy chắc đây là ý định.');
+
+    if (ma && daGap[ma]) chan.push('<b>Mã lặp trong chính tệp này</b> — dòng ' + daGap[ma] + ' đã dùng.');
+    else if (ma) daGap[ma] = r.so_dong;
+
+    if (String(g.lop) !== lopId && lopId) ghiChu.push('✂ Tên lớp có khoảng trắng thừa — đã cắt.');
+
+    return {r:r, ma:ma, em:em, lop:lop, lopId:lopId, chan:chan, canh:canh, ghiChu:ghiChu};
+  });
+}
+
+/* Sĩ số phải cộng dồn TRONG LÔ: hai dòng cùng đẩy vào một lớp gần đầy thì
+   dòng sau phải bị chặn, ⛔ để cả hai lọt rồi vượt trần. */
+function chanSiSo(pl){
+  var them = {};
+  pl.forEach(function(x){
+    if (x.chan.length || !x.em || !x.lop) return;
+    var id = x.lop.id, dangCho = (typeof xlTrongLop === 'function' ? xlTrongLop(id).length : 0);
+    var sau = x.lop.ss + dangCho + (them[id] || 0) + 1;
+    if (sau > x.lop.max)
+      x.chan.push('<b>Lớp đủ sĩ số</b> — <code>' + e(id) + '</code> ' + x.lop.ss + '/' + x.lop.max +
+        (them[id] ? ' và lô này đã xếp thêm ' + them[id] + ' em' : '') +
+        '. ⛔ <b>Có ngoại lệ ở tab này</b>: nó ⛔ có bước duyệt nào để xin <i>(M1.7 §9 rb 4c)</i>.');
+    else them[id] = (them[id] || 0) + 1;
+  });
+  return pl;
+}
+
+function hang(x, why, mau){
+  return '<div class="bnx-r ' + mau + '"><div>' + x.r.so_dong + '</div><div><code>' + e(x.ma) + '</code></div>' +
+    '<div>' + e(x.em ? x.em.n : '—') + '</div><div>' + why + '</div></div>';
+}
+function bang(tieu, cot4, ds, mau, trong){
+  return '<div class="card"><div class="ch">' + tieu + '</div>' +
+    '<div class="bnx-r hd"><div>Dòng</div><div>Mã định danh</div><div>Học sinh</div><div>' + cot4 + '</div></div>' +
+    (ds.length ? ds.join('') : '<div class="lgd">' + trong + '</div>') + '</div>';
+}
+
+function doiChieu(kq){
+  var pl = chanSiSo(phanLoai(kq));
+  var ok = pl.filter(function(x){ return !x.chan.length; });
+  var bo = pl.filter(function(x){ return x.chan.length; });
+  var canh = ok.filter(function(x){ return x.canh.length; });
+  return {choGhi: ok.length > 0, nhanNutGhi: '💾 Ghi ' + ok.length + ' lượt xếp lớp',
+    html:
+      '<div class="mets"><div class="met"><div class="k">Dòng trong tệp</div><div class="v">' + pl.length + '</div></div>' +
+      '<div class="met r"><div class="k">⛔ Chặn</div><div class="v">' + bo.length + '</div></div>' +
+      '<div class="met w"><div class="k">⚠ Cảnh báo mềm</div><div class="v">' + canh.length + '</div></div>' +
+      '<div class="met g"><div class="k">✓ Ghi được</div><div class="v">' + ok.length + '</div></div></div>' +
+      bang('⛔ Dòng bị chặn — ⛔ ghi', 'Lý do', bo.map(function(x){ return hang(x, x.chan.join('<br>'), 'r'); }), 'r', 'Không có.') +
+      bang('✓ Ghi được', 'Lớp đích', ok.map(function(x){
+        return hang(x, '🪑 <b>' + e(x.lop.id) + '</b>' + (x.canh.length ? '<br><span class="st2 w">' + x.canh.join('<br>') + '</span>' : '') +
+                       (x.ghiChu.length ? '<br><i>' + x.ghiChu.join(' · ') + '</i>' : ''), 'g'); }), 'g', 'Không có dòng nào ghi được.') +
+      (function(){ var thieu = XLHS.filter(function(h){ return !h.lop && !h.md; });
+        return thieu.length ? '<div class="ro">🔎 <b>' + thieu.length + ' em trong hàng đợi ⛔ có mã định danh CSDL ngành</b> nên ⛔ thể có mặt trong tệp này ' +
+          '<i>(' + thieu.map(function(h){ return e(h.n); }).join(' · ') + ')</i> — xếp các em ấy bằng <b>kéo thả</b>. Đây là hệ quả của chốt <code>MYC-4</code>: ô mã trống vẫn tạo được hồ sơ.</div>' : ''; })() +
+      '<div class="ro">🛑 <b>⛔ có bước duyệt và ⛔ có ký công bố</b> — khác <code>M1.4</code> §6.8 <i>(M1.7 §7.5.1)</i>. ' +
+      'Chỉ <b>HT</b> và <b>PHT_ĐT</b> mở được cửa này; mỗi lô vào <b>lịch sử lô</b> và <b>hoàn tác được</b>.</div>'};
+}
+
+/* ───────── BƯỚC ④ — ghi + bảng kết quả hai phần + hoàn tác ───────── */
+function ghi(kq){
+  var pl = chanSiSo(phanLoai(kq));
+  var ok = pl.filter(function(x){ return !x.chan.length; });
+  var bo = pl.filter(function(x){ return x.chan.length; });
+  var truoc = JSON.parse(JSON.stringify(XLHS));
+  var ssTruoc = LOP.map(function(l){ return l.ss; });
+
+  ok.forEach(function(x){ x.em.lop = x.lop.id; x.lop.ss++; });
+  var maOk = ok.map(function(x){ return x.ma; });
+  XLHS = XLHS.filter(function(h){ return maOk.indexOf(h.ma) < 0; });
+
+  var id = maLoMoi();
+  var lo = {id:id, t:gio(), u:R().n, loai:'Xếp lớp theo lô', ghi:ok.length, bo:bo.length,
+            tep:kq.tep.ten, mau_dich:kq.duong_nhap.mau_dich, anh_xa_chup:kq.anh_xa_chup};
+  M.ls.unshift(lo);
+  M.lo[id] = {hoanTac:function(){
+    XLHS = JSON.parse(JSON.stringify(truoc));
+    LOP.forEach(function(l, i){ l.ss = ssTruoc[i]; });
+    return ok.length + ' lượt xếp lớp';
+  }};
+  if (typeof render === 'function') render();
+
+  return {ma_lo:id, html:
+    '<div class="info">💾 Lô <code>' + id + '</code> — ghi <b>' + ok.length + '</b> lượt xếp lớp · bỏ qua <b>' + bo.length + '</b> dòng. ' +
+    'Các em chuyển khỏi hàng đợi <b>Chờ xếp lớp</b>; sĩ số lớp cập nhật ngay.</div>' +
+    bang('✓ Đã ghi', 'Lớp', ok.map(function(x){ return hang(x, '🪑 <b>' + e(x.lop.id) + '</b>', 'g'); }), 'g', 'Không có.') +
+    bang('⛔ Bỏ qua — kèm lý do', 'Lý do', bo.map(function(x){ return hang(x, x.chan.join('<br>'), 'r'); }), 'r', 'Không có.') +
+    '<div class="ro">Bản chụp ánh xạ cột của lô này đã lưu cùng bản ghi lô <i>(lớp L5)</i> — hoàn tác được.</div>'};
+}
+
+function hoanTac(id){
+  if (typeof xlSuaDuoc === 'function' && !xlSuaDuoc())
+    return '🔒 ' + e(R().n) + ' ⛔ có quyền hoàn tác lô — chỉ HT và PHT_ĐT.';
+  var r = M.lo[id]; if (!r) return 'Lô ⛔ hoàn tác được.';
+  var s = r.hoanTac(); delete M.lo[id];
+  if (typeof render === 'function') render();
+  return 'Đã hoàn tác ' + s + ' — dữ liệu về như trước lô.';
+}
+
+/* ───────── nối vào tab ───────── */
+/* 🛑 KHAI ĐƯỜNG PHẢI **LƯỜI**, ⛔ dựng lúc nạp tệp này.
+   duongGanLop() đọc XLHS — mà XLHS khai ở app.20, nạp SAU tệp này. Gọi ở đây là
+   chạm vùng chết (TDZ), IIFE văng, và vì cả demo là MỘT script nên app.20 ⛔ chạy
+   tiếp ⇒ render() ⛔ chạy ⇒ TRẮNG TRANG. Đã xảy ra thật ở lượt đầu 2B′ (đo được:
+   BNX.duongNhap rỗng · 0 tab trên trang). Dựng đường ngay trước khi mở hộp —
+   vừa tránh TDZ, vừa để tệp giả bám theo hàng đợi HIỆN TẠI. */
+M.mo = function(){
+  if (typeof xlSuaDuoc === 'function' && !xlSuaDuoc()){
+    if (typeof toast === 'function') toast('🔒 Chỉ HT và PHT_ĐT gán lớp theo lô được — bit ID của m1.7.xep_lop');
+    return;
+  }
+  B.duongNhap['m1.7.xep_lop'] = duongGanLop();      /* dựng lại tệp giả theo hàng đợi hiện tại */
+  B.moNhap(B.duongNhap['m1.7.xep_lop'],
+    {onDoiChieu:doiChieu, onGhi:ghi, onHoanTac:hoanTac, truong:TRUONG, nguoi:function(){ return R().n; }});
+};
+})();
+
+/* ============================================================================
+   KHUÔN LƯỚI XẾP LỚP DÙNG CHUNG — tệp nền, cụm GCHS phiên 0B (27/9/2026)
+   Nguồn: bản CHỐT 5-Dieu-phoi/Thao-luan-y-kien/CHOT-26-09-gom-cua-nhap-hoc-sinh-GCHS.md
+          chốt Đ2c · §4 (ranh giới hai cửa xếp lớp).
+
+   VÌ SAO CÓ TỆP NÀY. Hệ thống có HAI cửa xếp lớp, và chúng KHÁC NHAU về CĂN CỨ:
+     ① M1.4 §6.8 «Phân lớp học sinh mới» — em vừa được nhận vào trường qua một
+        đợt tuyển sinh. Là một QUYẾT ĐỊNH: PHT_DT duyệt → HT ký công bố (ký số
+        nhóm A), và số liệu chảy vào phễu Thống kê tuyển sinh.
+     ② M1.7 «Xếp lớp cho học sinh chưa có lớp» (dựng ở phiên 2B) — em ĐÃ là học
+        sinh của trường, chỉ chưa có lớp trong năm đang chạy. Là GHI NHẬN hiện
+        trạng: KHÔNG duyệt, KHÔNG ký (M1.9 rb 7), KHÔNG vào phễu tuyển sinh.
+   Căn cứ khác nhau ⇒ KHÔNG gộp hai cửa. Nhưng THAO TÁC thì giống hệt: cùng đơn
+   vị Khối × Điểm trường × Hệ đào tạo, cùng lưới lớp, cùng kéo thả, cùng gợi ý
+   tự động, cùng ràng buộc sĩ số. Dựng hai lưới khác nhau cho cùng một thao tác
+   là mời hai hành vi khác nhau — và là hai chỗ phải sửa mỗi lần đổi một luật.
+   ⇒ MỘT khuôn, hai bộ tham số. Người dùng học một lần; ranh giới quyền và căn
+   cứ vẫn tách, vì mỗi cửa là một Feature riêng với ô quyền riêng.
+
+   🛑 LUẬT GC-6 CỦA CỤM: tệp này KHÔNG được đổi một hành vi nào của M1.4. Nó
+   được rút ra bằng cách CHÉP NGUYÊN khối markup đang chạy; phép kiểm khép phiên
+   là dựng lại M1.4 và đối chiếu chuỗi HTML trước/sau — phải TRÙNG TỪNG KÝ TỰ.
+
+   🛑 TỆP NỀN DÙNG CHUNG: chép NGUYÊN BYTE sang demo khác, đo băm trùng gốc.
+   Cần sửa khuôn ⇒ sửa ở GỐC (demo-src/M1.4-Tuyen-sinh-dau-cap/) rồi chép lại
+   cho mọi menu tiêu thụ, ⛔ đừng sửa bản chép.
+
+   THAM SỐ — hai thứ làm nên khác biệt giữa hai cửa:
+     c.dayKy  : null            ⇒ ⛔ duyệt, ⛔ ký (cửa ghi nhận — M1.7)
+                {...}           ⇒ có dây duyệt · ký (cửa quyết định — M1.4)
+     c.hangDoi: mảng bản ghi em chưa có lớp — mỗi cửa tự quyết NGUỒN của hàng đợi
+   Còn lại là móc vẽ để mỗi menu giữ đúng chữ của mình.
+   ========================================================================== */
+
+/* Vẽ TRỌN màn hình xếp lớp: đầu màn · thanh lọc · dải mô tả · lưới · chân trang.
+   Mọi móc vẽ đều trả về CHUỖI HTML; móc nào không có thì bỏ qua cả dòng. */
+function veManXepLop(c){
+ return `${c.dauMan||''}
+  <div class="bar">
+   ${c.thanhLoc||''}
+   <div class="sum">
+    ${c.nutCongCu||''}</div></div>
+  <div class="ro">${c.moTa||''}</div>
+  ${veLuoiXepLop(c)}
+  ${veChanXepLop(c)}`}
+
+/* Lưới: hàng đợi bên trái · ô lớp bên phải. Đây là phần DÙNG CHUNG thật sự. */
+function veLuoiXepLop(c){
+ const Q=c.hangDoi||[], L=c.lop||[], sua=!!c.choPhepSua;
+ const ma=h=>c.maCua?c.maCua(h):h.ma;
+ return `<div class="plwrap">
+   <div class="qbox"><div class="qh">${c.tieuDeHangDoi||''}<span class="spacer" style="flex:1"></span><span class="st2 ${Q.length?'w':'o'}">${Q.length} HS</span></div>
+    ${Q.length?Q.map(h=>`<div class="qi" draggable="true" data-q="${ma(h)}"><div class="nm">${h.n}</div>
+      ${c.veMeta?c.veMeta(h):''}</div>`).join('')
+     :`<div class="empty" style="padding:26px">${c.chuHetHangDoi||'Đã phân hết hàng đợi'}</div>`}
+    <div class="bal">${c.canDoiHangDoi?c.canDoiHangDoi(Q):''}</div></div>
+   <div><div class="lgrid">${L.map(l=>{const nhap=(l.hs||[]).map(m=>c.hsCua(m));
+     const dp=c.dongPhu?c.dongPhu(l):'';
+     return `<div class="lbox" data-lop="${l.id}"><div class="lbh">${l.id}<span class="spacer" style="flex:1"></span>
+       <span class="${c.siSo(l)>l.max?'over-ss':''}" style="font-size:11.5px;font-weight:400">${c.siSo(l)}/${l.max}</span></div>${dp?`
+      ${dp}`:''}
+      <div class="lbb">${nhap.length?nhap.map(h=>`<div class="si" draggable="true" data-q="${ma(h)}" data-from="${l.id}">
+         <span>${h.n}</span><span style="color:var(--ink3);font-size:11px">${h.gt[0]} · ${h.hl}</span>
+         ${sua?`<button class="x" data-x="unassign" data-ma="${ma(h)}" data-lop="${l.id}">✕</button>`:''}</div>`).join('')
+        :`<div class="drop">${c.chuOTrong||'Kéo học sinh thả vào đây'}</div>`}</div>
+      <div class="bal">${c.canDoiLop?c.canDoiLop(nhap):''}</div></div>`}).join('')||`<div class="empty">${c.chuChuaKhaiLop||'Chưa khai lớp của hệ này'}</div>`}</div></div>
+  </div>`}
+
+/* Chân trang — chỗ DUY NHẤT hai cửa khác nhau về hành vi.
+   ⛔ KHÔNG có dây ký thì ⛔ có nút duyệt, ⛔ có nút ký: đó là ranh giới nghiệp vụ
+   của bản CHỐT §4, ⛔ phải chuyện bày biện. */
+function veChanXepLop(c){
+ const k=c.dayKy;
+ /* Có dây ký ⇒ BA chỗ đặt nút theo đúng thứ tự lưu → duyệt → ký (cửa quyết định).
+    ⛔ dây ký ⇒ MỘT chỗ ghi thẳng, và ⛔ có chỗ nào để mọc ra nút duyệt hay nút ký. */
+ return k?`<div style="margin-top:13px;display:flex;gap:7px;flex-wrap:wrap;align-items:center">
+   ${k.nutLuu||''}
+   ${k.nutDuyet||''}
+   ${k.nutKy||''}
+   <span style="font-size:11.5px;color:var(--ink3)">${c.chuChanTrang||''}</span></div>`
+ :`<div style="margin-top:13px;display:flex;gap:7px;flex-wrap:wrap;align-items:center">
+   ${c.nutGhi||''}
+   <span style="font-size:11.5px;color:var(--ink3)">${c.chuChanTrang||''}</span></div>`}
+
+/* ============================================================================
+   TAB 🎯 XẾP LỚP — cụm GCHS phiên 2B (27/9/2026)
+   Feature m1.7.xep_lop — nhận từ M1.9 tab ②, KHÔNG đổi một bit quyền nào.
+   Tài liệu: M1.7 §2.4 (ranh giới hai cửa) · §7.5 (chi tiết tab) · §9 nhóm A′.
+   Lưới lấy từ KHUÔN DÙNG CHUNG app.10-luoi-xep-lop.js (phiên 0B, chốt Đ2c) —
+   tệp đó chép NGUYÊN BYTE từ gốc demo M1.4, băm 8E8DB54E7C3084FD.
+   ========================================================================== */
+
+/* BA NGUỒN của hàng đợi (chốt Đ2b — chuẩn là M10.1 mục ⑥).
+   ⛔ Em chuyển đến M1.5 và tái nhập M1.6 KHÔNG BAO GIỜ vào đây: hai luồng đó
+   chọn lớp đích ngay trong màn hình ký (M1.1 §3.1). */
+const XL_NGUON={
+ kc:['M3.3','kết chuyển còn sót','Đã có kết luận lên lớp năm trước, chưa kết chuyển'],
+ ts:['M1.4','tuyển sinh đầu cấp','Đã xác nhận nhập học, chưa phân lớp'],
+ lo:['M1.9','lô nhập danh sách','Trong lô đã nhập, cột Lớp để trống hoặc tên lớp không khớp']};
+
+/* Em đến từ TUYỂN SINH thì HIỆN trong hàng đợi nhưng KHÔNG xếp được ở đây —
+   xếp lớp cho em ấy là chặng cuối của việc tuyển, có PHT_ĐT duyệt và HT ký
+   công bố (M1.4 §6.8). Cho kéo ở đây là mở một đường ĐI VÒNG QUA DÂY KÝ.
+   Vẫn phải HIỆN, vì M10.1 mục ⑥ đếm em ấy và chặn Bắt đầu năm học — giấu đi
+   thì người dùng thấy bảng kiểm tra báo còn em mà tìm không ra em nào.
+   ⏳ Đang chạy theo phương án này — M1.7 §12 điểm cần xác nhận. */
+function xlXepDuoc(h){return h.ngv!=='ts'}
+
+/* HAI MÃ, ⛔ một:
+     ma — mã hồ sơ Dschool (HS-<năm>-<số>), hệ thống cấp, luôn có.
+     md — MÃ ĐỊNH DANH CSDL NGÀNH (11–12 chữ số), của Bộ, CÓ THỂ TRỐNG.
+   Tệp «gán lớp theo lô» khóa bằng **md** vì đó là khóa tệp của Sở và của phần
+   mềm cũ. ⇒ em CHƯA CÓ md thì ⛔ gán theo lô được, phải kéo thả — hệ quả trực
+   tiếp của chốt MYC-4 (21/9: ô mã trống vẫn tạo được hồ sơ). Em id 0707 để
+   TRỐNG md đúng để thử ca ấy. */
+let XLHS=[
+ {ma:'HS-2026-0611',md:'013150218010',n:'Đỗ Minh Khôi',  gt:'Nam',hl:7.4,kh:9,dt:'Điểm trường A',he:'Đại trà',ngv:'kc',lop:'',cu:'8A1'},
+ {ma:'HS-2026-0612',md:'013150218020',n:'Lý Thu Trang',  gt:'Nữ', hl:8.1,kh:9,dt:'Điểm trường A',he:'Đại trà',ngv:'kc',lop:'',cu:'8A2'},
+ {ma:'HS-2026-0705',md:'013150218030',n:'Đặng Minh Quân',gt:'Nam',hl:6.9,kh:9,dt:'Điểm trường A',he:'Đại trà',ngv:'lo',lop:'',lo:'Lô B09-2026'},
+ {ma:'HS-2026-0706',md:'013150218040',n:'Hoàng Bảo Ngọc',gt:'Nữ', hl:7.8,kh:8,dt:'Điểm trường B',he:'Đại trà',ngv:'lo',lop:'',lo:'Lô B09-2026'},
+ {ma:'HS-2026-0707',md:'',           n:'Vương Gia Hân', gt:'Nữ', hl:8.6,kh:8,dt:'Điểm trường B',he:'Đại trà',ngv:'kc',lop:'',cu:'7B1'},
+ {ma:'HS-2026-0708',md:'013150218060',n:'Tạ Đức Anh',    gt:'Nam',hl:7.1,kh:8,dt:'Điểm trường B',he:'Đại trà',ngv:'lo',lop:'',lo:'Lô B09-2026'},
+ {ma:'HS-2026-0801',md:'013150218100',n:'Chu Khánh Chi', gt:'Nữ', hl:8.0,kh:6,dt:'Điểm trường A',he:'Đại trà',ngv:'ts',lop:'',dot:'Đợt 1 · 2026'},
+];
+/* Lát cắt mở mặc định: chọn chỗ ĐANG có việc làm được. Khối 9 · ĐT A cố ý để
+   ĐÔNG hơn số chỗ (9A1 còn 1, 9A2 đầy) — đó là ca thử luật «lớp đủ sĩ số thì
+   chặn», ⛔ phải lỗi dữ liệu mẫu. */
+let xlKhoi=8, xlDt='Điểm trường B', xlHe='Đại trà';
+
+/* 🛑 KHAI BẰNG `function`, ⛔ bằng `const` — gen-demo nối MỌI tệp vào MỘT script
+   theo thứ tự app.js TRƯỚC rồi app.08 · app.09 · app.10 · app.20. `const` và `let`
+   của tệp này nằm sau, nên app.js gọi tới là rơi vào vùng chết (TDZ); chỉ khai báo
+   `function` mới được cẩu lên đầu script và dùng được từ app.js. Lỗi này đã xảy ra
+   thật ở lượt đầu phiên 2B: tabsBar() gọi xlChuaLop() và cả trang chết trắng. */
+function xlOf(ma){return XLHS.find(h=>h.ma===ma)||{}}
+function xlChuaLop(){return XLHS.filter(h=>!h.lop)}                   /* toàn trường — badge + luật tự ẩn */
+function xlHangDoi(){return XLHS.filter(h=>!h.lop && h.kh===xlKhoi && h.dt===xlDt && h.he===xlHe)}
+function xlTrongLop(id){return XLHS.filter(h=>h.lop===id)}
+function xlLopCua(){return LOP.filter(l=>l.k===xlKhoi && l.dt===xlDt && l.he===xlHe)}
+function xlSuaDuoc(){return !!(R().duyet || R().ky)}                  /* HT · PHT_ĐT; VT và GVCN chỉ đọc */
+
+function viewXL(){
+ const Q=xlHangDoi(), L=xlLopCua();
+ const khois=[...new Set(XLHS.filter(h=>!h.lop).map(h=>h.kh))].sort((a,b)=>a-b);
+ const dts=[...new Set(LOP.map(l=>l.dt))];
+ const hes=[...new Set(LOP.filter(l=>l.k===xlKhoi&&l.dt===xlDt).map(l=>l.he))];
+ const chuaXep=xlChuaLop().length;
+ return veManXepLop({
+  dauMan:'<div class="ro">Tab này <b>ghi nhận hiện trạng</b>: em đã là học sinh của trường, chỉ chưa có lớp trong năm đang chạy. '+
+   '<b>⛔ Không duyệt, ⛔ không ký</b> — khác hẳn <b>M1.4 Phân lớp học sinh mới</b> <i>(M1.7 §2.4)</i>. '+
+   'Toàn trường còn <b>'+chuaXep+'</b> em chưa có lớp.</div>',
+  thanhLoc:'<select class="fs" id="xlkhoi">'+khois.map(k=>'<option value="'+k+'"'+(xlKhoi===k?' selected':'')+'>Khối '+k+'</option>').join('')+'</select>'+
+   '\n   <select class="fs" id="xldt">'+dts.map(d=>'<option'+(xlDt===d?' selected':'')+'>'+d+'</option>').join('')+'</select>'+
+   '\n   <select class="fs" id="xlhe">'+(hes.length?hes:['Đại trà']).map(h=>'<option'+(xlHe===h?' selected':'')+'>'+h+'</option>').join('')+'</select>',
+  nutCongCu:(xlSuaDuoc()?'<button class="btn sm p" data-x="xlauto"'+(Q.filter(xlXepDuoc).length?'':' disabled')+'>✨ Gợi ý tự động</button>':'')+
+   '\n    '+(xlSuaDuoc()?'<button class="btn sm" data-x="xlgan">📄 Gán theo lô</button>':'')+
+   '\n    '+(xlSuaDuoc()&&L.some(l=>xlTrongLop(l.id).length)?'<button class="btn sm" data-x="xlreset">↺ Trả hết về hàng đợi</button>':''),
+  moTa:'Hàng đợi gom <b>ba nguồn</b> <i>(Đ2b)</i>: <b>M3.3</b> kết chuyển còn sót · <b>M1.4</b> đã xác nhận nhập học · <b>lô nhập danh sách</b> — mọi khối <b>1–12</b>.'+
+   '\n   Em chuyển đến <b>M1.5</b> và tái nhập <b>M1.6</b> ⛔ bao giờ vào đây: hai luồng ấy chọn lớp ngay trong màn hình ký.'+
+   (Q.some(h=>!xlXepDuoc(h))?'\n   <br><span class="st2 w">Em gắn nhãn <b>M1.4</b> hiện để đếm cho đủ, nhưng ⛔ kéo được ở đây — xếp lớp cho em ấy có PHT_ĐT duyệt và HT ký công bố</span>':''),
+
+  hangDoi:Q, lop:L, choPhepSua:xlSuaDuoc(), hsCua:xlOf,
+  siSo:l=>l.ss+xlTrongLop(l.id).length,
+  tieuDeHangDoi:'Hàng đợi — Khối '+xlKhoi+' · '+xlHe+' — chưa có lớp',
+  chuHetHangDoi:'Đã xếp hết hàng đợi của lát cắt này',
+  chuChuaKhaiLop:'Chưa khai lớp của hệ này ở M10.1 · Lớp học',
+  veMeta:h=>'<div class="mt"><span>'+h.ma+'</span>'+(h.md?'<span>CSDL '+h.md+'</span>':'<span class="st2 w">chưa có mã định danh</span>')+'<span>'+h.gt+'</span><span>Học lực '+h.hl+'</span>'+
+   '<span class="st2 '+(h.ngv==='ts'?'w':'v')+'">'+XL_NGUON[h.ngv][0]+'</span>'+
+   (h.cu?'<span>lớp cũ '+h.cu+'</span>':'')+(h.lo?'<span>'+h.lo+'</span>':'')+(h.dot?'<span>'+h.dot+'</span>':'')+
+   (xlXepDuoc(h)?'':'<button class="btn xs" data-x="xlsangm14" data-ma="'+h.ma+'">↗ M1.4</button>')+'</div>',
+  canDoiHangDoi:Q=>'Nam '+Q.filter(h=>h.gt==='Nam').length+' · Nữ '+Q.filter(h=>h.gt==='Nữ').length+
+   ' · Học lực TB '+(Q.length?(Q.reduce((a,b)=>a+b.hl,0)/Q.length).toFixed(1):'—'),
+  dongPhu:l=>'<div style="font-size:11px;color:var(--ink3);padding:4px 10px">'+l.ss+' em đang học'+(l.giu?' · +'+l.giu+' giữ chỗ':'')+' · GVCN '+(l.gvcn||'— chưa phân —')+'</div>',
+  canDoiLop:nhap=>{const nam=nhap.filter(h=>h.gt==='Nam').length;
+   return 'Vừa xếp: Nam '+nam+' · Nữ '+(nhap.length-nam)+' · TB '+(nhap.length?(nhap.reduce((a,b)=>a+b.hl,0)/nhap.length).toFixed(1):'—')},
+
+  dayKy:null,                                   /* 🛑 cửa GHI NHẬN — M1.7 §7.5.1 */
+  nutGhi:xlSuaDuoc()?'<button class="btn p" data-x="xlghi"'+(L.some(l=>xlTrongLop(l.id).length)?'':' disabled')+'>✓ Ghi nhận xếp lớp</button>':'',
+  chuChanTrang:'Ghi thẳng, ⛔ có bước duyệt và ⛔ có ký công bố — <b>M1.7 §7.5.1</b>. Vết đủ vì chỉ <b>HT</b> và <b>PHT_ĐT</b> thao tác được.'});
+}
+
+/* ---- thao tác ---- */
+function xlGan(ma,lopId){
+ const h=xlOf(ma), l=lopOf(lopId);
+ if(!xlXepDuoc(h)){toast('Em này đến từ đợt tuyển sinh — xếp lớp ở M1.4, nơi có PHT_ĐT duyệt và HT ký công bố');return}
+ if(l.ss+xlTrongLop(lopId).length>=l.max+0&&!xlTrongLop(lopId).includes(h)){
+  toast('Lớp '+lopId+' đã đủ sĩ số '+l.max+' — ⛔ có ngoại lệ ở tab này vì ⛔ có bước duyệt nào để xin');return}
+ h.lop=lopId;render();
+}
+function xlTraVe(ma){const h=xlOf(ma);h.lop='';render()}
+function xlGoiY(){
+ const Q=xlHangDoi().filter(xlXepDuoc), L=xlLopCua();
+ if(!L.length){toast('Chưa khai lớp của lát cắt này');return}
+ /* cân đối giới tính đơn giản: rải lần lượt vào lớp còn chỗ, ít sĩ số trước */
+ Q.forEach(h=>{const con=L.filter(l=>l.ss+xlTrongLop(l.id).length<l.max)
+   .sort((a,b)=>(a.ss+xlTrongLop(a.id).length)-(b.ss+xlTrongLop(b.id).length));
+  if(con.length)h.lop=con[0].id});
+ render();
+}
+
+/* ---- cửa duy nhất cho mọi thao tác của tab; app.js chỉ gọi xlAct() ---- */
+function xlAct(a,d){
+ if(a==='xlauto'){xlGoiY();return true}
+ if(a==='xlreset'){xlLopCua().forEach(l=>xlTrongLop(l.id).forEach(h=>h.lop=''));render();return true}
+ if(a==='unassign'){xlTraVe(d.ma);return true}
+ if(a==='xlsangm14'){toast('Deep-link sang M1.4 §6.8 Phân lớp học sinh mới — em này đến từ một đợt tuyển sinh, xếp lớp cho em ấy có PHT_ĐT duyệt và HT ký công bố');return true}
+ /* 2B′ 27/9/2026 — nối THẬT vào bộ nhập dùng chung của cụm MNXL (⛔ còn mô phỏng).
+    Đường nhập khai ở app.09-duong-nhap.js; bước ③ đối chiếu ba mức và ④ bảng kết
+    quả là hàm CỦA MENU ở tệp đó (luật MX-5). */
+ if(a==='xlgan'){if(window.BNX&&BNX.menuM17)BNX.menuM17.mo();else toast('Bộ nhập dùng chung chưa nạp');return true}
+ if(a==='xlghi'){const L=xlLopCua(), n=L.reduce((t,l)=>t+xlTrongLop(l.id).length,0);
+  if(!n){toast('Chưa xếp em nào');return true}
+  L.forEach(l=>{l.ss+=xlTrongLop(l.id).length});
+  XLHS=XLHS.filter(h=>!h.lop);
+  toast('Đã ghi nhận '+n+' em vào lớp — ⛔ qua bước duyệt, ⛔ có ký công bố (M1.7 §7.5.1); sĩ số lớp cập nhật ngay');
+  render();return true}
+ return false}
+
+/* ---- kéo thả: khuôn dùng chung chỉ VẼ, mỗi menu tự nối sự kiện (như M1.4) ---- */
+let xlDrag=null;
+function bindXL(){
+ document.querySelectorAll('.qi[draggable],.si[draggable]').forEach(el=>{
+  el.addEventListener('dragstart',e=>{xlDrag=el.dataset.q;el.classList.add('drag');e.dataTransfer.effectAllowed='move'});
+  el.addEventListener('dragend',()=>el.classList.remove('drag'))});
+ document.querySelectorAll('.lbox').forEach(box=>{
+  box.addEventListener('dragover',e=>{e.preventDefault();box.classList.add('over')});
+  box.addEventListener('dragleave',()=>box.classList.remove('over'));
+  box.addEventListener('drop',e=>{e.preventDefault();box.classList.remove('over');
+   if(xlDrag)xlGan(xlDrag,box.dataset.lop);xlDrag=null})});
+ const sel=(id,fn)=>{const el=document.querySelector(id);if(el)el.addEventListener('change',e=>{fn(e.target.value);render()})};
+ sel('#xlkhoi',v=>xlKhoi=+v); sel('#xldt',v=>xlDt=v); sel('#xlhe',v=>xlHe=v);
+}
+
+/* 🛑 LỜI GỌI KHỞI ĐỘNG NẰM Ở ĐÂY, ⛔ ở cuối app.js — vì tệp này nạp SAU app.js.
+   Để render() ở app.js thì nó chạy lúc XLHS còn chưa khởi tạo. */
 render();
 </script>
 </body>
