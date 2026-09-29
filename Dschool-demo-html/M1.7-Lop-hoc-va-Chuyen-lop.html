@@ -2611,7 +2611,9 @@ function ghi(kq){
   var truoc = JSON.parse(JSON.stringify(XLHS));
   var ssTruoc = LOP.map(function(l){ return l.ss; });
 
-  ok.forEach(function(x){ x.em.lop = x.lop.id; x.lop.ss++; });
+  /* KCNH 28/9/2026 — D4: gan theo lo cung sinh ban ghi ket chuyen cho em nguon ①. */
+  ok.forEach(function(x){ x.em.lop = x.lop.id; x.lop.ss++;
+    if (typeof xlGhiBanGhi === 'function') xlGhiBanGhi(x.em); });
   var maOk = ok.map(function(x){ return x.ma; });
   XLHS = XLHS.filter(function(h){ return maOk.indexOf(h.ma) < 0; });
 
@@ -2818,7 +2820,7 @@ function viewXL(){
   nutCongCu:(xlSuaDuoc()?'<button class="btn sm p" data-x="xlauto"'+(Q.filter(xlXepDuoc).length?'':' disabled')+'>✨ Gợi ý tự động</button>':'')+
    '\n    '+(xlSuaDuoc()?'<button class="btn sm" data-x="xlgan">📄 Gán theo lô</button>':'')+
    '\n    '+(xlSuaDuoc()&&L.some(l=>xlTrongLop(l.id).length)?'<button class="btn sm" data-x="xlreset">↺ Trả hết về hàng đợi</button>':''),
-  moTa:'Hàng đợi gom <b>ba nguồn</b> <i>(Đ2b)</i>: <b>M3.3</b> kết chuyển còn sót · <b>M1.4</b> đã xác nhận nhập học · <b>lô nhập danh sách</b> — mọi khối <b>1–12</b>.'+
+  moTa:'Hàng đợi gom mọi em <b>CHƯA CÓ LỚP</b> trong năm đang chọn — <b>ba nguồn</b> <i>(Đ2b · câu định nghĩa sửa 28/9 theo Đ4)</i>: <b>M3.3</b> kết chuyển còn sót · <b>M1.4</b> đã xác nhận nhập học · <b>lô nhập danh sách</b> — mọi khối <b>1–12</b>. Đây là <b>làn 2</b> của ba làn <i>(M3.3 §5.7.0)</i>: xếp em nguồn <b>M3.3</b> ở đây <b>sinh bản ghi kết chuyển</b> mang dấu nguồn «xếp tay», và làn này <b>⛔ phụ thuộc trạng thái năm nguồn</b> — chạy được cả khi năm cũ đã kết thúc.'+
    '\n   Em chuyển đến <b>M1.5</b> và tái nhập <b>M1.6</b> ⛔ bao giờ vào đây: hai luồng ấy chọn lớp ngay trong màn hình ký.'+
    (Q.some(h=>!xlXepDuoc(h))?'\n   <br><span class="st2 w">Em gắn nhãn <b>M1.4</b> hiện để đếm cho đủ, nhưng ⛔ kéo được ở đây — xếp lớp cho em ấy có PHT_ĐT duyệt và HT ký công bố</span>':''),
 
@@ -2843,21 +2845,38 @@ function viewXL(){
 }
 
 /* ---- thao tác ---- */
+/* KCNH 28/9/2026 — D4. Tab nay la LAN 2 cua viec dua hoc sinh vao lop (M3.3 §5.7.0).
+   Em o NGUON ① da co ket luan len lop o nam lien truoc; bi sot chi la buoc THI HANH,
+   quyet dinh thi da co. Nen xep lop o day sinh DUNG LOAI ban ghi ma M3.3 tab ② sinh ra,
+   mang dau nguon «xep tay tai M1.7» — de muc ⑥ cua M10.1 dem vao dong Ket chuyen va
+   nut 🚀 Bat dau nam hoc chan dung (M3.3 rang buoc 27).
+   ⛔ Loai ban ghi thu hai; ⛔ de trong: em co lop ma tien do van bao thieu la ca te nhat.
+   Lan nay ⛔ doc trang thai nam NGUON — chay duoc ca khi nam cu da Da ket thuc. */
+function xlGhiBanGhi(h){
+ if(h.ngv!=='kc')return null;
+ h.bg={loai:'ket_chuyen',nguon:'xep tay tai M1.7',lopCu:h.cu,lopMoi:h.lop,
+   nguoi:R().n.split('—')[0].trim(),ngay:(typeof NGAY3!=='undefined'?NGAY3:'')};
+ return h.bg;
+}
 function xlGan(ma,lopId){
  const h=xlOf(ma), l=lopOf(lopId);
  if(!xlXepDuoc(h)){toast('Em này đến từ đợt tuyển sinh — xếp lớp ở M1.4, nơi có PHT_ĐT duyệt và HT ký công bố');return}
  if(l.ss+xlTrongLop(lopId).length>=l.max+0&&!xlTrongLop(lopId).includes(h)){
   toast('Lớp '+lopId+' đã đủ sĩ số '+l.max+' — ⛔ có ngoại lệ ở tab này vì ⛔ có bước duyệt nào để xin');return}
- h.lop=lopId;render();
+ h.lop=lopId;
+ const bg=xlGhiBanGhi(h);
+ if(bg)toast('Đã xếp <b>'+h.n+'</b> vào <b>'+lopId+'</b> — sinh <b>bản ghi kết chuyển</b> (dấu nguồn «xếp tay tại M1.7»), '+
+   'mục ⑥ của M10.1 đếm em này vào <b>dòng Kết chuyển</b>');
+ render();
 }
-function xlTraVe(ma){const h=xlOf(ma);h.lop='';render()}
+function xlTraVe(ma){const h=xlOf(ma);h.lop='';delete h.bg;render()}
 function xlGoiY(){
  const Q=xlHangDoi().filter(xlXepDuoc), L=xlLopCua();
  if(!L.length){toast('Chưa khai lớp của lát cắt này');return}
  /* cân đối giới tính đơn giản: rải lần lượt vào lớp còn chỗ, ít sĩ số trước */
  Q.forEach(h=>{const con=L.filter(l=>l.ss+xlTrongLop(l.id).length<l.max)
    .sort((a,b)=>(a.ss+xlTrongLop(a.id).length)-(b.ss+xlTrongLop(b.id).length));
-  if(con.length)h.lop=con[0].id});
+  if(con.length){h.lop=con[0].id;xlGhiBanGhi(h)}});
  render();
 }
 

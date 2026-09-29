@@ -3761,13 +3761,31 @@ ACT.daRa=function(el){const n=namBy(el.dataset.i),k=soCanhNS(n);
  n.daRa={ng:nguoiLog(),gio:d2s(HOMNAY)+' '+p2(new Date().getHours())+':'+p2(new Date().getMinutes()),canh:k};
  logNam(n,'ns','③ Đã rà nhân sự',k+' dòng ⚠ tại thời điểm rà');render();toast('✓ Đã ghi <b>người + giờ</b> rà nhân sự — '+k+' dòng ⚠ vẫn hiện theo dữ liệu thật')};
 
+/* KCNH 28/9/2026 — D1 + D2. Nut cua dong ket chuyen o muc ⑥.
+   D1: M3.3 la menu CUA NAM NGUON ⇒ ctx PHAI la nam lien truoc; nam dang xem
+       di kem duoi ten nam_dich. Chu cu ctx={nam} mo SAI NAM (bang xet duyet
+       rong, va tab ket chuyen cua man ay lai nham sang nam sau nua).
+   D2: bam la he thong TU LAT bo chon nam hoc sang nam nguon, co dai nhac
+       thuong truc va duong ve — lat KHONG BAO GIO im lang. */
+function nutKC(n){
+ const t=namTruoc(n);
+ if(!t)return '<span class="rolnk off" title="Nam nay khong co nam lien truoc">🔗 M3.3</span>';
+ const a=MCHU[role];
+ if(a!=='*'&&a.indexOf('M3.3')<0)return '<span class="rolnk off" title="Vai trò '+esc(R().ten)+' không có quyền tại M3.3 — không hiện deep-link">🔗 M3.3</span>';
+ return '<button class="rolnk" data-x="dlKC" data-i="'+n.id+'">↪ Kết chuyển dữ liệu từ năm học trước</button>';
+}
+ACT.dlKC=function(el){const n=namBy(el.dataset.i),t=namTruoc(n);
+ toast('↗ Deep-link <b>/M3.3?tab=ketchuyen&ctx='+esc(t.ten)+'&nam_dich='+esc(n.ten)+'&return=M10.1</b><br>'+
+  '🔴 <b>ctx là NĂM NGUỒN '+esc(t.ten)+'</b> — M3.3 là menu của năm nguồn; truyền năm đích vào ctx là <b>mở sai năm</b>.<br>'+
+  '🆕 Hệ thống <b>tự lật bộ chọn năm học</b> sang '+esc(t.ten)+', đầu màn hiện dải «Đang xem '+esc(t.ten)+' để kết chuyển · Xong → về '+esc(n.ten)+'» (demo không điều hướng)')};
+
 /* ----- ⑥ HOC SINH VAO LOP — chieu tien do ba nguon (§7.9) ----- */
 function secHS(n){
  let s='<div class="wsh"><h2>⑥ HỌC SINH VÀO LỚP <span class="st2 b">🆕</span></h2><span class="pill">chỉ chiếu · làm dần (N3)</span><span class="spacer" style="flex:1"></span></div><div class="wsb">';
  if(n.tt==='nhap')return s+'<div class="warn">🔒 <b>Chưa tới lúc</b> — đích kết chuyển <b>M3.3</b> và cổng tuyển sinh <b>M1.4</b> chỉ mở khi hồ sơ rời <b>Nháp</b> (N7). '+
   (can('kichhoat')?'Bấm <button class="btn xs p" data-x="mKichHoat" data-i="'+n.id+'">⑤ ✓ Tạo hồ sơ năm học</button> khi sẵn sàng.':'')+'</div></div>';
  const h=hsvl(n);
- const R_=(ten,m,f,x,dien)=>{
+ const R_=(ten,m,f,x,dien,nut)=>{
   /* GCHS 27/9: dong M1.9 khong bao gio di qua nhanh nay nua — can=0 thi secHS()
      AN han dong. Nhanh nay con lai cho M3.3 o nam trien khai dau: o do phai
      GIU dong giai thich, vi an di la giau mat cau tra loi «sao khong thay ket
@@ -3776,9 +3794,9 @@ function secHS(n){
   if(!coX(f))return '<div class="ckr usr"><div class="ic">🔒</div><div class="nm">'+ten+'</div><div class="ds">Bạn không có quyền xem <code>'+f+'</code> ở '+m+' — ⛔ không phải «đã xong»</div><div></div></div>';
   const ok=x.can&&x.da>=x.can;
   return '<div class="ckr '+(ok?'':(x.can?'wr':''))+'"><div class="ic">'+(ok?'✅':(x.can?'◐':'○'))+'</div><div class="nm">'+ten+'</div><div class="ds"><b>'+(x.da||0).toLocaleString('vi')+' / '+(x.can||0).toLocaleString('vi')+'</b> em đã vào lớp — thuộc diện: '+dien+
-   (x.ds&&x.ds.length?'<br><i>'+x.ds.slice(0,5).map(e=>esc(e.hs+' '+e.tu+' → '+e.vao)).join(' · ')+'</i>':'')+'</div><div>'+dlink(m)+'</div></div>'};
- s+='<div class="info">Xếp học sinh vào lớp là việc của <b>ba menu chủ</b> — mục này chỉ đếm và dẫn đường, ⛔ không thao tác tại chỗ. <b>Chặn 🚀 Bắt đầu năm học</b> (F6 dòng 10 · R84), ⛔ không chặn «Tạo hồ sơ». Một em vào lớp qua bất kỳ nguồn nào ⇒ ⛔ <b>↩ Đưa về Nháp</b>.</div>'+
-  '<div class="ck">'+R_('Kết chuyển — M3.3','M3.3','m3.3.ket_chuyen_sang_nam_sau',h.kc,'đã có kết luận lên lớp ở năm liền trước (trừ khối cuối cấp)')+
+   (x.ds&&x.ds.length?'<br><i>'+x.ds.slice(0,5).map(e=>esc(e.hs+' '+e.tu+' → '+e.vao)).join(' · ')+'</i>':'')+'</div><div>'+(nut||dlink(m))+'</div></div>'};
+ s+='<div class="info">Xếp học sinh vào lớp là việc của <b>ba menu chủ</b> — mục này chỉ đếm và dẫn đường, ⛔ không thao tác tại chỗ. <b>Chặn 🚀 Bắt đầu năm học</b> (F6 dòng 10 · R84), ⛔ không chặn «Tạo hồ sơ». Ba dòng dưới là <b>BA LÀN</b> (M3.3 §5.7.0) — khác nhau ở <b>CĂN CỨ</b>, ⛔ ở nguồn dữ liệu. Một em vào lớp qua bất kỳ nguồn nào ⇒ ⛔ <b>↩ Đưa về Nháp</b>.</div>'+
+  '<div class="ck">'+R_('↪ Kết chuyển dữ liệu từ năm học trước — M3.3','M3.3','m3.3.ket_chuyen_sang_nam_sau',h.kc,'đã có kết luận lên lớp ở năm liền trước (trừ khối cuối cấp)',nutKC(n))+
   R_('Tuyển sinh đầu cấp — M1.4','M1.4','m1.4.phan_lop_hs_moi',h.ts,'đã xác nhận nhập học ở các đợt gắn năm')+
   /* GCHS 27/9: AN HAN dong M1.9 khi khong co lo nao — khong render dong xam.
      Cung khuon «tab chi hien khi co viec» dang chay o M1.4 tab Cho toi duyet. */

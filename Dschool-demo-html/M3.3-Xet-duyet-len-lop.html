@@ -416,6 +416,7 @@ let LOP_SAU=[
  {id:'10A',dt:'Điểm trường B',khoi:10},
 ];
 const NAM_SAU_TT='Sắp tới';   /* trang thai nam hoc dich — cau hinh o M10.1 */
+const NAM_TT='Đang hoạt động';  /* KCNH 28/9: trang thai nam NGUON — dai cap nam o tab ② */
 
 /* ===== hoc sinh — sinh tu du lieu M3.1 + M3.2 ===== */
 const HO=['Nguyễn','Trần','Lê','Phạm','Hoàng','Vũ','Đặng','Bùi','Đỗ','Hồ','Ngô','Dương','Lý','Phan','Võ'];
@@ -734,10 +735,31 @@ function bangLop(){
 }
 
 /* ================= F2 — Ket chuyen ================= */
+/* KCNH 28/9/2026 — than chay ket chuyen tach ra khoi handler de hop xac nhan goi lai. */
+function kcChay(r){
+  const ok=[],sk=[];
+  dsKC().forEach(x=>{const L=LOP.find(z=>z.id===x.lop),k=klCuoi(x);
+   if(k.k==='ll'&&cuoiCap(L)){sk.push(`<b>${x.n}</b> (${x.lop}) · <b>chuyển cấp</b> — hồ sơ sang M3.4, không kết chuyển vào lớp`);return}
+   const dich=lopKC(x);
+   if(!dich){sk.push(`<b>${x.n}</b> (${x.lop}) · ${k.k==='ol'?'ở lại lớp — <b>chưa xếp lớp</b>':'<b>chưa cấu hình lớp đích</b> cho lớp '+x.lop}`);return}
+   ok.push(`<b>${x.n}</b> · ${x.lop} → <b>${dich}</b>${KCLOP[x.ma]?' <i>(đặt tay)</i>':''} · ${k.t}`)});
+  nhacBaoLuu().forEach(b=>sk.push(`<b>${b.n}</b> (đang bảo lưu từ ${b.lopCu}) · <b>không kết chuyển ở đây</b> — tái nhập học là yêu cầu của gia đình, xử lý tại <b>M1.6</b>`));
+  KCTT={at:HOM+' 16:10',by:r.n.split('—')[0].trim(),ok:ok,sk:sk};
+  modal(`↪ Kết chuyển sang năm học ${NAM_SAU}`,
+   `<div class="ro">Chạy lại bao nhiêu lần cũng không sai: em đã kết chuyển thì lần sau <b>bỏ qua</b>, không nhân đôi.
+     Vì vậy cứ chạy phần đã sẵn sàng, xử lý nốt phần bỏ qua rồi chạy lại.</div>`
+   +resTable('Đã kết chuyển',ok,'Bỏ qua',sk),[['Đóng',null,'']]);
+ render()}
+
 function tabKC(){
  const r=R(),kh=khoaKC();
- let h=`<div class="scopebar"><span>↪</span><div>Kết chuyển đưa học sinh vào <b>lớp của năm học ${NAM_SAU}</b>.
-   Đây là <b>hệ quả</b> của quyết định đã ký, không phải một quyết định mới.</div></div>`;
+ /* KCNH 28/9/2026 — D3. Dai CAP NAM thuong truc: man nay ghi du lieu vao mot NAM KHAC
+    nam dang xem, va do la toan bo muc dich cua no. Vi the ⛔ KHONG bat hop canh bao
+    «dang sua du lieu o nam khac» — canh bao dung o MOI luot se bi bam qua khong doc,
+    de hom no dung that thi cung bi bam qua. Noi thuong truc, hoi MOT lan o nut chay. */
+ let h=`<div class="scopebar"><span>↪</span><div><b>Nguồn: ${NAM} · ${NAM_TT}</b> → <b>Đích: ${NAM_SAU} · ${NAM_SAU_TT}</b>
+    <br>Kết chuyển đưa học sinh vào <b>lớp của năm học ${NAM_SAU}</b> — đây là <b>hệ quả</b> của quyết định đã ký, không phải một quyết định mới.
+    <br><span class="mm">Làn 1 của ba làn (M3.3 §5.7.0). Sót lẻ sau khi đóng sổ năm ${NAM} thì đi <b>làn 2</b> — M1.7 tab 🎯 Xếp lớp.</span></div></div>`;
  /* --- dieu kien du lieu --- */
  h+=`<div class="lock2">
    <div class="lk ${KYCB?'on':''}"><div class="i">${KYCB?'🔓':'🔒'}</div>
@@ -1109,19 +1131,18 @@ function act(a,d){
      toast('Lớp kết chuyển của '+x.n+' → '+(v||MAPLOP[x.lop]||'theo cấu hình')+' · ghi audit');render()}]],1);
   return}
  if(a==='chaykc'){
-  const ok=[],sk=[];
-  dsKC().forEach(x=>{const L=LOP.find(z=>z.id===x.lop),k=klCuoi(x);
-   if(k.k==='ll'&&cuoiCap(L)){sk.push(`<b>${x.n}</b> (${x.lop}) · <b>chuyển cấp</b> — hồ sơ sang M3.4, không kết chuyển vào lớp`);return}
-   const dich=lopKC(x);
-   if(!dich){sk.push(`<b>${x.n}</b> (${x.lop}) · ${k.k==='ol'?'ở lại lớp — <b>chưa xếp lớp</b>':'<b>chưa cấu hình lớp đích</b> cho lớp '+x.lop}`);return}
-   ok.push(`<b>${x.n}</b> · ${x.lop} → <b>${dich}</b>${KCLOP[x.ma]?' <i>(đặt tay)</i>':''} · ${k.t}`)});
-  nhacBaoLuu().forEach(b=>sk.push(`<b>${b.n}</b> (đang bảo lưu từ ${b.lopCu}) · <b>không kết chuyển ở đây</b> — tái nhập học là yêu cầu của gia đình, xử lý tại <b>M1.6</b>`));
-  KCTT={at:HOM+' 16:10',by:r.n.split('—')[0].trim(),ok:ok,sk:sk};
-  modal(`↪ Kết chuyển sang năm học ${NAM_SAU}`,
-   `<div class="ro">Chạy lại bao nhiêu lần cũng không sai: em đã kết chuyển thì lần sau <b>bỏ qua</b>, không nhân đôi.
-     Vì vậy cứ chạy phần đã sẵn sàng, xử lý nốt phần bỏ qua rồi chạy lại.</div>`
-   +resTable('Đã kết chuyển',ok,'Bỏ qua',sk),[['Đóng',null,'']]);
-  render();return}
+  /* KCNH 28/9/2026 — D3: hop XAC NHAN duy nhat cua luong nay, neu SO EM + TEN DU HAI NAM. */
+  /* Dem PHAI giong het vong lap cua kcChay(): bo em chuyen cap TRUOC, roi moi hoi lop dich.
+     ⛔ dung dsKC().filter(x=>lopKC(x)) — lopSauMacDinh() tra ve co '__cc__' cho em cuoi cap,
+     nen cach do dem dung nhom SE BI BO QUA (do duoc: hop bao 128, chay ra 0). */
+  const semKC=dsKC().filter(x=>{const L=LOP.find(z=>z.id===x.lop),k=klCuoi(x);
+    if(k.k==='ll'&&cuoiCap(L))return false;
+    return !!lopKC(x)}).length;
+  modal('↪ Xác nhận kết chuyển',
+   `<div class="ro">Kết chuyển <b>${semKC} học sinh</b> từ năm học <b>${NAM} (${NAM_TT})</b> sang năm học <b>${NAM_SAU} (${NAM_SAU_TT})</b>?
+     <br>Em chưa đủ điều kiện sẽ <b>bỏ qua và nêu đích danh lý do</b>. Chạy lại bao nhiêu lần cũng không nhân đôi.</div>`,
+   [['Hủy',null,''],['↪ Chạy kết chuyển',()=>kcChay(r),'p']],1);
+  return}
  if(a==='xemkc'){modal('Kết quả lần chạy gần nhất · '+KCTT.at,
    resTable('Đã kết chuyển',KCTT.ok,'Bỏ qua',KCTT.sk),[['Đóng',null,'']]);return}
 }

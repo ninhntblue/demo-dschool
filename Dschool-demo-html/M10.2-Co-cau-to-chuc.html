@@ -356,7 +356,11 @@ const lk101=(muc,lb,them)=>dlink('M10.1',lb||('M10.1 '+['','①','②','③','�
 
 /* ===== TRANG THAI MAN HINH ===== */
 let V={tab:'truong',nam:'N2627',pick:null,q:'',cap:{THCS:1,THPT:1},ng:{gdpt:1,truong:1},tt:{dung:1,ngung:0},cu:null,
- dt:'',dtGT:0,heNg:0,toKHD:0,khoi:'',nhan:'',nhin:'to',chuaTo:1};
+ dt:'',dtGT:0,heNg:0,toKHD:0,khoi:'',nhan:'',nhin:'to',chuaTo:1,namNay:1};
+/* DMMH-1A (28/9/2026): namNay = chip «Chỉ môn năm nay dùng» — BAT MAC DINH (chot D4).
+   🛑 No ⛔ THAY duoc «Thôi dùng»: bo loc tra loi «nam nay co dung ⛔», con Thoi dung tra loi
+   «truong con coi mon nay la mon cua minh ⛔». Mon Bo da bo ma nam nay con lop dang hoc
+   thi bo loc VAN HIEN no, mai mai. */
 /* CCTT-1A: dt = bo chon Diem truong (tab ③) · khoi='he' = cuon toi khoi he · nhan = dong duoc tro toi
    HTDC-1A (25/9/2026): nhin = cach nhin cua tab ④ (to|mon — chot h) · chuaTo = chip «chua thuoc to nao», BAT SAN */
 function nguoiLog(){return 'Người dùng demo · '+R().ten}
@@ -470,6 +474,15 @@ const MON=[
   tao:{k:'m101',ai:'Mai Thị Quyên · PHT Chuyên môn',ngay:D(28,4,2025),hs:'2025-2026'}},
  {ma:'TINUD',ten:'Tin học ứng dụng (cũ)',cua:1,nhom:{THCS:'ct'},tiet:T4(35),kdg:'ds',ngung:{d:D(10,8,2025),ng:'Mai Thị Quyên · PHT Chuyên môn',ly:'Nội dung đã nằm trong môn Tin học bắt buộc của CT GDPT 2018 — thôi dạy riêng'},
   tao:{k:'m102',ai:'Vũ Đình Khoa · PHT Chuyên môn',ngay:D(20,8,2023),hs:''}}];
+/* 🆕 DMMH 28/9/2026 — kieu_dg_mac_dinh KHOA THEO CAP (HDCT ban 5, F807CB53…91C5).
+   Vi sao: TT 27/2020 (Tieu hoc) va TT 22/2021 D.5 (THCS · THPT) dinh KHAC NHAU, nen mot mon
+   day o hai cap can HAI gia tri goi y. Truoc v5.2 truong nay la MOT chuoi dung chung ca mon —
+   la cai le duy nhat trong ba thuoc tinh cua mon (nhom{cap} · tiet{khoi} · kdg VO HUONG).
+   🛑 Day la gia tri GOI Y. Gia tri THAT nam tren tung cap Lop × Mon o M10.1 ⑥ (R12).
+   Du lieu tren khai MOT gia tri cho gon ⇒ chuan hoa thanh {cap} theo cac cap cua mon. */
+MON.forEach(m=>{if(typeof m.kdg==='string'){const v=m.kdg,o={};Object.keys(m.nhom).forEach(c=>o[c]=v);m.kdg=o;}});
+const kdgOf=(m,cap)=>(m.kdg&&(m.kdg[cap]||m.kdg[Object.keys(m.kdg)[0]]))||'ds';
+const kdgTen=v=>v==='ds'?'Điểm số':'Nhận xét';
 MON.forEach(m=>{if(!m.tao)m.tao=NAP;m.ls=[{d:m.tao.ngay,ng:m.tao.ai,t:m.tao.k==='nap'?'Nạp sẵn theo CT GDPT 2018':m.tao.k==='m101'?'Tạo từ bước ④ M10.1 — hồ sơ '+m.tao.hs+' (ghi hộ)':'Tạo tại M10.2',n:m.cua?'Nguồn chương trình = Của trường (dẫn xuất)':''}];
  if(m.ngung)m.ls.push({d:m.ngung.d,ng:m.ngung.ng,t:'Ngưng dùng',n:m.ngung.ly,c:'w'})});
 MON.filter(m=>m.ma==='CDTOAN')[0].ls.push({d:D(22,4,2026),ng:'Mai Thị Quyên · PHT Chuyên môn',t:'Sửa số tiết/năm dự kiến',n:'35 → 70 (lớp 10 Toán học dồn 2 tiết/tuần)'});
@@ -493,7 +506,11 @@ const capOf=k=>k<=5?'TH':k<=9?'THCS':'THPT';
 
 /* ===== PHUONG THUC TO CHUC KIEN THUC — HDPC ① ② (cum GDDP, phien 1B · 20/9/2026) =====
    THUC THE RIENG gan khoa ngoai mon_id — KHONG phai thuoc tinh cua ban ghi mon.
-   Ly do: §5.2 khoa cung "ten · nhom · kieu DG · so tiet chuan cua MON CHUAN khong sua duoc,
+   🔁 DMMH-1A (28/9/2026): cau vien dan duoi day theo R9 BAN CU. R9 v5.2 doi lan ranh —
+   ten · cap · so_tiet_nam_chuan · kieu_dg_mac_dinh nay SUA DUOC cho ca mon chuan; chi nhom_chuan
+   con khoa. KET LUAN cua khoi nay VAN DUNG (phuong thuc la thuc the RIENG gan mon_id, ⛔ thuoc tinh
+   cua mon) — hong la LY LE DO LUNG, ⛔ dieu khoan. Xem §12 diem 48.
+   Ly do (bản cũ): §5.2 khoa cung "ten · nhom · kieu DG · so tiet chuan cua MON CHUAN khong sua duoc,
    ke ca Hieu truong". Ghi phuong thuc vao ban ghi mon la de truong sua thu ho khong duoc sua.
    Moi mon co san PT0 — Toan mon, dung MOT phan ma TOAN_MON mang ten mon.
    PT0 KHONG sua, KHONG xoa, KHONG ngung dung — ke ca Hieu truong (rang buoc 1).
@@ -527,7 +544,7 @@ const coChiaPhan=ma=>ptCua(ma).length>1;
 /* so cot DGtx mac dinh — TT 22/2021 Dieu 6 (doc ban goc 14/9/2026) */
 function cotTx(m,khoi){
  if(capOf(khoi)==='TH')return null;
- if(m.kdg==='nx')return 2;                       /* k2a — "moi hoc ki chon 02 lan" */
+ if(kdgOf(m,capOf(khoi))==='nx')return 2;        /* k2a — "moi hoc ki chon 02 lan"; doc theo CAP cua khoi */
  const t=m.tiet[khoi];if(!t)return null;
  return t<=35?2:t<=70?3:4;                       /* k2b — 35 / tren 35 den 70 / tren 70 */
 }
@@ -1150,25 +1167,71 @@ ACT.doChuanHoa=function(){
       lich su ⛔ khong xoa duoc (chot o — §3b · R42 · R44).
    ================================================================================= */
 const KHOI=[6,7,8,9,10,11,12];
+/* DMMH-1A: nhan cua trang_thai doi THEO CUA — MOT truong du lieu, HAI nhan (chot D1).
+   ⛔ Dung chu «Khóa» cho mon chuan: truong se doc ra «toi khoa duoc danh muc cua Bo». */
+/* Tom «Thời lượng» ve MOT o: dong nhat ⇒ mot so; bien thien theo khoi ⇒ dai min–max.
+   ⛔ In 7 so — day la danh muc, so tiet tung khoi doc o panel tang 2. */
+function tomTiet(m){
+ const v=khoiMon(m).map(k=>m.tiet[k]).filter(x=>x);
+ if(!v.length)return '<span class="dim">·</span>';
+ const a=Math.min.apply(null,v),b=Math.max.apply(null,v);
+ return a===b?('<b>'+a+'</b>'):('<b>'+a+'–'+b+'</b>');
+}
+const ttNhan=m=>m.cua?'Khóa':'Thôi dùng';
+const ttIcon=m=>m.cua?'🔒 Khóa':'🚫 Thôi dùng';
+/* R46 — mon chuan nhom «Bắt buộc» cua CAP TRUONG DANG DAY ⇒ ⛔ CHAN CUNG.
+   Ly do: A2 so danh sach bat buoc voi danh sach mon cua nam. An no ⇒ MAY THOI BAO THIEU,
+   bang kiem noi «du» trong khi nam hoc thieu mot mon bat buoc ⇒ mat mot HANG RAO. */
+/* 🔴 Do bang may 28/9: nhom «nn» (Ngoai ngu) LOT hang rao neu chi kiem 'bb'.
+   CT GDPT 2018: «Ngoại ngữ 1» LA MON BAT BUOC o THCS · THPT — nhung THU TIENG thi truong chon.
+   ⇒ ⛔ chan ca nhom nn (se chan ca Tieng Nhat — dung ca anh Ninh muon mo);
+     ⛔ tha ca nhom nn (thoi dung not Tieng Anh ⇒ o chuan NN1 KHONG CON MON NAO PHU, ma may
+        van noi «du» vi A2 chi dem nhom bb).
+   ⇒ Chan dung MON CUOI CUNG con «Dang dung» cua nhom nn o mot cap truong dang day.
+   🛑 Day la XAP XI cho MVP — phep dung la «o chuan NN1 con mon nao anh xa toi khong», va
+      anh xa la viec cua cum ANHXA-1 (chua mo). Ghi §12. */
+function capBatBuoc(m){
+ if(m.cua)return null;
+ const bt=bacTruong(namBy(V.nam)),c=[];
+ capsMon(m).forEach(function(cap){
+  if(bt.indexOf(cap)<0)return;
+  if(m.nhom[cap]==='bb'){c.push(cap);return}
+  if(m.nhom[cap]==='nn'){
+   const con=MON.filter(x=>!x.cua&&!x.ngung&&x.ma!==m.ma&&x.nhom[cap]==='nn');
+   if(!con.length)c.push(cap+' · ô Ngoại ngữ 1');
+  }
+ });
+ return c.length?c.join(' · '):null;
+}
 function locMon(){
- const q=V.q.trim().toLowerCase();
+ const q=V.q.trim().toLowerCase(),n=namBy(V.nam);
  return MON.filter(m=>{
   if(!capsMon(m).some(c=>V.cap[c]))return false;
   if(!V.ng[nguonMon(m)])return false;
   if(!V.tt[m.ngung?'ngung':'dung'])return false;
+  if(V.namNay&&!m.ngung&&!lopHoc(n,m.ma).length)return false;
   return !q||(tenTai(m,ngayDoc)+' '+m.ten+' '+m.ma).toLowerCase().indexOf(q)>=0;
  });
 }
 function tabMon(){
  const n=namBy(V.nam),ds=locMon(),nNg=MON.filter(m=>m.ngung).length;
+ const nChua=MON.filter(m=>!m.ngung&&!lopHoc(n,m.ma).length).length;
  const chip=(g,k,lb)=>'<button class="qf '+(V[g][k]?'on':'')+'" data-x="loc" data-g="'+g+'" data-k="'+k+'">'+lb+'</button>';
  const bar=oNgayDoc()+dmCanhBao()+'<div class="locrow2"><span class="sub">Cấp</span>'+chip('cap','THCS','THCS')+chip('cap','THPT','THPT')+
   '<span class="sub" style="margin-left:6px">Nguồn</span>'+chip('ng','gdpt','CT GDPT')+chip('ng','truong','Của trường')+
-  '<span class="sub" style="margin-left:6px">Trạng thái</span>'+chip('tt','dung','Đang dùng')+chip('tt','ngung','Khóa ('+nNg+')')+
-  '<span class="sub" style="margin-left:auto" title="Nguồn mặc định số cột ĐGtx — Q7. Số tiết thật ở KHGD M5.1">cột <b>6…12</b> = số tiết/năm chuẩn theo khối</span>'+
+  '<span class="sub" style="margin-left:6px">Trạng thái</span>'+chip('tt','dung','Đang dùng')+chip('tt','ngung','Khóa · Thôi dùng ('+nNg+')')+
+  '<button class="qf '+(V.namNay?'on':'')+'" data-x="locCT" data-k="namNay" style="margin-left:6px" title="D4 — bộ lọc mặc định. Đọc cột dẫn xuất «Đang dùng» từ M10.1 ⑥. ⛔ Nó KHÔNG thay được Thôi dùng: môn Bộ đã bỏ mà năm nay còn lớp học thì bộ lọc vẫn hiện nó">Chỉ môn năm nay dùng'+(V.namNay&&nChua?' · ẩn '+nChua:'')+'</button>'+
+  (V.namNay&&nChua?'<button class="qf" data-x="locCT" data-k="namNay" title="Bỏ lọc để xem đủ">Chưa dùng ('+nChua+')</button>':'')+
+  '<span class="sub" style="margin-left:auto" title="Giá trị khởi tạo cho số cột ĐGtx khi CHƯA có KHGD — Q7. Số tiết thật ở KHGD M5.1, và từ D7b thì KHGD đọc TRƯỚC">cột <b>6…12</b> = <b>Thời lượng quy định</b> theo khối</span>'+
   '<input class="inp" id="qq" placeholder="Tìm môn, mã…" value="'+esc(V.q)+'" style="width:150px"></div>';
+ /* 🔁 DMMH-Z (28/9): GOP 7 cot khoi + «Cụm CĐ» thanh MOT cot «Thời lượng».
+    Do bang may: 8/16 cot — DUNG MOT NUA so cot — phuc vu KE HOACH GIANG DAY, ⛔ danh tinh mon.
+    Nghiep vu cua tab nay la KHAI DANH MUC + BAT/TAT mon, ⛔ quan ly KHGD.
+    🛑 ⛔ MAT thong tin: bang day du «khoi → tiet/nam → so cot DGtx → dieu khoan TT 22»
+    VON DA CO o panel tang 2 (§5.1) — day chi la thoi NHAN DOI no ra danh sach. */
  const head='<tr><th>Môn</th><th>Nguồn chương trình</th><th>Cấp · nhóm chuẩn</th><th>Kiểu ĐG mặc định</th>'+
-  KHOI.map(k=>'<th class="c k" title="Số tiết/năm chuẩn — khối '+k+'">'+k+'</th>').join('')+'<th class="c">Cụm CĐ</th><th class="c" title="Số phương thức tổ chức kiến thức đang dùng của môn — bấm dòng để mở panel">Phương thức</th>'+
+  '<th class="c" title="Thời lượng quy định theo khối — bấm dòng để xem bảng đầy đủ: khối → tiết/năm → số cột ĐGtx → điều khoản TT 22">Thời lượng</th>'+
+  '<th class="c" title="Số phương thức tổ chức kiến thức đang dùng của môn — bấm dòng để mở panel">Phương thức</th>'+
   '<th title="Dẫn xuất từ HDCT ③b tại ngày đọc — CHỈ ĐỌC, ghi ở tab ④">Tổ</th>'+
   '<th>Đang dùng · '+n.ten+' 🔗</th><th>Nguồn tạo</th></tr>';
  const row=m=>{
@@ -1176,14 +1239,20 @@ function tabMon(){
   const hen=henDoiTen(m,ngayDoc),sl=soLanDoiTen(m),to=toCuaMonTai(m.ma,ngayDoc);
   return '<tr class="'+(V.pick===m.ma?'on':'')+(m.ngung?' gone':'')+'" data-x="pick" data-m="'+m.ma+'"><td><b>'+esc(tenTai(m,ngayDoc))+'</b> <span class="sub">'+m.ma+'</span>'+
     (sl?' <span class="pill" title="tên đọc tại ngày — tenTai() (§3b.2)">🕘 '+sl+' lần đổi tên</span>':'')+
-    (m.ngung?' <span class="st2 w" title="Khóa là BỘ LỌC HIỂN THỊ — bản ghi phân công ở M4.4 giữ nguyên (chốt e)">🔒 Khóa</span>':'')+
+    (m.ngung?' <span class="st2 w" title="'+ttNhan(m)+' là BỘ LỌC HIỂN THỊ — bản ghi phân công ở M4.4 giữ nguyên (chốt e). Nhãn theo CỬA: môn của trường = Khóa · môn CT GDPT = Thôi dùng (D1)">'+ttIcon(m)+'</span>':'')+
     (hen?'<div class="sub" style="color:#92400e">⏳ từ '+d2s(hen.hl)+': '+esc(hen.moi)+'</div>':'')+
     (m.cua&&!m.ngung?'<div class="sub" style="color:#92400e">⚠ không đẩy CSDL ngành · không vào xếp loại, danh hiệu · không có cột trong học bạ số <button class="rolnk" data-x="canCuTruong">Căn cứ ▾</button></div>':'')+'</td>'+
    '<td><span class="st2 '+NGUON[ng][1]+'" title="Dẫn xuất — không có ô sửa, kể cả Hiệu trưởng (R6)">'+NGUON[ng][0]+'</span></td>'+
    '<td class="sub">'+capsMon(m).map(c=>c+' · '+NHOMTEN[m.nhom[c]]).join('<br>')+'</td>'+
-   '<td><span class="st2 '+(m.kdg==='ds'?'b':'v')+'">'+(m.kdg==='ds'?'Điểm số':'Nhận xét')+'</span></td>'+
-   KHOI.map(k=>m.tiet[k]?'<td class="c k" title="Mặc định '+cotTx(m,k)+' cột ĐGtx/HK (TT 22 Đ.6)">'+m.tiet[k]+'</td>':'<td class="c k dim">·</td>').join('')+
-   '<td class="c">'+(m.cd?'✚':'')+'</td>'+
+   /* 🆕 kdg khoa theo CAP: hien gia tri cua cap dang loc; hai cap khac nhau ⇒ hien CA HAI co nhan */
+   '<td>'+(function(){
+     const cs=capsMon(m).filter(c=>V.cap[c]); const ds=(cs.length?cs:capsMon(m));
+     const v=[...new Set(ds.map(c=>kdgOf(m,c)))];
+     if(v.length===1)return '<span class="st2 '+(v[0]==='ds'?'b':'v')+'">'+kdgTen(v[0])+'</span>';
+     return ds.map(c=>'<span class="st2 '+(kdgOf(m,c)==='ds'?'b':'v')+'" title="cấp '+c+'">'+c+': '+kdgTen(kdgOf(m,c))+'</span>').join('<br>');
+   })()+'</td>'+
+   '<td class="c k" title="'+esc(khoiMon(m).map(k=>'khối '+k+': '+m.tiet[k]+' tiết → '+cotTx(m,k)+' cột ĐGtx/HK').join(' · '))+' (TT 22 Đ.6) — bấm dòng để xem bảng đầy đủ">'+tomTiet(m)+
+     (m.cd?' <span class="pill" title="có cụm chuyên đề học tập — +1 cột ĐGtx khi lớp chọn cụm">✚ CĐ</span>':'')+'</td>'+
    '<td class="c">'+(coChiaPhan(m.ma)?'<b title="'+esc(ptDung(m.ma).map(p=>p.ten).join(' · '))+'">'+ptDung(m.ma).length+'</b>':'<span class="sub" title="chỉ PT0 — Toàn môn">1</span>')+'</td>'+
    '<td>'+(to?'<span class="lnk" data-x="toiTo" data-t="'+to+'" title="Dẫn xuất từ HDCT ③b tại ngày đọc — bấm để sang tab ④">'+esc(tenTai(TOM[to],ngayDoc))+'</span>'
      :'<span class="st2 w" data-x="toiToMon" title="R38 — cảnh báo, không chặn; M10.1 chặn 🚀 Bắt đầu năm học nếu năm ấy còn dạy môn">⚠ chưa thuộc tổ nào</span>')+'</td>'+
@@ -1192,11 +1261,11 @@ function tabMon(){
  };
  const q=V.q.trim();
  let body='';
- if(!ds.length)body='<tr><td colspan="16"><div class="empty"><b>Không có môn nào khớp bộ lọc</b>Bỏ bớt chip lọc hoặc xóa ô tìm.</div></td></tr>';
+ if(!ds.length)body='<tr><td colspan="10"><div class="empty"><b>Không có môn nào khớp bộ lọc</b>Bỏ bớt chip lọc hoặc xóa ô tìm.</div></td></tr>';
  else if(q)body=ds.map(row).join('');           /* dang tim thi phang hoa */
  else[['gdpt','<span class="st2 o">CT GDPT</span> danh mục chuẩn theo cấp — khuôn của Bộ <span class="pill">bản nạp sẵn — chưa đồng bộ CSDL ngành</span> <span class="sub">→ vào học bạ số, CSDL ngành, xếp loại</span>'],['truong','<span class="st2 w">Của trường</span> trường tự tạo <span class="sub">→ KHÔNG vào học bạ số, CSDL ngành, xếp loại</span>']].forEach(function(g){
   const a=ds.filter(m=>nguonMon(m)===g[0]);if(!a.length)return;
-  body+='<tr class="grp"><td colspan="16">'+g[1]+' <span class="sub">· '+a.length+' môn</span></td></tr>'+a.map(row).join('');
+  body+='<tr class="grp"><td colspan="10">'+g[1]+' <span class="sub">· '+a.length+' môn</span></td></tr>'+a.map(row).join('');
  });
  const list='<div class="tbw"><table class="tb">'+'<thead>'+head+'</thead><tbody>'+body+'</tbody></table></div>';
  const note=(V.cu2?'<div class="ro" style="margin-bottom:9px">↪ <b>Đường dẫn <code>?tab=mon</code></b> mở <b>tab ② Danh mục môn học</b>. '+
@@ -1227,21 +1296,27 @@ function nguonTao(m){
  return 'tạo tại M10.2 · '+d2s(t.ngay);
 }
 function panelMon(m){
- const ng=nguonMon(m),sua=can('mon')&&m.cua;
+ /* DMMH-1A: R9 DOI LAN RANH — «sua duoc ⟺ co lich su». Bon truong trong lich_su[] cua HDCT ③a
+    (ten · cap · so_tiet_nam_chuan · kieu_dg_mac_dinh) sua duoc cho MOI mon, ke ca CT GDPT.
+    ⛔ nhom_chuan — hang rao A2, va no ⛔ co trong lich_su[]. */
+ const ng=nguonMon(m),sua=can('mon'),cbb=capBatBuoc(m);
  const namDung=NAM.map(n=>({n:n,l:lopHoc(n,m.ma)})).filter(x=>x.l.length);
  const tiet='<table class="tb sm"><thead><tr><th>Khối</th><th class="c">Tiết/năm chuẩn</th><th class="c">Cột ĐGtx mặc định / HK</th><th>Căn cứ</th></tr></thead><tbody>'+
   khoiMon(m).map(k=>'<tr><td>Khối '+k+'</td><td class="c"><b>'+m.tiet[k]+'</b></td><td class="c">'+cotTx(m,k)+(m.cd?' <span class="sub">(+1 nếu lớp chọn cụm CĐ)</span>':'')+'</td>'+
-   '<td class="sub">'+(m.kdg==='nx'?'Đ.6 k2a — môn nhận xét: 2 lần':'Đ.6 k2b — '+(m.tiet[k]<=35?'35 tiết → 2':m.tiet[k]<=70?'35–70 tiết → 3':'trên 70 tiết → 4'))+'</td></tr>').join('')+'</tbody></table>';
+   '<td class="sub">'+(kdgOf(m,capOf(k))==='nx'?'Đ.6 k2a — môn nhận xét: 2 lần':'Đ.6 k2b — '+(m.tiet[k]<=35?'35 tiết → 2':m.tiet[k]<=70?'35–70 tiết → 3':'trên 70 tiết → 4'))+'</td></tr>').join('')+'</tbody></table>';
  return '<div class="ph"><div class="n"><h2>'+esc(tenTai(m,ngayDoc))+'</h2><div class="m"><code>'+m.ma+'</code><span class="st2 '+NGUON[ng][1]+'">'+NGUON[ng][0]+'</span>'+
-   (m.ngung?'<span class="st2 w">🔒 Khóa</span>':'<span class="st2 o">Đang dùng</span>')+'<span class="mas">Master</span></div></div>'+
+   (m.ngung?'<span class="st2 w">'+ttIcon(m)+'</span>':'<span class="st2 o">Đang dùng</span>')+'<span class="mas">Master</span></div></div>'+
    '<div class="spacer" style="flex:1"></div><button class="btn sm" data-x="dongPick">✕</button></div>'+
   '<div class="pbody">'+
   (m.cua?'<div class="warn">⚠ Môn <b>Của trường</b>: điểm môn này <b>không đẩy CSDL ngành</b>, <b>không vào xếp loại, danh hiệu</b>, <b>không có cột trong học bạ số</b> (TT 70/2026). Không phải là cấm — vẫn nhập điểm ở M2.5 bình thường. <button class="rolnk" data-x="canCuTruong">Căn cứ ▾</button></div>':
-   '<div class="ro">Môn trong <b>danh mục chuẩn theo cấp</b> — khuôn của Bộ <i>(CT GDPT 2018 · TT 32/2018, sửa bởi TT 13/2022)</i>. <b>Trường không sửa được</b> (R9); cập nhật qua kéo danh mục chuẩn ở '+dlink('M10.8')+'.</div>')+
+   '<div class="ro">Môn trong <b>danh mục chuẩn theo cấp</b> — khuôn của Bộ <i>(CT GDPT 2018 · TT 32/2018, sửa bởi TT 13/2022)</i>. '+
+    '🔑 <b>Sửa được ⟺ có lịch sử</b> (R9 v5.2): <b>tên · cấp · Thời lượng quy định · kiểu ĐG</b> sửa được — bắt <b>Căn cứ văn bản</b>, ghi một dòng lịch sử. '+
+    '⛔ <b>Nhóm chuẩn</b> ⛔ sửa được — nó là <b>hàng rào A2</b> và ⛔ có trong <code>lich_su[]</code> của HDCT ③a; cập nhật qua '+dlink('M10.8')+' hoặc bản phát hành.</div>')+
+   (m.suaTay?'<div class="warn">⚠ <b>Trường đã sửa tay</b> — căn cứ: <b>'+esc(m.suaTay)+'</b>. Lượt kéo ở '+dlink('M10.8')+' gặp cờ này thì <b>đối chiếu và nêu đích danh</b>, ⛔ không ghi đè im lặng (§17 · R45).</div>':'')+
   '<div class="sech">Danh tính môn</div>'+
   '<div class="f"><div class="k">Cấp · nhóm chuẩn</div><div class="v">'+capsMon(m).map(c=>c+' · '+NHOMTEN[m.nhom[c]]).join(' &nbsp;|&nbsp; ')+'</div></div>'+
   '<div class="f"><div class="k">Nguồn chương trình</div><div class="v">'+NGUON[ng][0]+' <span class="sub">dẫn xuất — '+(m.cua?'môn trường tự tạo':'môn có trong danh mục chuẩn của cấp')+' (R6)</span></div></div>'+
-  '<div class="f"><div class="k">Kiểu đánh giá mặc định</div><div class="v">'+(m.kdg==='ds'?'Điểm số':'Nhận xét')+' <span class="sub">'+(m.cua?'trường chọn':'TT 22/2021 Điều 5')+' · M10.1 ⑥ lấy làm mặc định, đổi theo lớp có cảnh báo</span></div></div>'+
+  '<div class="f"><div class="k">Kiểu đánh giá mặc định</div><div class="v">'+capsMon(m).map(c=>(capsMon(m).length>1?c+': ':'')+kdgTen(kdgOf(m,c))).join(' · ')+' <span class="sub">'+(m.cua?'trường chọn':'TT 22/2021 Điều 5 · TT 27/2020 cho Tiểu học')+' — 🛑 <b>giá trị gợi ý</b>, giá trị thật trên từng Lớp × Môn ở M10.1 ⑥</span></div></div>'+
   '<div class="f"><div class="k">Cụm chuyên đề học tập</div><div class="v">'+(m.cd?'✚ có — THPT, +1 cột ĐGtx khi lớp chọn cụm (TT 22 Đ.6 k3)':'không')+'</div></div>'+
   '<div class="sech">Số tiết/năm chuẩn theo khối → số cột ĐGtx mặc định'+(m.cua?' <span class="pill">số tiết dự kiến — trường khai</span>':' <button class="rolnk" data-x="canCuTiet">Căn cứ ▾</button>')+'</div>'+tiet+
   '<div class="ro" style="margin-top:6px">Chỉ để <b>mặc định số cột ĐGtx</b> ở '+lk101(6,'M10.1 ⑥')+'. Số tiết thật của lớp ở '+dlink('M5.1','KHGD M5.1')+' — nguồn duy nhất (Q7).</div>'+
@@ -1259,9 +1334,11 @@ function panelMon(m){
   '<div class="sech">Nhật ký thao tác <span class="sub">(⟂ lịch sử giá trị — hai cách nhìn của MỘT nguồn, §3b.4)</span></div><div class="logl">'+m.ls.slice().reverse().map(x=>'<div class="logi '+(x.c||'')+'"><b>'+esc(x.t)+'</b><span class="mm">'+d2s(x.d)+' · '+esc(x.ng)+'</span>'+(x.n?'<div style="font-size:12px;color:var(--ink2)">'+esc(x.n)+'</div>':'')+'</div>').join('')+'</div>'+
   '</div><div class="pfoot">'+
   (docQuaKhu()?'<span class="sub">⚠ Đang đọc tại '+d2s(ngayDoc)+' — mọi nút ghi bị khóa; quay về <b>hôm nay</b> để sửa</span>':
-   (sua&&!m.ngung?'<button class="btn" data-x="mSuaMon" data-m="'+m.ma+'">✎ Sửa — có ngày hiệu lực</button><button class="btn d" data-x="mNgung" data-m="'+m.ma+'">🔒 Khóa môn</button>':'')+
-   (sua&&m.ngung?'<button class="btn p" data-x="dungLai" data-m="'+m.ma+'">▶ Mở khóa</button>':'')+
-   (!m.cua?'<span class="sub">Môn chuẩn — ⛔ không sửa, ⛔ không khóa (R9). Cập nhật qua '+dlink('M10.8')+'</span>':(!can('mon')?'<span class="sub">Vai '+esc(R().ten)+' chỉ xem — chủ danh mục là PHT Chuyên môn</span>':'')))+'</div>';
+   (sua&&!m.ngung?'<button class="btn" data-x="mSuaMon" data-m="'+m.ma+'">✎ Sửa — có ngày hiệu lực</button>'+
+     '<button class="btn d" data-x="mNgung" data-m="'+m.ma+'"'+(cbb?' title="⛔ R46 — môn bắt buộc của cấp '+cbb+' trường đang dạy"':'')+'>'+(m.cua?'🔒 Khóa môn':'🚫 Thôi dùng ở trường này')+'</button>':'')+
+   (sua&&m.ngung?'<button class="btn p" data-x="dungLai" data-m="'+m.ma+'">'+(m.cua?'▶ Mở khóa':'▶ Dùng lại')+'</button>':'')+
+   (!m.cua?'<span class="sub">Môn chuẩn — <b>'+esc(NHOMTEN[m.nhom[capsMon(m)[0]]]||'')+'</b>. ⛔ <b>nhóm chuẩn</b> không sửa được (R9); cập nhật qua '+dlink('M10.8')+'</span>':'')+
+   (!can('mon')?'<span class="sub">Vai '+esc(R().ten)+' chỉ xem — chủ danh mục là PHT Chuyên môn</span>':''))+'</div>';
 }
 /* 🆕 khoi «Tổ» trong panel — dan xuat HDCT ③b, CHI DOC (§5.13) */
 function khoiToCuaMon(m){
@@ -1326,7 +1403,9 @@ ACT.doTaoMon=function(el){
   $('#mb').insertAdjacentHTML('afterbegin','<div class="danger">⚠ <b>Nghi trùng môn chuẩn</b> — danh mục đã có <b>'+esc(tr.ten)+'</b> ('+tr.ma+', CT GDPT). Có phải bạn định <b>bật môn chuẩn đó</b> ở M10.1 ④? '+
    'Tạo môn riêng trùng tên thì nó <b>tự mang Của trường</b> và <b>không vào học bạ</b>. Bấm <b>Vẫn tạo</b> nếu đúng là môn khác.</div>');return}
  const cap=$('#tmCap').value,t=parseInt($('#tmTiet').value,10)||35,ti={};CAPK[cap].forEach(k=>{ti[k]=t});
- const m={ma:ma,ten:ten,cua:1,nhom:{[cap]:'ct'},tiet:ti,kdg:$('#tmKdg').value,tao:{k:'m102',ai:nguoiLog(),ngay:HOMNAY,hs:''},ls:[],lsh:[]};
+ /* 🆕 kdg la {cap} ngay khi tao — ⛔ de vo huong roi cho vong chuan hoa o app.10 don ho,
+    vi vong ay chi chay MOT LAN luc nap du lieu. */
+ const m={ma:ma,ten:ten,cua:1,nhom:{[cap]:'ct'},tiet:ti,kdg:{[cap]:$('#tmKdg').value},tao:{k:'m102',ai:nguoiLog(),ngay:HOMNAY,hs:''},ls:[],lsh:[]};
  ptThem(ma,'PT0','Toàn môn','',[['TOAN_MON',ten]]);   /* moi mon co san PT0 — HDPC ⑩ */
  m.ls.push({d:HOMNAY,ng:nguoiLog(),t:'Tạo tại M10.2',n:'Nguồn chương trình = Của trường (dẫn xuất)'+(tr?' · đã bỏ qua cảnh báo nghi trùng '+tr.ten:'')});
  MON.push(m);V.pick=ma;V.tt.dung=1;V.ng.truong=1;closeModal();render();
@@ -1340,26 +1419,42 @@ ACT.mSuaMon=function(el){
   '<div class="info">🔓 Lưu là <b>đổi ngay</b> — ⛔ không qua duyệt, ⛔ không ký số. Bù lại: <b>ngày hiệu lực</b> + <b>lý do</b> + một dòng <b>lịch sử không xóa được</b> (chốt o).<br>'+
   '🛑 Học bạ năm cũ đọc <b>tên tại ngày của năm ấy</b> (chốt d) — nên đổi tên ở đây ⛔ <b>không</b> làm sai học bạ năm cũ.</div>'+
   '<div class="grid2"><div><label class="lbl">Tên môn <b>*</b></label><input class="din" id="smTen" value="'+esc(tenTai(m,HOMNAY))+'"></div>'+
-  '<div><label class="lbl">Kiểu đánh giá mặc định</label><select class="din" id="smKdg"><option value="ds"'+(m.kdg==='ds'?' selected':'')+'>Điểm số</option><option value="nx"'+(m.kdg==='nx'?' selected':'')+'>Nhận xét</option></select>'+
-  '<div class="sub">chỉ áp cho lần cấu hình sau — lớp đã cấu hình giữ nguyên (R12)</div></div>'+
-  '<div><label class="lbl">Số tiết/năm dự kiến <span class="sub">(mọi khối '+capsMon(m).join(', ')+')</span></label><input class="din" id="smTiet" value="'+m.tiet[k0]+'">'+
+  /* 🆕 MOT o cho MOI CAP cua mon (HDCT ban 5 — kieu_dg_mac_dinh{cap}).
+     Mon mot cap ⇒ mot o, ⛔ them mot cu bam nao. */
+  '<div><label class="lbl">Kiểu đánh giá mặc định <span class="sub">'+(capsMon(m).length>1?'— một ô cho mỗi cấp':'')+'</span></label>'+
+  capsMon(m).map(c=>(capsMon(m).length>1?'<div class="sub" style="margin-top:4px">cấp '+c+'</div>':'')+
+   '<select class="din" id="smKdg_'+c+'"><option value="ds"'+(kdgOf(m,c)==='ds'?' selected':'')+'>Điểm số</option><option value="nx"'+(kdgOf(m,c)==='nx'?' selected':'')+'>Nhận xét</option></select>').join('')+
+  '<div class="sub">🛑 Đây là <b>giá trị gợi ý</b> — chỉ áp cho lần cấu hình sau; lớp đã cấu hình <b>giữ nguyên</b> (R12). Giá trị thật ở '+lk101(6,'M10.1 ⑥')+' trên từng Lớp × Môn.</div>'+
+  (capsMon(m).length>1?'<div class="sub">TT 27/2020 (Tiểu học) và TT 22/2021 Đ.5 (THCS · THPT) định khác nhau — vì thế tách theo cấp.</div>':'')+'</div>'+
+  '<div><label class="lbl">'+(m.cua?'Số tiết/năm dự kiến':'Thời lượng quy định')+' <span class="sub">(mọi khối '+capsMon(m).join(', ')+')</span></label><input class="din" id="smTiet" value="'+m.tiet[k0]+'">'+
   '<div class="sub">đổi ngưỡng 35 / 70 thì đổi số cột ĐGtx mặc định (R11)</div></div>'+
   '<div><label class="lbl">Ngày hiệu lực <b>*</b> <span class="sub">lùi được · hẹn trước được</span></label><input class="din" type="date" id="smHl" value="'+esc(d2i(HOMNAY))+'"></div>'+
-  '<div><label class="lbl">Lý do <b>*</b></label><input class="din" id="smLy" placeholder="Lý do đi vào lịch sử — người rà sau này đọc chính dòng này"></div></div>',
+  /* R45 — o thu hai DOI THEO CUA: mon cua truong = Ly do tu do; mon chuan = CAN CU VAN BAN.
+     Day la loi khai «Bo da doi», ⛔ phai mot y muon cua truong ⇒ no phai KIEM DUOC. */
+  (m.cua?'<div><label class="lbl">Lý do <b>*</b></label><input class="din" id="smLy" placeholder="Lý do đi vào lịch sử — người rà sau này đọc chính dòng này"></div>'
+       :'<div><label class="lbl">Căn cứ văn bản <b>*</b> <span class="sub">số hiệu TT/QĐ + ngày ban hành</span></label><input class="din" id="smLy" placeholder="VD: TT 13/2022/TT-BGDĐT ngày 03/6/2022">'+
+        '<div class="sub">⛔ không phải ô lý do tự do — đây là lời khai «Bộ đã đổi», phải kiểm được (R45)</div></div>')+'</div>'+
+  (m.cua?'':'<div class="warn">⚠ Bản ghi sẽ mang cờ <b>trường sửa tay</b>. Lượt kéo danh mục chuẩn ở '+dlink('M10.8')+' gặp cờ này thì <b>đối chiếu và nêu đích danh</b>, ⛔ không ghi đè im lặng (§17).<br>'+
+   '⛔ <b>Nhóm chuẩn</b> ⛔ có ở form này — nó là hàng rào A2 và ⛔ có trong <code>lich_su[]</code> của HDCT ③a (R9).</div>'),
   '<button class="btn" data-x="close">Hủy</button><button class="btn p" data-x="doSuaMon" data-m="'+m.ma+'">💾 Lưu — có hiệu lực từ ngày đã chọn</button>');
 };
 ACT.doSuaMon=function(el){
- const m=monM(el.dataset.m),ten=$('#smTen').value.trim(),kdg=$('#smKdg').value,t=parseInt($('#smTiet').value,10);
+ const m=monM(el.dataset.m),ten=$('#smTen').value.trim(),t=parseInt($('#smTiet').value,10);
+ /* 🆕 doc MOT o moi cap; kdgMoi la mot doi tuong {cap: gia tri} */
+ const kdgMoi={};capsMon(m).forEach(c=>{const o=$('#smKdg_'+c);if(o)kdgMoi[c]=o.value});
+ const kdgDoi=capsMon(m).filter(c=>kdgMoi[c]!==kdgOf(m,c));
  const hl=p2d($('#smHl').value),ly=$('#smLy').value.trim(),tenCu=tenTai(m,HOMNAY);
  if(!ten||!t){toast('⛔ Thiếu tên hoặc số tiết');return}
  if(!hl){toast('⛔ Bắt buộc chọn <b>ngày hiệu lực</b> (R42)');return}
- if(!ly){toast('⚠ <b>Bắt buộc ghi lý do</b> (R44) — lý do là thứ người duyệt vốn đọc');return}
+ if(!ly){toast(m.cua?'⚠ <b>Bắt buộc ghi lý do</b> (R44) — lý do là thứ người duyệt vốn đọc'
+   :'⚠ <b>Bắt buộc ghi Căn cứ văn bản</b> (R45) — môn CT GDPT ⛔ nhận lý do tự do; đây là lời khai «Bộ đã đổi», phải kiểm được');return}
+ if(!m.cua)m.suaTay=ly;   /* R45 — co «truong sua tay» cho luot keo M10.8 doi chieu (§17) */
  /* R42 — hai dong CUNG TRUONG CUNG NGAY ⇒ tenTai() khong xac dinh duoc lay dong nao */
  if(ten!==tenCu&&m.lsh.some(z=>z.truong==='ten'&&z.hl&&z.hl.getTime()===hl.getTime())){
   toast('⛔ R42 — đã có một dòng đổi tên <b>CÙNG NGÀY '+d2s(hl)+'</b>; hai dòng cùng trường cùng ngày thì <code>tenTai()</code> không xác định được lấy dòng nào');return}
- if(ten===tenCu&&kdg===m.kdg&&t===m.tiet[khoiMon(m)[0]]){
+ if(ten===tenCu&&!kdgDoi.length&&t===m.tiet[khoiMon(m)[0]]){
   toast('⛔ Giá trị mới <b>trùng giá trị đang hiệu lực</b> tại ngày đó — một dòng lịch sử không đổi gì là rác làm loãng bảng (R42)');return}
- const k0=khoiMon(m)[0],tCu=m.tiet[k0],moi=Object.assign({},m,{tiet:{},kdg:kdg});khoiMon(m).forEach(k=>{moi.tiet[k]=t});
+ const k0=khoiMon(m)[0],tCu=m.tiet[k0],moi=Object.assign({},m,{tiet:{},kdg:kdgMoi});khoiMon(m).forEach(k=>{moi.tiet[k]=t});
  /* R11 — so cot DGtx mac dinh doi: lop dung MAC DINH o nam con ghi duoc tu tinh lai */
  const doi=[];namMo().forEach(n=>lopHoc(n,m.ma).forEach(l=>{const a=cotTx(m,l.khoi),b=cotTx(Object.assign({},m,{tiet:moi.tiet}),l.khoi);if(a!==b)doi.push({n:n,l:l,a:a,b:b})}));
  const giam=doi.filter(x=>x.b<x.a&&x.l.diem);
@@ -1372,9 +1467,13 @@ ACT.doSuaMon=function(el){
  const nd=[];
  /* 🆕 R42 — moi thay doi la MOT DONG LICH SU co ngay hieu luc, ⛔ khong ghi de */
  if(ten!==tenCu){m.lsh.push({truong:'ten',cu:tenCu,moi:ten,hl:hl,d:HOMNAY,ng:nguoiLog(),ly:ly});nd.push('Tên: '+tenCu+' → '+ten)}
- if(kdg!==m.kdg){m.lsh.push({truong:'kieu_dg_mac_dinh',cu:m.kdg==='ds'?'Điểm số':'Nhận xét',moi:kdg==='ds'?'Điểm số':'Nhận xét',hl:hl,d:HOMNAY,ng:nguoiLog(),ly:ly});nd.push('Kiểu ĐG mặc định → '+(kdg==='ds'?'Điểm số':'Nhận xét'))}
+ /* 🆕 MOT dong lich su cho MOI CAP doi — ⛔ khong gop, vi doc lai phai biet cap nao doi */
+ kdgDoi.forEach(function(c){
+  m.lsh.push({truong:'kieu_dg_mac_dinh',cap:c,cu:kdgTen(kdgOf(m,c)),moi:kdgTen(kdgMoi[c]),hl:hl,d:HOMNAY,ng:nguoiLog(),ly:ly});
+  nd.push('Kiểu ĐG mặc định · cấp '+c+' → '+kdgTen(kdgMoi[c]));
+ });
  if(t!==tCu){m.lsh.push({truong:'so_tiet_nam_chuan',cu:String(tCu),moi:String(t),hl:hl,d:HOMNAY,ng:nguoiLog(),ly:ly});nd.push('Số tiết/năm dự kiến: '+tCu+' → '+t+(doi.length?' · '+doi.length+' lớp đổi số cột ĐGtx':''))}
- m.kdg=kdg;m.tiet=moi.tiet;   /* 🛑 m.ten ⛔ KHONG ghi de — ten hien hanh doc qua tenTai() */
+ m.kdg=kdgMoi;m.tiet=moi.tiet;   /* 🛑 m.ten ⛔ KHONG ghi de — ten hien hanh doc qua tenTai() */
  logMon(m,'Sửa môn',nd.join(' · ')+' · hiệu lực từ '+d2s(hl)+' · '+ly);closeModal();render();
  toast(hl>HOMNAY?'💾 Đã ghi — <b>hẹn hiệu lực từ '+d2s(hl)+'</b>; hôm nay bảng vẫn in giá trị cũ'
   :'💾 Đã ghi ngay — hiệu lực từ <b>'+d2s(hl)+'</b>; học bạ năm cũ vẫn in <b>tên tại ngày của năm ấy</b>');
@@ -1387,25 +1486,36 @@ ACT.doSuaMon=function(el){
 ACT.mNgung=function(el){
  const m=monM(el.dataset.m);
  if(docQuaKhu()){toast('⛔ Đang đọc quá khứ — quay về hôm nay để ghi');return}
- if(!m.cua){toast('⛔ R9 — môn <b>CT GDPT</b> ⛔ không khóa được. Trường không dạy thì <b>không bật ở M10.1 ④</b>, chứ ⛔ không khóa danh mục của Bộ');return}
+ /* R46 — CHAN CUNG, ⛔ canh bao. Mat mot HANG RAO A2, ⛔ mat mot dong hien thi (§15 — toan ven). */
+ const cbb=capBatBuoc(m);
+ if(cbb){modal('⛔ Không thôi dùng được — môn bắt buộc',
+   '<div class="err">⛔ <b>'+esc(tenTai(m,HOMNAY))+'</b> là môn <b>bắt buộc</b> của cấp <b>'+esc(cbb)+'</b> — cấp trường <b>đang dạy</b>.</div>'+
+   '<div class="ro">🛑 Ẩn nó thì nó <b>rời khỏi danh sách so của ràng buộc A2</b> ⇒ <b>máy thôi báo khi một năm học thiếu môn này</b>, và bảng kiểm '+lk101(2,'M10.1 ②')+' nói «đủ» trong khi năm học thiếu một môn bắt buộc. '+
+    'Đây là mất một <b>hàng rào</b>, ⛔ không phải mất một dòng hiển thị — nên là <b>chặn cứng</b> (§15 — toàn vẹn dữ liệu), ⛔ cảnh báo.</div>'+
+   '<div class="info">Nếu trường chỉ muốn <b>năm nay không dạy</b> thì đó là việc của hồ sơ năm học — bỏ môn khỏi năm ở '+lk101(2,'M10.1 ② khối b')+', danh mục vẫn giữ môn.</div>'+
+   '<div class="ro sub">Ba nhóm <b>thôi dùng được</b>: môn <b>Tự chọn / Lựa chọn</b> · môn thuộc <b>cấp trường không dạy</b> · môn <b>Bộ đã bỏ</b> (trạng thái ⚠ cần rà lại).</div>',
+   '<button class="btn" data-x="close">Đã hiểu</button>');return}
  const vuong=namMo().map(n=>({n:n,l:lopHoc(n,m.ma)})).filter(x=>x.l.length);
- modal('🔒 Khóa môn — BỘ LỌC HIỂN THỊ, ⛔ không phải xóa',
-  '<div class="info">🛑 <b>Khóa ⛔ KHÔNG xóa gì cả.</b> Môn sẽ <b>thôi hiện</b> ở bộ chọn của '+lk101(4,'M10.1 ④')+', ở «môn được phép dạy» của '+dlink('M4.4')+' và ở các bộ chọn môn khác. '+
+ modal((m.cua?'🔒 Khóa môn':'🚫 Thôi dùng ở trường này')+' — BỘ LỌC HIỂN THỊ, ⛔ không phải xóa',
+  (m.cua?'':'<div class="ro">🔑 Môn <b>CT GDPT</b> — nhãn là <b>«Thôi dùng»</b>, ⛔ «Khóa». Cùng MỘT trường dữ liệu, hai nhãn theo <b>cửa</b>: chữ «khóa» cho danh mục của Bộ đọc ra thành <i>«trường khóa được danh mục của Bộ»</i>, thứ ⛔ bao giờ đúng (D1).</div>')+
+  '<div class="info">🛑 <b>'+(m.cua?'Khóa':'Thôi dùng')+' ⛔ KHÔNG xóa gì cả.</b> Môn sẽ <b>thôi hiện</b> ở bộ chọn của '+lk101(4,'M10.1 ④')+', ở «môn được phép dạy» của '+dlink('M4.4')+' và ở các bộ chọn môn khác. '+
    '⛔ <b>Không</b> đụng một bản ghi phân công nào (M4.5 · M4.6 · M4.7), ⛔ không đụng một dòng quan hệ môn ⟷ tổ nào (HDCT ⑧). <b>Mở khóa ⇒ hiện lại ngay</b> — ⛔ không phải phân công lại.</div>'+
   (vuong.length?'<div class="warn">⚠ Môn này còn lớp đang học: '+vuong.map(x=>'<b>'+x.n.ten+'</b> '+stTT(x.n.tt)+' — '+x.l.length+' lớp ('+x.l.slice(0,6).map(l=>l.ten).join(' · ')+(x.l.length>6?' …':'')+')').join(' · ')+
    '. Khóa thì màn hình của các lớp ấy <b>chạy y nguyên</b>, chỉ thôi hiện ở bộ chọn. 🛑 <b>Không chặn</b> (khác R10 của v4.2). '+
    'Lối ra nếu muốn bỏ hẳn khỏi năm: '+lk101(6,'M10.1 ⑥')+' → '+lk101(4,'M10.1 ④')+'.</div>':'')+
   '<label class="lbl">Lý do <b>*</b></label><textarea class="ta" id="ngLy"></textarea>',
-  '<button class="btn" data-x="close">Hủy</button><button class="btn d" data-x="doNgung" data-m="'+m.ma+'">🔒 Khóa môn</button>');
+  '<button class="btn" data-x="close">Hủy</button><button class="btn d" data-x="doNgung" data-m="'+m.ma+'">'+(m.cua?'🔒 Khóa môn':'🚫 Thôi dùng')+'</button>');
 };
 ACT.doNgung=function(el){
  const m=monM(el.dataset.m),ly=$('#ngLy').value.trim();if(!ly){toast('⚠ <b>Bắt buộc ghi lý do</b> (R44)');return}
- m.ngung={d:HOMNAY,ng:nguoiLog(),ly:ly};logMon(m,'Khóa',ly,'w');V.tt.ngung=1;closeModal();render();
- toast('🔒 Đã khóa <b>'+esc(tenTai(m,HOMNAY))+'</b> — <b>thôi hiện ở bộ chọn</b>; bản ghi «môn được phép dạy» ở M4.4 và quan hệ môn ⟷ tổ <b>giữ nguyên</b>. Tìm lại qua chip <b>Khóa</b>');
+ /* R47 — trang_thai mang nguon «truong»; luot keo M10.8 ⛔ dung no. Thieu luat nay thi moi luot
+    dong bo se HIEN LAI HET mon da thoi dung va truong phai lam lai — loi am tham ⛔ ai truy duoc. */
+ m.ngung={d:HOMNAY,ng:nguoiLog(),ly:ly,nguon:'truong'};logMon(m,ttNhan(m),ly,'w');V.tt.ngung=1;V.namNay=0;closeModal();render();
+ toast(ttIcon(m)+' Đã đặt <b>'+esc(tenTai(m,HOMNAY))+'</b> — <b>thôi hiện ở bộ chọn</b>; bản ghi «môn được phép dạy» ở M4.4 và quan hệ môn ⟷ tổ <b>giữ nguyên</b>. Trạng thái mang nguồn <b>trường</b> — lượt kéo M10.8 ⛔ đụng (R47). Tìm lại qua chip <b>'+ttNhan(m)+'</b>');
 };
 ACT.dungLai=function(el){
  const m=monM(el.dataset.m);if(docQuaKhu()){toast('⛔ Đang đọc quá khứ — quay về hôm nay để ghi');return}
- modal('▶ Mở khóa môn','<div class="info">🔓 <b>Mở khóa là HIỆN LẠI NGAY.</b> Bản ghi «môn được phép dạy» ở '+dlink('M4.4')+' <b>chưa bao giờ mất</b> ⇒ ⛔ <b>không phải phân công lại</b> (chốt e). '+
+ modal(m.cua?'▶ Mở khóa môn':'▶ Dùng lại môn','<div class="info">🔓 <b>'+(m.cua?'Mở khóa':'Dùng lại')+' là HIỆN LẠI NGAY.</b> Bản ghi «môn được phép dạy» ở '+dlink('M4.4')+' <b>chưa bao giờ mất</b> ⇒ ⛔ <b>không phải phân công lại</b> (chốt e). '+
   'Đây là vế quan trọng nhất của chốt — nếu màn hình không nói ra thì người dùng sẽ <b>tự đi phân công lại</b> và sinh ra bản ghi trùng.</div>'+
   '<label class="lbl">Lý do <b>*</b></label><textarea class="ta" id="mkLy"></textarea>',
   '<button class="btn" data-x="close">Hủy</button><button class="btn p" data-x="doMoKhoa" data-m="'+m.ma+'">▶ Mở khóa</button>');
