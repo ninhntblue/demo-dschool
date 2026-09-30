@@ -248,7 +248,9 @@ table.tb tr:last-child td{border-bottom:none}
 .phandai div{margin-top:2px;color:var(--ink2)}
 .phanln{font-size:11.5px;color:var(--violet);margin:2px 0 1px}
 
-/* M10.12 — lớp riêng của tab ① Khai trường lần đầu */
+/* M10.12 — lớp riêng của menu Khởi tạo hệ thống lần đầu
+   🔁 29/9/2026 — gỡ các lớp chỉ dùng ở tab ① Khai trường lần đầu
+   (.form .fld .rdg .rd .tkbox .tkr .xn) — tab ấy ⛔ không còn tồn tại. */
 
 .ttbar{background:#1e293b;color:#e2e8f0;padding:7px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12.5px;border-top:1px solid #334155}
 .ttbar b{color:#f8fafc;font-size:12px}
@@ -257,34 +259,7 @@ table.tb tr:last-child td{border-bottom:none}
 .tt:hover{background:#1e293b}
 .tt.on{background:#f8fafc;color:#0f172a;border-color:#f8fafc;font-weight:600}
 
-.form{display:grid;grid-template-columns:1fr 1fr;gap:13px 18px;padding:14px}
-.fld{display:flex;flex-direction:column;gap:5px}
-.fld label{font-size:12px;font-weight:600;color:var(--ink2)}
-.fld .req{color:var(--red)}
-.fld input,.fld select{border:1px solid var(--line2);border-radius:7px;padding:7px 10px;font-size:13px;background:#fff}
-.fld input:focus,.fld select:focus{outline:2px solid var(--brand);outline-offset:-1px;border-color:var(--brand)}
-.fld.loi input,.fld.loi select{border-color:var(--red);background:var(--red-soft)}
-.fld .err{color:var(--red);font-size:11.5px;font-weight:600}
-.fld .hint{color:var(--ink3);font-size:11.5px;line-height:1.5}
-.fld.khoa{grid-column:1 / -1}
-.khoao{border:1px dashed var(--line2);background:var(--bg);border-radius:7px;padding:7px 10px;font-size:13px;color:var(--ink2);font-weight:600}
-
-.rdg{display:flex;gap:6px}
-.rd{border:1px solid var(--line2);background:#fff;border-radius:7px;padding:7px 16px;font-size:13px}
-.rd:hover{background:var(--bg)}
-.rd.on{background:var(--brand);color:#fff;border-color:var(--brand);font-weight:600}
-
 .ok{background:var(--green-soft);border:1px solid #a7f3d0;color:#065f46;padding:11px 14px;border-radius:9px;font-size:13.5px;margin-bottom:12px}
-
-.tkbox .cb{padding:14px}
-.tkr{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--line);font-size:13px}
-.tkr:last-of-type{border-bottom:none}
-.tkr>span:first-child{width:170px;flex:0 0 170px;color:var(--ink2);font-size:12.5px}
-.tkr b{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13.5px}
-.tkr .tkp{color:var(--ink3);font-size:11.5px}
-
-.xn .xnk{border:1px solid var(--line);border-radius:9px;padding:10px 12px;margin-bottom:9px;font-size:13px;background:#f8fafc}
-.xn .xnp{color:var(--ink2);font-size:12px;line-height:1.7}
 
 .hintline{background:#f8fafc;border:1px dashed var(--line2);color:var(--ink2);padding:7px 11px;border-radius:8px;font-size:12px;margin-bottom:12px}
 .pill{background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:3px 11px;font-size:11.5px;color:var(--ink2)}
@@ -368,28 +343,27 @@ table.tt2 tr:last-child td{border-bottom:none}
 </style>
 </head>
 <body><div class="rolebar">
-  <b>Chức danh:</b>
-  <button class="rb on" data-r="FULL">🔓 Đủ quyền (demo)</button>
-  <button class="rb" data-r="IT">Tài khoản nguồn (IT)</button>
+  <b>Tài khoản đăng nhập:</b>
+  <button class="rb on" data-r="ADMIN1">🔑 Admin đầu tiên (NS0001)</button>
   <button class="rb" data-r="HT">Hiệu trưởng</button>
+  <button class="rb" data-r="IT2">Quản trị hệ thống (cấp sau)</button>
   <button class="rb" data-r="VT">Văn thư</button>
-  <span class="note">⚠ Tab ① <b>KHÔNG đọc chức danh</b> — nó chạy trước khi có phân quyền (§6 của tệp mô tả). Đổi vai ở đây chỉ đổi tab ② ③.</span>
+  <span class="note">⚠ Menu này <b>KHÔNG đọc chức danh</b> và <b>KHÔNG có trong danh sách phân quyền M10.4</b> — cửa vào là <b>danh tính tài khoản</b> (§4.3 · §6). Ba tài khoản còn lại để thử NGƯỢC: chức danh cao tới đâu cũng bị chặn.</span>
 </div>
 
 <div class="ttbar">
   <b>Tình huống:</b>
-  <button class="tt on" data-s="chua">① Kho trống — chưa khởi tạo</button>
-  <button class="tt" data-s="dang">② Đang khởi tạo</button>
-  <button class="tt" data-s="van_hanh">③ Đang vận hành</button>
+  <button class="tt on" data-s="dang">① Đang khởi tạo</button>
+  <button class="tt" data-s="van_hanh">② Đang vận hành</button>
   <button class="rb2" data-x="reset" title="Đặt lại dữ liệu mẫu của demo">↺ Dữ liệu mẫu</button>
-  <span class="note">Ba trạng thái của TRƯỜNG (§2) — thứ quyết định tab ① còn tồn tại hay không.</span>
+  <span class="note">🔁 29/9/2026: <b>HAI</b> trạng thái của TRƯỜNG (§2) — <code>chua_khoi_tao</code> ⛔ không còn tồn tại trong hệ thống, vì trường chỉ thấy hệ thống <b>sau khi công ty bàn giao</b>.</span>
 </div>
 
 <header class="hdr">
   <div class="logo"><span class="mark">DS</span> Dschool</div>
-  <div class="school" id="hschool">— chưa khai tên trường —</div>
+  <div class="school" id="hschool">—</div>
   <select class="sel" id="hnam" disabled title="Chưa có hồ sơ năm học nào — năm học tạo ở bước 8"><option>— chưa có năm học —</option></select>
-  <select class="sel" id="hdt" disabled title="Chưa khai điểm trường — khai ở bước 8 mục ②"><option>— chưa có điểm trường —</option></select>
+  <select class="sel" id="hdt" disabled title="Chưa khai điểm trường — khai ở bước 2 (M10.2 tab ③)"><option>— chưa có điểm trường —</option></select>
   <div class="spacer"></div>
   <button class="icobtn">🔔</button>
   <div class="avatar" id="ava">—</div>
@@ -398,7 +372,7 @@ table.tt2 tr:last-child td{border-bottom:none}
 <div class="wrap">
   <main class="main">
     <div class="tophd"><h1>Khởi tạo hệ thống lần đầu</h1><div class="spacer"></div>
-      <span class="pill">Nhóm ⚙️ Quản trị &amp; cấu hình · cụm <code>KTLD</code></span></div>
+      <span class="pill">Nhóm ⚙️ Quản trị &amp; cấu hình · cụm <code>KTLD</code> · ⛔ 0 mã Feature</span></div>
     <div id="tabs"></div>
     <div id="content"></div>
   </main>
@@ -409,266 +383,148 @@ table.tt2 tr:last-child td{border-bottom:none}
 </div></div>
 <div class="toast" id="toast"></div>
 <script>/* ═══════════════════════════════════════════════════════════════
-   M10.12 — KHỞI TẠO HỆ THỐNG LẦN ĐẦU  ·  cụm KTLD, phiên 1A
-   Phiên này dựng TAB ① Khai trường lần đầu. Tab ② ③ do phiên 1B dựng.
+   M10.12 — KHỞI TẠO HỆ THỐNG LẦN ĐẦU  ·  cụm KTLD
+   🔁 29/9/2026 — anh Ninh rà soát lại Menu. HAI chốt:
 
-   🛑 Tab ① là NGOẠI LỆ DUY NHẤT của mô hình phân quyền — nó chạy trước
-   khi có bất kỳ chức danh nào, nên KHÔNG đọc vai. Cái quyết định nó có
-   tồn tại hay không là TRẠNG THÁI CỦA TRƯỜNG (§2 của tệp mô tả):
-       chua_khoi_tao → dang_khoi_tao → dang_van_hanh
-   và cờ da_khoi_tao BẤT BIẾN (KT-4).
+   ① TAB «🏫 Khai trường lần đầu» ⛔ KHÔNG TỒN TẠI.
+      Trường học và tài khoản Admin đầu tiên do CMS CỦA CÔNG TY tạo rồi
+      bàn giao. Đăng nhập lần đầu là đã có sẵn cả hai (§4).
+      ⟹ trạng thái chua_khoi_tao ⛔ không còn tồn tại trong hệ thống:
+             dang_khoi_tao ──[ký bàn giao]──► dang_van_hanh
+
+   ② MENU CHỈ DÀNH CHO DUY NHẤT TÀI KHOẢN ADMIN ĐẦU TIÊN, và ⛔ KHÔNG
+      có mặt trong danh sách menu để phân quyền của M10.4 (§4.3 · §6 · §9).
+      ⟹ ⛔ 0 mã Feature · ⛔ 0 ô quyền. Cửa vào là DANH TÍNH TÀI KHOẢN,
+      ⛔ không phải chức danh — nên thanh trên cùng của demo là thanh
+      TÀI KHOẢN, ⛔ không phải thanh chức danh.
+
+   Cờ da_khoi_tao vẫn BẤT BIẾN (KT-4) — CMS bật lúc bàn giao.
    ═══════════════════════════════════════════════════════════════ */
 const $ = s => document.querySelector(s);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
-/* ───────── vai: chỉ dùng cho tab ② ③ (H2) ───────── */
+/* ───────── TÀI KHOẢN đang đăng nhập — ⛔ không phải chức danh ─────────
+   Đúng MỘT tài khoản mở được menu này. Ba tài khoản còn lại để thử NGƯỢC:
+   chúng có chức danh cao tới đâu cũng ⛔ vào được, vì menu ⛔ đọc chức danh. */
 const ROLES = {
-  FULL: {cd:'🔓 Đủ quyền (demo)', av:'ĐQ', luong:'xs'},
-  IT:   {cd:'Tài khoản nguồn (IT)', av:'IT', luong:'x'},
-  HT:   {cd:'Hiệu trưởng', av:'HT', luong:'xs'},
-  VT:   {cd:'Văn thư', av:'VT', luong:''},
+  ADMIN1: {cd:'Tài khoản Admin đầu tiên · NS0001 (công ty bàn giao)', av:'A1', moDuoc:true},
+  HT:     {cd:'Hiệu trưởng — tài khoản khác', av:'HT', moDuoc:false},
+  IT2:    {cd:'Quản trị hệ thống cấp sau (IT)', av:'IT', moDuoc:false},
+  VT:     {cd:'Văn thư', av:'VT', moDuoc:false},
 };
-let role = 'FULL';
+let role = 'ADMIN1';
 const R = () => ROLES[role];
+const moDuocMenu = () => R().moDuoc;
 
-/* ───────── trạng thái của TRƯỜNG ───────── */
+/* ───────── trạng thái của TRƯỜNG — HAI, ⛔ không còn ba ───────── */
 const BAN_DAU = {
-  trangThai: 'chua',        /* chua | dang | van_hanh */
-  daKhoiTao: false,          /* cờ BẤT BIẾN — KT-4 */
-  soNhanSu: 0,
-  truong: null,              /* {ten, ma, loai} */
-  nguoiDau: null,            /* {ten, ns, gt, cccd, sdt, dien} */
-  taiKhoan: null,            /* {u, mk, daXem} */
-  moc: null,                 /* thời điểm khởi tạo */
+  trangThai: 'dang',         /* dang | van_hanh — ⛔ không còn 'chua' */
+  daKhoiTao: true,           /* cờ BẤT BIẾN — CMS bật lúc bàn giao (KT-4) */
+  soNhanSu: 1,
+  truong:   {ten:'THPT Chuyên Hùng Vương', ma:'25012345678901234567', loai:'Công lập'},
+  nguoiDau: {ten:'Nguyễn Văn Sơn', ns:'15/03/1985', gt:'Nam', cccd:'001085012345', sdt:'0912345678', dien:'Viên chức'},
+  taiKhoan: {u:'NS0001', tt:'Chờ đổi mật khẩu lần đầu'},
+  moc: '23/09/2026 09:14',   /* thời điểm CMS bàn giao */
   nhatKy: [],                /* M10.7 */
 };
 let S = JSON.parse(JSON.stringify(BAN_DAU));
 
-const MOC_DEMO = '23/09/2026 09:14';
-
 function ghiNhatKy(loai, noiDung){
-  S.nhatKy.unshift({t:'23/09/2026 ' + new Date().toTimeString().slice(0,5), loai, noiDung, ip:'192.168.1.24'});
+  S.nhatKy.unshift({t:'24/09/2026 ' + new Date().toTimeString().slice(0,5), loai, noiDung, ip:'192.168.1.24'});
 }
+function vetBanGiao(){
+  if (!S.nhatKy.length)
+    S.nhatKy.push({t:'23/09/2026 09:14', loai:'Bàn giao từ CMS', ip:'192.168.1.24',
+      noiDung:'Công ty tạo trường THPT Chuyên Hùng Vương + tài khoản Admin NS0001 (Nguyễn Văn Sơn · IT@School) · bật cờ da_khoi_tao'});
+}
+vetBanGiao();
 
-/* ═══════════════ KHUNG ═══════════════ */
+/* ═══════════════ KHUNG — HAI tab, ⛔ không còn tab Khai trường ═══════════════
+   🛑 Tham số deep-link GIỮ TÊN 'luong' · 'ban_giao' — 11 menu chủ đã dựng
+   deep-link bằng tên, ⛔ không bằng số thứ tự (§10 của tệp mô tả). */
 const TABS = [
-  ['khai', '🏫 Khai trường lần đầu'],
   ['luong','🧭 Luồng khởi tạo'],
   ['bg',   '✅ Bàn giao'],
 ];
-let tab = 'khai';
-
-/* Tab ① CHỈ tồn tại khi: bảng nhân sự RỖNG **VÀ** cờ chưa bật (§4.1 — hai điều kiện) */
-const moDuocTab1 = () => S.soNhanSu === 0 && !S.daKhoiTao;
+let tab = 'luong';
 
 function veTabs(){
   $('#tabs').innerHTML = '<div class="tabs">' + TABS.map(function(t){
     const id = t[0], ten = t[1];
     let phu = '';
-    if (id === 'khai' && !moDuocTab1()) phu = '<span class="b r">đã đóng</span>';
-    if (id === 'luong' && S.trangThai === 'chua') phu = '<span class="b">chưa mở</span>';
     if (id === 'bg' && S.trangThai !== 'van_hanh') phu = '<span class="b">chưa tới</span>';
     return '<button class="tab1' + (tab === id ? ' on' : '') + '" data-t="' + id + '">' + ten + phu + '</button>';
   }).join('') + '</div>';
 }
 
 function daiTrangThai(){
-  const nhan = {chua:'Chưa khởi tạo', dang:'Đang khởi tạo', van_hanh:'Đang vận hành'}[S.trangThai];
-  const mau = {chua:'var(--red)', dang:'var(--amber)', van_hanh:'var(--green)'}[S.trangThai];
+  const nhan = {dang:'Đang khởi tạo', van_hanh:'Đang vận hành'}[S.trangThai];
+  const mau = {dang:'var(--amber)', van_hanh:'var(--green)'}[S.trangThai];
   return '<div class="scopebar">🏫 <b>Trạng thái trường:</b> <span style="color:' + mau + ';font-weight:700">' + nhan + '</span>' +
-    ' · cờ <code>da_khoi_tao</code> = <b>' + (S.daKhoiTao ? 'BẬT (bất biến)' : 'chưa bật') + '</b>' +
+    ' · cờ <code>da_khoi_tao</code> = <b>BẬT (bất biến — CMS bật lúc bàn giao)</b>' +
     ' · bảng nhân sự: <b>' + S.soNhanSu + '</b> hồ sơ' +
-    ' · tab ① ' + (moDuocTab1() ? '<b style="color:var(--green)">mở được</b>' : '<b style="color:var(--red)">không còn đường vào</b>') + '</div>';
+    ' · tài khoản: <b>' + esc(R().cd) + '</b>' +
+    ' · menu ' + (moDuocMenu() ? '<b style="color:var(--green)">mở được</b>' : '<b style="color:var(--red)">bị chặn</b>') + '</div>';
 }
 
 function ghiChuDemo(){
   return '<div class="hintline">🧪 <b>Demo hiển thị mọi chức năng của menu.</b> ' +
-    'Tab ① <b>không đọc chức danh</b> — dùng thanh <b>Tình huống</b> ở trên để đổi trạng thái của trường và xem cửa mở hay đóng.</div>';
+    'Menu này ⛔ <b>không đọc chức danh</b> và ⛔ <b>không có trong danh sách phân quyền của <code>M10.4</code></b> — ' +
+    'cửa vào là <b>danh tính tài khoản</b>. Đổi thanh <b>Tài khoản</b> ở trên để xem cửa mở hay chặn.</div>';
 }
 
 function ve(){
   veTabs();
   $('#ava').textContent = R().av;
-  $('#hschool').textContent = S.truong ? S.truong.ten : '— chưa khai tên trường —';
+  $('#hschool').textContent = S.truong ? S.truong.ten : '—';
   const c = $('#content');
-  c.innerHTML = daiTrangThai() + ghiChuDemo() +
-    (tab === 'khai' ? veKhai() : tab === 'luong' ? veLuong() : veBanGiao());
+  if (!moDuocMenu()){ c.innerHTML = daiTrangThai() + ghiChuDemo() + veChan(); return; }
+  c.innerHTML = daiTrangThai() + ghiChuDemo() + khoiBanGiaoTuCMS() +
+    (tab === 'luong' ? veLuong() : veBanGiao());
 }
 
-/* ═══════════════ TAB ① — KHAI TRƯỜNG LẦN ĐẦU ═══════════════ */
-let f = {ten:'', ma:'', loai:'Công lập', hoTen:'', ns:'', gt:'', cccd:'', sdt:'', dien:''};
-let loi = {};
-let ketQua = false;
+/* ═══════════════ MÀN CHẶN — tài khoản khác (§4.3) ═══════════════
+   🛑 Nói rõ, ⛔ không 404 và ⛔ không im lặng. Và phải nói ĐÚNG lý do:
+   «menu ⛔ có trong danh sách phân quyền» — ⛔ phải «bạn thiếu quyền»,
+   vì ⛔ có ô quyền nào để cấp thêm cả. Hai lý do khoá khác nhau thì
+   ⛔ được nói giống nhau. */
+function veChan(){
+  return '<div class="danger" style="font-size:13px">🔒 <b>Menu «Khởi tạo hệ thống lần đầu» chỉ dành cho tài khoản quản trị đầu tiên</b> ' +
+      'do công ty bàn giao cho nhà trường <i>(' + S.taiKhoan.u + ' — ' + esc(S.nguoiDau.ten) + ')</i>.<br>' +
+      'Menu này <b>KHÔNG có trong danh sách phân quyền</b>, nên <b>KHÔNG cấp thêm cho ai được</b> — kể cả Hiệu trưởng.<br>' +
+      'Cần theo dõi tiến độ triển khai: hỏi người giữ tài khoản ấy.</div>' +
 
-const DIEN = ['Viên chức', 'Hợp đồng lao động', 'Hợp đồng thỉnh giảng', 'Biệt phái'];
+    '<div class="ro">🛑 <b>Vì sao ⛔ mở thêm cho <code>HT</code>.</b> Mở thêm cho một chức danh là kéo menu trở lại đúng mô hình phân quyền ' +
+      'mà §6 vừa đưa nó ra — và cửa ấy ⛔ <b>không tự đóng lại</b>. Hệ quả: <b>người ký bàn giao là chủ tài khoản Admin đầu tiên</b>, ' +
+      '⛔ không còn «chỉ Hiệu trưởng ký» <i>(§4.4 · ràng buộc 17)</i>. Thực tế hai người thường là một — trường chưa có ai làm quản trị ' +
+      'thì hồ sơ đứng tên Hiệu trưởng <i>(§4.2)</i>.</div>' +
 
-function veKhai(){
-  /* 🛑 THỨ TỰ HAI DÒNG NÀY LÀ CÓ LÝ DO — ⛔ đừng đảo.
-     Ghi xong thì cờ da_khoi_tao đã BẬT và bảng nhân sự đã có 1 hồ sơ, nên moDuocTab1()
-     thành false NGAY LẬP TỨC. Kiểm điều kiện mở trước thì màn hình kết quả không bao giờ
-     hiện, và người dùng MẤT LUÔN mật khẩu tạm — thứ chỉ hiện đúng một lần.
-     Lỗi này do chạy thử demo bắt được (phiếu KTLD-1A mục G, ca G-6). */
-  if (ketQua) return veKetQua();
-  if (!moDuocTab1()) return veDaDong();
-
-  return '<div class="warn">🛑 <b>Màn hình này chạy ĐÚNG MỘT LẦN và không mở lại được</b>, kể cả khi sau đó xoá hết nhân sự ' +
-      '<i>(cờ <code>da_khoi_tao</code> bất biến — luật <code>KT-4</code>)</i>. ' +
-      'Nó tồn tại để cắt một vòng kín: <b>tài khoản chỉ sinh từ hồ sơ nhân sự</b> <i>(M10.5 §2)</i>, ' +
-      '<b>hồ sơ nhân sự cần quyền <code>TCNS</code></b> <i>(M4.1 F11)</i>, <b>quyền đến từ chức danh gán cho một hồ sơ nhân sự</b> <i>(M4.3 §1)</i> ' +
-      '⟹ muốn có người đầu tiên thì phải đã có người đầu tiên.</div>' +
-
-    '<div class="card"><div class="ch">🏫 Khối A — Định danh trường <span class="st2 n">3 ô</span>' +
-      '<div class="sp"></div><span style="font-size:11.5px;color:var(--ink2)">Sáu khối Master đầy đủ khai ở <code>M10.2</code> ① — bước 2</span></div>' +
-    '<div class="cb form">' +
-      o('ten', 'Tên trường đầy đủ', 'text', 'VD: THPT Chuyên Hùng Vương') +
-      o('ma', 'Mã trường CSDL ngành', 'text', '20 ký tự — TT 42/2021') +
-      sel('loai', 'Loại hình', ['Công lập', 'Tư thục', 'Dân lập']) +
-    '</div></div>' +
-
-    '<div class="card"><div class="ch">👤 Khối B — Người đầu tiên <span class="st2 n">6 ô</span>' +
-      '<div class="sp"></div><span style="font-size:11.5px;color:var(--ink2)">Dùng NGUYÊN biểu mẫu bảy ô mức ① của <code>M4.1</code> §6.11.1</span></div>' +
-    '<div class="cb form">' +
-      o('hoTen', 'Họ và tên', 'text', '') +
-      o('ns', 'Ngày sinh', 'text', 'dd/mm/yyyy') +
-      radio('gt', 'Giới tính', ['Nam', 'Nữ']) +
-      o('cccd', 'Số căn cước công dân', 'text', '12 chữ số') +
-      o('sdt', 'Số điện thoại', 'text', '= định danh đăng nhập (M4.1 §4b.4)') +
-      sel('dien', 'Diện làm việc', DIEN) +
-      '<div class="fld khoa"><label>Chức danh chính <span class="req">*</span></label>' +
-        '<div class="khoao">🔒 IT — Quản trị hệ thống</div>' +
-        '<div class="hint">Khoá cứng, ⛔ không có ô chọn. Màn hình này chạy <b>trước khi có bất kỳ phân quyền nào</b>, ' +
-        'nên một ô chọn chức danh ở đây là <b>ô tự cấp quyền cho chính mình</b> <i>(§4.3 · chốt <code>H1</code>)</i>. ' +
-        'Trường chưa có ai làm quản trị thì hồ sơ <b>đứng tên Hiệu trưởng</b>; bước 5 gán thêm chức danh <code>HT</code> — hệ thống cho kiêm nhiệm.</div></div>' +
-    '</div></div>' +
-
-    '<div class="ro">⛔ <b>Không có ô nào khác trên màn hình này</b> — không ảnh 4×6, không hợp đồng, không địa chỉ. ' +
-      'Mọi thứ khác khai sau ở <code>M4.1</code>. ⛔ <b>Không nhận dữ liệu hàng loạt</b>: đúng một hồ sơ, không import, không tệp <i>(hàng rào ④)</i>.</div>' +
-
-    '<div class="cact">' +
-      '<span style="font-size:12px;color:var(--ink2)">Bấm xác nhận sẽ ghi <b>5 việc trong MỘT giao dịch</b> — hỏng giữa chừng thì quay lui toàn bộ</span>' +
-      '<div class="spacer" style="flex:1"></div>' +
-      '<button class="btn p" data-x="xac-nhan">✓ Khởi tạo trường</button></div>';
-}
-
-function o(k, nhan, kieu, hint){
-  return '<div class="fld' + (loi[k] ? ' loi' : '') + '"><label>' + nhan + ' <span class="req">*</span></label>' +
-    '<input type="' + kieu + '" data-f="' + k + '" value="' + esc(f[k]) + '">' +
-    (loi[k] ? '<div class="err">⛔ ' + esc(loi[k]) + '</div>' : (hint ? '<div class="hint">' + hint + '</div>' : '')) + '</div>';
-}
-function sel(k, nhan, ds){
-  return '<div class="fld' + (loi[k] ? ' loi' : '') + '"><label>' + nhan + ' <span class="req">*</span></label>' +
-    '<select data-f="' + k + '"><option value="">— chọn —</option>' +
-    ds.map(x => '<option' + (f[k] === x ? ' selected' : '') + '>' + x + '</option>').join('') + '</select>' +
-    (loi[k] ? '<div class="err">⛔ ' + esc(loi[k]) + '</div>' : '') + '</div>';
-}
-function radio(k, nhan, ds){
-  return '<div class="fld' + (loi[k] ? ' loi' : '') + '"><label>' + nhan + ' <span class="req">*</span></label>' +
-    '<div class="rdg">' + ds.map(x => '<button class="rd' + (f[k] === x ? ' on' : '') + '" data-rd="' + k + '" data-v="' + x + '">' + x + '</button>').join('') + '</div>' +
-    (loi[k] ? '<div class="err">⛔ ' + esc(loi[k]) + '</div>' : '') + '</div>';
-}
-
-/* Kiểm: ô thiếu viền đỏ NGAY và nút Lưu nêu ĐÍCH DANH ô còn thiếu (M4.1 §6.11.1) */
-function kiem(){
-  loi = {};
-  const nhan = {ten:'Tên trường đầy đủ', ma:'Mã trường CSDL ngành', loai:'Loại hình',
-    hoTen:'Họ và tên', ns:'Ngày sinh', gt:'Giới tính', cccd:'Số căn cước công dân', sdt:'Số điện thoại', dien:'Diện làm việc'};
-  Object.keys(nhan).forEach(function(k){ if (!f[k]) loi[k] = 'Còn trống'; });
-  if (f.ma && f.ma.length !== 20) loi.ma = 'Mã trường phải đúng 20 ký tự (TT 42/2021) — đang có ' + f.ma.length;
-  if (f.ns && !/^\d{2}\/\d{2}\/\d{4}$/.test(f.ns)) loi.ns = 'Sai định dạng — cần dd/mm/yyyy';
-  if (f.cccd && !/^\d{12}$/.test(f.cccd)) loi.cccd = 'Căn cước phải là 12 chữ số';
-  if (f.sdt && !/^0\d{9}$/.test(f.sdt)) loi.sdt = 'Số điện thoại phải 10 chữ số, bắt đầu bằng 0';
-  return Object.keys(loi);
-}
-
-function hopXacNhan(){
-  const thieu = kiem();
-  if (thieu.length){
-    ve();
-    const ten = {ten:'Tên trường', ma:'Mã trường CSDL ngành', loai:'Loại hình', hoTen:'Họ và tên',
-      ns:'Ngày sinh', gt:'Giới tính', cccd:'Số căn cước', sdt:'Số điện thoại', dien:'Diện làm việc'};
-    bao('⛔ Còn thiếu hoặc sai: ' + thieu.map(k => ten[k]).join(' · '));
-    return;
-  }
-  modal('Khởi tạo trường?',
-    '<div class="xn"><div class="xnk">🏫 <b>' + esc(f.ten) + '</b><br>' +
-      '<span class="xnp">Mã trường CSDL ngành: <code>' + esc(f.ma) + '</code> · ' + esc(f.loai) + '</span></div>' +
-    '<div class="xnk">👤 <b>' + esc(f.hoTen) + '</b> · ' + esc(f.ns) + ' · ' + esc(f.gt) + '<br>' +
-      '<span class="xnp">Chức danh: <b>IT — Quản trị hệ thống</b><br>' +
-      'Tên đăng nhập sẽ là mã nhân sự hệ thống cấp; đăng nhập được bằng số điện thoại ' + esc(f.sdt) + '</span></div>' +
-    '<div class="danger" style="margin:10px 0 0">🛑 Màn hình này chạy <b>MỘT LẦN</b> và <b>KHÔNG mở lại được</b>, kể cả khi sau đó xoá hết nhân sự.</div></div>',
-    '<button class="btn" data-x="dong">Huỷ</button><button class="btn p" data-x="ghi">✓ Khởi tạo trường</button>');
-}
-
-/* Năm việc, MỘT giao dịch (§4.5) */
-function ghi(){
-  dong();
-  S.truong = {ten:f.ten, ma:f.ma, loai:f.loai};
-  S.nguoiDau = {ten:f.hoTen, ns:f.ns, gt:f.gt, cccd:f.cccd, sdt:f.sdt, dien:f.dien};
-  S.soNhanSu = 1;
-  S.taiKhoan = {u:'NS0001', mk:'Kx7#mQ2v', daXem:false};
-  S.daKhoiTao = true;
-  S.trangThai = 'dang';
-  S.moc = MOC_DEMO;
-  ghiNhatKy('Khởi tạo trường', 'Tạo hồ sơ nhân sự đầu tiên ' + f.hoTen + ' · gán chức danh IT@School · lật cờ da_khoi_tao');
-  ketQua = true;
-  ve();
-}
-
-function veKetQua(){
-  const tk = S.taiKhoan;
-  return '<div class="ok">✅ <b>Đã khởi tạo trường ' + esc(S.truong.ten) + '</b> — lúc ' + S.moc + '</div>' +
-
-    '<div class="card"><div class="ch">Năm việc đã ghi trong MỘT giao dịch</div><div class="cb"><table><tbody>' +
-      hg('①', 'Ba trường định danh trường', 'M10.2 ① — 30 ô còn lại của sáu khối Master vẫn trống, khai ở bước 2') +
-      hg('②', 'Hồ sơ nhân sự ' + esc(S.nguoiDau.ten), 'M4.1 — hồ sơ thật, không phải bản ghi riêng của menu này') +
-      hg('③', 'Tài khoản <b>' + tk.u + '</b> — trạng thái <b>Chờ đổi mật khẩu lần đầu</b>', 'M10.5 — sinh bằng TRIGGER của M4.1 §4b.2, menu này không tự tạo tài khoản') +
-      hg('④', 'Chức danh <b>IT</b> phạm vi <b>School</b>', 'M4.3 — bản ghi user_role_scoped đầu tiên của hệ thống') +
-      hg('⑤', 'Cờ <code>da_khoi_tao</code> BẬT + ghi nhật ký', 'M10.7 — thời điểm · địa chỉ mạng · nội dung (hàng rào ③)') +
-    '</tbody></table></div></div>' +
-
-    '<div class="card tkbox"><div class="ch">🔑 Tài khoản đầu tiên</div><div class="cb">' +
-      '<div class="tkr"><span>Tên đăng nhập</span><b>' + tk.u + '</b><span class="tkp">= mã nhân sự</span></div>' +
-      '<div class="tkr"><span>Đăng nhập được bằng</span><b>' + esc(S.nguoiDau.sdt) + '</b></div>' +
-      '<div class="tkr"><span>Mật khẩu tạm</span><b>' + (tk.daXem ? tk.mk : '••••••••') + '</b>' +
-        '<button class="btn xs" data-x="hien-mk">' + (tk.daXem ? '🙈 Ẩn' : '👁 Hiện') + '</button>' +
-        '<button class="btn xs" data-x="chep-mk">⧉ Chép</button></div>' +
-      '<div class="danger" style="margin:10px 0 0">⚠ Mật khẩu này hiện <b>ĐÚNG MỘT LẦN</b>, không xem lại được. Bắt buộc đổi ở lần đăng nhập đầu.<br>' +
-        '⏳ <b>Cách phát mật khẩu đang chờ chốt</b> — §11 điểm 1 của tệp mô tả: <code>M10.5</code> §6.1.2 vốn cấm hiện mật khẩu tạm trên màn hình, ' +
-        'nhưng ở đây người khai chính là người nhận và hệ thống <b>chưa có kênh nào để gửi</b>.</div>' +
-    '</div></div>' +
-
-    '<div class="cact"><div class="spacer" style="flex:1"></div>' +
-      '<button class="btn p" data-x="sang-luong">Tôi đã ghi lại mật khẩu — sang luồng khởi tạo ↗</button></div>';
-}
-function hg(n, a, b){
-  return '<tr><td style="width:34px;text-align:center"><b>' + n + '</b></td><td>' + a +
-    '<br><span style="color:var(--ink3);font-size:11.5px">' + b + '</span></td></tr>';
-}
-
-/* Màn hình khi cửa đã đóng — nói rõ, KHÔNG im lặng và KHÔNG 404 (§4.1) */
-function veDaDong(){
-  const vs = [];
-  if (S.soNhanSu > 0) vs.push('bảng nhân sự đã có <b>' + S.soNhanSu + '</b> hồ sơ');
-  if (S.daKhoiTao) vs.push('cờ <code>da_khoi_tao</code> đã <b>BẬT</b>');
-  return '<div class="danger" style="font-size:13px">🔒 <b>Màn hình khai trường lần đầu đã đóng.</b><br>' +
-      (S.moc ? 'Trường khởi tạo lúc <b>' + S.moc + '</b>' + (S.nguoiDau ? ' — người thực hiện: <b>' + esc(S.nguoiDau.ten) + '</b>' : '') + '.<br>' : '') +
-      'Lý do không mở được: ' + vs.join(' · ') + '.<br>' +
-      'Màn hình này chỉ chạy <b>MỘT LẦN</b> và <b>không mở lại được</b> — kể cả khi sau đó xoá hết nhân sự.</div>' +
-
-    '<div class="ro">🛑 <b>Vì sao cờ bất biến.</b> Nếu tắt được thì chỉ cần <b>xoá sạch nhân sự</b> là mở lại được cửa tạo người đầu tiên — ' +
-      'đường tấn công rõ ràng nhất vào toàn bộ dữ liệu trẻ em của trường. Vì thế <b>hai điều kiện</b> mở cửa ' +
-      '<i>(nhân sự rỗng <b>VÀ</b> cờ chưa bật)</i> — mỗi cái bịt đường thoát của cái kia.</div>' +
-
-    '<div class="card"><div class="ch">Đi đâu bây giờ</div><div class="cb"><table><tbody>' +
-      '<tr><td>Thêm nhân sự</td><td><button class="btn xs" data-x="di-m41">↗ M4.1 Hồ sơ nhân sự</button></td></tr>' +
-      '<tr><td>Cấp tài khoản</td><td>Tài khoản <b>sinh cùng hồ sơ nhân sự</b> <i>(M10.5 §2 — M10.5 không có nút tạo)</i></td></tr>' +
-      '<tr><td>Tiếp tục khởi tạo</td><td><button class="btn xs p" data-x="sang-luong">🧭 Tab ② Luồng khởi tạo</button></td></tr>' +
-    '</tbody></table></div></div>' +
-
-    (S.nhatKy.length ? '<div class="card"><div class="ch">🕘 Vết ở <code>M10.7</code> <span class="st2 n">' + S.nhatKy.length + '</span></div>' +
-      '<div class="cb"><table><thead><tr><th style="width:120px">Thời điểm</th><th style="width:150px">Loại</th><th>Nội dung</th><th style="width:110px">Địa chỉ mạng</th></tr></thead><tbody>' +
+    '<div class="card"><div class="ch">🕘 Vết ở <code>M10.7</code> — <b>lượt bị từ chối cũng ghi</b> <i>(hàng rào ③)</i></div>' +
+      '<div class="cb"><table><thead><tr><th style="width:120px">Thời điểm</th><th style="width:170px">Loại</th><th>Nội dung</th><th style="width:110px">Địa chỉ mạng</th></tr></thead><tbody>' +
+      '<tr><td>24/09/2026 09:02</td><td>Từ chối mở M10.12</td><td>Tài khoản ' + esc(R().cd) + ' ⛔ không phải tài khoản Admin đầu tiên</td><td>192.168.1.31</td></tr>' +
       S.nhatKy.map(n => '<tr><td>' + n.t + '</td><td>' + esc(n.loai) + '</td><td>' + esc(n.noiDung) + '</td><td>' + n.ip + '</td></tr>').join('') +
-      '</tbody></table></div></div>' : '');
+      '</tbody></table></div></div>';
+}
+
+/* ═══════════════ KHỐI «nhận từ CMS» — thay cho tab ① cũ ═══════════════ */
+function khoiBanGiaoTuCMS(){
+  const tk = S.taiKhoan;
+  return '<div class="card ssc"><div class="ch">📦 Trường nhận gì từ công ty <span class="st2 n">CMS · ngoài hệ thống</span>' +
+      '<div class="sp"></div><span style="font-size:11.5px;color:var(--ink2)">Bàn giao lúc <b>' + S.moc + '</b> — §4.1</span></div>' +
+    '<div class="cb"><table><tbody>' +
+      '<tr><td style="width:34px;text-align:center"><b>①</b></td><td><b>Hồ sơ trường</b> — ' + esc(S.truong.ten) +
+        ' · mã CSDL ngành <code>' + esc(S.truong.ma) + '</code> · ' + esc(S.truong.loai) +
+        '<br><span style="color:var(--ink3);font-size:11.5px">Nằm ở <code>M10.2</code> ① — ba ô khối <b>Định danh</b>; ba mươi mấy ô còn lại của sáu khối Master vẫn trống, khai ở <b>bước 2</b></span></td></tr>' +
+      '<tr><td style="text-align:center"><b>②</b></td><td><b>Hồ sơ nhân sự đầu tiên ＋ tài khoản</b> — ' + esc(S.nguoiDau.ten) +
+        ' · <b>' + tk.u + '</b> · <b>' + tk.tt + '</b> · chức danh <b>IT</b>@School' +
+        '<br><span style="color:var(--ink3);font-size:11.5px">Hồ sơ thật ở <code>M4.1</code> · tài khoản ở <code>M10.5</code> · chức danh ở <code>M4.3</code> — ⛔ không phải bản ghi riêng của menu này</span></td></tr>' +
+      '<tr><td style="text-align:center"><b>③</b></td><td><b>Cờ <code>da_khoi_tao</code> ĐÃ BẬT</b> ⇒ trường ở <code>dang_khoi_tao</code>' +
+        '<br><span style="color:var(--ink3);font-size:11.5px">Bất biến — ⛔ không màn hình nào trong hệ thống tắt được <i>(KT-4)</i></span></td></tr>' +
+    '</tbody></table></div></div>' +
+
+    '<div class="ro">🛑 <b>CMS ⛔ gieo gì thêm</b> — ⛔ không sinh «điểm trường chính» mang tên trường, ⛔ không nạp sẵn hệ <code>Đại trà</code>, ' +
+      '⛔ không sinh tổ bộ môn nào. Gieo thì điều kiện <b>B02 ⓑ</b> và <b>B03</b> <b>đúng sẵn từ đầu</b> và luồng <b>tự báo xong khi chưa ai làm gì</b> ' +
+      '<i>(§4.2 · ràng buộc 15)</i>.</div>';
 }
 
 /* ═══════════════ tiện ích ═══════════════ */
@@ -686,39 +542,26 @@ document.addEventListener('click', e => {
   if (tt){
     document.querySelectorAll('.tt').forEach(b => b.classList.toggle('on', b === tt));
     const s = tt.dataset.s;
-    if (s === 'chua'){ S = JSON.parse(JSON.stringify(BAN_DAU)); ketQua = false; f = {ten:'', ma:'', loai:'Công lập', hoTen:'', ns:'', gt:'', cccd:'', sdt:'', dien:''}; loi = {}; tab = 'khai'; }
-    else {
-      S.daKhoiTao = true; S.soNhanSu = (s === 'van_hanh' ? 63 : 1); S.trangThai = s; S.moc = MOC_DEMO;
-      if (!S.truong) S.truong = {ten:'THPT Chuyên Hùng Vương', ma:'25012345678901234567', loai:'Công lập'};
-      if (!S.nguoiDau) S.nguoiDau = {ten:'Nguyễn Văn Sơn', ns:'15/03/1985', gt:'Nam', cccd:'001085012345', sdt:'0912345678', dien:'Viên chức'};
-      if (!S.nhatKy.length) ghiNhatKy('Khởi tạo trường', 'Tạo hồ sơ nhân sự đầu tiên Nguyễn Văn Sơn · gán chức danh IT@School · lật cờ da_khoi_tao');
-      ketQua = false; if (tab === 'khai' && s === 'van_hanh') tab = 'bg';
-    }
+    S.trangThai = s;
+    S.soNhanSu = (s === 'van_hanh' ? 63 : 1);
+    if (s === 'van_hanh' && tab === 'luong') tab = 'bg';
     ve(); return;
   }
 
   const tb = e.target.closest('.tab1');
   if (tb){ tab = tb.dataset.t; ve(); return; }
 
-  const rd = e.target.closest('[data-rd]');
-  if (rd){ f[rd.dataset.rd] = rd.dataset.v; delete loi[rd.dataset.rd]; ve(); return; }
-
   const b = e.target.closest('[data-x]');
   if (!b) return;
   const x = b.dataset.x;
 
   if (x === 'dong') return dong();
-  if (x === 'reset'){ S = JSON.parse(JSON.stringify(BAN_DAU)); ketQua = false; loi = {}; tab = 'khai';
+  if (x === 'reset'){
+    S = JSON.parse(JSON.stringify(BAN_DAU)); vetBanGiao(); tab = 'luong'; buocDangMo = null;
     datLaiD();   /* 🔁 TNHM: nút «↩ Đưa về Nháp» của demo đổi D — đặt lại cả dữ liệu luồng */
     document.querySelectorAll('.tt').forEach((t, i) => t.classList.toggle('on', i === 0)); ve(); return bao('↺ Đã đặt lại dữ liệu mẫu'); }
-  if (x === 'xac-nhan') return hopXacNhan();
-  if (x === 'ghi') return ghi();
-  if (x === 'hien-mk'){ S.taiKhoan.daXem = !S.taiKhoan.daXem; if (S.taiKhoan.daXem) ghiNhatKy('Xem mật khẩu tạm', 'Tài khoản ' + S.taiKhoan.u); return ve(); }
-  if (x === 'chep-mk'){ return bao('⧉ Đã chép mật khẩu tạm — hệ thống ghi một dòng vào M10.7'); }
-  if (x === 'sang-luong'){ tab = 'luong'; ketQua = false; buocDangMo = 'B02'; return ve(); }
-  if (x === 'di-m41') return chuaDung('Deep-link <code>/M4.1?action=tao&amp;return=M10.12</code> — mở sẵn biểu mẫu bảy ô của <code>M4.1</code> §6.11.1.');
 
-  /* ───── tab ② luồng ───── */
+  /* ───── tab ① luồng ───── */
   if (x === 'mo-buoc'){ buocDangMo = b.dataset.b; return ve(); }
   if (x === 've-tiendo'){ buocDangMo = null; return ve(); }
   if (x === 'buoc-truoc' || x === 'buoc-tiep'){
@@ -744,7 +587,7 @@ document.addEventListener('click', e => {
   }
   if (x === 'xn-du'){
     xacNhan[b.dataset.b] = true;
-    aiLam[b.dataset.b] = [R().cd === '🔓 Đủ quyền (demo)' ? 'Trần Văn Định' : R().cd, '24/09 09:05'];
+    aiLam[b.dataset.b] = [S.nguoiDau.ten, '24/09 09:05'];
     dong(); ve(); return bao('✓ Đã ghi: ' + b.dataset.b + ' — người xác nhận và thời điểm lưu vào vết của bước');
   }
   /* KT-10 — gỡ nhãn «cần rà lại» là KẾT LUẬN CỦA NGƯỜI */
@@ -761,10 +604,12 @@ document.addEventListener('click', e => {
     buocDangMo = null; ve();
     return bao('⚠ B09 và B11 chuyển «cần rà lại» — hệ thống ⛔ không tự xoá, không tự chạy lại gì (KT-10)');
   }
-  /* 🔁 TNHM — B08b ⓓ «✓ Tạo hồ sơ năm học» (M10.1 F5, chỉ HT). Chặn thật là của M10.1 (N5). */
+  /* 🔁 TNHM — B08b ⓓ «✓ Tạo hồ sơ năm học» (M10.1 F5).
+     🔁 29/9: người bấm là TÀI KHOẢN ADMIN ĐẦU TIÊN, đi bằng QUYỀN KHỞI TẠO TẠM
+     (§9) — ⛔ không còn «chỉ Hiệu trưởng». Ràng buộc thật của M10.1 giữ nguyên. */
   if (x === 'tao-ho-so'){
     D.B08b.trangThaiNam = 'sap_toi';
-    aiLam.B08b = ['Trần Văn Định', '24/09 09:10'];
+    aiLam.B08b = [S.nguoiDau.ten, '24/09 09:10'];
     ve(); return bao('✓ Đã tạo hồ sơ năm học — Nháp → Sắp tới. Ba nhánh sau B08b mở; 🚀 Bắt đầu năm học vẫn là B14, thao tác riêng');
   }
   /* 🔁 TNHM — N8 «↩ Đưa về Nháp»: điều kiện DẪN XUẤT (TN-4) — máy đếm, ⛔ không ô tick */
@@ -788,27 +633,17 @@ document.addEventListener('click', e => {
     D.B08b.trangThaiNam = 'nhap';
     dong(); ve(); return bao('🧪 Demo: năm chưa có bản ghi nào ⇒ về Nháp được. Nút «✓ Tạo hồ sơ năm học» hiện lại ở B08b ⓓ');
   }
-  /* Tab ③ */
+  /* Tab ② Bàn giao — 🔁 29/9: người ký là CHỦ TÀI KHOẢN ADMIN ĐẦU TIÊN */
   if (x === 'ky-ban-giao' || x === 'bo-qua-ky'){
-    S.trangThai = 'van_hanh';
-    ghiNhatKy('Bàn giao hệ thống', x === 'ky-ban-giao' ? 'Hiệu trưởng ký số Nhóm A' : 'Hiệu trưởng BỎ QUA ký số — ghi audit, đồng bộ M4.3');
-    document.querySelectorAll('.tt').forEach((t, i) => t.classList.toggle('on', i === 2));
+    S.trangThai = 'van_hanh'; S.soNhanSu = 63;
+    ghiNhatKy('Bàn giao hệ thống', x === 'ky-ban-giao'
+      ? S.nguoiDau.ten + ' (tài khoản Admin đầu tiên) ký số Nhóm A'
+      : S.nguoiDau.ten + ' (tài khoản Admin đầu tiên) BỎ QUA ký số — ghi audit, đồng bộ M4.3');
+    document.querySelectorAll('.tt').forEach((t, i) => t.classList.toggle('on', i === 1));
     ve();
-    return bao(x === 'ky-ban-giao' ? '⚖ Đã ký bàn giao — trường chuyển sang Đang vận hành'
+    return bao(x === 'ky-ban-giao' ? '⚖ Đã ký bàn giao — trường chuyển sang Đang vận hành; quyền khởi tạo tạm HẾT HIỆU LỰC'
       : '⚠ Đã bỏ qua ký số — ghi audit và đồng bộ sang M4.3; trường chuyển sang Đang vận hành');
   }
-});
-
-document.addEventListener('input', e => {
-  const i = e.target.closest('[data-f]');
-  if (!i) return;
-  f[i.dataset.f] = i.value;
-  if (loi[i.dataset.f]) delete loi[i.dataset.f];
-});
-document.addEventListener('change', e => {
-  const s = e.target.closest('select[data-f]');
-  if (!s) return;
-  f[s.dataset.f] = s.value; delete loi[s.dataset.f]; ve();
 });
 
 /* khởi động ở app.90-khoi-dong.js — app.js nối TRƯỚC app.20/app.30 nên ve() phải chạy sau cùng */
@@ -987,11 +822,10 @@ const NHAN_TT = {
   xong:              ['✓ Xong',            'tt-xong'],
 };
 
-/* ═══════════════ VẼ TAB ② ═══════════════ */
+/* ═══════════════ VẼ TAB ① — LUỒNG KHỞI TẠO ═══════════════
+   🔁 29/9/2026: ⛔ không còn nhánh 'chua' — trường chỉ thấy hệ thống SAU khi
+   công ty bàn giao, tức luôn ở dang_khoi_tao hoặc dang_van_hanh (§2). */
 function veLuong(){
-  if (S.trangThai === 'chua')
-    return '<div class="warn">🧭 <b>Luồng khởi tạo chưa mở.</b> Nó sống từ trạng thái <code>dang_khoi_tao</code> — ' +
-      'tức sau khi tab ① chạy xong. Đổi thanh <b>Tình huống</b> ở trên để xem.</div>';
 
   if (buocDangMo) return veKhungLuong();
 
@@ -1029,10 +863,13 @@ function veLuong(){
   return h;
 }
 
+/* 🔁 29/9/2026 — ⛔ KHÔNG CÒN Ô QUYỀN NÀO để hiện.
+   Menu ⛔ có mã Feature, ⛔ có mặt trong danh sách phân quyền M10.4 (§6 · §9).
+   Thứ thay chỗ nó là QUYỀN KHỞI TẠO TẠM — gắn vào TÀI KHOẢN + TRẠNG THÁI. */
 function quyenLuong(){
-  const q = R().luong;
-  if (!q) return '<span class="qno">🔒 ' + esc(R().cd) + ' ⛔ không có ô quyền nào ở Feature này <i>(chốt H2)</i></span>';
-  return '<span class="qok">🔑 ' + esc(R().cd) + ' · quyền <code>' + q + '</code>' + (q === 'x' ? ' — chỉ xem' : '') + '</span>';
+  return '<span class="qok">🔑 ' + esc(R().cd) + ' · <b>quyền khởi tạo tạm</b> — ' +
+    'thao tác được MỌI bước của luồng, hết hiệu lực khi <b>ký bàn giao</b> <i>(HDKT ④)</i>. ' +
+    '⛔ Menu này ⛔ có ô quyền nào <i>(§9)</i>.</span>';
 }
 
 function bangBuoc(nhom, ds, gon){
@@ -1076,7 +913,10 @@ function daiDiemTruong(b){
 }
 
 function nutBuoc(b, tt){
-  const q = R().luong;
+  /* 🔁 29/9/2026 — ⛔ KHÔNG CÒN Ô QUYỀN NÀO. Tài khoản Admin đầu tiên đi bằng
+     QUYỀN KHỞI TẠO TẠM: thao tác được MỌI bước của luồng (§9) — TRỪ đúng hai
+     bước ⛔ làm thay được: B12 (KT — số tiền) và B08⑦ (IT — hạ tầng). */
+  const q = (b.ma === 'B12' || b.ma === 'B08⑦') ? 'x' : 'xs';
   if (tt === 'chua_du_dieu_kien'){
     const thieu = b.pt.filter(function(p){ const t = BUOC.filter(x => x.ma === p)[0]; return t && trangThaiGoc(t) !== 'xong'; });
     /* KT-A2: B05 đọc mục ② của B08a — chưa khai điểm trường thì nói ĐÚNG câu ấy
@@ -1152,14 +992,14 @@ function veKhungLuong(){
    Bốn phần; phần ⓓ là nút «✓ Tạo hồ sơ năm học» của M10.1, CHỈ HT.
    «↩ Đưa về Nháp» (N8 · TN-4): máy ĐẾM bản ghi của năm ở các menu mở khi tạo — ≠ 0 ⇒ chặn, nêu đích danh. */
 function khoiB08b(){
-  const d = D.B08b, laHT = role === 'HT' || role === 'FULL';
+  const d = D.B08b, laHT = moDuocMenu();   /* 🔁 29/9: quyền khởi tạo tạm — ⛔ không còn «chỉ HT» */
   const dong = (k, ten, hang, ok, ghi) => '<tr><td class="bma"><b>' + k + '</b></td><td class="bten">' + ten +
     ' <span class="hang">hạng ' + hang + '</span><div class="bso">' + ghi + '</div></td>' +
     '<td class="btt"><span class="ttp ' + (ok ? 'tt-xong' : 'tt-sang') + '">' + (ok ? '✓' : 'chưa') + '</span></td></tr>';
   let nut;
   if (d.trangThaiNam === 'nhap')
     nut = laHT ? '<button class="btn sm p" data-x="tao-ho-so">✓ Tạo hồ sơ năm học</button>'
-               : '<span class="nutcho">chờ HT — chỉ Hiệu trưởng tạo hồ sơ</span>';
+               : '<span class="nutcho">⛔ tài khoản này ⛔ mở được menu</span>';
   else if (d.trangThaiNam === 'sap_toi')
     nut = laHT ? '<button class="btn sm" data-x="ve-nhap">↩ Đưa về Nháp</button>' : '<span class="nutcho">hồ sơ đã ở Sắp tới</span>';
   else nut = '<span class="nutcho">đã bắt đầu năm học — ⛔ không có đường lui (N8)</span>';
@@ -1181,7 +1021,11 @@ function demGhiVaoNam(){
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   TAB ③ — BÀN GIAO  ·  cụm KTLD, phiên 1B
+   TAB ② — BÀN GIAO  ·  cụm KTLD
+   🔁 29/9/2026: tab ③ → tab ② (bỏ tab ① Khai trường lần đầu), và NGƯỜI KÝ
+   đổi từ «chỉ Hiệu trưởng» sang CHỦ TÀI KHOẢN ADMIN ĐẦU TIÊN — vì Hiệu trưởng
+   ⛔ mở được menu này nữa (§4.3 · §4.4 · ràng buộc 17). Phần Ký số Option
+   Nhóm A của H8 GIỮ NGUYÊN.
 
    Mốc PHÁP LÝ «trường nhận hệ thống»: ai ký, ngày nào, trạng thái dữ liệu
    lúc đó (chốt H8 — Ký số Option Nhóm A, bỏ qua được nhưng ghi audit).
@@ -1190,8 +1034,6 @@ function demGhiVaoNam(){
    ═══════════════════════════════════════════════════════════════ */
 
 function veBanGiao(){
-  if (S.trangThai === 'chua')
-    return '<div class="warn">✅ <b>Chưa tới bước bàn giao.</b> Nó đến sau khi các bước <b>chặn bàn giao</b> của luồng khởi tạo xong — 🚀 <b>B14</b> ⛔ không nằm trong số đó (chốt P-2).</div>';
 
   /* ✅ TNHM-Z · P-2: bước chặn bàn giao = bắt buộc VÀ không mang cờ khongChanBG (B14 🚀) */
   const chanBG = b => !b.tuyChon && !b.khongChanBG;
@@ -1202,7 +1044,7 @@ function veBanGiao(){
   let h = '';
 
   if (daXong)
-    h += '<div class="ok">✅ <b>Trường đã nhận hệ thống</b> — bàn giao lúc <b>24/09/2026 09:20</b>, người ký: <b>Trần Văn Định · Hiệu trưởng</b> ' +
+    h += '<div class="ok">✅ <b>Trường đã nhận hệ thống</b> — bàn giao lúc <b>24/09/2026 09:20</b>, người ký: <b>' + esc(S.nguoiDau.ten) + ' · tài khoản Admin đầu tiên (' + S.taiKhoan.u + ')</b> ' +
       '<i>(Ký số Option Nhóm A)</i>. Luồng khởi tạo nay là <b>bản ghi lịch sử</b> — mở ra xem được, ⛔ không thao tác được.</div>';
   else if (du)
     h += '<div class="ok">✅ <b>Đủ điều kiện bàn giao</b> — ' + BUOC.filter(chanBG).length + ' bước chặn bàn giao đã xong' + (trangThai(BUOC.filter(b => b.ma === 'B14')[0]) === 'xong' ? '' : ' — 🚀 <b>B14 Bắt đầu năm học</b> chưa làm: ⛔ không chặn, làm ở M10.1 vào ngày tựu trường (chốt P-2)') + '.</div>';
@@ -1243,13 +1085,18 @@ function veBanGiao(){
     'từ đây mọi thao tác đi qua ma trận <b>Chức danh × Feature × Phạm vi</b> như mọi menu khác. ⛔ Không gia hạn.</div>';
 
   /* Ô ký */
-  const laHT = role === 'HT' || role === 'FULL';
+  /* 🔁 29/9/2026 — người ký là CHỦ TÀI KHOẢN ADMIN ĐẦU TIÊN, ⛔ không phải chức danh HT.
+     Tài khoản khác ⛔ tới được đây (màn chặn ở app.js), nên vế này luôn đúng khi vẽ ra. */
+  const laHT = moDuocMenu();
   h += '<div class="card"><div class="ch">⚖ Ký bàn giao <span class="st2 n">Nhóm A</span></div><div class="cb">' +
     '<div class="info">Đây là <b>mốc pháp lý «trường nhận hệ thống»</b>: ai ký, ngày nào, trạng thái dữ liệu lúc đó. ' +
     'Về sau nếu có tranh luận <i>«dữ liệu sai từ lúc nào»</i> thì đây là mốc duy nhất trả lời được <i>(chốt <code>H8</code>)</i>.<br>' +
+    '🔁 <b>29/9/2026 — đổi người ký:</b> chốt cũ ghi <i>«chỉ Hiệu trưởng ký»</i>; nay Hiệu trưởng ⛔ <b>không mở được menu này</b> ' +
+    '<i>(§4.3)</i>, nên người ký là <b>chủ tài khoản Admin đầu tiên</b>. Thực tế hai người thường là một <i>(§4.2)</i>.<br>' +
     'Ký số Option <b>Nhóm A</b> — <b>bỏ qua được</b>, bỏ qua thì <b>ghi audit</b> và đồng bộ sang <code>M4.3</code>.</div>' +
     '<div class="cact"><span style="font-size:12px;color:var(--ink2)">' +
-      (laHT ? 'Người ký: <b>Hiệu trưởng</b>' : '🔒 Chỉ <b>Hiệu trưởng</b> ký được — vai hiện tại là ' + esc(R().cd)) + '</span>' +
+      (laHT ? 'Người ký: <b>' + esc(S.nguoiDau.ten) + '</b> — chủ tài khoản Admin đầu tiên <i>(' + S.taiKhoan.u + ')</i>'
+            : '🔒 Chỉ <b>chủ tài khoản Admin đầu tiên</b> ký được — tài khoản hiện tại là ' + esc(R().cd)) + '</span>' +
     '<div class="spacer" style="flex:1"></div>' +
     '<button class="btn" data-x="bo-qua-ky"' + (du && laHT ? '' : ' disabled') + '>Bỏ qua ký số</button>' +
     '<button class="btn p" data-x="ky-ban-giao"' + (du && laHT ? '' : ' disabled') + '>⚖ Ký bằng USB Token / SmartCA</button></div>' +

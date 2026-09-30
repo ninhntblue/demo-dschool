@@ -825,13 +825,12 @@ const F=[
  ['m10.11.tra_cuu_tep','Tra cứu tệp','M10.11','Quản lý lưu trữ hệ thống','qt',4,'',0,''],
  ['m10.11.luot_giai_phong','Lượt giải phóng','M10.11','Quản lý lưu trữ hệ thống','qt',4,'',0,''],
  ['m10.11.cau_hinh','⚙ Cấu hình','M10.11','Quản lý lưu trữ hệ thống','qt',3,'',0,''],
- /* 🆕 MENU MỚI M10.12 — cụm KTLD, tích hợp 3Z 23/9/2026.
-    Tab ① KHÔNG có một ô quyền nào (M10.12 §6 · §9) — bảng trống là CHỐT, ⛔ không phải sót:
-    màn ấy chạy TRƯỚC khi có bất kỳ phân quyền nào, nên quyền thao tác đến từ TRẠNG THÁI
-    `chua_khoi_tao`, ⛔ không từ chức danh. Feature vẫn vào danh mục để ĐẾM ĐƯỢC và TRA ĐƯỢC. */
- ['m10.12.khai_truong_lan_dau','🏫 Khai trường lần đầu','M10.12','Khởi tạo hệ thống lần đầu','qt',1,'🛑 0 ô quyền — ngoại lệ DUY NHẤT của mô hình phân quyền (M10.12 §6); chạy MỘT lần, cờ da_khoi_tao bất biến',0,''],
- ['m10.12.luong_khoi_tao','🧭 Luồng khởi tạo','M10.12','Khởi tạo hệ thống lần đầu','qt',2,'14 bước — 12 bắt buộc · 4 tùy chọn; trạng thái mỗi bước là DẪN XUẤT (KT-2), ⛔ không có ô tick',0,''],
- ['m10.12.ban_giao','✅ Bàn giao','M10.12','Khởi tạo hệ thống lần đầu','qt',2,'Mốc pháp lý «trường nhận hệ thống» — HT ký, Ký số Option Nhóm A (H8)',0,'A'],
+ /* 🔁 29/9/2026 — M10.12 «Khởi tạo hệ thống lần đầu» ĐÃ RỜI DANH MỤC NÀY.
+    Ba mã `m10.12.khai_truong_lan_dau` · `m10.12.luong_khoi_tao` · `m10.12.ban_giao` gỡ hến
+    — ⛔ không tái dùng. Lý do: menu ấy **chỉ dành cho tài khoản Admin đầu tiên do công ty
+    bàn giao** và ⛔ không có mặt trong danh sách menu để phân quyền (M10.12 §6 · §7 · M10.4 §12.29).
+    🛑 Menu VẪN CÒN trên sidebar và vẫn mở được — bộ sinh tài liệu nhận nó qua ngoại lệ
+    `nhom.MENU_NGOAI_PHAN_QUYEN`, ⛔ không qua mảng F này. ⛔ Đừng thêm lại để «cho đủ». */
  /* 🗃 HỌC LIỆU SỐ HÓA — nhóm mới, tích hợp 16/9/2026 (PHIEU-HL-Z mục A; tên tab quét từ DOM bảy demo).
     ks='' cả 20 — nhóm KHÔNG có ký số, cột D chỉ nghĩa «duyệt kiểm định nội dung».
     Cột 5 `ng`='cm' — chỉ là khóa gieo cũ của G (G không còn Feature nào dùng); nhóm hiển thị lấy từ NHOMSB ('hl').
@@ -1400,9 +1399,6 @@ const GQ={
  'm10.11.tra_cuu_tep':{HT:'xe@School',IT:'xte@School'},
  'm10.11.luot_giai_phong':{HT:'xde@School',IT:'xtse@School'},
  'm10.11.cau_hinh':{HT:'xs@School',IT:'xs@School'},
- 'm10.12.khai_truong_lan_dau':{},
- 'm10.12.luong_khoi_tao':{HT:'xse@School',IT:'x@School'},
- 'm10.12.ban_giao':{HT:'xsde@School',IT:'x@School'},
  'm12.1.kho_cua_toi':{HT:'xtsoie@Own#authored',PHT_CM:'xtsoie@Own#authored',TTCM:'xtsoie@Own#authored',TPCM:'xtsoie@Own#authored',GVCN:'xtsoie@Own#authored',GVBM:'xtsoie@Own#authored'},
  'm12.1.thung_rac':{HT:'xtsoie@Own#authored',PHT_CM:'xtsoie@Own#authored',TTCM:'xtsoie@Own#authored',TPCM:'xtsoie@Own#authored',GVCN:'xtsoie@Own#authored',GVBM:'xtsoie@Own#authored'},
  'm12.1.cau_hinh':{HT:'xs@School',PHT_CM:'xs@School'},
