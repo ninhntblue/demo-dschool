@@ -374,7 +374,6 @@ body.bnx-dang-mo #toast{z-index:960}
   <b>Chức danh:</b>
   <button class="rb on" data-r="DQ">🔓 Đủ quyền (demo)</button>
   <button class="rb" data-r="VT">VT</button>
-  <button class="rb" data-r="GVCN">GVCN</button>
   <button class="rb" data-r="GVBM">GVBM</button>
   <button class="rb" data-r="YT">YT</button>
   <button class="rb" data-r="KT">KT</button>
@@ -978,7 +977,11 @@ const ROLE={
  /* PH KHÔNG phải vai Web — nút này chỉ để xem trước lát cắt App PH-HS (A01) của Phần D, cho đúng một em */
  PH:{n:'Phụ huynh em Nguyễn Minh Anh',sc:'Con mình (App)',menu:[],tabs:['d'],lienhe:'full',sk:'full',edit:0,duyet:0,ghichu:0,xuat:0},
  VT:{n:'Văn thư',sc:'Điểm trường',menu:['hs','lop','gt'],tabs:['ab','c','d','e','f','g'],lienhe:'full',sk:'full',edit:1,duyet:1,ghichu:1,xuat:1},
- GVCN:{n:'GVCN lớp 9A2',sc:'Lớp 9A2',menu:['hs','lop','gt'],tabs:['ab','c','d','e','f','g'],lienhe:'full',sk:'full',edit:0,duyet:'ykien',ghichu:1,xuat:1},
+ /* 🔴 LHCH 6/10/2026 (LH-5) — GVCN ROI HAN M1.1: go 2 o quyen (m1.1.danh_sach_hoc_sinh ·
+    m1.1.duyet_yeu_cau_cap_nhat), GQ 2.520 -> 2.518. Toan bo viec cua ho ve M2.9 T1 §3.6:
+    doc ho so (dung lat cat cu) · de xuat chinh sua · cho y kien yeu cau Phan B.
+    ⛔ Khong pha D1 — moi truong VAN thuoc menu nay; T1 la cua vao thu hai (quy tac 16).
+    Vai GVCN go khoi ROLE va khoi thanh vai o body.html (tien le BTNV-1B).           */
  GVBM:{n:'GV bộ môn Toán',sc:'Lớp mình dạy',menu:['lop','gt'],tabs:['ab'],lienhe:'none',sk:'none',edit:0,duyet:0,ghichu:0,xuat:0},
  YT:{n:'Y tế học đường',sc:'Điểm trường',menu:['vh','gt'],tabs:['ab'],lienhe:'khancap',sk:'full',edit:0,duyet:0,ghichu:0,xuat:0},
  /* BTNV-1B (23/9/2026): vai BT (NVBT — nhan vien ban tru) DA GO khoi menu M1.1.
@@ -2097,6 +2100,9 @@ document.body.addEventListener('click',e=>{
   toast('✓ Đã xác nhận '+LHCQH[k]+' — '+h[k].n+'. Máy gợi ý, NGƯỜI kết luận');return}
  const ld=e.target.closest('[data-lhcdx]');
  if(ld){const h=HS.find(x=>x.id===cur), kLH=lhcKey(h), co=lhcCo(h).filter(k=>h[k].sdt);
+  /* 🔴 LHCH 6/10 — cua de xuat cua GVCN DA CHUYEN sang M2.9 T1; o day ⛔ con vai nao dung.
+     Chan o DUONG GHI chu ⛔ chi an nut — «nut khong hien» ⛔ phai mot hang rao. */
+  if(role!=='GVCN'){toast('⛔ Cửa đề xuất của GVCN nay ở M2.9 tab «Học sinh của lớp» (§3.6.4)');return}
   if(daRoi(h)){toast('⛔ Hồ sơ đã rời trường — khóa sửa');return}
   const choCu=lhcCho(h);
   if(choCu){toast('⛔ Đã có đề xuất chờ duyệt ('+choCu.id+') — chờ văn thư xử lý');return}

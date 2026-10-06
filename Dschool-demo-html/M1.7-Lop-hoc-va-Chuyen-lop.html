@@ -215,6 +215,89 @@ tr:last-child td{border-bottom:none}
 .tli.no::before{background:var(--red)}
 .pbody{max-height:calc(100vh - 250px)}
 
+/* ═══════════ TAB 🎯 XẾP LỚP — lưới kéo thả (6/10/2026) ═══════════════════
+   Khuôn vẽ app.10-luoi-xep-lop.js chỉ PHÁT RA tên lớp CSS, ⛔ mang theo bộ y
+   phục; khối này thiếu nên mọi thẻ học sinh rơi về chữ trần. Vá ở ĐÂY, ⛔ ở
+   khuôn — luật GC-6 bắt khuôn trùng từng byte với gốc demo M1.4.
+   Khác M1.4 một điểm có lý do: ở M1.7 mọi lượt kéo chỉ là ĐANG CHỜ ghi nhận,
+   nên thẻ phải mang được màu của trạng thái ấy (vàng = chờ, ⛔ xanh = xong). */
+.plwrap{display:grid;grid-template-columns:356px 1fr;gap:13px;align-items:start}
+@media(max-width:1060px){.plwrap{grid-template-columns:1fr}}
+
+/* ---- hàng đợi ---- */
+.qbox{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.qbox.over{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
+.qh{padding:10px 12px;background:#f8fafc;border-bottom:1px solid var(--line);font-size:12.5px;font-weight:700;
+ display:flex;align-items:center;gap:7px;flex-wrap:wrap;line-height:1.45}
+
+/* Thẻ học sinh — THẺ thật: khung riêng, nẹp màu bên trái, nhấc nhẹ khi trỏ vào. */
+.qi{position:relative;margin:8px;padding:9px 10px;background:#fff;border:1px solid var(--line);
+ border-left:3px solid var(--line2);border-radius:10px;font-size:12.5px;cursor:grab;
+ transition:border-color .12s,box-shadow .12s,transform .12s}
+.qi+.qi{margin-top:0}
+.qi:hover{border-color:var(--brand);border-left-color:var(--brand);box-shadow:0 2px 8px rgba(29,78,216,.10)}
+.qi:active{cursor:grabbing}
+.qi.drag{opacity:.45;border-style:dashed;box-shadow:none}
+.qi .nm{font-weight:700;font-size:13.5px;display:flex;align-items:center;gap:7px;line-height:1.35}
+.qi .nm::before{content:"⠿";flex:0 0 auto;color:var(--ink3);font-size:13px;font-weight:400;letter-spacing:-1.5px}
+
+/* Dải chip nhận dạng — ⛔ một dãy chữ xám dính liền nhau. */
+.qi .mt{display:flex;gap:5px;flex-wrap:wrap;align-items:center;margin-top:7px;font-size:11px;color:var(--ink2)}
+.qi .mt>span:not(.st2){background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:1px 8px;white-space:nowrap}
+.qi .mt>span.gm{background:#eff6ff;border-color:#bfdbfe;color:#1e40af}
+.qi .mt>span.gf{background:#fdf2f8;border-color:#fbcfe8;color:#9d174d}
+.qi .idl{margin-top:6px;font-size:10.5px;color:var(--ink3);letter-spacing:.01em}
+
+/* Tầng trạng thái — nói thẳng «đang chờ ghi vào lớp nào» và cho đường lùi. */
+.qi .stg{margin-top:8px;display:flex;align-items:center;gap:7px;padding:4px 8px;border-radius:8px;
+ font-size:11.5px;font-weight:700;background:#fff7ed;border:1px dashed #fcd34d;color:#92400e}
+.qi .stg.lk{background:var(--bg);border-color:var(--line2);color:var(--ink2);font-weight:400}
+.qi.staged{background:var(--amber-soft);border-color:#fde68a;border-left-color:var(--amber)}
+.qi.staged:hover{border-color:var(--amber);border-left-color:var(--amber);box-shadow:0 2px 8px rgba(217,119,6,.14)}
+.qi.locked{cursor:default;opacity:.74}
+.qi.locked:hover{border-color:var(--line);border-left-color:var(--line2);box-shadow:none}
+.qi.pick{border-color:var(--brand);border-left-color:var(--brand);background:var(--brand-soft);
+ box-shadow:0 0 0 3px var(--brand-soft)}
+
+/* ---- lưới lớp ---- */
+.lgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(222px,1fr));gap:11px}
+.lbox{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface);
+ min-height:162px;display:flex;flex-direction:column}
+.lbox.over{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
+.lbox.over.no{border-color:var(--red);box-shadow:0 0 0 3px var(--red-soft)}
+.lbox.aim{border-color:#bfdbfe;border-style:dashed;cursor:pointer}
+.lbox.aim:hover{border-color:var(--brand);border-style:solid;background:var(--brand-soft)}
+.lbox .lmeta{font-size:11px;color:var(--ink3);padding:5px 11px;line-height:1.55;border-bottom:1px solid #f1f5f9}
+.lbox .lmeta .cho{color:var(--amber)}
+.lbox .lmeta .het{color:var(--red)}
+.lbb{padding:7px;flex:1;display:flex;flex-direction:column;gap:5px;min-height:106px}
+.lbb .drop{flex:1;display:grid;place-items:center;margin:0;padding:20px 8px;cursor:default;
+ border:1.5px dashed var(--line2);border-radius:9px;color:var(--ink3);font-size:11.5px}
+.lbb .drop:hover{border-color:var(--line2);color:var(--ink3)}
+.lbox.over .lbb .drop{border-color:var(--brand);color:var(--brand);background:var(--brand-soft)}
+.lbox.over.no .lbb .drop{border-color:var(--red);color:var(--red);background:var(--red-soft)}
+
+/* Thẻ trong hộp lớp = lượt ĐANG CHỜ ghi nhận ⇒ mang màu vàng, ⛔ màu đã xong. */
+.si{background:#fff;border:1px solid #fde68a;border-left:3px solid var(--amber);border-radius:8px;
+ padding:6px 8px;font-size:12px;display:flex;gap:7px;align-items:center;cursor:grab}
+.si>span:first-child{font-weight:600}
+.si.drag{opacity:.45;border-style:dashed}
+.si .x{margin-left:auto;flex:0 0 auto;color:var(--ink3);font-size:13px;line-height:1;padding:1px 5px;border-radius:5px}
+.si .x:hover{color:var(--red);background:var(--red-soft)}
+
+.bal{font-size:11px;color:var(--ink3);padding:6px 11px;border-top:1px solid var(--line);
+ display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+.bal>span+span::before{content:"·";margin-right:4px;color:var(--line2)}
+.bal b{color:var(--ink2)}
+.bal:empty{display:none}
+.over-ss{color:var(--red);font-weight:700}
+
+/* Hai dải nói trạng thái của cả màn — nằm trong dải mô tả .ro */
+.xlcho{margin-top:8px;background:var(--amber-soft);border:1px solid #fde68a;color:#92400e;
+ border-radius:8px;padding:7px 10px;font-size:12px;line-height:1.6}
+.xlpick{margin-top:8px;background:var(--brand-soft);border:1px solid #bfdbfe;color:#1e40af;
+ border-radius:8px;padding:7px 10px;font-size:12px;line-height:1.6}
+
 /* ═══ MNXL-0B — BỘ NHẬP / XUẤT DÙNG CHUNG · style.08-bo-nhap-xuat.css ═══
    🔁 MNXL-Z 26/9/2026 (HDMX bản 2): + .bnx-bao (BNX.bao) · toast #toast và modal #mask.bnx-tren-hop của menu nổi TRÊN hộp.
    🛑 TỆP NỀN (MX-4) — chép NGUYÊN BYTE sang demo khác, đo băm; ⛔ sửa ở bản chép.
@@ -2753,6 +2836,29 @@ function veChanXepLop(c){
    Tài liệu: M1.7 §2.4 (ranh giới hai cửa) · §7.5 (chi tiết tab) · §9 nhóm A′.
    Lưới lấy từ KHUÔN DÙNG CHUNG app.10-luoi-xep-lop.js (phiên 0B, chốt Đ2c) —
    tệp đó chép NGUYÊN BYTE từ gốc demo M1.4, băm 8E8DB54E7C3084FD.
+
+   ── SỬA GIAO DIỆN 6/10/2026 ───────────────────────────────────────────────
+   Hai lỗi của bản trước, và vì sao vá ở ĐÂY chứ không ở khuôn:
+
+   ① THẺ HỌC SINH RƠI VỀ CHỮ TRẦN. Khuôn dùng chung chỉ PHÁT RA tên lớp CSS
+      (.plwrap .qbox .qi .nm .mt .lgrid .lbox .lbb .si .bal …) — nó ⛔ mang theo
+      bộ y phục. style.css của M1.7 thiếu TRỌN khối «phan lop — keo tha» mà
+      M1.4 có, nên mọi thẻ hiện ra thành chữ xếp dọc. ⇒ vá ở style.css của
+      M1.7, ⛔ ở khuôn (luật GC-6: khuôn phải trùng từng byte với gốc M1.4).
+
+   ② KÉO VÀO LỚP LÀ EM BIẾN MẤT KHỎI HÀNG ĐỢI. Lượt kéo ghi thẳng vào h.lop —
+      đúng cái ô mà hàng đợi dùng để lọc. Nhưng tab này có nút «✓ Ghi nhận xếp
+      lớp»: trước khi bấm nút ấy thì CHƯA có gì được ghi. Một ô gánh hai nghĩa
+      «đã ghi» và «đang định xếp» ⇒ TÁCH HAI Ô:
+         h.cho — lớp ĐANG CHỜ ghi nhận  (lượt kéo · gợi ý tự động đặt vào đây)
+         h.lop — lớp ĐÃ GHI             (chỉ nút ✓ Ghi nhận, và cửa «gán theo
+                                         lô» ở app.09 — lô có hoàn tác riêng)
+      Hàng đợi vẫn lọc theo h.lop nên THẺ GIỮ NGUYÊN TẠI CHỖ, mang nhãn «đang
+      chờ ghi vào 8B1» và nút ↺ bỏ; danh sách chỉ đổi khi ghi nhận.
+      Hệ quả tốt thứ hai: badge sidebar và mục ⑥ của M10.1 đếm theo h.lop nên
+      ⛔ tụt xuống trước khi người dùng thật sự ghi — con số ⛔ nói dối.
+      Hệ quả tốt thứ ba: bản ghi kết chuyển (KCNH D4) nay sinh ĐÚNG LÚC GHI,
+      ⛔ lúc kéo — kéo rồi bỏ thì ⛔ để lại vết.
    ========================================================================== */
 
 /* BA NGUỒN của hàng đợi (chốt Đ2b — chuẩn là M10.1 mục ⑥).
@@ -2800,16 +2906,26 @@ let xlKhoi=8, xlDt='Điểm trường B', xlHe='Đại trà';
 function xlOf(ma){return XLHS.find(h=>h.ma===ma)||{}}
 function xlChuaLop(){return XLHS.filter(h=>!h.lop)}                   /* toàn trường — badge + luật tự ẩn */
 function xlHangDoi(){return XLHS.filter(h=>!h.lop && h.kh===xlKhoi && h.dt===xlDt && h.he===xlHe)}
-function xlTrongLop(id){return XLHS.filter(h=>h.lop===id)}
+
+/* 🔑 Ô CHỜ, ⛔ ô đã ghi. Hộp lớp trên lưới bày những em ĐANG CHỜ ghi nhận —
+   em đã ghi thì rời XLHS và chỉ còn là một đơn vị trong l.ss. */
+function xlTrongLop(id){return XLHS.filter(h=>h.cho===id)}
+function xlDangCho(){return XLHS.filter(h=>h.cho)}
+function xlChoNgoaiLat(){return XLHS.filter(h=>h.cho && !(h.kh===xlKhoi && h.dt===xlDt && h.he===xlHe))}
 function xlLopCua(){return LOP.filter(l=>l.k===xlKhoi && l.dt===xlDt && l.he===xlHe)}
+function xlConCho(l){return !!l.id && l.ss+xlTrongLop(l.id).length < l.max}
 function xlSuaDuoc(){return !!(R().duyet || R().ky)}                  /* HT · PHT_ĐT; VT và GVCN chỉ đọc */
 
 function viewXL(){
  const Q=xlHangDoi(), L=xlLopCua();
- const khois=[...new Set(XLHS.filter(h=>!h.lop).map(h=>h.kh))].sort((a,b)=>a-b);
+ /* Khối ĐANG CHỌN luôn có mặt trong bộ lọc, kể cả khi vừa xếp hết — bỏ nó ra
+    thì ô chọn tụt về khối đầu danh sách trong khi màn hình vẫn đứng ở khối cũ. */
+ const khois=[...new Set([...XLHS.filter(h=>!h.lop).map(h=>h.kh),xlKhoi])].sort((a,b)=>a-b);
  const dts=[...new Set(LOP.map(l=>l.dt))];
  const hes=[...new Set(LOP.filter(l=>l.k===xlKhoi&&l.dt===xlDt).map(l=>l.he))];
  const chuaXep=xlChuaLop().length;
+ const cho=Q.filter(h=>h.cho), ngoai=xlChoNgoaiLat();
+ const pick=xlPick?xlOf(xlPick):null;
  return veManXepLop({
   dauMan:'<div class="ro">Tab này <b>ghi nhận hiện trạng</b>: em đã là học sinh của trường, chỉ chưa có lớp trong năm đang chạy. '+
    '<b>⛔ Không duyệt, ⛔ không ký</b> — khác hẳn <b>M1.4 Phân lớp học sinh mới</b> <i>(M1.7 §2.4)</i>. '+
@@ -2817,30 +2933,59 @@ function viewXL(){
   thanhLoc:'<select class="fs" id="xlkhoi">'+khois.map(k=>'<option value="'+k+'"'+(xlKhoi===k?' selected':'')+'>Khối '+k+'</option>').join('')+'</select>'+
    '\n   <select class="fs" id="xldt">'+dts.map(d=>'<option'+(xlDt===d?' selected':'')+'>'+d+'</option>').join('')+'</select>'+
    '\n   <select class="fs" id="xlhe">'+(hes.length?hes:['Đại trà']).map(h=>'<option'+(xlHe===h?' selected':'')+'>'+h+'</option>').join('')+'</select>',
-  nutCongCu:(xlSuaDuoc()?'<button class="btn sm p" data-x="xlauto"'+(Q.filter(xlXepDuoc).length?'':' disabled')+'>✨ Gợi ý tự động</button>':'')+
+  nutCongCu:(xlSuaDuoc()?'<button class="btn sm p" data-x="xlauto"'+(Q.filter(h=>xlXepDuoc(h)&&!h.cho).length?'':' disabled')+'>✨ Gợi ý tự động</button>':'')+
    '\n    '+(xlSuaDuoc()?'<button class="btn sm" data-x="xlgan">📄 Gán theo lô</button>':'')+
-   '\n    '+(xlSuaDuoc()&&L.some(l=>xlTrongLop(l.id).length)?'<button class="btn sm" data-x="xlreset">↺ Trả hết về hàng đợi</button>':''),
+   '\n    '+(xlSuaDuoc()&&cho.length?'<button class="btn sm" data-x="xlreset">↺ Bỏ hết '+cho.length+' lượt đang chờ</button>':''),
   moTa:'Hàng đợi gom mọi em <b>CHƯA CÓ LỚP</b> trong năm đang chọn — <b>ba nguồn</b> <i>(Đ2b · câu định nghĩa sửa 28/9 theo Đ4)</i>: <b>M3.3</b> kết chuyển còn sót · <b>M1.4</b> đã xác nhận nhập học · <b>lô nhập danh sách</b> — mọi khối <b>1–12</b>. Đây là <b>làn 2</b> của ba làn <i>(M3.3 §5.7.0)</i>: xếp em nguồn <b>M3.3</b> ở đây <b>sinh bản ghi kết chuyển</b> mang dấu nguồn «xếp tay», và làn này <b>⛔ phụ thuộc trạng thái năm nguồn</b> — chạy được cả khi năm cũ đã kết thúc.'+
    '\n   Em chuyển đến <b>M1.5</b> và tái nhập <b>M1.6</b> ⛔ bao giờ vào đây: hai luồng ấy chọn lớp ngay trong màn hình ký.'+
-   (Q.some(h=>!xlXepDuoc(h))?'\n   <br><span class="st2 w">Em gắn nhãn <b>M1.4</b> hiện để đếm cho đủ, nhưng ⛔ kéo được ở đây — xếp lớp cho em ấy có PHT_ĐT duyệt và HT ký công bố</span>':''),
+   (Q.some(h=>!xlXepDuoc(h))?'\n   <br><span class="st2 w">Em gắn nhãn <b>M1.4</b> hiện để đếm cho đủ, nhưng ⛔ kéo được ở đây — xếp lớp cho em ấy có PHT_ĐT duyệt và HT ký công bố</span>':'')+
+   /* 🔑 Dải này là chỗ NÓI RA luật «thẻ ở lại hàng đợi»: mọi lượt kéo chỉ là
+      ĐANG CHỜ, và danh sách chỉ đổi khi bấm ✓ Ghi nhận. */
+   (cho.length||ngoai.length?'\n   <div class="xlcho">⏳ <b>Đang chờ ghi nhận: '+cho.length+' lượt</b>'+
+     (cho.length?' — '+L.filter(l=>xlTrongLop(l.id).length).map(l=>l.id+' ('+xlTrongLop(l.id).length+')').join(' · '):'')+
+     '. Thẻ các em vẫn <b>ở lại hàng đợi</b> để xem lại và sửa; danh sách chỉ cập nhật khi bấm <b>✓ Ghi nhận xếp lớp</b>.'+
+     (ngoai.length?'<br><span class="st2 w">Còn '+ngoai.length+' lượt đang chờ ở lát cắt khác</span> — nút ghi nhận chỉ ghi lát cắt đang mở, hãy quay lại lát cắt ấy để ghi.':'')+
+     '</div>':'')+
+   (pick&&pick.ma?'\n   <div class="xlpick">🎯 Đang chọn <b>'+pick.n+'</b> — bấm vào <b>một hộp lớp</b> để xếp, hoặc <b>Esc</b> để bỏ chọn. <i>(lối thay cho kéo thả)</i></div>':''),
 
-  hangDoi:Q, lop:L, choPhepSua:xlSuaDuoc(), hsCua:xlOf,
+  /* 🔴 Khuôn dùng chung đọc danh sách trong hộp lớp từ `l.hs` — một mảng MÃ nằm
+     TRÊN bản ghi lớp. `LOP` của M1.7 ⛔ có ô ấy, nên hộp lớp xưa nay LUÔN rỗng:
+     kéo một em vào là em mất khỏi hàng đợi mà ⛔ hiện ra ở đâu cả. Đây mới là
+     nguyên nhân thật của «kéo vào thì biến mất».
+     ⇒ truyền BẢN SAO của bản ghi lớp, đính thêm `hs` = mã các em ĐANG CHỜ ghi.
+     Bản sao, ⛔ bản gốc: `l.ss` chỉ được cộng ở bước ghi nhận, ⛔ ở bước kéo. */
+  hangDoi:Q, lop:L.map(l=>Object.assign({},l,{hs:xlTrongLop(l.id).map(h=>h.ma)})),
+  choPhepSua:xlSuaDuoc(), hsCua:xlOf,
   siSo:l=>l.ss+xlTrongLop(l.id).length,
-  tieuDeHangDoi:'Hàng đợi — Khối '+xlKhoi+' · '+xlHe+' — chưa có lớp',
+  tieuDeHangDoi:'Hàng đợi — Khối '+xlKhoi+' · '+xlHe+' — chưa có lớp'+
+   (cho.length?' <span class="st2 w">'+cho.length+' chờ ghi</span>':''),
   chuHetHangDoi:'Đã xếp hết hàng đợi của lát cắt này',
   chuChuaKhaiLop:'Chưa khai lớp của hệ này ở M10.1 · Lớp học',
-  veMeta:h=>'<div class="mt"><span>'+h.ma+'</span>'+(h.md?'<span>CSDL '+h.md+'</span>':'<span class="st2 w">chưa có mã định danh</span>')+'<span>'+h.gt+'</span><span>Học lực '+h.hl+'</span>'+
-   '<span class="st2 '+(h.ngv==='ts'?'w':'v')+'">'+XL_NGUON[h.ngv][0]+'</span>'+
-   (h.cu?'<span>lớp cũ '+h.cu+'</span>':'')+(h.lo?'<span>'+h.lo+'</span>':'')+(h.dot?'<span>'+h.dot+'</span>':'')+
-   (xlXepDuoc(h)?'':'<button class="btn xs" data-x="xlsangm14" data-ma="'+h.ma+'">↗ M1.4</button>')+'</div>',
-  canDoiHangDoi:Q=>'Nam '+Q.filter(h=>h.gt==='Nam').length+' · Nữ '+Q.filter(h=>h.gt==='Nữ').length+
-   ' · Học lực TB '+(Q.length?(Q.reduce((a,b)=>a+b.hl,0)/Q.length).toFixed(1):'—'),
-  dongPhu:l=>'<div style="font-size:11px;color:var(--ink3);padding:4px 10px">'+l.ss+' em đang học'+(l.giu?' · +'+l.giu+' giữ chỗ':'')+' · GVCN '+(l.gvcn||'— chưa phân —')+'</div>',
-  canDoiLop:nhap=>{const nam=nhap.filter(h=>h.gt==='Nam').length;
-   return 'Vừa xếp: Nam '+nam+' · Nữ '+(nhap.length-nam)+' · TB '+(nhap.length?(nhap.reduce((a,b)=>a+b.hl,0)/nhap.length).toFixed(1):'—')},
+  chuOTrong:xlSuaDuoc()?'Kéo thẻ học sinh thả vào đây':'Chưa có lượt nào chờ ghi nhận',
+  /* Thẻ hàng đợi — ba tầng, ⛔ một dãy chữ: ① tên (khuôn vẽ ở .nm) ② dải chip
+     nhận dạng ③ dòng mã. Em đang chờ ghi thì thêm tầng ④ nói rõ lớp đích. */
+  veMeta:h=>'<div class="mt"><span class="st2 '+(h.ngv==='ts'?'w':'v')+'">'+XL_NGUON[h.ngv][0]+' · '+XL_NGUON[h.ngv][1]+'</span>'+
+   '<span class="g'+(h.gt==='Nam'?'m':'f')+'">'+h.gt+'</span><span>Học lực '+h.hl+'</span>'+
+   (h.cu?'<span>lớp cũ '+h.cu+'</span>':'')+(h.lo?'<span>'+h.lo+'</span>':'')+(h.dot?'<span>'+h.dot+'</span>':'')+'</div>'+
+   '<div class="idl">'+h.ma+(h.md?' · CSDL '+h.md:' · <span class="st2 w">chưa có mã định danh ngành</span>')+'</div>'+
+   (h.cho?'<div class="stg">→ đang chờ ghi vào <b>'+h.cho+'</b><span style="flex:1"></span>'+
+     (xlSuaDuoc()?'<button class="btn xs" data-x="unassign" data-ma="'+h.ma+'">↺ bỏ</button>':'')+'</div>':'')+
+   (xlXepDuoc(h)?'':'<div class="stg lk">⛔ xếp được ở tab này<span style="flex:1"></span>'+
+     '<button class="btn xs" data-x="xlsangm14" data-ma="'+h.ma+'">↗ M1.4</button></div>'),
+  canDoiHangDoi:Q=>'<span><b>'+Q.filter(h=>!h.cho).length+'</b> chưa xếp</span><span><b>'+Q.filter(h=>h.cho).length+'</b> đang chờ ghi</span>'+
+   '<span>Nam '+Q.filter(h=>h.gt==='Nam').length+' · Nữ '+Q.filter(h=>h.gt==='Nữ').length+'</span>'+
+   '<span>Học lực TB '+(Q.length?(Q.reduce((a,b)=>a+b.hl,0)/Q.length).toFixed(1):'—')+'</span>',
+  dongPhu:l=>{const n=xlTrongLop(l.id).length, con=l.max-l.ss-n;
+   return '<div class="lmeta">'+l.ss+' em đang học'+(l.giu?' · +'+l.giu+' giữ chỗ':'')+
+    (n?' · <b class="cho">+'+n+' chờ ghi</b>':'')+
+    ' · '+(con>0?'còn <b>'+con+'</b> chỗ':'<b class="het">hết chỗ</b>')+
+    '<br>GVCN '+(l.gvcn||'— chưa phân —')+'</div>'},
+  canDoiLop:nhap=>{if(!nhap.length)return '';
+   const nam=nhap.filter(h=>h.gt==='Nam').length;
+   return '<span>Chờ ghi: Nam '+nam+' · Nữ '+(nhap.length-nam)+'</span><span>TB '+(nhap.reduce((a,b)=>a+b.hl,0)/nhap.length).toFixed(1)+'</span>'},
 
   dayKy:null,                                   /* 🛑 cửa GHI NHẬN — M1.7 §7.5.1 */
-  nutGhi:xlSuaDuoc()?'<button class="btn p" data-x="xlghi"'+(L.some(l=>xlTrongLop(l.id).length)?'':' disabled')+'>✓ Ghi nhận xếp lớp</button>':'',
+  nutGhi:xlSuaDuoc()?'<button class="btn p" data-x="xlghi"'+(cho.length?'':' disabled')+'>✓ Ghi nhận '+(cho.length?cho.length+' lượt ':'')+'xếp lớp</button>':'',
   chuChanTrang:'Ghi thẳng, ⛔ có bước duyệt và ⛔ có ký công bố — <b>M1.7 §7.5.1</b>. Vết đủ vì chỉ <b>HT</b> và <b>PHT_ĐT</b> thao tác được.'});
 }
 
@@ -2851,66 +2996,122 @@ function viewXL(){
    mang dau nguon «xep tay tai M1.7» — de muc ⑥ cua M10.1 dem vao dong Ket chuyen va
    nut 🚀 Bat dau nam hoc chan dung (M3.3 rang buoc 27).
    ⛔ Loai ban ghi thu hai; ⛔ de trong: em co lop ma tien do van bao thieu la ca te nhat.
-   Lan nay ⛔ doc trang thai nam NGUON — chay duoc ca khi nam cu da Da ket thuc. */
+   Lan nay ⛔ doc trang thai nam NGUON — chay duoc ca khi nam cu da Da ket thuc.
+   🆕 6/10/2026: goi o BUOC GHI NHAN, ⛔ o buoc keo — keo roi bo thi ⛔ de lai vet. */
 function xlGhiBanGhi(h){
  if(h.ngv!=='kc')return null;
  h.bg={loai:'ket_chuyen',nguon:'xep tay tai M1.7',lopCu:h.cu,lopMoi:h.lop,
    nguoi:R().n.split('—')[0].trim(),ngay:(typeof NGAY3!=='undefined'?NGAY3:'')};
  return h.bg;
 }
+
+/* Đặt một em vào hộp lớp — CHỈ là lượt chờ (h.cho), ⛔ ghi gì vào h.lop.
+   Luôn render() ở cuối, kể cả lượt bị chặn, để bỏ highlight của thẻ đang chọn. */
 function xlGan(ma,lopId){
  const h=xlOf(ma), l=lopOf(lopId);
- if(!xlXepDuoc(h)){toast('Em này đến từ đợt tuyển sinh — xếp lớp ở M1.4, nơi có PHT_ĐT duyệt và HT ký công bố');return}
- if(l.ss+xlTrongLop(lopId).length>=l.max+0&&!xlTrongLop(lopId).includes(h)){
-  toast('Lớp '+lopId+' đã đủ sĩ số '+l.max+' — ⛔ có ngoại lệ ở tab này vì ⛔ có bước duyệt nào để xin');return}
- h.lop=lopId;
- const bg=xlGhiBanGhi(h);
- if(bg)toast('Đã xếp <b>'+h.n+'</b> vào <b>'+lopId+'</b> — sinh <b>bản ghi kết chuyển</b> (dấu nguồn «xếp tay tại M1.7»), '+
-   'mục ⑥ của M10.1 đếm em này vào <b>dòng Kết chuyển</b>');
- render();
+ if(!h.ma||!l.id){render();return false}
+ if(!xlXepDuoc(h)){toast('Em này đến từ đợt tuyển sinh — xếp lớp ở M1.4, nơi có PHT_ĐT duyệt và HT ký công bố');render();return false}
+ if(h.cho===lopId){render();return false}                             /* thả lại đúng hộp cũ */
+ if(!xlConCho(l)){
+  toast('Lớp '+lopId+' đã đủ sĩ số '+l.max+' — không có ngoại lệ ở tab này vì nó không có bước duyệt nào để xin');render();return false}
+ const cu=h.cho;
+ h.cho=lopId;
+ toast(cu?'Chuyển lượt chờ của '+h.n+': '+cu+' → '+lopId+'. Chưa ghi — bấm ✓ Ghi nhận xếp lớp.'
+   :'Đang chờ ghi nhận: '+h.n+' → '+lopId+'. Thẻ vẫn ở hàng đợi; danh sách chỉ cập nhật khi bấm ✓ Ghi nhận xếp lớp.');
+ render();return true;
 }
-function xlTraVe(ma){const h=xlOf(ma);h.lop='';delete h.bg;render()}
+function xlTraVe(ma){const h=xlOf(ma);if(h.ma)delete h.cho;render()}
 function xlGoiY(){
- const Q=xlHangDoi().filter(xlXepDuoc), L=xlLopCua();
+ const Q=xlHangDoi().filter(h=>xlXepDuoc(h)&&!h.cho), L=xlLopCua();
  if(!L.length){toast('Chưa khai lớp của lát cắt này');return}
+ if(!Q.length){toast('Không còn em nào chưa xếp trong lát cắt này');return}
  /* cân đối giới tính đơn giản: rải lần lượt vào lớp còn chỗ, ít sĩ số trước */
- Q.forEach(h=>{const con=L.filter(l=>l.ss+xlTrongLop(l.id).length<l.max)
+ let n=0;
+ Q.forEach(h=>{const con=L.filter(xlConCho)
    .sort((a,b)=>(a.ss+xlTrongLop(a.id).length)-(b.ss+xlTrongLop(b.id).length));
-  if(con.length){h.lop=con[0].id;xlGhiBanGhi(h)}});
+  if(con.length){h.cho=con[0].id;n++}});
+ toast(n?'Gợi ý '+n+' lượt — tất cả đang CHỜ ghi nhận, sửa lại được trước khi bấm ✓ Ghi nhận xếp lớp'
+   :'Mọi lớp của lát cắt này đã hết chỗ');
  render();
 }
 
 /* ---- cửa duy nhất cho mọi thao tác của tab; app.js chỉ gọi xlAct() ---- */
 function xlAct(a,d){
  if(a==='xlauto'){xlGoiY();return true}
- if(a==='xlreset'){xlLopCua().forEach(l=>xlTrongLop(l.id).forEach(h=>h.lop=''));render();return true}
+ if(a==='xlreset'){xlDangCho().forEach(h=>delete h.cho);xlPick=null;
+  toast('Đã bỏ hết lượt đang chờ — chưa có gì được ghi nên không để lại vết');render();return true}
  if(a==='unassign'){xlTraVe(d.ma);return true}
  if(a==='xlsangm14'){toast('Deep-link sang M1.4 §6.8 Phân lớp học sinh mới — em này đến từ một đợt tuyển sinh, xếp lớp cho em ấy có PHT_ĐT duyệt và HT ký công bố');return true}
  /* 2B′ 27/9/2026 — nối THẬT vào bộ nhập dùng chung của cụm MNXL (⛔ còn mô phỏng).
     Đường nhập khai ở app.09-duong-nhap.js; bước ③ đối chiếu ba mức và ④ bảng kết
     quả là hàm CỦA MENU ở tệp đó (luật MX-5). */
  if(a==='xlgan'){if(window.BNX&&BNX.menuM17)BNX.menuM17.mo();else toast('Bộ nhập dùng chung chưa nạp');return true}
- if(a==='xlghi'){const L=xlLopCua(), n=L.reduce((t,l)=>t+xlTrongLop(l.id).length,0);
-  if(!n){toast('Chưa xếp em nào');return true}
-  L.forEach(l=>{l.ss+=xlTrongLop(l.id).length});
+ /* 🔑 ĐÂY là chỗ DUY NHẤT h.lop được đặt ở tab này — và cũng là chỗ duy nhất
+    sinh bản ghi kết chuyển. Chỉ ghi lát cắt ĐANG MỞ, đúng như nút nói. */
+ if(a==='xlghi'){const ds=[];xlLopCua().forEach(l=>xlTrongLop(l.id).forEach(h=>ds.push(h)));
+  if(!ds.length){toast('Chưa có lượt nào đang chờ ghi nhận');return true}
+  let kc=0;
+  ds.forEach(h=>{const l=lopOf(h.cho);h.lop=h.cho;delete h.cho;if(l.id)l.ss++;if(xlGhiBanGhi(h))kc++});
   XLHS=XLHS.filter(h=>!h.lop);
-  toast('Đã ghi nhận '+n+' em vào lớp — ⛔ qua bước duyệt, ⛔ có ký công bố (M1.7 §7.5.1); sĩ số lớp cập nhật ngay');
+  xlPick=null;
+  toast('Đã ghi nhận '+ds.length+' lượt xếp lớp'+(kc?' — sinh '+kc+' bản ghi kết chuyển (dấu nguồn «xếp tay tại M1.7»), mục ⑥ của M10.1 đếm vào dòng Kết chuyển':'')+
+   '. Không qua bước duyệt, không có ký công bố (M1.7 §7.5.1); sĩ số lớp cập nhật ngay');
   render();return true}
  return false}
 
 /* ---- kéo thả: khuôn dùng chung chỉ VẼ, mỗi menu tự nối sự kiện (như M1.4) ---- */
-let xlDrag=null;
+let xlDrag=null, xlPick=null;
 function bindXL(){
- document.querySelectorAll('.qi[draggable],.si[draggable]').forEach(el=>{
-  el.addEventListener('dragstart',e=>{xlDrag=el.dataset.q;el.classList.add('drag');e.dataTransfer.effectAllowed='move'});
-  el.addEventListener('dragend',()=>el.classList.remove('drag'))});
+ /* ① Trang phục theo TRẠNG THÁI — làm trước khi nối sự kiện, vì khuôn dùng
+       chung ⛔ có móc để gắn lớp CSS vào thẻ .qi (luật GC-6: ⛔ sửa khuôn). */
+ document.querySelectorAll('.qi[data-q]').forEach(el=>{
+  const h=xlOf(el.dataset.q);
+  if(!xlXepDuoc(h)||!xlSuaDuoc()){el.draggable=false;el.classList.add('locked')}
+  if(h.cho)el.classList.add('staged');
+  if(xlPick===h.ma)el.classList.add('pick')});
+ if(xlPick)document.querySelectorAll('.lbox').forEach(b=>{if(xlConCho(lopOf(b.dataset.lop)))b.classList.add('aim')});
+
+ /* ② Kéo: thẻ hàng đợi (.qi) và thẻ trong hộp lớp (.si) đều kéo được. */
+ document.querySelectorAll('.qi[draggable="true"],.si[draggable="true"]').forEach(el=>{
+  el.addEventListener('dragstart',e=>{xlDrag=el.dataset.q;xlPick=null;el.classList.add('drag');e.dataTransfer.effectAllowed='move'});
+  el.addEventListener('dragend',()=>{el.classList.remove('drag');
+   document.querySelectorAll('.lbox.over,.qbox.over').forEach(b=>b.classList.remove('over','no'))})});
+
+ /* ③ Hộp lớp: vùng thả + bấm để xếp thẻ đang chọn. Lớp hết chỗ thì viền đỏ
+       NGAY LÚC KÉO — nói trước, ⛔ đợi thả rồi mới chặn bằng toast. */
  document.querySelectorAll('.lbox').forEach(box=>{
-  box.addEventListener('dragover',e=>{e.preventDefault();box.classList.add('over')});
-  box.addEventListener('dragleave',()=>box.classList.remove('over'));
-  box.addEventListener('drop',e=>{e.preventDefault();box.classList.remove('over');
-   if(xlDrag)xlGan(xlDrag,box.dataset.lop);xlDrag=null})});
- const sel=(id,fn)=>{const el=document.querySelector(id);if(el)el.addEventListener('change',e=>{fn(e.target.value);render()})};
+  const l=lopOf(box.dataset.lop);
+  box.addEventListener('dragover',e=>{if(!xlDrag)return;e.preventDefault();
+   const day=!xlConCho(l)&&xlOf(xlDrag).cho!==l.id;
+   e.dataTransfer.dropEffect=day?'none':'move';
+   box.classList.add('over');box.classList.toggle('no',day)});
+  box.addEventListener('dragleave',()=>box.classList.remove('over','no'));
+  box.addEventListener('drop',e=>{e.preventDefault();box.classList.remove('over','no');
+   if(xlDrag)xlGan(xlDrag,box.dataset.lop);xlDrag=null});
+  box.addEventListener('click',e=>{if(e.target.closest('button')||!xlPick)return;
+   const ma=xlPick;xlPick=null;xlGan(ma,box.dataset.lop)})});
+
+ /* ④ Thả NGƯỢC về hàng đợi — đường ra thứ hai cạnh nút ↺ bỏ. */
+ const qb=document.querySelector('.qbox');
+ if(qb){
+  qb.addEventListener('dragover',e=>{if(!xlDrag||!xlOf(xlDrag).cho)return;e.preventDefault();qb.classList.add('over')});
+  qb.addEventListener('dragleave',()=>qb.classList.remove('over'));
+  qb.addEventListener('drop',e=>{e.preventDefault();qb.classList.remove('over');
+   if(xlDrag&&xlOf(xlDrag).cho)xlTraVe(xlDrag);xlDrag=null})}
+
+ /* ⑤ Bấm thẻ để chọn rồi bấm hộp lớp — lối cho chuột khó kéo và cho màn cảm ứng. */
+ document.querySelectorAll('.qi[data-q]').forEach(el=>{
+  el.addEventListener('click',e=>{if(e.target.closest('button')||!xlSuaDuoc())return;
+   const h=xlOf(el.dataset.q);
+   if(!xlXepDuoc(h)){toast('Em này đến từ đợt tuyển sinh — xếp lớp ở M1.4, nơi có PHT_ĐT duyệt và HT ký công bố');return}
+   xlPick=(xlPick===h.ma?null:h.ma);render()})});
+
+ const sel=(id,fn)=>{const el=document.querySelector(id);if(el)el.addEventListener('change',e=>{fn(e.target.value);xlPick=null;render()})};
  sel('#xlkhoi',v=>xlKhoi=+v); sel('#xldt',v=>xlDt=v); sel('#xlhe',v=>xlHe=v);
+
+ /* Esc bỏ chọn — nối MỘT LẦN cho cả phiên, vì bindXL() chạy lại sau mỗi render. */
+ if(!bindXL.esc){bindXL.esc=1;
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&xlPick){xlPick=null;render()}})}
 }
 
 /* 🛑 LỜI GỌI KHỞI ĐỘNG NẰM Ở ĐÂY, ⛔ ở cuối app.js — vì tệp này nạp SAU app.js.

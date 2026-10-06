@@ -541,8 +541,63 @@ Object.keys(LOP).forEach(l=>{
    sdt:'09'+String(10000000+((rnd()*89999999)|0)),
    ph:pick(HO)+' '+pick(DEM)+' '+pick(TENR)};
   o.n=o.ho+' '+o.dem+' '+o.ten;
+  /* ══ LHCH 6/10/2026 — ba nguoi than cua ho so (M1.1 §6.3.11) ═══════════
+     `chinh` = NGUOI DUOC CHI DINH lam `Lien he chinh`. ~1/5 em CHUA ai chi dinh
+     de demo day du HAI trang thai. Du lieu nay THUOC M1.1 — T1 chi DOC. */
+  const soP=i=>'09'+String(10000000+((rnd()*89999999)|0));
+  o.cha={n:o.ho+' '+pick(DEM)+' '+pick(TENR),sdt:soP(),qh:'Cha',chinh:0};
+  o.me ={n:pick(HO)+' '+pick(DEM)+' '+pick(TENR),sdt:soP(),qh:'Mẹ',chinh:0};
+  /* moi em thu bay co them nguoi giam ho */
+  if(i%7===3) o.gh={n:pick(HO)+' '+pick(DEM)+' '+pick(TENR),sdt:soP(),qh:'Người giám hộ',chinh:0};
+  if(i%5!==2){ const k=(i%3===0)?'me':(o.gh&&i%7===3)?'gh':'cha'; o[k].chinh=1; }
   HS[id]=o;
  }});
+
+/* ══ LHCH §3.6.5 — YEU CAU CUA PHU HUYNH dang cho GVCN cho y kien ═══════════
+   Ban ghi THUOC M1.1 (tab «Yeu cau cap nhat ho so»). T1 chi la BE MAT de GVCN
+   lam buoc cua minh — ⛔ duyet, ⛔ tu choi, ⛔ ghi thang vao ho so.
+   🔴 Buoc nay NHAN tu M1.1 khi GVCN roi menu do: bo sot la moi yeu cau Phan B
+   TREO VINH VIEN o trang thai «Cho GVCN cho y kien».                        */
+const YCPH=[];
+/* 🛑 GIEO LUOI, ⛔ chay ngay: ham nay goi `dsL()` khai o DUOI — chay ngay la cham
+   vung chet cua `const`, script DUNG giua chung va moi khai bao sau do bien mat.
+   (Da vap that luc dung lan dau: console ⛔ kip ghi, chi lo ra khi do bang tay.) */
+let _ycSeeded=false;
+function seedYCPH(){
+ if(_ycSeeded) return; _ycSeeded=true;
+ const mau=[
+  {qh:'Mẹ', tr:[['Số điện thoại mẹ','', '0912 004 118'],['Email mẹ','','ngapt@gmail.com']]},
+  {qh:'Cha', tr:[['Nơi thường trú','TT Trùng Khánh, Cao Bằng','Số 5 Hoàng Quốc Việt, Hà Nội']]},
+  {qh:'Mẹ', tr:[['Họ tên mẹ','Lê Thị Thu','Lê Thị Thu Hà'],['Nghề nghiệp mẹ','Buôn bán','Nhân viên văn phòng']]},
+ ];
+ Object.keys(LOP).forEach((l,li)=>{
+  const ds=dsL(l);
+  mau.forEach((m,i)=>{ const h=ds[(li*3+i*4)%ds.length]; if(!h) return;
+   YCPH.push({id:'YC-'+String(300+li*10+i), lop:l, hs:h, qh:m.qh,
+    nguoi:HS[h][m.qh==='Mẹ'?'me':'cha'].n, tr:m.tr, ngay:HOMNAY-(1+i),
+    tt:'cho_ykien', ykien:''}); });
+ });
+}
+const ycChoYKien=l=>{seedYCPH(); return YCPH.filter(y=>y.lop===l&&y.tt==='cho_ykien')};
+
+/* ══ LHCH — doc `Lien he chinh`. ⛔ GHI o day: o thuoc M1.1, T1 la CUA VAO THU HAI ══ */
+const LHCCO=h=>['cha','me','gh'].filter(k=>HS[h]&&HS[h][k]&&HS[h][k].n);
+const lhcKey=h=>LHCCO(h).find(k=>HS[h][k].chinh)||'';
+/* du phong: o dau tien CO SO theo thu tu ho so. ⛔ la «da khai» — ho so van bao thieu */
+const lhcGoiY=h=>LHCCO(h).find(k=>HS[h][k].sdt)||'';
+const lhcNguoi=h=>{const k=lhcKey(h)||lhcGoiY(h); return k?Object.assign({k:k},HS[h][k]):null};
+/* o «Phu huynh · lien he» cua T1 — HAI trang thai, ⛔ tron (M2.9 §3.6.3) */
+function oLienHe(h){const k=lhcKey(h), p=lhcNguoi(h);
+ if(!p) return '<td class="gc"><span class="hint">⛔ chưa có số điện thoại nào</span></td>';
+ /* ca bien: nguoi DA duoc chi dinh ma so bi xoa — phai noi ra, ⛔ hien o trong nhu binh thuong */
+ if(k&&!p.sdt) return '<td class="gc"><b>'+esc(p.n)+'</b>'
+  +'<div class="hint">'+esc(p.qh)+'</div>'
+  +'<span class="st2 r" style="font-size:10px">⛔ mất số điện thoại</span></td>';
+ return '<td class="gc"><b>'+esc(p.n)+'</b>'
+  +'<div class="hint">'+esc(p.qh)+' · '+esc(p.sdt)+'</div>'
+  +(k?'<span class="st2 g" style="font-size:10px">Liên hệ chính</span>'
+     :'<span class="st2" style="font-size:10px" title="Máy gợi ý theo thứ tự hồ sơ cha → mẹ → người giám hộ. ⛔ phải là đã khai — hồ sơ vẫn báo thiếu một mục">chưa xác nhận</span>')
+  +'</td>'}
 const NHAN={};
 /* ═══ 🆕 RSHS-2C (23/9/2026) — em «đã rời lớp» còn trong hồ sơ nhưng ⛔ KHÔNG còn ngồi lớp ═══
    M1.5 tách BA sự thật: ① em còn LÀ HỌC SINH của trường (pháp lý) · ② em còn NGỒI TRONG LỚP
@@ -1473,7 +1528,12 @@ function bandChu(k){
   +'<b>Không sinh bản ghi nào</b>: không nút Lưu, không ⚙ — sai số liệu thì sửa ở menu chủ theo lối ↗ bên dưới.</div>';
  if(k==='T1') return '<div class="ro">Tab này <b>chiếu một phần, sở hữu một phần</b>: danh sách học sinh và nhãn '
   +'🔗 chiếu từ <b>M1.1 Hồ sơ học sinh</b> <i>(chỉ đọc)</i> · <b>ban cán sự lớp và chia tổ</b> 🔒 do <b>menu này</b> '
-  +'sở hữu <i>(TT 15/2026 Điều 16)</i>. <button class="rolnk" data-a="dl" data-v="M1.1 Hồ sơ học sinh">↗ Mở M1.1</button></div>';
+  /* 🔴 LHCH 6/10 — loi sang M1.1 chi hien voi vai CO QUYEN o do. GVCN ⛔ con o quyen (LH-5),
+     dan ho sang mot menu ho ⛔ vao duoc la de ho vap man tu choi. */
+  +'sở hữu <i>(TT 15/2026 Điều 16)</i>. '
+  +(ghiBCS(cur)
+    ?'<b>Bạn làm trọn việc với hồ sơ ngay tại đây</b> — đọc, đề xuất chỉnh sửa, cho ý kiến <i>(§3.6)</i>.'
+    :'<button class="rolnk" data-a="dl" data-v="M1.1 Hồ sơ học sinh">↗ Mở M1.1</button>')+'</div>';
  return '<div class="ro">🔗 Tab này là <b>bản chiếu chỉ đọc</b> từ <b>'+esc(CHU[k])+'</b>. '
   +'Ghi và sửa đều làm ở menu chủ — ở đây gộp lại theo lớp để giáo viên chủ nhiệm nhìn một chỗ. '
   +'<button class="rolnk" data-a="dl" data-v="'+esc(CHU[k])+'">'+nutChu(k)+'</button></div>';
@@ -1593,6 +1653,49 @@ function tYC(){
   +'Cùng một hàng đợi, khác câu hỏi.</div></div>';
 }
 
+/* ══ LHCH §3.6.5 — khoi «Cho toi cho y kien» ══════════════════════════════
+   Chi hien khi CO viec: ⛔ co yeu cau nao thi khoi ⛔ ve (§3.6.5 bang).
+   Chi GVCN cua CHINH lop do (hoac vai Du quyen) — dung cung cua voi ban can su. */
+function khoiChoYKien(){
+ if(laBM()||!ghiBCS(cur)) return '';
+ const ds=ycChoYKien(cur);
+ if(!ds.length) return '';
+ return '<div class="listw" style="margin-bottom:12px">'
+  +'<div class="grow">📋 Chờ tôi cho ý kiến<span class="ct">'+ds.length+' yêu cầu của phụ huynh</span></div>'
+  +'<div class="info" style="margin:0 0 2px">Yêu cầu thuộc <b>Phần B — thông tin gia đình</b> đi <b>hai bước</b>: '
+  +'bạn cho ý kiến, rồi <b>văn thư duyệt</b>. 🛑 Ở đây bạn <b>⛔ duyệt, ⛔ từ chối</b> — bản ghi thuộc '
+  +'<b>M1.1</b>, đây chỉ là bề mặt để bạn làm bước của mình.</div>'
+  +ds.map(y=>'<div class="brow"><div class="bd"><b>📝 '+esc(y.id)+' · '+esc(HS[y.hs].n)+'</b>'
+   +'<div class="sub">Người gửi <b>'+esc(y.nguoi)+'</b> · '+esc(y.qh)+' · gửi '+(HOMNAY-y.ngay)+' ngày trước</div>'
+   +y.tr.map(t=>'<div class="sub"><b>'+esc(t[0])+'</b>: <span style="color:var(--ink3)">'
+     +esc(t[1]||'(trống)')+' → </span><span style="color:var(--green);font-weight:600">'+esc(t[2])+'</span></div>').join('')
+   +'</div><div class="bt"><button class="btn xs p" data-a="ykien" data-v="'+y.id+'">✍ Cho ý kiến</button></div></div>').join('')
+  +'</div>'}
+
+/* 🛑 Chan o DUONG GHI: khoi co the ⛔ ve ma ham van bi goi thang. */
+function hopYKien(id){
+ const y=YCPH.find(z=>z.id===id);
+ if(!y){toast('⛔ Không tìm thấy yêu cầu');return}
+ if(y.tt!=='cho_ykien'){toast('⛔ Yêu cầu này đã qua bước cho ý kiến');return}
+ if(laBM()||!ghiBCS(y.lop)){toast('⛔ Chỉ giáo viên chủ nhiệm của chính lớp đó làm bước này');return}
+ modal('✍ Cho ý kiến — '+y.id,
+  '<div class="hint">Học sinh <b>'+esc(HS[y.hs].n)+'</b> · '+esc(y.lop)
+   +' · người gửi <b>'+esc(y.nguoi)+'</b> ('+esc(y.qh)+')</div>'
+  +'<div style="margin-top:9px">'+y.tr.map(t=>'<div><b>'+esc(t[0])+'</b>: '
+    +'<span style="color:var(--ink3)">'+esc(t[1]||'(trống)')+' → </span>'
+    +'<span style="color:var(--green);font-weight:600">'+esc(t[2])+'</span></div>').join('')+'</div>'
+  +'<div style="margin-top:9px"><b>Ý kiến của bạn</b> <span style="color:var(--red)">*bắt buộc</span>'
+   +'<textarea id="ykND" rows="3" style="width:100%;margin-top:4px" placeholder="VD: Tôi đã trao đổi với gia đình, thông tin mới là đúng"></textarea></div>'
+  +'<div class="hint" style="margin-top:8px">🛑 Bạn <b>⛔ duyệt</b> yêu cầu này. Cho ý kiến xong, nó chuyển sang '
+   +'<b>Chờ VT duyệt</b> ở <b>M1.1 · tab Yêu cầu cập nhật hồ sơ</b>.</div>',
+  [['Hủy',0],['✍ Gửi ý kiến',()=>{
+    const v=(document.getElementById('ykND')||{}).value||'';
+    if(!v.trim()){toast('⛔ Phải ghi ý kiến — văn thư cần căn cứ để duyệt');return}
+    if(y.tt!=='cho_ykien'){toast('⛔ Yêu cầu này đã qua bước cho ý kiến');return}
+    y.ykien=v.trim(); y.tt='cho_vt';
+    $('#mask').classList.remove('on'); render();
+    toast('✍ Đã gửi ý kiến — '+y.id+' chuyển sang <b>Chờ VT duyệt</b> ở M1.1')}]])}
+
 /* ===== T1 · HOC SINH CUA LOP (chieu tu M1.1) ===== */
 function t1(){
  const hs=hsLop(cur), bm=laBM();
@@ -1602,11 +1705,12 @@ function t1(){
     +'nhãn Ưu tiên, Kỷ luật và số buổi nghỉ. Cần trao đổi với phụ huynh thì dùng '
     +'<button class="rolnk" data-a="dl" data-v="M8.2 Nhắn tin">↗ M8.2 Nhắn tin</button> — kênh chat không lộ số điện thoại.</div>':'')
   +(LOP[cur].hd?khoiBCS():'')
+  +khoiChoYKien()
   +'<div class="listw"><div class="grow">👥 Học sinh lớp '+esc(cur)
   +'<span class="ct">'+hs.length+' em · '+(SOTO[cur]||0)+' tổ</span>'
   +(co('xuat')&&!bm?'<button class="btn xs" data-a="xuat">⬇ Xuất danh sách</button>':'')+'</div>'
   +'<table class="bd"><tr><th class="stt">#</th><th class="tenhs">Họ và tên</th><th>Tổ</th>'
-  +(bm?'':'<th class="gc">Phụ huynh · liên hệ</th>')
+  +(bm?'':'<th class="gc">Liên hệ chính</th>')
   +'<th class="gc">'+(bm?'Sức khỏe — lưu ý trong tiết':'Nhãn cần lưu ý')+'</th>'+(bm?'':'<th>Chuyên cần</th>')+'<th></th></tr>'
   +hs.map((h,i)=>{const ns=(NHAN[h]||[]).filter(([k])=>!bm||k==='yt'), ng=soBuoiNghi(cur,h);
    const cvs=bcsHS(cur,h).filter(x=>!x.den);
@@ -1615,12 +1719,16 @@ function t1(){
    +esc(HS[h].n)+'</button>'
    +(cvs.length?'<div class="hint" style="margin:1px 0 0">'+cvs.map(x=>'🎖 '+esc(tenCV(x))).join(' · ')+'</div>':'')+'</td>'
    +'<td class="oc">'+(toCua(cur,h)||'–')+'</td>'
-   +(bm?'':'<td class="gc"><b>'+esc(HS[h].ph)+'</b><div class="hint">'+esc(HS[h].sdt)+'</div></td>')
+   +(bm?'':oLienHe(h))
    +'<td class="gc">'+(ns.length?ns.map(([k,t])=>'<span class="st2 '+NHANM[k].c+'" title="'+esc(t)+'">'
      +NHANM[k].t+'</span> <span class="hint">'+esc(t)+'</span>').join('<br>'):'<span class="hint">—</span>')+'</td>'
    +(bm?'':'<td>'+(ng>45?'<span class="st2 r">nghỉ '+ng+' buổi</span>':ng>35?'<span class="st2 w">nghỉ '+ng+'</span>'
      :'<span class="hint">nghỉ '+ng+'</span>')+'</td>')
-   +'<td><button class="btn xs" data-a="dl" data-v="M1.1 Hồ sơ học sinh">↗ Hồ sơ</button></td></tr>'}).join('')
+   /* 🔴 LHCH 6/10 — GVCN ⛔ CON QUYEN o M1.1 (LH-5) nen nut «↗ Ho so» ⛔ con dung cho ho.
+      Ho lam viec ngay tai day: «📨 De xuat chinh sua» (§3.6.4). Vai khac giu loi cu. */
+   +'<td>'+(ghiBCS(cur)
+     ?'<button class="btn xs p" data-a="lhcDX" data-v="'+h+'">📨 Đề xuất chỉnh sửa</button>'
+     :'<button class="btn xs" data-a="dl" data-v="M1.1 Hồ sơ học sinh">↗ Hồ sơ</button>')+'</td></tr>'}).join('')
   /* 🆕 RSHS-2C — nhóm «Đã rời lớp — chờ chuyển đi»: em VẪN trong hồ sơ trường,
      ⛔ không còn trong sĩ số vận hành. 🛑 ⛔ KHÔNG ẩn em đi — ẩn là mất dấu. */
   +(dsRoiLop(cur).length
@@ -1628,7 +1736,7 @@ function t1(){
       +'<span class="hint" style="font-weight:400">· vẫn là học sinh của trường, vẫn tính vào sĩ số BÁO CÁO GỬI SỞ · chỗ ngồi được giữ</span></td></tr>'
       +dsRoiLop(cur).map(h=>'<tr style="opacity:.72"><td class="stt">–</td><td class="tenhs">'+esc(HS[h].n)
         +'<div class="hint" style="margin:1px 0 0">🚪 rời lớp từ <b>'+ROI_LOP[h].ngay+'</b> · '+esc(ROI_LOP[h].boi)+'</div></td>'
-        +'<td class="oc">–</td>'+(bm?'':'<td class="gc"><b>'+esc(HS[h].ph)+'</b><div class="hint">'+esc(HS[h].sdt)+'</div></td>')
+        +'<td class="oc">–</td>'+(bm?'':oLienHe(h))
         +'<td class="gc"><span class="hint">⛔ không điểm danh · nhóm chat đã chuyển</span></td>'
         +(bm?'':'<td><span class="hint">—</span></td>')
         +'<td><button class="btn xs" data-a="dl" data-v="M1.5 Chuyển trường">↗ M1.5</button></td></tr>').join('')
@@ -3163,6 +3271,42 @@ function viewCH(){
 
 /* ===== MODAL · TOAST ===== */
 let mfns={};
+/* ══ LHCH 6/10/2026 — hop «De xuat chinh sua thong tin hoc sinh» (M2.9 §3.6.4) ══════
+   🛑 BA cua dong phai chan O DAY, ⛔ chi an nut: em da roi lop · dang co de xuat cho
+   duyet · ⛔ co ai co so dien thoai. Be mat va duong ghi hoi CUNG MOT ham. */
+const LHCDX=[];   /* de xuat da gui trong phien demo */
+const lhcCho=h=>LHCDX.find(y=>y.hs===h&&y.tt==='cho')||null;
+function lhcGuiDuoc(h){
+ if(daRoiLop(h)) return 'Em đã rời lớp — hồ sơ khóa sửa; đính chính đi qua M1.3';
+ if(lhcCho(h)) return 'Đang có đề xuất chờ duyệt ('+lhcCho(h).id+') — chờ văn thư xử lý';
+ if(!LHCCO(h).some(k=>HS[h][k].sdt)) return 'Hồ sơ chưa có người thân nào có số điện thoại — khai số trước ở M1.1';
+ return ''}
+function lhcHopDX(h){
+ const chan=lhcGuiDuoc(h);
+ if(chan){toast('⛔ '+chan);return}
+ const k=lhcKey(h), co=LHCCO(h).filter(z=>HS[h][z].sdt);
+ modal('📨 Đề xuất chỉnh sửa thông tin học sinh',
+  '<div class="hint">Học sinh <b>'+esc(HS[h].n)+'</b> · '+esc(HS[h].lop)+'</div>'
+  +'<div style="margin-top:9px"><b>🔔 Liên hệ chính</b> — đang là <b>'
+   +(k?esc(HS[h][k].qh+' — '+HS[h][k].n):'(chưa chỉ định)')+'</b></div>'
+  +co.filter(z=>z!==k).map(z=>'<label style="display:flex;gap:7px;align-items:center;padding:4px 0">'
+   +'<input type="radio" name="lhcdx" value="'+z+'" style="width:15px;height:15px">'
+   +'<span>'+esc(HS[h][z].qh)+' — <b>'+esc(HS[h][z].n)+'</b> · '+esc(HS[h][z].sdt)+'</span></label>').join('')
+  +'<div style="margin-top:9px"><b>Lý do</b> <span style="color:var(--red)">*bắt buộc</span>'
+   +'<textarea id="lhcly" rows="3" style="width:100%;margin-top:4px" placeholder="VD: Số của cha nhiều lần không liên lạc được; mẹ em là người đưa đón"></textarea></div>'
+  +'<div class="hint" style="margin-top:8px">🛑 GVCN <b>⛔ ghi thẳng</b>. Đề xuất vào <b>M1.1 · tab Yêu cầu cập nhật hồ sơ</b>, '
+   +'đi <b>một bước</b> — bước «cho ý kiến» tự thỏa vì người gửi chính là GVCN.</div>',
+  [['Hủy',0],['📨 Gửi đề xuất',()=>{
+    const r=document.querySelector('input[name="lhcdx"]:checked');
+    const v=(document.getElementById('lhcly')||{}).value||'';
+    if(!r){toast('⛔ Chọn người đề nghị chuyển sang');return}
+    if(!v.trim()){toast('⛔ Phải nêu lý do — văn thư cần căn cứ để duyệt');return}
+    const chan2=lhcGuiDuoc(h);   /* 🛑 kiem LAI o duong ghi */
+    if(chan2){toast('⛔ '+chan2);return}
+    LHCDX.push({id:'YC-'+String(240+LHCDX.length),hs:h,sang:r.value,ly:v.trim(),tt:'cho'});
+    $('#mask').classList.remove('on'); render();
+    toast('📨 Đã gửi — M1.1 tab «Yêu cầu cập nhật hồ sơ», trạng thái Chờ VT duyệt (một bước)')}]])}
+
 function modal(t,b,btns){
  $('#mh').innerHTML=t; $('#mb').innerHTML=b; mfns={};
  $('#mf').innerHTML=(btns||[['Đóng','',null]]).map(([lb,cl,fn],i)=>{
@@ -3192,6 +3336,10 @@ function bangKQ(tieuDe,rows){
 }
 function act(a,v,el){
  switch(a){
+  /* LHCH 6/10 — cua de xuat chinh sua thong tin hoc sinh (§3.6.4) */
+  case 'lhcDX': lhcHopDX(v); return;
+  /* LHCH 6/10 — buoc «cho y kien» yeu cau Phan B, nhan tu M1.1 (§3.6.5) */
+  case 'ykien': hopYKien(v); return;
   case 'mo': cur=v; tab='TT'; mo={t2:'ngay',k4:'w4'}; ngay=HOMNAY; tuan=TUAN_NAY-1; tuan3=TUAN_NAY; kytk=kyMac(v); lkRet=''; render(); return;
   case 've': cur=null; mo.hs=null; lkRet=''; render(); return;
   case 'lkVe': toast('↩ Quay về <b>'+esc(lkRet)+'</b> — đúng chỗ bạn rời đi.'); return;
