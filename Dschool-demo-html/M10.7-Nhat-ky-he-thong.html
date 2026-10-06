@@ -2893,5 +2893,149 @@ doiVai = function () {
 };
 KB.gan(); PV.gan(); XU.gan();
 doiVai();
+
+/* ═══════════════════════════════════════════════════════════════════════════════════
+   M10.7 v1.8 — CỘT «chức danh lúc đó» ĐỔI NGUỒN   (6/10/2026 · cụm CDHT)
+
+   Trước: mỗi dòng nhật ký LƯU sẵn chuỗi `cd`, và ràng buộc đối ứng của v1.7 bắt
+   M4.3 không được sửa / xóa bản ghi bổ nhiệm nào đã có dòng nhật ký trong khoảng.
+   Sau:  M4.3 v3.0 thôi giữ nhiệm kỳ — ở đó chỉ còn TRẠNG THÁI bật/tắt của hiện tại,
+         ⛔ còn ngày nào để suy ngược. Nhiệm kỳ về `M4.1` Quá trình công tác (Phần E),
+         và đó là nguồn DUY NHẤT trả lời «ngày D người này giữ chức danh gì».
+
+   🛑 Thiếu mốc ⇒ hiện «chưa xác định». ⛔ KHÔNG rơi về chức danh hiện tại — đó đúng
+      là cách trả lời sai mà mô hình ảnh chụp đã bị bỏ vì nó.
+   🛑 Tệp này ⛔ sửa một byte nào của app.js: nó gỡ trường lưu rồi gắn GETTER, nên mọi
+      chỗ đang đọc `r.cd` (bảng · panel · ba bản xuất) tự đọc giá trị SUY RA.
+   ═══════════════════════════════════════════════════════════════════════════════════ */
+
+/* ── Bản chiếu kho mốc Quá trình công tác của M4.1 — mỗi mốc [từ, đến|null, chức danh, đơn vị].
+      `đến = null` nghĩa là còn đang giữ. Demo chỉ chiếu, ⛔ ghi. ── */
+const MOC107 = {
+  /* 🔴 CA MẪU 0 — chính sổ này đã có sẵn một dòng chứng minh «lúc đó» ⟂ «hiện tại»:
+     bản ghi archive `L902` ngày 20/3/2024 lưu «Phó Hiệu trưởng». Chuỗi mốc phải NÓI LẠI
+     được đúng sự thật ấy, ⛔ thì phép đổi nguồn đã XÓA một dữ kiện lịch sử thật. */
+  'Trịnh Thị Vân'  : [['01/09/2014', '31/08/2024', 'Phó Hiệu trưởng',       'Cơ sở chính'],
+                      ['01/09/2024', null,         'Hiệu trưởng',           'Cơ sở chính']],
+  'Lê Quốc Bình'   : [['01/03/2021', null,         'Quản trị hệ thống',     'Cơ sở chính']],
+  'Trần Văn Hùng'  : [['01/09/2017', null,         'Giáo viên bộ môn',      'Điểm trường Nam Hòa']],
+  'Đỗ Thị Lan'     : [['01/09/2019', null,         'Văn thư',               'Cơ sở chính']],
+  'Nguyễn Thị Hà'  : [['01/09/2018', null,         'Kế toán',               'Cơ sở chính']],
+
+  /* 🔴 CA MẪU 1 — «lúc đó» KHÁC «hiện tại». Chị Hằng nhận chủ nhiệm từ 01/09/2026;
+     mọi dòng nhật ký tháng 8 phải đọc ra chức danh CŨ, ⛔ chức danh đang giữ hôm nay. */
+  'Vũ Thị Hằng'    : [['01/09/2020', '31/08/2026', 'Giáo viên bộ môn',      'Điểm trường Nam Hòa'],
+                      ['01/09/2026', null,         'Giáo viên chủ nhiệm',   'Điểm trường Nam Hòa']],
+
+  /* 🔴 CA MẪU 2 — KHOẢNG TRỐNG GIỮA HAI MỐC. Nhật ký 26/08 rơi vào khoảng chưa khai. */
+  'Hoàng Thị Mai'  : [['01/09/2016', '31/07/2026', 'Giáo viên bộ môn',      'Cơ sở chính'],
+                      ['01/09/2026', null,         'Tổ trưởng chuyên môn',  'Cơ sở chính']],
+
+  /* 🔴 CA MẪU 3 — ⛔ MỐC NÀO. Lượt thêm chức danh ở M4.3 còn «Chưa gắn mốc»
+     (phép đếm nhắc ở M4.1 T3, nhưng ⛔ chặn gì) ⇒ sổ này có quãng ⛔ xác định được. */
+  'Phạm Minh Đức'  : []
+};
+
+const CHUA_XD_107 = 'chưa xác định';
+
+const pd107 = s => { const a = s.split('/').map(Number); return new Date(a[2], a[1] - 1, a[0]); };
+
+/* Chức danh của một người TẠI đúng timestamp của dòng nhật ký.
+   ⛔ có mốc phủ thời điểm ấy ⇒ null, bề mặt in «chưa xác định». */
+function cdLucDo107(nguoi, t) {
+  const ds = MOC107[nguoi] || [];
+  for (let i = 0; i < ds.length; i++) {
+    const m = ds[i], tu = pd107(m[0]), den = m[1] ? pd107(m[1]) : null;
+    if (t >= tu && (den === null || t <= new Date(den.getFullYear(), den.getMonth(), den.getDate(), 23, 59, 59))) return m;
+  }
+  return null;
+}
+
+/* ── Gỡ trường LƯU, gắn getter. Giá trị cũ giữ ở `cdLuu` làm VẾT để phép kiểm so hai đầu. ── */
+(function doiNguonCot107() {
+  LOG.forEach(function (r) {
+    const luu = r.cd;
+    delete r.cd;
+    Object.defineProperty(r, 'cdLuu', { value: luu, enumerable: false });
+    Object.defineProperty(r, 'cd', {
+      enumerable: true,
+      get: function () { const m = cdLucDo107(r.u, r.t); return m ? m[2] : CHUA_XD_107; }
+    });
+  });
+})();
+
+/* ── Dải giải thích + phép đếm, vẽ lại sau mỗi lượt ve() ── */
+const _veGoc107 = ve;
+ve = function () {
+  _veGoc107.apply(null, arguments);
+  veNote107();
+};
+
+function veNote107() {
+  const v1 = document.getElementById('v1');
+  if (!v1) return;
+  let box = document.getElementById('note-cd107');
+  if (!box) {
+    box = document.createElement('div');
+    box.id = 'note-cd107';
+    box.className = 'note n-i';
+    box.style.margin = '0 0 10px';
+    v1.insertBefore(box, v1.firstChild);
+  }
+  const ds = (typeof locHienTai === 'function' ? locHienTai() : []);
+  const kxd = ds.filter(r => r.cd === CHUA_XD_107).length;
+  box.innerHTML =
+    '🔁 <b>v1.8 — cột «chức danh lúc đó» nay SUY RA từ <code>M4.1</code> Quá trình công tác (Phần E)</b>, ' +
+    'đọc tại đúng thời điểm của dòng nhật ký. Trước đây mỗi dòng lưu sẵn một chuỗi; nay trường lưu <b>đã gỡ</b>.<br>' +
+    '<span style="font-size:12px">Thiếu mốc ⇒ <b>' + CHUA_XD_107 + '</b> — 🛑 ⛔ rơi về chức danh <i>hiện tại</i>, ' +
+    'vì đó đúng là cách trả lời sai mà mô hình «ảnh chụp» đã bị bỏ vì nó. ' +
+    'Khoảng trống được <b>chấp nhận</b>: người dùng thao tác tay ở <code>M4.3</code> để lại một ' +
+    '<i>lượt chưa gắn mốc</i>, phép đếm nhắc họ ở <code>M4.1</code> <code>T3</code> nhưng <b>⛔ chặn gì</b>.</span><br>' +
+    '<span style="font-size:12px">Trong ' + ds.length + ' bản ghi đang hiện: <b>' + kxd + '</b> dòng ' +
+    (kxd ? 'đọc ra <b>' + CHUA_XD_107 + '</b>' : 'đọc ra chức danh — ⛔ dòng nào thiếu mốc') + '. ' +
+    '🔁 Khối <b>ràng buộc đối ứng của v1.7</b> <i>(chặn sửa · xóa bản ghi bổ nhiệm của M4.3)</i> ' +
+    '<b>HẾT HIỆU LỰC</b> — phép đo của nó sai <i>(sổ này ⛔ ghi việc sửa dữ liệu nghiệp vụ)</i>, ' +
+    'và M4.3 nay ⛔ còn thao tác sửa hay xóa nhiệm kỳ nên nó ⛔ còn đối tượng.</span>';
+}
+
+/* ── Phép kiểm tự động — in ra console, ⛔ cần ai bấm gì ── */
+function kiemCD107() {
+  const k = [];
+  const ok = (t, d) => k.push([!!d, t]);
+
+  ok('Mọi dòng LOG ⛔ còn trường cd LƯU (đã thành getter)',
+     LOG.every(r => !Object.getOwnPropertyDescriptor(r, 'cd').value && typeof Object.getOwnPropertyDescriptor(r, 'cd').get === 'function'));
+
+  const kxd = LOG.filter(r => r.cd === CHUA_XD_107).map(r => r.id).sort().join(' ');
+  ok('Đúng ba dòng «' + CHUA_XD_107 + '»: L008 · L011 · L018 — hai của Phạm Minh Đức, một rơi vào khoảng trống của Hoàng Thị Mai',
+     kxd === 'L008 L011 L018');
+  ok('⛔ dòng «' + CHUA_XD_107 + '» nào rơi về chức danh hiện tại',
+     LOG.filter(r => r.cd === CHUA_XD_107).every(r => r.cd !== r.cdLuu));
+
+  const hang = LOG.filter(r => r.u === 'Vũ Thị Hằng');
+  ok('Vũ Thị Hằng: nhật ký tháng 8 đọc ra chức danh CŨ «Giáo viên bộ môn», ⛔ chức danh đang giữ',
+     hang.length === 2 && hang.every(r => r.cd === 'Giáo viên bộ môn' && r.cdLuu === 'Giáo viên chủ nhiệm'));
+
+  const l902 = LOG.filter(r => r.id === 'L902')[0];
+  ok('L902 (20/3/2024) vẫn đọc ra «Phó Hiệu trưởng» — đổi nguồn ⛔ XÓA dữ kiện lịch sử có sẵn của sổ',
+     !!l902 && l902.cd === 'Phó Hiệu trưởng' && l902.cd === l902.cdLuu);
+
+  const khac = LOG.filter(r => r.cd !== r.cdLuu).map(r => r.id).sort().join(' ');
+  ok('ĐÚNG 5 dòng lệch giá trị cũ, và cả 5 đều là ca mẫu đã khai: L008 L009 L011 L016 L018',
+     khac === 'L008 L009 L011 L016 L018');
+  ok('31 / 36 dòng suy ra BẰNG ĐÚNG giá trị cũ — đổi nguồn ⛔ làm lệch dữ liệu đang chạy',
+     LOG.filter(r => r.cd === r.cdLuu).length === LOG.length - 5);
+
+  ok('Panel chi tiết và ba bản xuất dùng CÙNG một đường đọc (⛔ nhân bản phép suy)',
+     typeof cdLucDo107 === 'function' && LOG.every(r => (cdLucDo107(r.u, r.t) ? cdLucDo107(r.u, r.t)[2] : CHUA_XD_107) === r.cd));
+
+  const dat = k.filter(x => x[0]).length;
+  console.log('M10.7 v1.8 — phép kiểm cột «chức danh lúc đó»: ' + dat + '/' + k.length + ' đạt');
+  k.forEach(x => console.log((x[0] ? '  ✓ ' : '  ✗ ') + x[1]));
+  return dat + '/' + k.length;
+}
+
+doiVai();
+kiemCD107();
 </script>
 </body></html>

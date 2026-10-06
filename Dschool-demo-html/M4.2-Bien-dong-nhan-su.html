@@ -1315,6 +1315,179 @@ function render(){
  $('#content').innerHTML=scopeBar()+listTab();
 }
 render();
+
+/* ═══════════════════════════════════════════════════════════════════════════════════
+   M4.2 v1.5 — MỘT TICKET GHI XUỐNG CẢ HAI ĐÍCH TRONG MỘT LẦN GHI   (6/10/2026 · cụm CDHT)
+
+   Nền: `M4.3` v3.0 thôi giữ nhiệm kỳ — ở đó chỉ còn TRẠNG THÁI bật / tắt của hiện tại,
+   còn NHIỆM KỲ về `M4.1` Quá trình công tác (Phần E).
+   ⟹ Menu này thành ĐƯỜNG ĐI ĐẦY ĐỦ: một ticket có hiệu lực ghi
+        ① trạng thái chức danh ở `M4.3`      (chạy TẠI NGÀY HIỆU LỰC)
+        ② mốc quá trình công tác ở `M4.1`    (ngày của mốc = NGÀY HIỆU LỰC của quyết định)
+      trong MỘT lần ghi. Thao tác tay ở `M4.3` là đường NHANH và để lại một
+      «lượt chưa gắn mốc»; đi qua đây thì ⛔ để lại gì.
+
+   🛑 Tệp này ⛔ sửa một byte nào của app.js — nó chỉ:
+      · nối thêm MỘT DÒNG vào bảng hệ quả của những loại có đổi chức danh
+        (đúng khuôn dòng HS05 của cụm HSVC ở app.js dòng 375)
+      · viết rõ NGÀY CỦA MỐC vào ghi chú dòng mốc đang có
+      · nối một gạch đầu dòng vào hộp «nếu được ký, hệ thống sẽ…»
+      · bọc pHeQua() để thêm dải giải thích
+   ═══════════════════════════════════════════════════════════════════════════════════ */
+
+/* ── Loại nào đổi trạng thái chức danh, và đổi theo chiều nào.
+      ⛔ có `E` (chuyển diện làm việc): diện làm việc ⟂ chức danh, hai trục khác nhau —
+      ticket E sinh mốc quá trình công tác nhưng ⛔ chạm công tắc nào ở M4.3. ── */
+const CDDOI42 = {
+  A:  ['bật',     'mo',  'Bật chức danh được bổ nhiệm theo quyết định tuyển dụng'],
+  B3: ['bật',     'mo',  'Bật chức danh được bổ nhiệm; hồ sơ mở lại thì bật lại chip đã tắt, ⛔ tạo bản ghi thứ hai'],
+  C:  ['tắt',     'dong','Tắt mọi chức danh đang giữ — 🛑 <b>TẮT</b>, ⛔ <b>XÓA</b>: người này sẽ quay lại, và dữ liệu hoạt động đã có phải còn chỗ dựa'],
+  CT: ['bật lại', 'mo',  'Bật lại đúng những chip đã tắt khi tạm nghỉ — ⛔ phân công tự khôi phục, đó là việc của M4.5'],
+  B2: ['tắt',     'dong','Tắt mọi chức danh đang giữ — bản ghi ở lại hồ sơ, mang nhãn Đã tắt'],
+  D:  ['tắt',     'dong','Tắt mọi chức danh đang giữ — bản ghi ở lại hồ sơ, mang nhãn Đã tắt']
+};
+/* chiều của MỐC đi kèm: bật ⇒ MỞ một nhiệm kỳ mới · tắt ⇒ ĐÓNG nhiệm kỳ đang mở */
+const MOCCHIEU42 = { mo: ['MỞ', 'Từ ngày'], dong: ['ĐÓNG', 'Đến ngày'] };
+
+const laDongMoc42 = h => /Quá trình công tác/i.test(h[0]) || /mốc/i.test(h[0]);
+
+/* ── ① Ticket có đổi chức danh mà CHƯA có dòng mốc thì thêm vào — «MỘT lần ghi, HAI đích»
+      đòi cả hai dòng phải có mặt; thiếu một dòng là bề mặt đang nói dối về giao dịch. ── */
+TK.forEach(function (t) {
+  const c = CDDOI42[t.l];
+  if (!c || (t.hq || []).some(laDongMoc42)) return;
+  const mc = MOCCHIEU42[c[1]];
+  const daKy = !['nhap', 'doisoat', 'duyet', 'ky', 'tuchoi', 'huy'].includes(t.b);
+  (t.hq = t.hq || []).push([
+    mc[0] + ' mốc Quá trình công tác (M4.1 Phần E)', 'M4.1', 'ky', daKy ? 'ok' : 'cho',
+    mc[1] + ' của mốc = ngày hiệu lực của quyết định. Chỉ đọc tại M4.1'
+  ]);
+});
+
+/* ── ② Ghi chú dòng mốc: nói rõ NGÀY CỦA MỐC lấy ở đâu, và theo chiều nào.
+      🛑 Khoảng của nhiệm kỳ là khoảng ĐÓNG `[từ, đến]` (quy ước của M4.3) ⇒ chiều ĐÓNG
+         ghi `đến ngày` = ngày LIỀN TRƯỚC ngày hiệu lực, ⛔ chính ngày hiệu lực:
+         hiệu lực 01/08 nghĩa là từ 01/08 người này thôi giữ, nên nhiệm kỳ hết ở 31/07.
+      ⚠ Hai dòng mốc gieo sẵn của app.js ghi mốc kết thúc bằng CHỮ («Kết thúc 02/2026»)
+         và một trong hai dòng lệch một tháng so với ngày hiệu lực — gỡ cụm chữ ấy rồi
+         ghi lại bằng ngày suy ra, ⛔ để hai con số nói khác nhau trên cùng một dòng. ── */
+const truocMot42 = s => { const d = pd(s); d.setDate(d.getDate() - 1); return d2s(d) };
+
+TK.forEach(function (t) {
+  const c = CDDOI42[t.l];
+  (t.hq || []).filter(laDongMoc42).forEach(function (h) {
+    h[4] = (h[4] || '').replace(/\s*·?\s*Kết thúc \d{2}\/\d{4}\s*·?/g, ' ').replace(/^\s*·\s*/, '').trim();
+    let them;
+    if (c && c[1] === 'dong')
+      them = '<b>Đến ngày</b> của nhiệm kỳ = <b>' + truocMot42(t.hl) + '</b> — ngày liền TRƯỚC ngày hiệu lực ' +
+             t.hl + ' <i>(khoảng đóng [từ, đến])</i>';
+    else if (c)
+      them = '<b>Từ ngày</b> của nhiệm kỳ = <b>ngày hiệu lực ' + t.hl + '</b>';
+    else
+      them = 'Ngày của mốc = <b>ngày hiệu lực ' + (t.hl || '') + '</b> của quyết định';
+    h[4] = (h[4] ? h[4] + ' · ' : '') + them + ' — ⛔ ngày ký, ⛔ ngày thao tác';
+  });
+});
+
+/* ── ③ Dòng hệ quả MỚI: đổi trạng thái chức danh ở M4.3, chạy TẠI NGÀY HIỆU LỰC ── */
+TK.forEach(function (t) {
+  const c = CDDOI42[t.l];
+  if (!c) return;
+  const daKy = !['nhap', 'doisoat', 'duyet', 'ky', 'tuchoi', 'huy'].includes(t.b);
+  const toiHan = daKy && t.hl && dleft(t.hl) <= 0;
+  (t.hq = t.hq || []).push([
+    'Đổi trạng thái chức danh ở M4.3 — ' + c[0],
+    'M4.3', 'hieuluc', toiHan ? 'ok' : 'cho',
+    c[2] + '. Lượt thay đổi sinh ra ở M4.3 mang nguồn gốc <b>từ Biến động nhân sự</b> và <b>đã ở trạng thái Đã gắn</b> — ⛔ phải bổ sung tay'
+  ]);
+});
+
+/* ── ④ Hộp «nếu được ký, hệ thống sẽ…» của từng loại ── */
+Object.keys(CDDOI42).forEach(function (l) {
+  if (!TACDONG[l]) return;
+  TACDONG[l].m.push('🆕 <b>Đổi trạng thái chức danh ở M4.3</b> (' + CDDOI42[l][0] + ') <b>và</b> sinh mốc ' +
+    '<b>Quá trình công tác</b> ở M4.1 — <b>MỘT lần ghi, hai đích</b>; ngày của mốc là <b>ngày hiệu lực của quyết định</b>');
+});
+
+/* ── ⑤ Dải giải thích trong tab Hệ quả ── */
+const _pHeQuaGoc42 = pHeQua;
+pHeQua = function (t) {
+  const c = CDDOI42[t.l];
+  const dai =
+    '<div class="info" style="margin-bottom:10px">🆕 <b>v1.5 — một ticket, HAI ĐÍCH, MỘT lần ghi.</b> ' +
+    'Từ khi <code>M4.3</code> v3.0 thôi giữ nhiệm kỳ, menu này là <b>đường đi đầy đủ</b> của việc đổi chức danh: ' +
+    'nó ghi <b>trạng thái</b> xuống <code>M4.3</code> <i>và</i> <b>mốc nhiệm kỳ</b> xuống <code>M4.1</code> Phần E ' +
+    'trong cùng một giao dịch.<br>' +
+    '<span style="font-size:11.5px">Ngày của mốc lấy theo <b>ngày hiệu lực của quyết định</b> — ⛔ ngày ký, ⛔ ngày thao tác. ' +
+    'Vì thế lượt thay đổi sinh ra ở <code>M4.3</code> <b>đã ở trạng thái <i>Đã gắn</i></b>: ' +
+    'đi qua đây thì ⛔ để lại một dòng «chưa gắn mốc» nào cho người khác dọn. ' +
+    'Thao tác tay thẳng ở <code>M4.3</code> vẫn chạy được — nó là <b>đường nhanh</b>, và nó <b>để lại</b> một lượt chưa gắn, ' +
+    'đếm ở <code>M4.1</code> <code>T3</code> hạng mục <i>Mốc chức danh chưa khai</i>.</span>' +
+    (c ? '<br><span style="font-size:11.5px">Ticket loại <b>' + LOAI[t.l].t + '</b> đổi chức danh theo chiều <b>' + c[0] + '</b>.</span>'
+       : '<br><span style="font-size:11.5px">🛑 Ticket loại <b>' + LOAI[t.l].t + '</b> ⛔ chạm công tắc nào ở <code>M4.3</code> — ' +
+         '<i>diện làm việc</i> và <i>chức danh</i> là <b>hai trục khác nhau</b>. Nó vẫn sinh mốc quá trình công tác.</span>') +
+    '</div>';
+  return dai + _pHeQuaGoc42(t);
+};
+
+/* ── Phép kiểm tự động ── */
+function kiemHaiDich42() {
+  const k = [];
+  const ok = (t, d) => k.push([!!d, t]);
+
+  const coCD = TK.filter(t => CDDOI42[t.l]);
+  ok('Mọi ticket thuộc 6 loại có đổi chức danh đều có ĐÚNG MỘT dòng hệ quả M4.3 (' + coCD.length + ' ticket)',
+     coCD.length > 0 && coCD.every(t => t.hq.filter(h => h[1] === 'M4.3').length === 1));
+
+  ok('Dòng M4.3 chạy TẠI NGÀY HIỆU LỰC, ⛔ ngay khi ký',
+     coCD.every(t => t.hq.filter(h => h[1] === 'M4.3').every(h => h[2] === 'hieuluc')));
+
+  const e = TK.filter(t => t.l === 'E');
+  ok('Ticket ĐỔI DIỆN LÀM VIỆC ⛔ có dòng M4.3 nào — diện làm việc ⟂ chức danh (' + e.length + ' ticket)',
+     e.length > 0 && e.every(t => t.hq.every(h => h[1] !== 'M4.3')));
+
+  ok('Ticket ĐỔI DIỆN LÀM VIỆC vẫn sinh mốc Quá trình công tác',
+     e.every(t => t.hq.some(laDongMoc42)));
+
+  const moc = TK.filter(t => (t.hq || []).some(laDongMoc42));
+  ok('Mọi dòng mốc đều nói rõ ngày của mốc suy từ ngày hiệu lực (' + moc.length + ' ticket có mốc)',
+     moc.length > 0 && moc.every(t => t.hq.filter(laDongMoc42).every(h => /ngày hiệu lực/.test(h[4]))));
+
+  ok('Chiều ĐÓNG ghi «đến ngày» = ngày LIỀN TRƯỚC ngày hiệu lực, ⛔ chính ngày hiệu lực (khoảng đóng)',
+     TK.filter(t => CDDOI42[t.l] && CDDOI42[t.l][1] === 'dong')
+       .every(t => t.hq.filter(laDongMoc42).every(h => h[4].indexOf('<b>' + truocMot42(t.hl) + '</b>') >= 0)));
+
+  ok('⛔ dòng mốc nào còn cụm chữ «Kết thúc mm/yyyy» gieo sẵn nói lệch với ngày suy ra',
+     TK.every(t => (t.hq || []).filter(laDongMoc42).every(h => !/Kết thúc \d{2}\/\d{4}/.test(h[4]))));
+
+  ok('Mọi dòng M4.3 đều nói lượt thay đổi sinh ra ĐÃ Ở TRẠNG THÁI «Đã gắn»',
+     coCD.every(t => t.hq.filter(h => h[1] === 'M4.3').every(h => /Đã gắn/.test(h[4]))));
+
+  ok('Chiều TẮT ⛔ bao giờ là XÓA — ba loại C · B2 · D đều mang chiều «tắt», ⛔ chiều nào tên là «xóa»',
+     ['C', 'B2', 'D'].every(l => CDDOI42[l][0] === 'tắt') &&
+     !Object.keys(CDDOI42).some(l => /xóa/i.test(CDDOI42[l][0])));
+
+  ok('MỘT lần ghi HAI đích: mọi ticket có đổi chức danh đều có CẢ dòng M4.3 LẪN dòng mốc M4.1',
+     coCD.every(t => t.hq.some(h => h[1] === 'M4.3') && t.hq.some(laDongMoc42)));
+
+  ok('Dòng mốc nói đúng chiều: bật ⇒ MỞ nhiệm kỳ · tắt ⇒ ĐÓNG nhiệm kỳ',
+     coCD.every(t => t.hq.filter(laDongMoc42).every(h =>
+       !/^(MỞ|ĐÓNG) mốc/.test(h[0]) || h[0].indexOf(MOCCHIEU42[CDDOI42[t.l][1]][0]) === 0)));
+
+  ok('Hộp «nếu được ký, hệ thống sẽ…» của 6 loại ấy đều nêu HAI đích',
+     Object.keys(CDDOI42).every(l => TACDONG[l].m.some(x => /MỘT lần ghi, hai đích/.test(x))));
+
+  ok('Dòng M4.3 ⛔ làm phép đếm cảnh báo của app.js hiểu sai (⛔ dòng nào mang trạng thái loi)',
+     coCD.every(t => t.hq.filter(h => h[1] === 'M4.3').every(h => h[3] !== 'loi')));
+
+  const dat = k.filter(x => x[0]).length;
+  console.log('M4.2 v1.5 — phép kiểm hai đích một lần ghi: ' + dat + '/' + k.length + ' đạt');
+  k.forEach(x => console.log((x[0] ? '  ✓ ' : '  ✗ ') + x[1]));
+  return dat + '/' + k.length;
+}
+
+render();
+kiemHaiDich42();
 </script>
 </body>
 </html>

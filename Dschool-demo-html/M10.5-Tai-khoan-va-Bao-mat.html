@@ -536,10 +536,16 @@ function lkXuLy(x,id){
 let role='FULL', tab='ns', cur=null, curPH=null, q='';
 let fTT='', fLoai='', fKQ='', fNghi=0, POLDIRTY={};
 const ROLE={
- FULL:{ten:'Đủ quyền (demo)',   sua:1,duyet:1,dexuat:1,polSua:1,tabs:['ns','ph','pol','log']},
- IT  :{ten:'Quản trị hệ thống',sua:1,duyet:1,dexuat:0,polSua:1,tabs:['ns','ph','pol','log']},
+ /* BLOOP 2/10/2026 — hai bit của §6.1.4 «Nhân sự chưa có tài khoản»:
+    taoTK = bit T của m10.5.tai_khoan_nhan_su @ School ⇒ TCNS · IT (HT ⛔ có — §9 điểm 15)
+    xuatTK = bit XD, đòi thêm cho nút ⬇ Xuất danh sách (ràng buộc 22) ⇒ TCNS ⛔ có — §9 điểm 16
+    Đo bảng chuẩn 2/10: HT «X D XD» · IT «X T S D XD» · TCNS «X T» */
+ FULL:{ten:'Đủ quyền (demo)',   sua:1,duyet:1,dexuat:1,polSua:1,taoTK:1,xuatTK:1,tabs:['ns','ph','pol','log']},
+ IT  :{ten:'Quản trị hệ thống',sua:1,duyet:1,dexuat:0,polSua:1,taoTK:1,xuatTK:1,tabs:['ns','ph','pol','log']},
  HT  :{ten:'Hiệu trưởng',       sua:0,duyet:1,dexuat:0,polSua:0,tabs:['ns','ph','pol','log']},
- TCNS:{ten:'Tổ chức nhân sự',   sua:0,duyet:0,dexuat:1,polSua:0,tabs:['ns']},
+ /* 🔄 xuatTK thêm 2/10/2026 (BLOOP, anh Ninh chốt) — bit XD của m10.5.tai_khoan_nhan_su.
+    1 ô SỬA, ⛔ ô mới (ô TCNS vốn đã có) ⇒ GQ 2.520 ⛔ đổi. §9 điểm 16. */
+ TCNS:{ten:'Tổ chức nhân sự',   sua:0,duyet:0,dexuat:1,polSua:0,taoTK:1,xuatTK:1,tabs:['ns']},
  VT  :{ten:'Văn thư',           sua:0,duyet:0,dexuat:0,polSua:0,tabs:['ph']},
  PHT_DT:{ten:'PHT phụ trách điểm trường',sua:0,duyet:0,dexuat:0,polSua:0,tabs:['ph']},   /* TKPH-1A — duyệt link thủ công khi công tắc bật */
  GVBM:{ten:'Giáo viên bộ môn',  sua:0,duyet:0,dexuat:0,polSua:0,tabs:[]}};
@@ -2498,6 +2504,12 @@ NS.forEach(function(p, i){
 /* Lần gửi gần nhất — luật «bỏ qua dòng vừa gửi trong 24 giờ» (ràng buộc 53).
    Seed: N26 vừa được gửi lẻ lúc 08:12 hôm nay ⇒ lô phải BỎ QUA em này. */
 let GH_GUI = { N26: '08:12 hôm nay' };
+/* BLOOP 2/10/2026 — ca mẫu §6.1.2c. 🔑 Người gieo phải ở ĐÚNG trạng thái mà lô nhận
+   (`cho` = Chờ đổi mật khẩu lần đầu) — gieo vào người `khoa` thì họ ⛔ bao giờ vào lô,
+   và phép kiểm ra «0 dòng chưa gửi» mà tưởng là luật chạy đúng.
+   N21 · N25 ⛔ có email (sẵn có) ⇒ dòng SMS · N30 có email mà máy chủ thư trả về
+   «không tồn tại» ⇒ dòng ⛔ Chưa gửi. */
+(function(){ const p = NS.filter(function(x){ return x.id === 'N30' && x.tt === 'cho' })[0]; if(p) p.emLoi = 1; })();
 let GHLOG  = [];            /* nhật ký lô — §6.1.2b «Nhật ký» */
 let ghKenh = 'auto';        /* 'auto' = email nếu có, SMS cho người còn lại · 'sms' = SMS cho tất cả */
 let ghKQ   = null;          /* bảng kết quả của lô vừa chạy */
@@ -2557,6 +2569,16 @@ function mGuiHangLoat(){
         k[1] + ' <span class="st2 ' + (k[0] === 'auto' ? 'o' : 'w') + '">→ ' + k[2] + '</span></label>').join('')+
      '<div class="ro" style="margin-top:8px">🔑 <b>SMS tốn tiền của trường, email ⛔ tốn.</b> Ẩn con số đi thì người bấm '+
        '⛔ biết mình vừa tiêu bao nhiêu, và cửa duy nhất để biết là <b>hóa đơn tháng sau</b>.</div></div>'+
+   /* BLOOP 2/10/2026 — §6.1.2c: cảnh báo người ⛔ có email, hiện TRƯỚC khi chạy,
+      cùng chỗ với hai con số theo kênh. */
+   (function(){
+     const ko = nhan.filter(function(p){ return !p.em }).length;
+     if(!ko) return '';
+     return '<div class="warn" style="margin-top:10px;line-height:1.8">⚠ <b>' + ko + ' người ⛔ có email trong hồ sơ</b>.<br>'+
+       '· Với kênh <b>«Email nếu hồ sơ có»</b> thì họ nhận <b>SMS</b>.<br>'+
+       '· Với đường <b>hệ sinh mật khẩu rồi gửi email</b> <i>(§6.1.2d)</i> thì họ <b>⛔ gửi được</b> — '+
+       'vào trạng thái <b>⛔ Chưa gửi</b> lý do <i>«hồ sơ chưa khai email»</i>, phải <b>giao tay</b>.</div>';
+   })()+
    '<div class="warn" style="margin-top:10px;line-height:1.8">⚠ Mỗi người nhận <b>MỘT MẬT KHẨU TẠM MỚI</b>. '+
      'Mật khẩu ban đầu in ở <b>«bảng phát tài khoản»</b> của <b>M4.1 §6.11.3</b> sẽ <b>HẾT HIỆU LỰC</b> — '+
      'ai đang giữ tờ in đó phải bỏ đi. ' + dlink('M4.1') + '</div>'+
@@ -2568,34 +2590,63 @@ function mGuiHangLoat(){
 }
 
 /* ───────── chạy lô ───────── */
-function ghChay(){
-  const lat = ghLat(), gui = [], bo = [];
+/* ═══ BLOOP 2/10/2026 · §6.1.2c — ba kết cục của MỘT NGƯỜI trong một lần gửi ═══
+   ✅ Đã gửi · ⛔ Chưa gửi (kèm LÝ DO) · ⏭ Bỏ qua
+   🛑 «Chưa gửi được» ⟂ «Bỏ qua» — ⛔ trộn hai cột: *bỏ qua* là hệ CỐ Ý ⛔ gửi;
+      *chưa gửi* là hệ ĐÃ CHỌN gửi mà ⛔ tới được đích. Gộp lại thì nút ↻ Gửi lại
+      sẽ gửi cho cả người cố ý bị bỏ qua. */
+function ghKhongToi(p, k){
+  if(k === 'email' && !p.em) return 'hồ sơ chưa khai email';
+  if(p.emLoi)                return 'email không tồn tại';      /* máy chủ thư trả về */
+  if(k === 'sms' && !p.sdt)  return 'hồ sơ chưa khai số điện thoại';
+  return '';
+}
+function ghChay(nguon, chiNhung){
+  const lat = ghLat(), gui = [], chua = [], bo = [];
   lat.forEach(function(p){
-    if(p.tt === 'cho' && !GH_GUI[p.id]){
-      const k = ghKenhCua(p);
-      gui.push({ id: p.id, ten: p.ten, ma: p.ma, dt: p.dt, kenh: k,
-                 dich: k === 'email' ? ghCheEm(p.em) : ghChe(p.sdt), luc: '09:41 hôm nay' });
+    if(chiNhung && chiNhung.indexOf(p.id) < 0) return;           /* lượt gửi lại */
+    if(p.tt === 'cho' && (chiNhung || !GH_GUI[p.id])){
+      const k = ghKenhCua(p), ly = ghKhongToi(p, k);
+      const d = { id: p.id, ten: p.ten, ma: p.ma, dt: p.dt, kenh: k,
+                  dich: k === 'email' ? (p.em ? ghCheEm(p.em) : '—') : (p.sdt ? ghChe(p.sdt) : '—') };
+      if(ly){ d.ly = ly; chua.push(d); }                          /* ⛔ ghi GH_GUI — chưa từng gửi */
+      else  { d.luc = '09:41 hôm nay'; gui.push(d); }
     } else bo.push({ ten: p.ten, ma: p.ma, ly: ghLyDo(p), hd: p.tt === 'hd', id: p.id });
   });
   gui.forEach(g => { GH_GUI[g.id] = g.luc; });
   const em = gui.filter(g => g.kenh === 'email').length;
-  GHLOG.unshift({ gio: '29/08 09:41', boi: 'Nguyễn Văn An (Quản trị hệ thống)',
-    n: gui.length, em: em, sms: gui.length - em, bo: bo.length,
+  GHLOG.unshift({ id: 'L' + (GHLOG.length + 1), gio: '29/08 09:41',
+    boi: 'Nguyễn Văn An (Quản trị hệ thống)',
+    n: gui.length, em: em, sms: gui.length - em, bo: bo.length, chuaN: chua.length,
     pv: 'Toàn trường' + (fTT ? ' · bộ lọc «' + TT[fTT][0] + '»' : ''),
-    kenh: ghKenh === 'sms' ? 'SMS cho tất cả' : 'Email nếu có, SMS cho người còn lại' });
-  ghKQ = { gui: gui, bo: bo };
+    kenh: ghKenh === 'sms' ? 'SMS cho tất cả' : 'Email nếu có, SMS cho người còn lại',
+    nguon: nguon || '',
+    gui: gui, chua: chua, bo: bo });     /* sổ giữ ĐỦ ba danh sách — §6.1.2c */
+  ghKQ = { gui: gui, chua: chua, bo: bo };
   render();
   mGuiKQ();
 }
 
 /* ───────── bảng kết quả hai phần ───────── */
 function mGuiKQ(){
-  const g = ghKQ.gui, b = ghKQ.bo;
+  const g = ghKQ.gui, b = ghKQ.bo, c = ghKQ.chua || [];
   const em = g.filter(x => x.kenh === 'email').length;
   modal('⚡ Gửi thông tin đăng nhập hàng loạt — kết quả',
    '<div class="okbox" style="line-height:1.8">✅ <b>Đã gửi ' + g.length + '</b> '+
      '<span class="st2 gr">(' + em + ' email · ' + (g.length - em) + ' SMS)</span> · '+
-     '⏭ <b>Bỏ qua ' + b.length + '</b></div>'+
+     (c.length ? '⛔ <b>Chưa gửi ' + c.length + '</b> · ' : '')+
+     '⏭ <b>Bỏ qua ' + b.length + '</b>'+
+     (c.length ? '<div style="font-size:11.5px;color:var(--ink3);font-weight:400;margin-top:3px">'+
+       '🛑 <b>«Chưa gửi» ⛔ phải «Bỏ qua»</b> — bỏ qua là hệ <b>cố ý ⛔ gửi</b>; chưa gửi là hệ <b>đã chọn gửi mà ⛔ tới được</b>. '+
+       'Sổ của lần gửi có nút <b>↻ Gửi lại cho người chưa gửi</b>.</div>' : '')+
+     '</div>'+
+   (c.length ? '<div class="listw" style="margin-top:10px"><div class="hdrow" style="grid-template-columns:1.4fr .8fr .8fr 1.1fr 1.6fr">'+
+     '<div>⛔ Chưa gửi</div><div>Mã NS</div><div>Kênh</div><div>Đích</div><div>Lý do</div></div>'+
+     c.map(x => '<div class="hrow" style="grid-template-columns:1.4fr .8fr .8fr 1.1fr 1.6fr;cursor:default">'+
+       '<div>' + esc(x.ten) + '</div><div class="mono">' + x.ma + '</div>'+
+       '<div><span class="st2 ' + (x.kenh === 'email' ? 'o' : 'w') + '">' + (x.kenh === 'email' ? '✉ email' : '📱 SMS') + '</span></div>'+
+       '<div class="mono">' + esc(x.dich) + '</div>'+
+       '<div><span class="st2 am">' + esc(x.ly) + '</span></div></div>').join('') + '</div>' : '')+
    (g.length ? '<div class="listw" style="margin-top:10px"><div class="hdrow" style="grid-template-columns:1.4fr .8fr .7fr .8fr 1.2fr .8fr">'+
      '<div>Họ và tên</div><div>Mã NS</div><div>Điểm trường</div><div>Kênh</div><div>Đích đã che</div><div>Lúc gửi</div></div>'+
      g.map(x => '<div class="hrow" style="grid-template-columns:1.4fr .8fr .7fr .8fr 1.2fr .8fr;cursor:default">'+
@@ -2634,16 +2685,55 @@ function ghLogTab(){
     '<div>Thời điểm</div><div>Người chạy</div><div>Lô</div><div>Phạm vi</div></div>';
   if(!GHLOG.length) h += '<div class="empty">Chưa có lô nào — chạy <b>⚡ Gửi thông tin đăng nhập hàng loạt</b> ở tab ①.</div>';
   GHLOG.forEach(function(l){
-    h += '<div class="hrow" style="grid-template-columns:1.1fr 1.6fr 2.4fr 1.4fr;cursor:default">'+
+    /* BLOOP 2/10/2026 — dòng lô BẤM ĐƯỢC, mở SỔ của chính lô ấy (§6.1.2c tầng hai) */
+    h += '<div class="hrow" style="grid-template-columns:1.1fr 1.6fr 2.4fr 1.4fr" data-gh="so" data-l="' + l.id + '">'+
       '<div class="mono">' + l.gio + '</div><div>' + esc(l.boi) + '</div>'+
       '<div><b>' + l.n + ' người</b> · ' + l.em + ' email · ' + l.sms + ' SMS · '+
-        '<span class="st2 gr">bỏ qua ' + l.bo + '</span><div style="font-size:11.5px;color:var(--ink3)">' + esc(l.kenh) + '</div></div>'+
-      '<div style="font-size:12px">' + esc(l.pv) + '</div></div>';
+        (l.chuaN ? '<span class="st2 am">chưa gửi ' + l.chuaN + '</span> · ' : '')+
+        '<span class="st2 gr">bỏ qua ' + l.bo + '</span>'+
+        '<div style="font-size:11.5px;color:var(--ink3)">' + esc(l.kenh) +
+        (l.nguon ? ' · <b>' + esc(l.nguon) + '</b>' : '') + '</div></div>'+
+      '<div style="font-size:12px">' + esc(l.pv) + ' <span class="rolnk">📋 mở sổ</span></div></div>';
   });
   h += '</div><div class="ro" style="margin-top:11px;line-height:1.8">ⓘ <b>Một dòng cho cả lô</b> — ⛔ một dòng mỗi người. '+
     'Vết từng người ở Audit Log ' + dlink('M10.7') + ' <i>(ràng buộc 13)</i>: đổ cả lô vào đây thì nhật ký <b>đăng nhập</b> '+
-    'bị trôi, mà đó mới là thứ tab này dùng để phát hiện dò mật khẩu.</div>';
+    'bị trôi, mà đó mới là thứ tab này dùng để phát hiện dò mật khẩu.<br>'+
+    '📋 <b>Bấm một dòng để mở SỔ của lô ấy</b> — danh sách <b>từng người</b> kèm trạng thái <b>Đã gửi / Chưa gửi</b> '+
+    '<i>(§6.1.2c)</i>. Sổ là <b>tầng thứ hai</b>, ⛔ phá luật «một dòng ở tab ④».</div>';
   return h;
+
+/* ═══ BLOOP 2/10/2026 · §6.1.2c — SỔ CỦA MỘT LẦN GỬI ═══ */
+}
+function ghSo(id){
+  const l = GHLOG.filter(function(x){ return x.id === id })[0]; if(!l) return;
+  const dong = function(x, tt){
+    return '<div class="hrow" style="grid-template-columns:1.4fr .8fr .8fr 1.5fr 1fr 1.5fr;cursor:default">'+
+      '<div>' + esc(x.ten) + '</div><div class="mono">' + x.ma + '</div>'+
+      '<div><span class="st2 ' + (x.kenh === 'email' ? 'o' : 'w') + '">' + (x.kenh === 'email' ? '✉ Email' : '📱 SMS') + '</span></div>'+
+      '<div class="mono">' + esc(x.dich || '—') + '</div>'+
+      '<div>' + tt + '</div>'+
+      '<div style="font-size:12px">' + esc(x.ly || x.luc || '') + '</div></div>';
+  };
+  modal('📋 Sổ lần gửi — ' + l.gio,
+   '<div class="info" style="line-height:1.8">Người chạy <b>' + esc(l.boi) + '</b> · phạm vi <b>' + esc(l.pv) + '</b><br>'+
+     'Kênh: <b>' + esc(l.kenh) + '</b>' + (l.nguon ? ' · nguồn: <b>' + esc(l.nguon) + '</b>' : '') + '<br>'+
+     '✅ đã gửi <b>' + l.gui.length + '</b> · ⛔ chưa gửi được <b>' + l.chua.length + '</b> · ⏭ bỏ qua <b>' + l.bo.length + '</b> '+
+     '<span class="st2 gr">— ba phép đếm KHÁC nhau, ⛔ gộp</span></div>'+
+   '<div class="listw" style="margin-top:10px"><div class="hdrow" style="grid-template-columns:1.4fr .8fr .8fr 1.5fr 1fr 1.5fr">'+
+     '<div>Nhân sự</div><div>Mã NS</div><div>Kênh</div><div>Email / SĐT người nhận</div><div>Trạng thái</div><div>Lý do · lúc gửi</div></div>'+
+     l.gui.map(function(x){ return dong(x, '<span class="st2 o">✅ Đã gửi</span>') }).join('')+
+     l.chua.map(function(x){ return dong(x, '<span class="st2 am">⛔ Chưa gửi</span>') }).join('')+
+     l.bo.map(function(x){ return '<div class="hrow" style="grid-template-columns:1.4fr .8fr .8fr 1.5fr 1fr 1.5fr;cursor:default">'+
+       '<div>' + esc(x.ten) + '</div><div class="mono">' + x.ma + '</div><div>—</div><div>—</div>'+
+       '<div><span class="st2 gr">⏭ Bỏ qua</span></div><div style="font-size:12px">' + esc(x.ly) + '</div></div>' }).join('')+
+   '</div>'+
+   '<div class="ro" style="margin-top:11px;line-height:1.8">🔑 Cột <b>Email người nhận</b> lấy từ trường <b>Email của hồ sơ nhân sự</b> '+
+     '<i>(M4.1 §6.2.1, tầng 2)</i> — ⛔ nhập tay ở đây, ⛔ nguồn thứ hai.<br>'+
+     '🔒 Sổ <b>⛔ có cột mật khẩu</b> — ràng buộc <b>5</b> · <b>52</b> áp nguyên.</div>',
+   '<button class="btn" data-x="close">Đóng</button>'+
+   (l.chua.length && suaNS()
+     ? '<button class="btn p" data-gh="lai" data-l="' + l.id + '">↻ Gửi lại cho ' + l.chua.length + ' người chưa gửi</button>'
+     : ''));
 }
 
 /* ───────── click ───────── */
@@ -2656,9 +2746,307 @@ document.addEventListener('click', function(e){
   }
   if(k === 'kenh'){ ghKenh = b.dataset.v; mGuiHangLoat(); return; }
   if(k === 'chay'){ ghChay(); return; }
+  /* BLOOP 2/10/2026 — §6.1.2c sổ của một lần gửi ＋ gửi lại cho người chưa gửi */
+  if(k === 'so'){ ghSo(b.dataset.l); return; }
+  if(k === 'lai'){
+    if(!suaNS()){ toast('Gửi lại đi trên bit <b>S</b> của F1 — chức danh này ⛔ có'); return; }
+    const l = GHLOG.filter(function(x){ return x.id === b.dataset.l })[0]; if(!l) return;
+    const ids = l.chua.map(function(x){ return x.id });
+    /* 🔑 ⛔ vướng luật 24 giờ (ràng buộc 53): người «Chưa gửi» CHƯA TỪNG được gửi.
+       Sinh MỘT LẦN GỬI MỚI, ⛔ sửa trạng thái của lần cũ — lần cũ là VẾT. */
+    ghChay('gửi lại của lần ' + l.gio, ids);
+    toast('↻ Đã tạo <b>một lần gửi mới</b> cho <b>' + ids.length + '</b> người chưa gửi — lần cũ giữ nguyên làm <b>vết</b>.'+
+      '<br>⛔ vướng luật «bỏ qua dòng vừa gửi trong 24 giờ»: họ <b>chưa từng được gửi</b>.');
+    return;
+  }
   if(k === 'mo1'){ cur = b.dataset.p; $('#mask').classList.remove('on'); tab = 'ns'; render(); return; }
   if(k === 'tai'){ toast('Đã tải <b>bang-ket-qua-gui-hang-loat.csv</b> — ⛔ cột mật khẩu'); return; }
 });
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   BLOOP 2/10/2026 — app.14-cap-bu-tai-khoan.js · M10.5 §6.1.4
+   «Nhân sự chưa có tài khoản» — CỬA CẤP BÙ (sổ BUG LOOP dòng 7, anh Ninh chốt lối b).
+
+   VÌ SAO CÓ: từ 2/10/2026 cấp tài khoản là MỤC TÙY CHỌN trong hộp ＋ Thêm hồ sơ của
+   M4.1 (§4b.2b), và HAI đường sinh hồ sơ còn lại ⛔ cấp tài khoản — Import danh sách
+   (F11) và M4.2 Hiệu trưởng ký quyết định tuyển dụng (§4b.2a). Cộng thêm mọi hồ sơ
+   lập từ 22/9 đến 1/10/2026, giai đoạn sự kiện staff.hired ⛔ còn ai nghe.
+
+   🔁 Bất biến M4.1 §4b.1 cũ («có hồ sơ thì có tài khoản, ⛔ ngoại lệ») HẾT HIỆU LỰC.
+      PHÉP ĐẾM giữ nguyên; đổi là NGHĨA của chỗ lệch: thôi là «lỗi toàn vẹn dữ liệu
+      báo IT qua M10.7», nay là VIỆC CẦN LÀM ở tab ① này.
+
+   🛑 Mục này ⛔ làm: ⛔ TẠO hồ sơ · ⛔ GHI ĐÈ tài khoản đang có · ⛔ nút «cấp hết»
+      · ⛔ một mật khẩu chung cho cả lô · ⛔ giữ lại tệp đã nạp · người «Đã nghỉ việc»
+      ⛔ vào danh sách.
+
+   Quyền: bit T của m10.5.tai_khoan_nhan_su @ School ⇒ TCNS · IT. HT ⛔ thấy (§9 điểm 15).
+   Nút ⬇ Xuất danh sách còn đòi bit XD ⇒ TCNS ⛔ xuất được (§9 điểm 16).
+   ══════════════════════════════════════════════════════════════════════════════ */
+(function(){
+'use strict';
+
+/* ───────── hồ sơ nhân sự CHƯA CÓ tài khoản — dữ liệu để RIÊNG, ⛔ ghi vào NS ─────────
+   Mỗi dòng mang cột «Vì sao chưa có» — đọc từ nguồn dòng của hồ sơ, ⛔ đoán. */
+var CB = [
+ {id:'X01',ten:'Phạm Thị Nhàn',   ma:'NS-2026-0210',dt:'DT1',cd:'Giáo viên bộ môn',lap:'18/08/2026',vi:'nhap_lo'},
+ {id:'X02',ten:'Hoàng Văn Trọng', ma:'NS-2026-0211',dt:'DT2',cd:'Bảo vệ',          lap:'18/08/2026',vi:'nhap_lo'},
+ {id:'X03',ten:'Đinh Thị Bích Ngọc',ma:'NS-2026-0212',dt:'DT1',cd:'Giáo viên bộ môn',lap:'18/08/2026',vi:'nhap_lo'},
+ {id:'X04',ten:'Lại Văn Thuận',   ma:'NS-2026-0215',dt:'DT3',cd:'Y tế học đường',  lap:'24/08/2026',vi:'ky_qd'},
+ {id:'X05',ten:'Vương Thị Kim Chi',ma:'NS-2026-0217',dt:'DT1',cd:'Kế toán',        lap:'27/08/2026',vi:'bo_trong'},
+ {id:'X06',ten:'Tạ Quốc Hùng',    ma:'NS-2026-0196',dt:'DT2',cd:'Giáo viên bộ môn',lap:'24/09/2026',vi:'khoang_tr'}
+];
+var CB_VI = {
+ nhap_lo  :['nhập từ danh sách',          'F11 Import — ⛔ cấp tài khoản (§4b.2a)'],
+ ky_qd    :['ký quyết định tuyển dụng',   'M4.2 — ⛔ có ai ngồi đó để đặt mật khẩu'],
+ bo_trong :['người tạo bỏ trống mục',     'hộp ＋ Thêm hồ sơ — mục cấp tài khoản là TÙY CHỌN'],
+ khoang_tr:['lập trong khoảng 22/9 – 1/10/2026','sự kiện staff.hired ⛔ còn ai nghe']
+};
+var CB_CAP = [];          /* đã cấp bù trong phiên — rời khỏi danh sách */
+/* demo M10.5 ⛔ có bảng điểm trường riêng — tên lấy từ M10.2 */
+var CB_DT = {DT1:'Cơ sở chính', DT2:'Điểm trường Tân Hội', DT3:'Điểm trường Phú Mỹ'};
+function dtTenCB(i){ return CB_DT[i] || i }
+var cbLoc  = {dt:'',cd:'',vi:''};
+var cbKQ   = null;        /* bảng kết quả của đường ② */
+
+/* ───────── helper ───────── */
+function cbCon(){ return CB.filter(function(x){ return CB_CAP.indexOf(x.id)<0 }) }
+function cbLat(){
+ return cbCon().filter(function(x){
+  return (!cbLoc.dt||x.dt===cbLoc.dt) && (!cbLoc.cd||x.cd===cbLoc.cd) && (!cbLoc.vi||x.vi===cbLoc.vi);
+ }).sort(function(a,b){ return s2d(a.lap)-s2d(b.lap) });     /* chờ LÂU NHẤT lên đầu */
+}
+/* bit T của m10.5.tai_khoan_nhan_su — đo bảng chuẩn 2/10: TCNS «X T» · IT «X T S D XD» · HT «X D XD» */
+function cbDuoc(){ return !!R().taoTK }
+function cbXuatDuoc(){ return !!R().xuatTK }                    /* bit XD — ràng buộc 22 */
+function cbTuoi(x){ return ngay(x.lap, d2s(HOMNAY)) }
+function cbMau(x){ var n=cbTuoi(x); return n>30?'am':(n>7?'vg':'') }
+/* gợi ý tên đăng nhập: «Nguyễn Thị Hương» → huong.nt — xử lý đ/Đ TRƯỚC khi tách dấu */
+function cbBoDau(s){ return String(s||'').replace(/đ/g,'d').replace(/Đ/g,'D')
+  .normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase() }
+function cbGoiY(ten){
+ var w=cbBoDau(ten).trim().split(/\s+/).filter(Boolean);
+ if(!w.length)return '';
+ var t=w[w.length-1], d=w.slice(0,-1).map(function(x){return x[0]}).join('');
+ return d? t+'.'+d : t;
+}
+function cbTrung(u){
+ u=String(u||'').toLowerCase();
+ return NS.some(function(p){return String(p.u||'').toLowerCase()===u})
+     || CB.some(function(x){return String(x.u||'').toLowerCase()===u});
+}
+
+/* ───────── nút trên dải phạm vi — ⛔ hiện khi con số = 0 ─────────
+   🛑 Đếm TOÀN TRƯỜNG, ⛔ đếm trên lát cắt đang xem: bit T vốn là phạm vi toàn trường. */
+var _chipsGoc14 = chips;
+chips = function(){
+ var h = _chipsGoc14.apply(null, arguments);
+ if(tab==='ns' && cbDuoc() && cbCon().length)
+  h = '<button class="btn xs" data-cb="mo">⛔ Nhân sự chưa có tài khoản <b>▸ '+cbCon().length+'</b></button> ' + h;
+ return h;
+};
+
+/* ───────── chip rà soát: ĐỔI NGHĨA chỗ lệch, phép đo GIỮ NGUYÊN ───────── */
+var _dsRaGoc14 = dsRa;
+dsRa = function(){
+ var r = _dsRaGoc14.apply(null, arguments);
+ /* bỏ chip «VỠ BẤT BIẾN» cũ — nó nói sai từ 2/10/2026 */
+ r = r.filter(function(x){ return String(x[1]).indexOf('VỠ BẤT BIẾN')<0 });
+ var n = cbCon().length;
+ if(n) r.unshift(['am','<b>'+n+' nhân sự chưa có tài khoản</b>',
+  'Hồ sơ có, người đang đi làm, <b>⛔ đăng nhập được</b>.<br><br>'+
+  '🔁 <b>Chip này đổi nghĩa ngày 2/10/2026.</b> Trước đó nó là <b>⛔ VỠ BẤT BIẾN</b> — '+
+  '«lỗi toàn vẹn dữ liệu, báo IT tại '+dlink('M10.7')+', ⛔ tự tạo tài khoản ở đây». '+
+  'Bất biến M4.1 §4b.1 ấy <b>đã hết hiệu lực</b>: cấp tài khoản nay là <b>mục TÙY CHỌN</b> của M4.1 (§4b.2b), '+
+  'và hai đường <b>Import</b> · <b>M4.2 ký quyết định</b> ⛔ cấp.<br>'+
+  '<b>Phép đo ⛔ đổi một chữ</b> (<code>số tài khoản ≠ số hồ sơ</code>) — đổi là <b>chỗ đi tới</b>: '+
+  'nay là <b>việc cần làm</b> ở tab ① này.<br>'+
+  '🛑 Chip <b>cam, ⛔ đỏ</b> — hồ sơ chưa cấp tài khoản là <b>trạng thái hợp lệ</b>, chỉ là ⛔ được để lâu.'+
+  (cbDuoc()? '<br><br><button class="btn xs p" data-cb="mo">＋ Mở danh sách để cấp bù</button>'
+           : '<br><br><span class="st2 gr">Vai này ⛔ có bit <b>T</b> của <code>m10.5.tai_khoan_nhan_su</code> nên ⛔ cấp được — §9 điểm 15.</span>')
+ ]);
+ return r;
+};
+
+/* ───────── popup danh sách — ⛔ phải tab thứ năm ─────────
+   Việc này CÓ HỒI KẾT: làm xong thì danh sách rỗng và nút tự biến mất.
+   Một tab thường trực cho một việc sẽ rỗng suốt năm là TAB CHẾT — đúng lập luận
+   §2.4.1 đã dùng để ⛔ dựng tab ⑤ cho tài khoản học sinh. */
+function cbMo(){
+ modal('⛔ Nhân sự chưa có tài khoản','<div id="cbBody"></div>',
+  '<button class="btn" data-x="close">Đóng</button>'+
+  (cbXuatDuoc()? '<button class="btn" data-cb="xuat">⬇ Xuất danh sách</button>'+
+                 '<button class="btn" data-cb="nhapMo">⬆ Nhập tài khoản</button>' : ''));
+ cbVe();
+}
+function cbVe(){
+ var a=cbLat(), dts=[], cds=[];
+ cbCon().forEach(function(x){ if(dts.indexOf(x.dt)<0)dts.push(x.dt); if(cds.indexOf(x.cd)<0)cds.push(x.cd) });
+ var h='<div class="info">Hồ sơ có, người đang đi làm, <b>⛔ đăng nhập được</b>. '+
+  'Con số đọc từ phép đếm <code>số hồ sơ − số tài khoản</code> mà M4.1 §4b.1 vẫn giữ — '+
+  '🛑 đếm <b>toàn trường</b>, ⛔ đếm trên lát cắt đang xem.</div>';
+
+ h+='<div class="bar" style="gap:6px;flex-wrap:wrap">'+
+  '<select class="fs" data-cbf="dt"><option value="">Mọi điểm trường</option>'+
+   dts.map(function(d){return '<option value="'+d+'"'+(cbLoc.dt===d?' selected':'')+'>'+esc(dtTenCB(d))+'</option>'}).join('')+'</select>'+
+  '<select class="fs" data-cbf="cd"><option value="">Mọi chức danh</option>'+
+   cds.map(function(c){return '<option value="'+esc(c)+'"'+(cbLoc.cd===c?' selected':'')+'>'+esc(c)+'</option>'}).join('')+'</select>'+
+  '<select class="fs" data-cbf="vi"><option value="">Mọi lý do</option>'+
+   Object.keys(CB_VI).map(function(k){return '<option value="'+k+'"'+(cbLoc.vi===k?' selected':'')+'>'+CB_VI[k][0]+'</option>'}).join('')+'</select>'+
+  '<span class="st2 gr">'+a.length+' / '+cbCon().length+' người · sắp theo <b>chờ lâu nhất lên đầu</b></span></div>';
+
+ if(!a.length) h+='<div class="empty">'+(cbCon().length?'Không có ai khớp bộ lọc.':'✅ <b>Mọi hồ sơ đều đã có tài khoản.</b> Nút ở dải phạm vi tự biến mất.')+'</div>';
+ else{
+  h+='<div class="listw"><table><thead><tr><th>Nhân sự</th><th style="width:170px">Chức danh</th>'+
+   '<th style="width:120px">Hồ sơ lập lúc</th><th style="width:210px">Vì sao chưa có</th><th style="width:150px"></th></tr></thead><tbody>';
+  a.forEach(function(x){
+   var m=cbMau(x), vi=CB_VI[x.vi];
+   h+='<tr><td><b>'+esc(x.ten)+'</b><br><span class="st2 gr">'+esc(x.ma)+' · '+esc(dtTenCB(x.dt))+'</span></td>'+
+    '<td>'+esc(x.cd)+'</td>'+
+    '<td><span class="st2 '+m+'">'+esc(x.lap)+'</span><br><span class="st2 gr">'+cbTuoi(x)+' ngày trước</span></td>'+
+    '<td><b>'+vi[0]+'</b><br><span class="st2 gr">'+vi[1]+'</span></td>'+
+    '<td>'+(cbDuoc()?'<button class="btn xs p" data-cb="cap" data-i="'+x.id+'">＋ Cấp tài khoản</button>':'')+'</td></tr>';
+  });
+  h+='</tbody></table></div>';
+ }
+ h+='<div class="ro" style="margin-top:9px">🛑 <b>⛔ có nút «cấp tài khoản cho cả danh sách».</b> '+
+  'Mật khẩu phải có người đặt và có người giao; một nút «cấp hết» chỉ đổi việc <b>chưa cấp</b> thành việc '+
+  '<b>chưa phát</b> — mà việc chưa phát thì ⛔ màn hình nào đếm.<br>'+
+  '🛑 Người <b>Đã nghỉ việc ⛔ vào danh sách</b> (cùng luật M4.3 §6.4.5) — tính họ vào thì con số <b>⛔ bao giờ về 0</b>.</div>';
+ if(!cbXuatDuoc()) h+='<div class="warn" style="margin-top:8px">⚠ Vai này cấp <b>lẻ từng người</b> được nhưng '+
+  '<b>⛔ xuất được danh sách</b> — nút <code>⬇ Xuất danh sách</code> đòi bit <b>XD</b> (ràng buộc 22), '+
+  'mà <b>TCNS</b> ⛔ có <code>XD</code> ở khóa này. Đường ② <i>(xuất rồi nhập — đường của cả bộ máy)</i> là của <b>IT</b>. '+
+  'Đây đúng hình dạng mà §6.1.2b gọi là <i>«việc SẼ BỊ LÀM TẮT»</i> — §9 điểm 16.</div>';
+ $('#cbBody').innerHTML=h;
+}
+
+/* ───────── đường ① — cấp lẻ từng người, DÙNG ĐÚNG ba ô của M4.1 §4b.2b ───────── */
+var CBF=null;
+function cbCapMo(id){
+ var x=CB.filter(function(y){return y.id===id})[0];
+ CBF={id:id,u:cbGoiY(x.ten),p:'',p2:'',loi:[]};
+ modal('＋ Cấp tài khoản — '+esc(x.ten),'<div id="cbfBody"></div>',
+  '<button class="btn" data-cb="mo">↩ Về danh sách</button><button class="btn p" data-cb="capOk">💾 Cấp tài khoản</button>');
+ cbCapVe();
+}
+function cbCapVe(){
+ var x=CB.filter(function(y){return y.id===CBF.id})[0];
+ var L=CBF.loi, co=function(k){return L.indexOf(k)>=0}, vien=function(b){return b?' style="border-color:var(--red)"':''};
+ var h='<div class="info">Hộp này dùng <b>đúng ba ô</b> của M4.1 §4b.2b — ⛔ khuôn thứ hai.<br>'+
+  '<b>'+esc(x.ten)+'</b> · '+esc(x.ma)+' · '+esc(x.cd)+' · '+esc(dtTenCB(x.dt))+'</div>';
+ if(L.length) h+='<div class="danger">⛔ <b>Chưa cấp được</b> — còn: '+L.map(esc).join(' · ')+'</div>';
+ h+='<label class="lbl">Tên đăng nhập <b>*</b> <span class="st2 gr">— gợi ý sẵn từ họ tên, sửa được</span></label>'+
+  '<input class="din" data-cbi="u" value="'+esc(CBF.u)+'"'+vien(co('tên đăng nhập đã có người dùng'))+'>'+
+  (co('tên đăng nhập đã có người dùng')
+   ? '<div class="danger" style="margin:4px 0">⛔ Tên đăng nhập này <b>đã có người dùng</b> — 🛑 màn hình ⛔ nói <b>ai</b> đang dùng.</div>':'')+
+  '<label class="lbl">Mật khẩu <b>*</b> <span class="st2 gr">— đo theo chính sách của trường ở tab ③</span></label>'+
+  '<input class="din" type="password" data-cbi="p" value="'+esc(CBF.p)+'"'+vien(co('mật khẩu chưa đủ mạnh'))+'>'+
+  '<label class="lbl">Nhập lại mật khẩu <b>*</b></label>'+
+  '<input class="din" type="password" data-cbi="p2" value="'+esc(CBF.p2)+'"'+vien(co('hai lần nhập mật khẩu không trùng'))+'>'+
+  '<div class="ro" style="margin-top:9px">Cấp xong, tài khoản vào trạng thái <b>Chờ đổi mật khẩu lần đầu</b> và dòng này '+
+  '<b>rời khỏi</b> danh sách.<br>🔒 Mật khẩu ⛔ vào sự kiện · ⛔ vào audit <i>(audit chỉ ghi tên đăng nhập)</i> · ⛔ vào log · ⛔ vào URL.<br>'+
+  'Giao mật khẩu thì ⛔ dựng đường mới: <b>tờ in</b> của TCNS, hoặc <b>⚡ Gửi thông tin đăng nhập hàng loạt</b> (§6.1.2b) — '+
+  'lô vừa cấp đang ở đúng trạng thái mà lô gửi <b>chỉ nhận</b>.</div>';
+ $('#cbfBody').innerHTML=h;
+}
+function cbKiem(){
+ var L=[], u=String(CBF.u||'').trim();
+ if(!u)L.push('Tên đăng nhập'); else if(cbTrung(u))L.push('tên đăng nhập đã có người dùng');
+ if(!CBF.p)L.push('Mật khẩu');
+ else if(CBF.p.length<8)L.push('mật khẩu chưa đủ mạnh');
+ else if(CBF.p!==CBF.p2)L.push('hai lần nhập mật khẩu không trùng');
+ return L;
+}
+function cbCapOk(){
+ CBF.loi=cbKiem();
+ if(CBF.loi.length){cbCapVe();return}
+ var x=CB.filter(function(y){return y.id===CBF.id})[0];
+ x.u=CBF.u.trim();
+ NS.push({id:x.id,ten:x.ten,ma:x.ma,u:x.u,dt:x.dt,cd:[x.cd],tt:'cho',dn:-1,tao:d2s(HOMNAY),em:''});
+ CB_CAP.push(x.id);
+ render(); cbMo();
+ toast('✓ Đã cấp tài khoản <b>'+esc(x.u)+'</b> cho <b>'+esc(x.ten)+'</b> · trạng thái <b>Chờ đổi mật khẩu lần đầu</b>'+
+  '<br>🔒 Mật khẩu ⛔ hiện lại ở đâu. Còn <b>'+cbCon().length+'</b> người chưa có tài khoản.');
+}
+
+/* ───────── đường ② — xuất rồi nhập ───────── */
+function cbXuat(){
+ var a=cbLat();
+ modal('⬇ Xuất danh sách — '+a.length+' người',
+  '<div class="info">Đi <b>bộ xuất dùng chung</b> 🔒 <code>HDMX</code> như mọi bản xuất của menu này (§6.3.6a). '+
+  '🛑 Bắt <b>chọn mục đích</b> và <b>ghi nhật ký</b> — bit <code>XD</code>.</div>'+
+  '<div class="listw"><table><thead><tr><th>Mã nhân sự</th><th>Họ và tên</th><th>Điểm trường</th><th>Chức danh</th>'+
+  '<th>Tên đăng nhập gợi ý</th><th>Mật khẩu</th></tr></thead><tbody>'+
+  a.map(function(x){return '<tr><td><b>'+esc(x.ma)+'</b></td><td>'+esc(x.ten)+'</td><td>'+esc(dtTenCB(x.dt))+'</td>'+
+   '<td>'+esc(x.cd)+'</td><td>'+esc(cbGoiY(x.ten))+'</td><td><span class="st2 gr">— người chạy tự điền —</span></td></tr>'}).join('')+
+  '</tbody></table></div>'+
+  '<div class="warn" style="margin-top:9px">🔴 <b>Tệp này sẽ chứa mật khẩu của '+a.length+' người.</b> '+
+  'Xóa ngay sau khi phát xong, ⛔ lưu lại trên máy dùng chung. '+
+  'Hệ thống <b>⛔ giữ lại tệp đã nạp</b> — ⛔ như bản chụp ánh xạ của M4.1 §6.11.6, vì bản chụp ấy ⛔ chứa mật khẩu.</div>'+
+  '<div class="ro" style="margin-top:8px">🔑 <b>Cột khóa khớp là <code>Mã nhân sự</code></b> — ⛔ họ tên, ⛔ số điện thoại.</div>',
+  '<button class="btn" data-cb="mo">↩ Về danh sách</button>');
+}
+function cbNhapMo(){
+ var a=cbLat();
+ /* tệp giả: 2 dòng cấp được · 1 dòng ⛔ khớp mã · 1 dòng người ĐÃ CÓ tài khoản */
+ var dong=[];
+ a.slice(0,2).forEach(function(x){dong.push({ma:x.ma,ten:x.ten,u:cbGoiY(x.ten),ok:1})});
+ dong.push({ma:'NS-2019-0999',ten:'Nguyễn Văn Không Có',u:'khong.nv',ok:0,ly:'⛔ khớp hồ sơ nào — ⛔ bao giờ TẠO hồ sơ mới'});
+ var daCo=NS.filter(function(p){return p.u})[0];
+ if(daCo)dong.push({ma:daCo.ma,ten:daCo.ten,u:'moi.abc',ok:0,ly:'đã có tài khoản từ trước — ghi đè là RESET HÀNG LOẠT, ràng buộc 51 cấm'});
+ cbKQ=dong;
+ modal('⬆ Nhập tài khoản — kết quả đối chiếu',
+  '<div class="info">① chọn tệp → ② ánh xạ cột, theo 🔒 <code>HDMX</code> bản 2 — ⛔ khuôn nhập riêng (cùng luật M4.1 §6.11.2). '+
+  '<b>Khóa khớp: Mã nhân sự.</b></div>'+
+  '<div class="listw"><table><thead><tr><th style="width:34px"></th><th>Mã nhân sự</th><th>Họ và tên</th>'+
+  '<th>Tên đăng nhập</th><th>Kết quả</th></tr></thead><tbody>'+
+  dong.map(function(d){return '<tr><td>'+(d.ok?'✅':'⏭')+'</td><td><b>'+esc(d.ma)+'</b></td><td>'+esc(d.ten)+'</td>'+
+   '<td>'+esc(d.u)+'</td><td>'+(d.ok?'<span class="st2 o">sẽ cấp</span>':'<span class="st2 am">bỏ qua — '+esc(d.ly)+'</span>')+'</td></tr>'}).join('')+
+  '</tbody></table></div>'+
+  '<div class="ro" style="margin-top:9px">🔒 Bảng kết quả <b>⛔ CÓ CỘT MẬT KHẨU</b>, ⛔ tệp mật khẩu — ràng buộc <b>5</b> và <b>52</b> áp nguyên.<br>'+
+  '🛑 ⛔ <b>TẠO hồ sơ</b> · ⛔ <b>GHI ĐÈ tài khoản đang có</b> — hai dòng ⏭ ở trên là đúng hai ca đó.</div>',
+  '<button class="btn" data-cb="mo">↩ Về danh sách</button><button class="btn p" data-cb="nhapOk">⬆ Nạp '+
+   dong.filter(function(d){return d.ok}).length+' dòng</button>');
+}
+function cbNhapOk(){
+ var n=0;
+ cbKQ.filter(function(d){return d.ok}).forEach(function(d){
+  var x=CB.filter(function(y){return y.ma===d.ma})[0]; if(!x)return;
+  x.u=d.u; NS.push({id:x.id,ten:x.ten,ma:x.ma,u:x.u,dt:x.dt,cd:[x.cd],tt:'cho',dn:-1,tao:d2s(HOMNAY),em:''});
+  CB_CAP.push(x.id); n++;
+ });
+ render(); cbMo();
+ toast('✓ Đã cấp <b>'+n+'</b> tài khoản bằng đường nhập tệp · tất cả ở <b>Chờ đổi mật khẩu lần đầu</b>'+
+  '<br>🔴 <b>Xóa tệp vừa nạp</b> — nó chứa mật khẩu. Hệ thống ⛔ giữ lại nó. Còn <b>'+cbCon().length+'</b> người chưa có tài khoản.');
+}
+
+/* ───────── nối sự kiện ───────── */
+document.addEventListener('click',function(e){
+ var t=e.target.closest('[data-cb]'); if(!t)return;
+ var x=t.dataset.cb;
+ if(x==='mo'){cbMo();return}
+ if(x==='cap'){cbCapMo(t.dataset.i);return}
+ if(x==='capOk'){cbCapOk();return}
+ if(x==='xuat'){cbXuat();return}
+ if(x==='nhapMo'){cbNhapMo();return}
+ if(x==='nhapOk'){cbNhapOk();return}
+},true);
+
+document.addEventListener('change',function(e){
+ var el=e.target;
+ if(el.dataset.cbf){cbLoc[el.dataset.cbf]=el.value;cbVe();return}
+ if(el.dataset.cbi&&CBF){CBF[el.dataset.cbi]=el.value;return}
+});
+document.addEventListener('input',function(e){
+ var el=e.target;
+ if(el.dataset.cbi&&CBF){CBF[el.dataset.cbi]=el.value}
+});
+
+/* phơi ra để phép kiểm gọi được */
+window.CB=CB; window.cbCon=cbCon; window.cbLat=cbLat; window.cbGoiY=cbGoiY;
+window.cbKiem=cbKiem; window.cbMo=cbMo; window.cbCapMo=cbCapMo; window.cbDuoc=cbDuoc;
+window.cbTrung=cbTrung;
+})();
 
 /* ═══════════════════════════════════════════════════════════════
    KTLD-1D — M10.5 và MỐC BÀN GIAO  ·  bước B06

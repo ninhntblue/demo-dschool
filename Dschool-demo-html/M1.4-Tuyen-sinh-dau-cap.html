@@ -753,6 +753,9 @@ function subXacNhan(d){
    <div class="panel">${curHS?panelHS(d):''}</div></div>`}
 function dongXN(r,d,ro){
  const no=noCua(r), nh=nhanCua(r), hd=dotOf(r.dot).ct.find(c=>c.he===r.he)||{};
+ /* LHCH 3/10/2026 — «Lien he chinh» KHOI PHUC (ban CHOT CHOT-03-10...LHCH §3.4).
+    Cot nay ⛔ phai cho sot: no dung tu dau va nay HOP LE tro lai. Nguoi duoc CHI DINH (co chinh),
+    du phong la phu huynh 1 cua te So. Xac nhan nhap hoc => chuyen thang sang M1.1 §6.3.11. */
  const c=r.ph.find(x=>x.chinh)||r.ph[0];
  const nhoSo=d.gt.filter(g=>g.bb).length, co=d.gt.filter(g=>g.bb&&r.cung[g.ten]).length;
  let nut='';

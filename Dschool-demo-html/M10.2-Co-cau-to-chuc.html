@@ -371,7 +371,11 @@ function nguoiLog(){return 'Người dùng demo · '+R().ten}
    Danh muc mon GIONG HET demo M10.1 (app.10-du-lieu.js) — M10.1 doc danh muc nay.
    ================================================================================= */
 const TRUONG={ten:'Trường THCS và THPT Nguyễn Tất Thành',viettat:'NTT',
- maCSDL:'79000123456789012345',loaiHinh:'Công lập',coQuan:'Sở Giáo dục và Đào tạo tỉnh',
+ maCSDL:'79000123456789012345',
+ /* ===== RSTT (1/10/2026) — BA TRUC TACH RA, xem §4.1c ===== */
+ loaiHinh:'cong_lap',            /* 🔁 truoc la chuoi tu do 'Cong lap' — nay la DANH MUC bon gia tri */
+ capHoc:'THCS_THPT',             /* 🆕 cap hoc theo QUYET DINH THANH LAP — Master, ⛔ lan voi «Bac hoc» dan xuat (R48) */
+ coQuan:'SGD_92',                /* 🔁 truoc la chuoi tu do — nay chon tu danh muc So GD&DT (R49) */
  diaChi:'Số 12 Nguyễn Tất Thành, phường Tân An',sdt:'0292 3822 456',email:'c23ntt@edu.vn',web:'ntt.edu.vn',
  cts:'CTS tổ chức — Viettel-CA · số seri 54 01 0A 3F · hết hạn 14/03/2028',ca:'Viettel-CA · môi trường Production',
  chuyen:true,  /* co Truong chuyen — Master, khai tay (§4.2) */
@@ -380,7 +384,7 @@ const TRUONG={ten:'Trường THCS và THPT Nguyễn Tất Thành',viettat:'NTT',
  maDDTC:'0301234567-001',        /* Ma dinh danh to chuc (ND 69) — R14: canh bao khi doi, KHONG kiem 20 chu so */
  maDDDT:'VN-79-0000123456',      /* Ma dinh danh dien tu (QD 20) — R14 */
  maSoThue:'0301234567',          /* MA SO THUE CUA TRUONG (R13: 10 hoac 13 chu so) — khac MST ca nhan cua HT */
- loaiTruong:'nhieucap',          /* R15 — nhan bao cao, KHONG thay co Truong chuyen */
+ loaiTruong:'nhieucap',          /* 🔁 GIA TRI DI TRU cua danh muc CU — hien kem hau to «(cu)», ⛔ may tu anh xa (RSTT) */
  /* --- CA C3: dia chi CU chua chuan hoa (HDCS ① quy tac d) --- */
  dc:{che_do:'tu_do',tinh_id:null,xa_id:null,chi_tiet:'',
      chuoi_tu_do:'Số 12 Nguyễn Tất Thành, phường Tân An, TP. Cần Thơ'},
@@ -397,7 +401,45 @@ const TRUONG={ten:'Trường THCS và THPT Nguyễn Tất Thành',viettat:'NTT',
  dt:{dat:14800,xd:5260}};
 
 /* ===== DANH MUC dung chung cho bon khoi moi ===== */
-const LOAITRUONG={pt:'Phổ thông',chuyen:'Chuyên',dtnt:'PTDTNT',dtbt:'PTDTBT',nhieucap:'Phổ thông nhiều cấp học',khac:'Khác'};
+
+/* 🔴 RSTT (1/10/2026) — BA TRUC TACH RA (§4.1c).
+   Danh muc cu SAU gia tri tron ba cau hoi vao mot o: ai so huu truong (cong/tu) ·
+   truong day cap nao (nhieu cap hoc) · loai hinh to chuc (PTDTNT/Chuyen).
+   Chon mot gia tri la buoc phai BO HAI CAU KIA khong tra loi.
+   🛑 Va sau gia tri ay KHONG co nguon liet ke — chung duoc chep tu mot cum VI DU
+   trong ghi chu «Dschool con thieu» cua tep doi chieu 18/9. Nguon liet ke cua ba
+   danh muc duoi day la: ANH NINH CHOT 1/10/2026 sau khi truong tra cuu va doi soat. */
+
+const LOAIHINH={cong_lap:'Công lập',tu_thuc:'Tư thục',quoc_te:'Quốc tế',dan_lap:'Dân lập (Mầm non)'};
+
+const CAPHOC={MN:'Mầm non',TH:'Tiểu học',THCS:'Trung học cơ sở',THPT:'Trung học phổ thông',
+ TH_THCS:'TH＋THCS',THCS_THPT:'THCS＋THPT',TH_THCS_THPT:'TH＋THCS＋THPT'};
+/* cap hoc khai tay -> tap cap, de so voi «Bac hoc» dan xuat (R48) */
+const CAPHOC_TAP={MN:[],TH:['TH'],THCS:['THCS'],THPT:['THPT'],
+ TH_THCS:['TH','THCS'],THCS_THPT:['THCS','THPT'],TH_THCS_THPT:['TH','THCS','THPT']};
+
+/* NAM gia tri moi. Gia tri DI TRU cua danh muc cu nam o LOAITRUONG_CU — hien kem «(cu)»,
+   dung CUOI danh sach chon, va BIEN MAT khi nguoi khai chon mot gia tri moi.
+   ⛔ May KHONG tu anh xa: «Chuyen» cu khong noi duoc la nang khieu hay pho thong. */
+const LOAITRUONG={pt:'Phổ thông',dtnt:'Dân tộc nội trú',dtbt:'Dân tộc bán trú',
+ chuyen_nk:'Chuyên năng khiếu',chuyen_pt:'Chuyên phổ thông'};
+const LOAITRUONG_CU={chuyen:'Chuyên',dtnt_cu:'PTDTNT',dtbt_cu:'PTDTBT',
+ nhieucap:'Phổ thông nhiều cấp học',khac:'Khác'};
+const laCu=v=>!!LOAITRUONG_CU[v];
+const tenLoaiTruong=v=>!v?'':(LOAITRUONG[v]||(LOAITRUONG_CU[v]?LOAITRUONG_CU[v]+' (cũ)':''));
+/* hai gia tri mang nghia «chuyen» — R15 so voi co Truong chuyen */
+const laChuyen=v=>v==='chuyen_nk'||v==='chuyen_pt';
+
+/* R49 — danh muc CO QUAN QUAN LY. MVP: co dinh trong ban phat hanh, GHI NGAY LAP.
+   ⛔ Truong tu sua duoc o Dot nay — duong mo ve sau la M10.6 (§12 diem 53). */
+const COQUAN_NGAY='01/10/2026';
+const COQUAN={SGD_01:'Sở Giáo dục và Đào tạo thành phố Hà Nội',
+ SGD_79:'Sở Giáo dục và Đào tạo Thành phố Hồ Chí Minh',
+ SGD_92:'Sở Giáo dục và Đào tạo thành phố Cần Thơ',
+ SGD_48:'Sở Giáo dục và Đào tạo thành phố Đà Nẵng',
+ SGD_31:'Sở Giáo dục và Đào tạo thành phố Hải Phòng',
+ SGD_75:'Sở Giáo dục và Đào tạo tỉnh Đồng Nai',
+ SGD_77:'Sở Giáo dục và Đào tạo tỉnh Bà Rịa – Vũng Tàu'};
 const KHUVUC={'KV1':'KV1','KV2':'KV2','KV2-NT':'KV2-NT','KV3':'KV3'};
 /* co BA gia tri (HDCS ③) — 'Chua khao sat' KHONG duoc anh xa thanh 'Khong' khi day */
 const CO3={c:['Có','o'],k:['Không','n'],'?':['Chưa khảo sát','w']};
@@ -794,13 +836,20 @@ function tabTruong(){
   F('Tên trường',esc(TRUONG.ten))+F('Tên viết tắt',esc(TRUONG.viettat))+
   F('Mã trường CSDL ngành','<code>'+TRUONG.maCSDL+'</code> <span class="pill">20 ký tự · TT 42/2021</span>'+
     (can('suaTruong')?'<button class="btn xs" data-x="mDoiMa">✎ Đổi mã</button>':''))+
-  F('Loại hình',TRUONG.loaiHinh)+F('Cơ quan quản lý',esc(TRUONG.coQuan))+
+  /* ===== RSTT (1/10/2026) — ba truc tach ra (§4.1c) ===== */
+  F('Loại hình','<b>'+esc(LOAIHINH[TRUONG.loaiHinh]||'—')+'</b> <span class="pill">danh mục 4 giá trị</span>')+
+  F('Cấp học','<b>'+esc(CAPHOC[TRUONG.capHoc]||'<span class="st2 w">Chưa khai</span>')+'</b> <span class="pill">theo quyết định thành lập</span>'+
+    (canhBaoCapHoc(n)?'<div class="subwarn">⚠ '+canhBaoCapHoc(n)+'</div>':'')+
+    (ghiChu?'<div class="dnote">💡 <b>Ô này ⛔ KHÔNG thay khối <i>Bậc học của trường</i> bên phải.</b> Ô này là <b>cấp học ghi trong quyết định thành lập</b> — Master, không đổi theo năm. Khối kia là <b>cấp đang thực sự dạy</b> ở năm đang chọn, dẫn xuất từ M10.1 ②. Lệch nhau ⇒ ⚠ nêu cả hai vế, <b>không chặn</b>, và ⛔ máy không suy ô này từ ô kia theo chiều nào (R48).</div>':''))+
+  F('Cơ quan quản lý','<b>'+esc(COQUAN[TRUONG.coQuan]||'<span class="st2 w">Chưa chọn</span>')+'</b>'+
+    '<div class="hint">Chọn từ danh mục Sở GD&amp;ĐT — ⛔ không nhập tự do (R49). Danh mục lập ngày <b>'+COQUAN_NGAY+'</b>, cố định trong bản phát hành · đường sửa về sau '+dlink('M10.6')+'</div>')+
   /* ===== CSDL-1A — bon truong dinh danh moi (§4.1c) ===== */
   F('Mã định danh tổ chức','<code>'+esc(TRUONG.maDDTC)+'</code> <span class="pill">NĐ 69</span>')+
   F('Mã định danh điện tử','<code>'+esc(TRUONG.maDDDT)+'</code> <span class="pill">QĐ 20</span>')+
   F('Mã số thuế','<code>'+esc(TRUONG.maSoThue)+'</code> <span class="pill">'+TRUONG.maSoThue.replace(/\D/g,'').length+' chữ số</span>'+
     '<div class="hint">⚠ <b>Mã số thuế của trường</b> — không phải mã số thuế cá nhân của Hiệu trưởng (ô đó ở '+dlink('M4.1')+')</div>')+
-  F('Loại trường','<b>'+esc(LOAITRUONG[TRUONG.loaiTruong]||'—')+'</b> <span class="pill">nhãn báo cáo</span>'+
+  F('Loại trường','<b>'+esc(tenLoaiTruong(TRUONG.loaiTruong)||'—')+'</b> <span class="pill">nhãn báo cáo</span>'+
+    (laCu(TRUONG.loaiTruong)?'<div class="subwarn">⚠ <b>Giá trị của danh mục cũ.</b> Danh mục đổi ngày 01/10/2026 — chọn lại một trong năm giá trị mới ở <b>✎ Sửa thông tin trường</b>. 🛑 Máy <b>⛔ tự ánh xạ hộ</b>: <i>«Chuyên»</i> cũ không nói được là <b>Chuyên năng khiếu</b> hay <b>Chuyên phổ thông</b>, đoán hộ là bịa dữ liệu pháp lý.</div>':'')+
     (canhBaoLoai()?'<div class="subwarn">⚠ '+canhBaoLoai()+'</div>':'')+
     (ghiChu?'<div class="dnote">💡 <b>Loại trường KHÔNG thay cờ <i>Trường chuyên</i>.</b> Cờ bên dưới là <b>tư cách pháp lý</b> theo TT 05/2023 và kéo theo <b>bốn hành vi</b> (trần sĩ số 35, cột Môn chuyên của hệ, cảnh báo lớp không chuyên, hạng mục học bổng). Loại trường chỉ là <b>nhãn báo cáo</b> — không làm gì cả. Gộp hai thứ thì một lần sửa nhãn cho khớp mẫu biểu sẽ <b>đổi trần sĩ số của lớp chuyên mà không ai biết</b>.</div>':''))+
   F('Trường chuyên',
@@ -826,11 +875,10 @@ function tabTruong(){
   F('Logo','<span class="logo"><span class="mark">DS</span></span> <span style="font-weight:400;color:var(--ink3);font-size:12px">PNG 512×512 · dùng ở App PH-HS và văn bản in</span>')+'</div>'+
   cardDiaBan()+'</div>'+
  '<div><div class="card"><h3>Bậc học của trường <span class="pill">dẫn xuất — không có ô nhập</span></h3>'+
-  '<div style="font-size:15px;font-weight:700;margin-bottom:4px">'+bacTruong(n).map(c=>CAPTEN[c]).join(' · ')+'</div>'+
-  '<div style="font-size:12px;color:var(--ink2)">← union cấp học của '+n.dt.length+' điểm trường ở <b>M10.1 ② — hồ sơ '+n.ten+'</b> '+lk101(2,'Mở M10.1 ②')+'</div>'+
-  '<div class="bhtree">'+n.dt.map(d=>'<b title="Tên tại '+d2s(ngayDocNam(n))+' — đọc lịch sử theo ngày hiệu lực ở tab ③ (HDCT ①)">'+esc(tenTaiNam(d.ma,n))+'</b> — '+d.cap.map(c=>CAPTEN[c]).join(', ')).join('<br>')+'</div>'+
+  bacKhoi(n)+
   (ghiChu?'<div class="dnote">💡 Đổi năm học ở header thì dòng này đổi theo — <b>giữ đúng lịch sử</b>: năm 2023-2024 trường chỉ có một cơ sở. '+
-   'Một ô <i>"bậc học của trường"</i> nhập tay sẽ có ngày ghi <b>THCS</b> trong khi một điểm trường đang dạy khối 10.</div>':'')+'</div>'+
+   'Một ô <i>"bậc học của trường"</i> nhập tay sẽ có ngày ghi <b>THCS</b> trong khi một điểm trường đang dạy khối 10. '+
+   'Ô <b>Cấp học</b> ở khối Định danh <b>⛔ phải ô ấy</b> — nó là cấp học của <b>quyết định thành lập</b>, không phải cấp đang dạy (R48).</div>':'')+'</div>'+
  '<div class="card"><h3>Chữ ký số tổ chức '+M+'</h3>'+
   F('Chứng thư số của trường',esc(TRUONG.cts))+
   F('Cấu hình tích hợp CA',esc(TRUONG.ca)+(can('suaTruong')?' <button class="btn xs" data-x="mCA">✎</button>':''))+
@@ -909,13 +957,52 @@ ACT.doTatChuyen=function(){
       R17 (dat DG ngoai ma chua dat tu DG — ⚠) · R18 (DTXD > DTD — ⚠) · R19 (dia chi tu do — nhan ⚠)
    ================================================================================= */
 
-/* ----- R15: Loai truong vs co Truong chuyen — ⚠ canh bao, KHONG chan ----- */
+/* ----- R15: Loai truong vs co Truong chuyen — ⚠ canh bao, KHONG chan -----
+   🔁 RSTT (1/10/2026): danh muc doi, nay co HAI gia tri mang nghia «chuyen». */
 function canhBaoLoai(){
- if(TRUONG.loaiTruong==='chuyen'&&!TRUONG.chuyen)
-  return '<b>Loại trường</b> = <i>Chuyên</i> nhưng cờ <b>Trường chuyên</b> đang <b>tắt</b> — cờ mới là tư cách pháp lý theo TT 05/2023. Kiểm tra lại quyết định thành lập. <b>Không chặn</b> (R15)';
- if(TRUONG.chuyen&&TRUONG.loaiTruong!=='chuyen')
-  return 'Cờ <b>Trường chuyên</b> đang bật nhưng <b>Loại trường</b> = <i>'+esc(LOAITRUONG[TRUONG.loaiTruong])+'</i> — hợp lệ nếu mẫu biểu của Sở yêu cầu thế. <b>Không chặn</b> (R15)';
+ const t=TRUONG.loaiTruong;
+ if(laCu(t))return '';   /* gia tri di tru da co canh bao rieng — ⛔ chong hai canh bao mot o */
+ if(laChuyen(t)&&!TRUONG.chuyen)
+  return '<b>Loại trường</b> = <i>'+esc(LOAITRUONG[t])+'</i> nhưng cờ <b>Trường chuyên</b> đang <b>tắt</b> — cờ mới là tư cách pháp lý theo TT 05/2023. Kiểm tra lại quyết định thành lập. <b>Không chặn</b> (R15)';
+ if(TRUONG.chuyen&&t&&!laChuyen(t))
+  return 'Cờ <b>Trường chuyên</b> đang bật nhưng <b>Loại trường</b> = <i>'+esc(LOAITRUONG[t])+'</i> — hợp lệ nếu mẫu biểu của Sở yêu cầu thế. <b>Không chặn</b> (R15)';
  return '';
+}
+
+/* ===== RSTT — R48: «Cap hoc» khai tay ⟂ «Bac hoc cua truong» dan xuat =====
+   HAI o, HAI cau hoi. Lech nhau ⇒ ⚠ neu CA HAI VE bang so, ⛔ chan,
+   va ⛔ may suy o nay tu o kia theo chieu nao. */
+function canhBaoCapHoc(n){
+ if(!TRUONG.capHoc||!n)return '';
+ const khai=CAPHOC_TAP[TRUONG.capHoc]||[],thuc=bacTruong(n);
+ if(!thuc.length)return '';                 /* nam chua chon diem truong — da co trang thai rieng o khoi Bac hoc */
+ const thieu=khai.filter(c=>thuc.indexOf(c)<0),thua=thuc.filter(c=>khai.indexOf(c)<0);
+ if(!thieu.length&&!thua.length)return '';
+ return '<b>Lệch với bậc học đang dạy.</b> Quyết định thành lập ghi <b>'+khai.map(c=>CAPTEN[c]).join(' + ')+
+  '</b>; năm <b>'+n.ten+'</b> khai <b>'+thuc.map(c=>CAPTEN[c]).join(' + ')+'</b>'+
+  (thieu.length?' — chưa có điểm trường nào dạy <b>'+thieu.map(c=>CAPTEN[c]).join(', ')+'</b>':'')+
+  (thua.length?' — đang dạy <b>'+thua.map(c=>CAPTEN[c]).join(', ')+'</b> ngoài quyết định':'')+
+  '. Cả hai vế đều có thể đúng. <b>Không chặn</b> (R48) '+lk101(2,'Mở M10.1 ②');
+}
+
+/* ===== RSTT — khoi «Bac hoc cua truong» co BA trang thai =====
+   ① co gia tri · ② chua co ho so nam hoc nao (R23 — va o app.70-khoi-tao.js)
+   ③ 🆕 CO ho so nam ＋ CO diem truong o tab ③, ma nam ay CHUA CHON dong nao.
+   Trang thai ③ phai neu CA HAI CON SO, neu khong nguoi test doc ra
+   «he thong khong thay diem truong toi vua tao» va bao thanh LOI. */
+function bacKhoi(n){
+ const thuc=bacTruong(n);
+ if(thuc.length)
+  return '<div style="font-size:15px;font-weight:700;margin-bottom:4px">'+thuc.map(c=>CAPTEN[c]).join(' · ')+'</div>'+
+   '<div style="font-size:12px;color:var(--ink2)">← union cấp học của '+n.dt.length+' điểm trường ở <b>M10.1 ② — hồ sơ '+n.ten+'</b> '+lk101(2,'Mở M10.1 ②')+'</div>'+
+   '<div class="bhtree">'+n.dt.map(d=>'<b title="Tên tại '+d2s(ngayDocNam(n))+' — đọc lịch sử theo ngày hiệu lực ở tab ③ (HDCT ①)">'+esc(tenTaiNam(d.ma,n))+'</b> — '+d.cap.map(c=>CAPTEN[c]).join(', ')).join('<br>')+'</div>';
+ const sdt=soDT();
+ return '<div class="st2 n">⏳ chưa suy ra được</div>'+
+  '<div style="font-size:12px;color:var(--ink2);line-height:1.7;margin-top:6px">'+
+  '<b>'+sdt+' điểm trường</b> đã khai ở <b>tab ③</b>, nhưng hồ sơ <b>'+n.ten+'</b> <b>chưa chọn điểm trường nào vào năm</b>. '+
+  lk101(2,'Mở M10.1 ②')+' <button class="rolnk" data-x="tab" data-t="dt">↗ tab ③</button>'+
+  '<br>🛑 Đây ⛔ phải lỗi: nguồn của dòng này là <b>M10.1 ②</b> <i>(R1)</i>, ⛔ phải danh sách ở tab ③. '+
+  '<i>«Đưa vào năm hay không»</i> là <b>quyết định của người</b> — ⛔ máy tự chọn hộ.</div>';
 }
 
 /* ----- cap Hieu truong — DAN XUAT tu M4.3, khong co o nhap ----- */
@@ -1005,24 +1092,46 @@ function formCSDL(){
  const sel=(id,map,cur)=>'<select class="din" id="'+id+'">'+Object.keys(map).map(k=>'<option value="'+k+'"'+(cur===k?' selected':'')+'>'+esc(map[k].ten||map[k])+'</option>').join('')+'</select>';
  const co=(id,cur)=>'<select class="din" id="'+id+'">'+Object.keys(CO3).map(k=>'<option value="'+k+'"'+((cur||'?')===k?' selected':'')+'>'+CO3[k][0]+'</option>').join('')+'</select>';
  const num=(id,v)=>'<input class="din" id="'+id+'" value="'+(v==null?'':v)+'" inputmode="numeric">';
- return '<div class="sech">Định danh — CSDL ngành</div>'+
+ /* ===== RSTT — ba truc dinh danh (§4.1c) ===== */
+ const selMap=(id,map,cur,trong)=>'<select class="din" id="'+id+'">'+
+   (trong?'<option value=""'+(cur?'':' selected')+'>'+trong+'</option>':'')+
+   Object.keys(map).map(k=>'<option value="'+k+'"'+(cur===k?' selected':'')+'>'+esc(map[k])+'</option>').join('')+'</select>';
+ return '<div class="sech">Định danh — ba trục <span class="pill">🆕 RSTT 01/10/2026</span></div>'+
+ '<div class="grid2"><div><label class="lbl">Loại hình <b>*</b></label>'+selMap('stLoaiHinh',LOAIHINH,TRUONG.loaiHinh)+'</div>'+
+ '<div><label class="lbl">Cấp học <span class="pill">theo quyết định thành lập</span></label>'+
+   selMap('stCapHoc',CAPHOC,TRUONG.capHoc,'— Chưa khai')+'</div></div>'+
+ '<div class="hint">🛑 <b>Cấp học ⛔ phải «Bậc học của trường»</b> — ô này là cấp của <b>quyết định thành lập</b> <i>(Master)</i>, khối kia là cấp <b>đang thực sự dạy</b> ở năm đang chọn <i>(dẫn xuất từ M10.1 ②)</i>. Lệch nhau ⇒ ⚠, không chặn (R48)</div>'+
+ '<label class="lbl">Cơ quan quản lý <b>*</b></label>'+
+ '<input class="din" id="stCQ" list="dsCQ" value="'+esc(COQUAN[TRUONG.coQuan]||'')+'" placeholder="Gõ vài chữ để lọc — ví dụ «Cần Thơ»">'+
+ '<datalist id="dsCQ">'+Object.keys(COQUAN).map(k=>'<option value="'+esc(COQUAN[k])+'">').join('')+'</datalist>'+
+ '<div class="hint">Dropdown <b>có tìm kiếm</b> — chọn đúng một giá trị trong danh mục, ⛔ <b>không nhập tự do</b> (R49). Danh mục Sở GD&amp;ĐT lập ngày <b>'+COQUAN_NGAY+'</b>, <b>cố định trong bản phát hành</b> — trường ⛔ sửa được ở Đợt này, đường mở về sau là '+dlink('M10.6')+' <i>(§12 điểm 53)</i></div>'+
+
+ '<div class="sech">Định danh — CSDL ngành</div>'+
  '<div class="grid2"><div><label class="lbl">Mã định danh tổ chức <span class="pill">NĐ 69</span></label><input class="din" id="stDDTC" value="'+esc(TRUONG.maDDTC)+'"></div>'+
  '<div><label class="lbl">Mã định danh điện tử <span class="pill">QĐ 20</span></label><input class="din" id="stDDDT" value="'+esc(TRUONG.maDDDT)+'"></div></div>'+
  '<label class="lbl">Mã số thuế <b>của trường</b></label><input class="din" id="stMST" value="'+esc(TRUONG.maSoThue)+'" style="max-width:260px">'+
  '<div class="hint">10 hoặc 13 chữ số (R13). ⚠ <b>Không phải mã số thuế cá nhân của Hiệu trưởng</b> — ô đó ở M4.1</div>'+
- '<label class="lbl">Loại trường</label>'+sel('stLoai',LOAITRUONG,TRUONG.loaiTruong)+
- '<div class="hint">Nhãn báo cáo — 🛑 <b>không thay cờ Trường chuyên</b>. Lệch nhau thì ⚠ cảnh báo, không chặn (R15)</div>'+
+ '<label class="lbl">Loại trường</label>'+
+ '<select class="din" id="stLoai"><option value=""'+(TRUONG.loaiTruong?'':' selected')+'>— Chưa xác định</option>'+
+  Object.keys(LOAITRUONG).map(k=>'<option value="'+k+'"'+(TRUONG.loaiTruong===k?' selected':'')+'>'+esc(LOAITRUONG[k])+'</option>').join('')+
+  /* gia tri DI TRU: chi hien khi ban ghi dang mang no, va dung CUOI danh sach */
+  (laCu(TRUONG.loaiTruong)?'<option value="'+TRUONG.loaiTruong+'" selected>'+esc(LOAITRUONG_CU[TRUONG.loaiTruong])+' (cũ)</option>':'')+
+ '</select>'+
+ '<div class="hint">🔴 <b>Danh mục đổi 01/10/2026 — năm giá trị.</b> Nhãn báo cáo, 🛑 <b>không thay cờ Trường chuyên</b>; lệch nhau ⇒ ⚠, không chặn (R15). '+
+ (laCu(TRUONG.loaiTruong)?'Bản ghi đang mang <b>giá trị của danh mục cũ</b> — nó đứng cuối danh sách với hậu tố <i>(cũ)</i> và <b>biến mất</b> khi chọn một giá trị mới. ⛔ Máy không ánh xạ hộ.'
+  :'Trục <i>«nhiều cấp học»</i> nay ở ô <b>Cấp học</b>, trục <i>«công/tư»</i> ở ô <b>Loại hình</b>.')+'</div>'+
  '<label class="lbl">Fax</label><input class="din" id="stFax" value="'+esc(TRUONG.fax||'')+'" style="max-width:260px">'+
 
  '<div class="sech">Địa bàn — địa chỉ trụ sở chính</div>'+
  '<div class="seg"><button class="sgb'+(a.che_do==='danh_muc'?' on':'')+'" data-x="dcChe" data-v="danh_muc">Chọn danh mục</button>'+
   '<button class="sgb'+(a.che_do==='tu_do'?' on':'')+'" data-x="dcChe" data-v="tu_do">Nhập tự do</button></div>'+
  (a.che_do==='danh_muc'
-  ?'<div class="grid2"><div><label class="lbl">Tỉnh / Thành phố</label>'+sel('stTinh',TINH,a.tinh_id)+'</div>'+
-   '<div><label class="lbl">Xã / Phường</label><select class="din" id="stXa">'+
-     xaCuaTinh(a.tinh_id||Object.keys(TINH)[0]).map(k=>'<option value="'+k+'"'+(a.xa_id===k?' selected':'')+'>'+esc(XA[k].ten)+'</option>').join('')+'</select></div></div>'+
+  ?'<div class="grid2"><div><label class="lbl">Tỉnh / Thành phố <b>*</b></label>'+oTinh('stTinh',a.tinh_id)+'</div>'+
+   '<div><label class="lbl">Xã / Phường <b>*</b></label>'+oXa('stXa',a.tinh_id,a.xa_id)+'</div></div>'+
    '<label class="lbl">Chi tiết <span class="pill">tổ, thôn, xóm, số nhà</span></label><input class="din" id="stCT" value="'+esc(a.chi_tiet||'')+'">'+
-   '<div class="hint">⛔ Không có ô <b>Quận/Huyện</b> — mô hình chính quyền hai cấp (TT 13/2025 · TT 26/2025)</div>'
+   '<div class="hint">Hai ô trên là <b>dropdown có tìm kiếm</b> — gõ vài chữ để lọc, ⛔ không phải ô text (R50). Ô xã <b>lọc theo tỉnh đã chọn</b>; đổi tỉnh thì ô xã <b>về rỗng</b>. '+
+   '⛔ Không có ô <b>Quận/Huyện</b> — mô hình chính quyền hai cấp (TT 13/2025 · TT 26/2025).<br>'+
+   'Danh mục đơn vị hành chính lập ngày <b>'+COQUAN_NGAY+'</b>, <b>cố định trong bản phát hành</b>. Lệch thực tế sau một đợt sáp nhập ⇒ dùng <b>Nhập tự do</b> — đúng ca ② của HDCS ①, ⛔ chặn ai '+dlink('M10.6')+'</div>'
   :'<label class="lbl">Địa chỉ đầy đủ</label><input class="din" id="stTD" value="'+esc(a.chuoi_tu_do||'')+'">'+
    '<div class="hint">⚠ Chế độ <b>hợp lệ</b> — dòng mang nhãn <i>chưa chuẩn hóa</i>, <b>không bị chặn</b> (R19). Bốn ca danh mục không phục vụ được: ngoài tỉnh · ngoài nước · danh mục chưa cập nhật sau sáp nhập · đơn vị hành chính đã giải thể</div>')+
 
@@ -1051,6 +1160,39 @@ function formCSDL(){
  '<div><label class="lbl">Diện tích xây dựng (m²)</label>'+num('stXdM2',t.xd)+'</div></div>'+
  '<div class="hint"><b>Diện tích chiếm đất của công trình</b>, ⛔ không phải tổng diện tích sàn. Vượt diện tích đất ⇒ ⚠, không chặn (R18)</div>';
 }
+
+/* ===== RSTT R50 — hai o dia ban la DROPDOWN CO TIM KIEM, o xa loc theo tinh =====
+   Dung <select> + o loc: go vai chu thi danh sach ngan lai. ⛔ phai o text tu do —
+   o text tu do DA LA «che do kia», va no phai doi cong tac moi vao duoc. */
+function oTinh(id,cur){
+ return '<input class="din" id="'+id+'_f" placeholder="🔍 gõ để lọc tỉnh…" data-x="locTinh" data-sel="'+id+'" style="margin-bottom:4px">'+
+  '<select class="din" id="'+id+'" data-x="doiTinh"><option value=""'+(cur?'':' selected')+'>— Chọn tỉnh / thành phố —</option>'+
+  Object.keys(TINH).map(k=>'<option value="'+k+'"'+(cur===k?' selected':'')+'>'+esc(TINH[k].ten)+'</option>').join('')+'</select>';
+}
+function oXa(id,tinh,cur){
+ if(!tinh)return '<input class="din" id="'+id+'_f" disabled placeholder="🔍 …" style="margin-bottom:4px">'+
+  '<select class="din" id="'+id+'" disabled><option value="">chọn Tỉnh / Thành phố trước</option></select>';
+ const ds=xaCuaTinh(tinh);
+ return '<input class="din" id="'+id+'_f" placeholder="🔍 gõ để lọc xã / phường…" data-x="locTinh" data-sel="'+id+'" style="margin-bottom:4px">'+
+  '<select class="din" id="'+id+'"><option value=""'+(cur?'':' selected')+'>— Chọn xã / phường —</option>'+
+  ds.map(k=>'<option value="'+k+'"'+(cur===k?' selected':'')+'>'+esc(XA[k].ten)+'</option>').join('')+'</select>';
+}
+/* o loc: an cac option khong khop. ⛔ doi du lieu, chi doi thu dang bay ra */
+ACT.locTinh=function(el){
+ const s=$('#'+el.dataset.sel);if(!s)return;
+ const q=(el.value||'').toLowerCase().trim();
+ Array.prototype.slice.call(s.options).forEach(function(o,i){
+  o.hidden=!!(q&&i>0&&o.text.toLowerCase().indexOf(q)<0);
+ });
+ if(s.selectedOptions[0]&&s.selectedOptions[0].hidden)s.value='';
+};
+/* 🛑 Doi tinh ⇒ o xa VE RONG — ⛔ giu lai mot xa khong thuoc tinh moi (R50) */
+ACT.doiTinh=function(el){
+ thuNhatForm();TRUONG.dc.tinh_id=el.value||null;TRUONG.dc.xa_id=null;
+ ACT.mSuaTruong();
+ toast(el.value?'Đã chọn <b>'+esc(TINH[el.value].ten)+'</b> — ô <b>Xã / Phường</b> đã về rỗng và chỉ còn xã của tỉnh này (R50)'
+   :'Chưa chọn tỉnh — ô <b>Xã / Phường</b> khóa lại (R50)');
+};
 
 /* doi che do nhap dia chi ngay trong form — giu nguyen thu da go o che do kia */
 ACT.dcChe=function(el){
@@ -1100,6 +1242,21 @@ function luuCSDL(){
  if(xd!==null&&isNaN(xd))return '⛔ <b>Diện tích xây dựng</b> phải là số';
  TRUONG.dt.dat=dat;TRUONG.dt.xd=xd;
  if(dat!=null&&xd!=null&&xd>dat)canhBao.push('⚠ <b>Diện tích xây dựng vượt diện tích đất</b> — thường là đã gõ nhầm tổng diện tích sàn (R18)');
+ /* ===== RSTT — ba truc dinh danh ===== */
+ /* R49: Co quan quan ly phai la MOT gia tri cua danh muc — ⛔ nhap tu do */
+ const cq=g('stCQ');
+ if(cq!=null){
+  if(!cq)return '⛔ <b>Cơ quan quản lý</b> không được trống — chọn một giá trị trong danh mục (R49)';
+  const k=Object.keys(COQUAN).filter(x=>COQUAN[x]===cq)[0];
+  if(!k)return '⛔ <b>«'+esc(cq)+'»</b> không có trong danh mục Cơ quan quản lý (R49) — chọn từ danh sách gợi ý. '+
+    'Danh mục cố định trong bản phát hành, lập ngày '+COQUAN_NGAY+'; trường ⛔ tự thêm được ở Đợt này';
+  TRUONG.coQuan=k;
+ }
+ if(g('stLoaiHinh')!=null){
+  if(!g('stLoaiHinh'))return '⛔ <b>Loại hình</b> không được trống';
+  TRUONG.loaiHinh=g('stLoaiHinh');
+ }
+ if(g('stCapHoc')!=null)TRUONG.capHoc=g('stCapHoc')||null;
  /* --- con lai --- */
  if(g('stFax')!=null)TRUONG.fax=g('stFax');
  if(g('stLoai')!=null)TRUONG.loaiTruong=g('stLoai');
@@ -1115,6 +1272,12 @@ function luuCSDL(){
   canhBao.push('⚠ <b>Đạt đánh giá ngoài nhưng chưa đạt tự đánh giá</b> — thứ tự đúng là tự đánh giá trước, đánh giá ngoài sau (R17)');
  /* --- R15 --- */
  if(canhBaoLoai())canhBao.push('⚠ <b>Loại trường</b> và cờ <b>Trường chuyên</b> đang lệch nhau (R15)');
+ /* --- RSTT: gia tri di tru cua Loai truong --- */
+ if(laCu(TRUONG.loaiTruong))
+  canhBao.push('⚠ <b>Loại trường</b> vẫn là giá trị của <b>danh mục cũ</b> — chọn lại một trong năm giá trị mới (RSTT)');
+ /* --- RSTT R48: Cap hoc khai tay lech Bac hoc dan xuat --- */
+ if(canhBaoCapHoc(namBy(V.nam)))
+  canhBao.push('⚠ <b>Cấp học</b> theo quyết định thành lập <b>lệch</b> bậc học đang dạy ở năm '+namBy(V.nam).ten+' (R48)');
  if(doiMa.length)logTruong('Đổi mã định danh',doiMa.join(' · '),'w');
  if(canhBao.length)logTruong('Cảnh báo khi lưu',canhBao.length+' cảnh báo — không chặn','w');
  V.canhBao=canhBao;
@@ -1190,6 +1353,8 @@ const ttIcon=m=>m.cua?'🔒 Khóa':'🚫 Thôi dùng';
    ⇒ Chan dung MON CUOI CUNG con «Dang dung» cua nhom nn o mot cap truong dang day.
    🛑 Day la XAP XI cho MVP — phep dung la «o chuan NN1 con mon nao anh xa toi khong», va
       anh xa la viec cua cum ANHXA-1 (chua mo). Ghi §12. */
+/* 🔁 RSTT — R98 bat cau canh bao phai GOI TEN van ban dang hieu luc, ⛔ noi trong «theo quy định» */
+const VANBAN_MON='TT 32/2018/TT-BGDĐT (sửa bởi TT 13/2022/TT-BGDĐT)';
 function capBatBuoc(m){
  if(m.cua)return null;
  const bt=bacTruong(namBy(V.nam)),c=[];
@@ -1334,8 +1499,8 @@ function panelMon(m){
   '<div class="sech">Nhật ký thao tác <span class="sub">(⟂ lịch sử giá trị — hai cách nhìn của MỘT nguồn, §3b.4)</span></div><div class="logl">'+m.ls.slice().reverse().map(x=>'<div class="logi '+(x.c||'')+'"><b>'+esc(x.t)+'</b><span class="mm">'+d2s(x.d)+' · '+esc(x.ng)+'</span>'+(x.n?'<div style="font-size:12px;color:var(--ink2)">'+esc(x.n)+'</div>':'')+'</div>').join('')+'</div>'+
   '</div><div class="pfoot">'+
   (docQuaKhu()?'<span class="sub">⚠ Đang đọc tại '+d2s(ngayDoc)+' — mọi nút ghi bị khóa; quay về <b>hôm nay</b> để sửa</span>':
-   (sua&&!m.ngung?'<button class="btn" data-x="mSuaMon" data-m="'+m.ma+'">✎ Sửa — có ngày hiệu lực</button>'+
-     '<button class="btn d" data-x="mNgung" data-m="'+m.ma+'"'+(cbb?' title="⛔ R46 — môn bắt buộc của cấp '+cbb+' trường đang dạy"':'')+'>'+(m.cua?'🔒 Khóa môn':'🚫 Thôi dùng ở trường này')+'</button>':'')+
+   (sua&&!m.ngung?'<button class="btn" data-x="mSuaMon" data-m="'+m.ma+'">✎ Sửa</button>'+
+     '<button class="btn d" data-x="mNgung" data-m="'+m.ma+'"'+(cbb?' title="⚠ R46 — môn bắt buộc của cấp '+cbb+'; cảnh báo nêu tên văn bản, KHÔNG chặn (R98)"':'')+'>'+(m.cua?'🔒 Khóa môn':'🚫 Thôi dùng ở trường này')+'</button>':'')+
    (sua&&m.ngung?'<button class="btn p" data-x="dungLai" data-m="'+m.ma+'">'+(m.cua?'▶ Mở khóa':'▶ Dùng lại')+'</button>':'')+
    (!m.cua?'<span class="sub">Môn chuẩn — <b>'+esc(NHOMTEN[m.nhom[capsMon(m)[0]]]||'')+'</b>. ⛔ <b>nhóm chuẩn</b> không sửa được (R9); cập nhật qua '+dlink('M10.8')+'</span>':'')+
    (!can('mon')?'<span class="sub">Vai '+esc(R().ten)+' chỉ xem — chủ danh mục là PHT Chuyên môn</span>':''))+'</div>';
@@ -1412,48 +1577,108 @@ ACT.doTaoMon=function(el){
  toast('Đã tạo <b>'+esc(ten)+'</b> — Của trường · chưa dạy ở năm nào. Bật cho năm học ở M10.1 ④');
 };
 /* ----- sua mon cua truong ----- */
+/* 🆕 SUAD R53 (3/10/2026) — hop `✎ Sua mon` co HAI NHANH, chon bang mot o tich (§3b.5 · R42 · R54).
+   TAT (mac dinh) = sua chu viet sai ⇒ sua THANG dong dang hieu luc, ⛔ sinh dong lich su,
+                    ⛔ hoi ngay, va ⛔ DOI «Can cu van ban» ke ca mon chuan:
+                    nguoi dung dang khai «toi go sai chinh ta», ⛔ khai «Bo da doi».
+   BAT = doi theo quyet dinh / van ban ⇒ hien o ngay, sinh dong lich su (y nguyen co che v5.1).
+   🛑 Moi o nguoi dung da nhap phai song qua luot ve lai ⇒ giu trong window.__sm, ⛔ doc tu DOM. */
 ACT.mSuaMon=function(el){
- const m=monM(el.dataset.m),k0=khoiMon(m)[0];
+ const m=monM(el.dataset.m);
  if(docQuaKhu()){toast('⛔ Đang đọc tại '+d2s(ngayDoc)+' — quay về hôm nay để sửa');return}
- modal('✎ Sửa môn — GHI NGAY, có ngày hiệu lực',
-  '<div class="info">🔓 Lưu là <b>đổi ngay</b> — ⛔ không qua duyệt, ⛔ không ký số. Bù lại: <b>ngày hiệu lực</b> + <b>lý do</b> + một dòng <b>lịch sử không xóa được</b> (chốt o).<br>'+
-  '🛑 Học bạ năm cũ đọc <b>tên tại ngày của năm ấy</b> (chốt d) — nên đổi tên ở đây ⛔ <b>không</b> làm sai học bạ năm cũ.</div>'+
-  '<div class="grid2"><div><label class="lbl">Tên môn <b>*</b></label><input class="din" id="smTen" value="'+esc(tenTai(m,HOMNAY))+'"></div>'+
+ const kdg={};capsMon(m).forEach(c=>{kdg[c]=kdgOf(m,c)});
+ window.__sm={m:m.ma,ten:tenTai(m,HOMNAY),kdg:kdg,tiet:String(m.tiet[khoiMon(m)[0]]),hl:d2i(HOMNAY),ly:'',that:0};
+ veSuaMon(m);
+};
+function gomSM(){const w=window.__sm,a=$('#smTen'),b=$('#smTiet'),c=$('#smHl'),d=$('#smLy');
+ if(a)w.ten=a.value;if(b)w.tiet=b.value;if(c)w.hl=c.value;if(d)w.ly=d.value;
+ capsMon(monM(w.m)).forEach(function(cp){const o=$('#smKdg_'+cp);if(o)w.kdg[cp]=o.value})}
+/* trang thai o tich lay tu BIEN w.that, ⛔ doc el.checked sau khi ve lai (R53 ④) */
+ACT.smThat=function(el){
+ if(el.disabled)return;
+ gomSM();const w=window.__sm;w.that=w.that?0:1;veSuaMon(monM(w.m));
+ toast(w.that?'📅 <b>Đổi theo quyết định</b> — sinh một dòng lịch sử, học bạ năm cũ giữ giá trị cũ'
+   :'🧹 <b>Sửa chữ viết sai</b> — sửa thẳng, giá trị mới áp cho cả năm cũ');
+};
+function veSuaMon(m){
+ const w=window.__sm,that=w.that?1:0,k0=khoiMon(m)[0];
+ const dsDoi=m.lsh.filter(z=>z.hl);   /* R54 — dong «doi theo quyet dinh» da co */
+ modal('✎ Sửa môn — '+esc(tenTai(m,HOMNAY)),
+  '<div class="info">🔓 Lưu là <b>đổi ngay</b> — ⛔ không qua duyệt, ⛔ không ký số. Bắt <b>lý do</b> ở <b>cả hai nhánh</b> (chốt o · R53 ③).<br>'+
+  '🛑 Học bạ năm cũ đọc <b>tên tại ngày của năm ấy</b> (chốt d).</div>'+
+  '<div class="grid2"><div><label class="lbl">Tên môn <b>*</b></label><input class="din" id="smTen" value="'+esc(w.ten)+'"></div>'+
   /* 🆕 MOT o cho MOI CAP cua mon (HDCT ban 5 — kieu_dg_mac_dinh{cap}).
      Mon mot cap ⇒ mot o, ⛔ them mot cu bam nao. */
   '<div><label class="lbl">Kiểu đánh giá mặc định <span class="sub">'+(capsMon(m).length>1?'— một ô cho mỗi cấp':'')+'</span></label>'+
   capsMon(m).map(c=>(capsMon(m).length>1?'<div class="sub" style="margin-top:4px">cấp '+c+'</div>':'')+
-   '<select class="din" id="smKdg_'+c+'"><option value="ds"'+(kdgOf(m,c)==='ds'?' selected':'')+'>Điểm số</option><option value="nx"'+(kdgOf(m,c)==='nx'?' selected':'')+'>Nhận xét</option></select>').join('')+
+   '<select class="din" id="smKdg_'+c+'"><option value="ds"'+(w.kdg[c]==='ds'?' selected':'')+'>Điểm số</option><option value="nx"'+(w.kdg[c]==='nx'?' selected':'')+'>Nhận xét</option></select>').join('')+
   '<div class="sub">🛑 Đây là <b>giá trị gợi ý</b> — chỉ áp cho lần cấu hình sau; lớp đã cấu hình <b>giữ nguyên</b> (R12). Giá trị thật ở '+lk101(6,'M10.1 ⑥')+' trên từng Lớp × Môn.</div>'+
   (capsMon(m).length>1?'<div class="sub">TT 27/2020 (Tiểu học) và TT 22/2021 Đ.5 (THCS · THPT) định khác nhau — vì thế tách theo cấp.</div>':'')+'</div>'+
-  '<div><label class="lbl">'+(m.cua?'Số tiết/năm dự kiến':'Thời lượng quy định')+' <span class="sub">(mọi khối '+capsMon(m).join(', ')+')</span></label><input class="din" id="smTiet" value="'+m.tiet[k0]+'">'+
-  '<div class="sub">đổi ngưỡng 35 / 70 thì đổi số cột ĐGtx mặc định (R11)</div></div>'+
-  '<div><label class="lbl">Ngày hiệu lực <b>*</b> <span class="sub">lùi được · hẹn trước được</span></label><input class="din" type="date" id="smHl" value="'+esc(d2i(HOMNAY))+'"></div>'+
-  /* R45 — o thu hai DOI THEO CUA: mon cua truong = Ly do tu do; mon chuan = CAN CU VAN BAN.
-     Day la loi khai «Bo da doi», ⛔ phai mot y muon cua truong ⇒ no phai KIEM DUOC. */
-  (m.cua?'<div><label class="lbl">Lý do <b>*</b></label><input class="din" id="smLy" placeholder="Lý do đi vào lịch sử — người rà sau này đọc chính dòng này"></div>'
-       :'<div><label class="lbl">Căn cứ văn bản <b>*</b> <span class="sub">số hiệu TT/QĐ + ngày ban hành</span></label><input class="din" id="smLy" placeholder="VD: TT 13/2022/TT-BGDĐT ngày 03/6/2022">'+
+  '<div><label class="lbl">'+(m.cua?'Số tiết/năm dự kiến':'Thời lượng quy định')+' <span class="sub">(mọi khối '+capsMon(m).join(', ')+')</span></label><input class="din" id="smTiet" value="'+esc(w.tiet)+'">'+
+  '<div class="sub">đổi ngưỡng 35 / 70 thì đổi số cột ĐGtx mặc định (R11)</div></div></div>'+
+  /* 🆕 SUAD — O TICH HAI NHANH */
+  '<label class="ck" style="display:flex;gap:8px;align-items:flex-start;margin:10px 0 4px">'+
+   '<input type="checkbox" data-x="smThat"'+(that?' checked':'')+'>'+
+   '<span><b>Đổi theo quyết định / văn bản</b> — có hiệu lực từ một ngày</span></label>'+
+  '<div class="'+(that?'info':'ro')+'" style="margin:0 0 8px">'+(that
+    ? '📅 <b>Ghi một dòng lịch sử.</b> Học bạ, bảng điểm và báo cáo của <b>năm cũ GIỮ giá trị cũ</b> — đó là việc đúng khi Bộ đổi tên môn hoặc trường ra quyết định đổi.'
+    : '🧹 <b>Sửa chữ viết sai.</b> Giá trị mới áp cho <b>cả năm cũ</b> — học bạ in lại sẽ ra giá trị mới. Đúng, vì giá trị cũ <b>chưa bao giờ là thật</b>. Vết ở <b>nhật ký của tab</b>.')+'</div>'+
+  (!that&&dsDoi.length?'<div class="warn">⚠ <b>Môn này đã đổi '+dsDoi.length+' lần theo quyết định / văn bản</b> (R54): '+
+    dsDoi.map(z=>'<b>'+esc(z.truong)+'</b> '+esc(z.cu)+' → '+esc(z.moi)+' hiệu lực '+d2s(z.hl)).join('; ')+
+    '. Lượt sửa này <b>chỉ gõ lại giá trị đang dùng</b>; các dòng cũ giữ nguyên.</div>':'')+
+  '<div class="grid2">'+
+  (that?'<div><label class="lbl">Có hiệu lực từ <b>*</b> <span class="sub">lùi được · hẹn trước được</span></label><input class="din" type="date" id="smHl" value="'+esc(w.hl)+'"></div>':'')+
+  /* R45 — o thu hai DOI THEO CUA, va 🆕 CHI o NHANH BAT: mon cua truong = Ly do tu do;
+     mon chuan = CAN CU VAN BAN (loi khai «Bo da doi», phai KIEM DUOC).
+     🆕 Nhanh TAT luon la «Ly do» tu do — ke ca mon chuan: doi so hieu Thong tu cho mot loi
+     chinh ta la day nguoi dung di BIA mot so hieu. */
+  ((m.cua||!that)?'<div><label class="lbl">Lý do <b>*</b></label><input class="din" id="smLy" value="'+esc(w.ly)+'" placeholder="'+(that?'Lý do đi vào lịch sử — người rà sau này đọc chính dòng này':'VD: gõ nhầm chính tả khi khai lần đầu')+'"></div>'
+       :'<div><label class="lbl">Căn cứ văn bản <b>*</b> <span class="sub">số hiệu TT/QĐ + ngày ban hành</span></label><input class="din" id="smLy" value="'+esc(w.ly)+'" placeholder="VD: TT 13/2022/TT-BGDĐT ngày 03/6/2022">'+
         '<div class="sub">⛔ không phải ô lý do tự do — đây là lời khai «Bộ đã đổi», phải kiểm được (R45)</div></div>')+'</div>'+
-  (m.cua?'':'<div class="warn">⚠ Bản ghi sẽ mang cờ <b>trường sửa tay</b>. Lượt kéo danh mục chuẩn ở '+dlink('M10.8')+' gặp cờ này thì <b>đối chiếu và nêu đích danh</b>, ⛔ không ghi đè im lặng (§17).<br>'+
+  (m.cua||!that?'':'<div class="warn">⚠ Bản ghi sẽ mang cờ <b>trường sửa tay</b>. Lượt kéo danh mục chuẩn ở '+dlink('M10.8')+' gặp cờ này thì <b>đối chiếu và nêu đích danh</b>, ⛔ không ghi đè im lặng (§17).<br>'+
    '⛔ <b>Nhóm chuẩn</b> ⛔ có ở form này — nó là hàng rào A2 và ⛔ có trong <code>lich_su[]</code> của HDCT ③a (R9).</div>'),
-  '<button class="btn" data-x="close">Hủy</button><button class="btn p" data-x="doSuaMon" data-m="'+m.ma+'">💾 Lưu — có hiệu lực từ ngày đã chọn</button>');
-};
+  '<button class="btn" data-x="close">Hủy</button><button class="btn p" data-x="doSuaMon" data-m="'+m.ma+'">'+
+   (that?'💾 Lưu — có hiệu lực từ ngày đã chọn':'💾 Lưu — sửa thẳng, ⛔ sinh dòng lịch sử')+'</button>');
+}
 ACT.doSuaMon=function(el){
- const m=monM(el.dataset.m),ten=$('#smTen').value.trim(),t=parseInt($('#smTiet').value,10);
- /* 🆕 doc MOT o moi cap; kdgMoi la mot doi tuong {cap: gia tri} */
- const kdgMoi={};capsMon(m).forEach(c=>{const o=$('#smKdg_'+c);if(o)kdgMoi[c]=o.value});
+ gomSM();
+ const w=window.__sm,m=monM(el.dataset.m),ten=w.ten.trim(),t=parseInt(w.tiet,10);
+ /* 🆕 MOT o moi cap; kdgMoi la mot doi tuong {cap: gia tri} — lay tu BIEN, ⛔ tu DOM */
+ const kdgMoi={};capsMon(m).forEach(c=>{kdgMoi[c]=w.kdg[c]});
  const kdgDoi=capsMon(m).filter(c=>kdgMoi[c]!==kdgOf(m,c));
- const hl=p2d($('#smHl').value),ly=$('#smLy').value.trim(),tenCu=tenTai(m,HOMNAY);
+ const ly=w.ly.trim(),tenCu=tenTai(m,HOMNAY),canCu=(!m.cua&&w.that);
  if(!ten||!t){toast('⛔ Thiếu tên hoặc số tiết');return}
- if(!hl){toast('⛔ Bắt buộc chọn <b>ngày hiệu lực</b> (R42)');return}
- if(!ly){toast(m.cua?'⚠ <b>Bắt buộc ghi lý do</b> (R44) — lý do là thứ người duyệt vốn đọc'
-   :'⚠ <b>Bắt buộc ghi Căn cứ văn bản</b> (R45) — môn CT GDPT ⛔ nhận lý do tự do; đây là lời khai «Bộ đã đổi», phải kiểm được');return}
- if(!m.cua)m.suaTay=ly;   /* R45 — co «truong sua tay» cho luot keo M10.8 doi chieu (§17) */
- /* R42 — hai dong CUNG TRUONG CUNG NGAY ⇒ tenTai() khong xac dinh duoc lay dong nao */
- if(ten!==tenCu&&m.lsh.some(z=>z.truong==='ten'&&z.hl&&z.hl.getTime()===hl.getTime())){
-  toast('⛔ R42 — đã có một dòng đổi tên <b>CÙNG NGÀY '+d2s(hl)+'</b>; hai dòng cùng trường cùng ngày thì <code>tenTai()</code> không xác định được lấy dòng nào');return}
+ if(!ly){toast(!canCu?'⚠ <b>Bắt buộc ghi lý do</b> (R44 · R53 ③) — bắt ở <b>cả hai nhánh</b>'
+   :'⚠ <b>Bắt buộc ghi Căn cứ văn bản</b> (R45) — môn CT GDPT ⛔ nhận lý do tự do ở nhánh «đổi theo văn bản»; đây là lời khai «Bộ đã đổi», phải kiểm được');return}
  if(ten===tenCu&&!kdgDoi.length&&t===m.tiet[khoiMon(m)[0]]){
-  toast('⛔ Giá trị mới <b>trùng giá trị đang hiệu lực</b> tại ngày đó — một dòng lịch sử không đổi gì là rác làm loãng bảng (R42)');return}
+  toast('⛔ Giá trị mới <b>trùng giá trị đang hiệu lực</b> — một lượt ghi ⛔ đổi gì là rác làm loãng bảng (R42)');return}
+ /* ===== NHANH SUA CHUA DU LIEU (o tich TAT) — sua THANG dong dang hieu luc (R54) =====
+    ⛔ sinh dong lich su, ⛔ co co «truong sua tay»: day la loi go cua TRUONG, ⛔ loi khai «Bo da doi». */
+ if(!w.that){
+  const ndS=[];
+  if(ten!==tenCu){const z=m.lsh.filter(x=>x.truong==='ten'&&x.hl).sort((a,b)=>b.hl-a.hl)[0];
+   if(z)z.moi=ten;else m.ten=ten;ndS.push('Tên: '+tenCu+' → '+ten)}
+  kdgDoi.forEach(function(c){const z=m.lsh.filter(x=>x.truong==='kieu_dg_mac_dinh'&&x.cap===c&&x.hl).sort((a,b)=>b.hl-a.hl)[0];
+   if(z)z.moi=kdgTen(kdgMoi[c]);ndS.push('Kiểu ĐG · cấp '+c+' → '+kdgTen(kdgMoi[c]))});
+  const tCu0=m.tiet[khoiMon(m)[0]];
+  if(t!==tCu0){const z=m.lsh.filter(x=>x.truong==='so_tiet_nam_chuan'&&x.hl).sort((a,b)=>b.hl-a.hl)[0];
+   if(z)z.moi=String(t);ndS.push((m.cua?'Số tiết/năm dự kiến':'Thời lượng quy định')+': '+tCu0+' → '+t)}
+  m.kdg=kdgMoi;khoiMon(m).forEach(k=>{m.tiet[k]=t});
+  logMon(m,'Sửa chữa',ndS.join(' · ')+' · sửa thẳng, ⛔ sinh dòng lịch sử · '+ly);
+  closeModal();render();
+  toast('🧹 <b>Đã sửa thẳng</b> — ⛔ sinh dòng lịch sử, số dòng lịch sử ⛔ đổi.<br>'+
+   'Giá trị mới áp cho <b>cả năm cũ</b>: học bạ in lại ra <b>'+esc(ten)+'</b>. Vết ở <b>nhật ký của tab</b>.');
+  return;
+ }
+ /* ===== NHANH GHI SU THAT MOI (o tich BAT) — y nguyen co che v5.1 ===== */
+ const hl=p2d(w.hl);
+ if(!hl){toast('⛔ Bắt buộc chọn <b>ngày có hiệu lực</b> (R42)');return}
+ if(!m.cua)m.suaTay=ly;   /* R45 — co «truong sua tay» cho luot keo M10.8 doi chieu (§17) */
+ /* R42 — hai dong CUNG TRUONG CUNG NGAY ⇒ tenTai() khong xac dinh duoc lay dong nao.
+    🆕 SUAD — hop chan nay nay co LOI RA: bo tich o «Doi theo quyet dinh» de sua thang. */
+ if(ten!==tenCu&&m.lsh.some(z=>z.truong==='ten'&&z.hl&&z.hl.getTime()===hl.getTime())){
+  toast('⛔ R42 — đã có một dòng đổi tên <b>CÙNG NGÀY '+d2s(hl)+'</b>; hai dòng cùng trường cùng ngày thì <code>tenTai()</code> ⛔ xác định được lấy dòng nào.<br>'+
+   '🧹 <b>Lối ra:</b> <b>bỏ tích</b> ô «Đổi theo quyết định / văn bản» để <b>sửa thẳng</b> dòng ấy — ⛔ phải chờ sang ngày mai.');return}
  const k0=khoiMon(m)[0],tCu=m.tiet[k0],moi=Object.assign({},m,{tiet:{},kdg:kdgMoi});khoiMon(m).forEach(k=>{moi.tiet[k]=t});
  /* R11 — so cot DGtx mac dinh doi: lop dung MAC DINH o nam con ghi duoc tu tinh lai */
  const doi=[];namMo().forEach(n=>lopHoc(n,m.ma).forEach(l=>{const a=cotTx(m,l.khoi),b=cotTx(Object.assign({},m,{tiet:moi.tiet}),l.khoi);if(a!==b)doi.push({n:n,l:l,a:a,b:b})}));
@@ -1474,7 +1699,7 @@ ACT.doSuaMon=function(el){
  });
  if(t!==tCu){m.lsh.push({truong:'so_tiet_nam_chuan',cu:String(tCu),moi:String(t),hl:hl,d:HOMNAY,ng:nguoiLog(),ly:ly});nd.push('Số tiết/năm dự kiến: '+tCu+' → '+t+(doi.length?' · '+doi.length+' lớp đổi số cột ĐGtx':''))}
  m.kdg=kdgMoi;m.tiet=moi.tiet;   /* 🛑 m.ten ⛔ KHONG ghi de — ten hien hanh doc qua tenTai() */
- logMon(m,'Sửa môn',nd.join(' · ')+' · hiệu lực từ '+d2s(hl)+' · '+ly);closeModal();render();
+ logMon(m,'Đổi theo quyết định',nd.join(' · ')+' · hiệu lực từ '+d2s(hl)+' · '+ly);closeModal();render();
  toast(hl>HOMNAY?'💾 Đã ghi — <b>hẹn hiệu lực từ '+d2s(hl)+'</b>; hôm nay bảng vẫn in giá trị cũ'
   :'💾 Đã ghi ngay — hiệu lực từ <b>'+d2s(hl)+'</b>; học bạ năm cũ vẫn in <b>tên tại ngày của năm ấy</b>');
 };
@@ -1486,32 +1711,45 @@ ACT.doSuaMon=function(el){
 ACT.mNgung=function(el){
  const m=monM(el.dataset.m);
  if(docQuaKhu()){toast('⛔ Đang đọc quá khứ — quay về hôm nay để ghi');return}
- /* R46 — CHAN CUNG, ⛔ canh bao. Mat mot HANG RAO A2, ⛔ mat mot dong hien thi (§15 — toan ven). */
+ /* 🔁 RSTT (1/10/2026) — R46 HA TU CHAN CUNG XUONG CANH BAO, thi hanh luat chung M10.1 R98.
+    Anh Ninh: «mọi ràng buộc theo luật hiện tại đều đưa về cơ chế cảnh báo khác với quy định
+    của <Tên văn bản đang có hiệu lực>; người quyết định cuối vẫn là User.» He chay ON-PREMISE
+    nen quy dinh doi truoc ban phat hanh, truong KHONG cho duoc.
+    🔑 Va lap luan cu («mat mot HANG RAO A2») nay TAN: tu cung ngay, danh sach bat buoc
+    chinh la LOI KHAI CUA TRUONG o M10.1 ② khoi b (R97) — muon may thoi bao thi bo chip khoi
+    la xong, ⛔ can di vong qua «Thoi dung». Khoa mot trong hai cua chi lam nguoi dung di cua kia
+    ma ⛔ ai ghi lai ly do.
+    🛑 Cai KHONG doi: rang buoc TOAN VEN du lieu van chan cung (R20 R21 R31 R36 R42 — §15). */
  const cbb=capBatBuoc(m);
- if(cbb){modal('⛔ Không thôi dùng được — môn bắt buộc',
-   '<div class="err">⛔ <b>'+esc(tenTai(m,HOMNAY))+'</b> là môn <b>bắt buộc</b> của cấp <b>'+esc(cbb)+'</b> — cấp trường <b>đang dạy</b>.</div>'+
-   '<div class="ro">🛑 Ẩn nó thì nó <b>rời khỏi danh sách so của ràng buộc A2</b> ⇒ <b>máy thôi báo khi một năm học thiếu môn này</b>, và bảng kiểm '+lk101(2,'M10.1 ②')+' nói «đủ» trong khi năm học thiếu một môn bắt buộc. '+
-    'Đây là mất một <b>hàng rào</b>, ⛔ không phải mất một dòng hiển thị — nên là <b>chặn cứng</b> (§15 — toàn vẹn dữ liệu), ⛔ cảnh báo.</div>'+
-   '<div class="info">Nếu trường chỉ muốn <b>năm nay không dạy</b> thì đó là việc của hồ sơ năm học — bỏ môn khỏi năm ở '+lk101(2,'M10.1 ② khối b')+', danh mục vẫn giữ môn.</div>'+
-   '<div class="ro sub">Ba nhóm <b>thôi dùng được</b>: môn <b>Tự chọn / Lựa chọn</b> · môn thuộc <b>cấp trường không dạy</b> · môn <b>Bộ đã bỏ</b> (trạng thái ⚠ cần rà lại).</div>',
-   '<button class="btn" data-x="close">Đã hiểu</button>');return}
  const vuong=namMo().map(n=>({n:n,l:lopHoc(n,m.ma)})).filter(x=>x.l.length);
  modal((m.cua?'🔒 Khóa môn':'🚫 Thôi dùng ở trường này')+' — BỘ LỌC HIỂN THỊ, ⛔ không phải xóa',
   (m.cua?'':'<div class="ro">🔑 Môn <b>CT GDPT</b> — nhãn là <b>«Thôi dùng»</b>, ⛔ «Khóa». Cùng MỘT trường dữ liệu, hai nhãn theo <b>cửa</b>: chữ «khóa» cho danh mục của Bộ đọc ra thành <i>«trường khóa được danh mục của Bộ»</i>, thứ ⛔ bao giờ đúng (D1).</div>')+
   '<div class="info">🛑 <b>'+(m.cua?'Khóa':'Thôi dùng')+' ⛔ KHÔNG xóa gì cả.</b> Môn sẽ <b>thôi hiện</b> ở bộ chọn của '+lk101(4,'M10.1 ④')+', ở «môn được phép dạy» của '+dlink('M4.4')+' và ở các bộ chọn môn khác. '+
    '⛔ <b>Không</b> đụng một bản ghi phân công nào (M4.5 · M4.6 · M4.7), ⛔ không đụng một dòng quan hệ môn ⟷ tổ nào (HDCT ⑧). <b>Mở khóa ⇒ hiện lại ngay</b> — ⛔ không phải phân công lại.</div>'+
+  /* 🔁 R46 — nay la CANH BAO co TEN VAN BAN, ⛔ con hop chi mot nut «Dong» */
+  (cbb?'<div class="warn">⚠ <b>'+esc(tenTai(m,HOMNAY))+'</b> là môn <b>bắt buộc</b> của cấp <b>'+esc(cbb)+'</b> — khác với quy định của <b>'+VANBAN_MON+'</b>.'+
+   '<div style="margin-top:6px">Thôi dùng thì nó <b>rời khỏi danh sách so của ràng buộc A2</b> ⇒ <b>máy thôi báo khi một năm học thiếu môn này</b>.</div>'+
+   '<div style="margin-top:6px">Nếu chỉ muốn <b>năm nay không dạy</b> thì bỏ môn khỏi năm ở '+lk101(2,'M10.1 ② khối b')+' — danh mục vẫn giữ môn. '+
+   'Nếu muốn <b>máy thôi báo thiếu</b> thì bỏ chip khối ở cột <b>Môn bắt buộc của khối</b>, cũng ở đó (R97).</div>'+
+   '<div style="margin-top:6px">🛑 <b>Không chặn</b> — quy định có thể đã đổi mà bản phát hành chưa kịp cập nhật. <b>Người quyết định cuối là bạn</b> (R46 · R98).</div></div>':'')+
   (vuong.length?'<div class="warn">⚠ Môn này còn lớp đang học: '+vuong.map(x=>'<b>'+x.n.ten+'</b> '+stTT(x.n.tt)+' — '+x.l.length+' lớp ('+x.l.slice(0,6).map(l=>l.ten).join(' · ')+(x.l.length>6?' …':'')+')').join(' · ')+
    '. Khóa thì màn hình của các lớp ấy <b>chạy y nguyên</b>, chỉ thôi hiện ở bộ chọn. 🛑 <b>Không chặn</b> (khác R10 của v4.2). '+
    'Lối ra nếu muốn bỏ hẳn khỏi năm: '+lk101(6,'M10.1 ⑥')+' → '+lk101(4,'M10.1 ④')+'.</div>':'')+
   '<label class="lbl">Lý do <b>*</b></label><textarea class="ta" id="ngLy"></textarea>',
-  '<button class="btn" data-x="close">Hủy</button><button class="btn d" data-x="doNgung" data-m="'+m.ma+'">'+(m.cua?'🔒 Khóa môn':'🚫 Thôi dùng')+'</button>');
+  '<button class="btn" data-x="close">Đóng</button><button class="btn d" data-x="doNgung" data-m="'+m.ma+'">'+
+   (cbb?'Vẫn thôi dùng':(m.cua?'🔒 Khóa môn':'🚫 Thôi dùng'))+'</button>');
 };
 ACT.doNgung=function(el){
  const m=monM(el.dataset.m),ly=$('#ngLy').value.trim();if(!ly){toast('⚠ <b>Bắt buộc ghi lý do</b> (R44)');return}
  /* R47 — trang_thai mang nguon «truong»; luot keo M10.8 ⛔ dung no. Thieu luat nay thi moi luot
     dong bo se HIEN LAI HET mon da thoi dung va truong phai lam lai — loi am tham ⛔ ai truy duoc. */
- m.ngung={d:HOMNAY,ng:nguoiLog(),ly:ly,nguon:'truong'};logMon(m,ttNhan(m),ly,'w');V.tt.ngung=1;V.namNay=0;closeModal();render();
- toast(ttIcon(m)+' Đã đặt <b>'+esc(tenTai(m,HOMNAY))+'</b> — <b>thôi hiện ở bộ chọn</b>; bản ghi «môn được phép dạy» ở M4.4 và quan hệ môn ⟷ tổ <b>giữ nguyên</b>. Trạng thái mang nguồn <b>trường</b> — lượt kéo M10.8 ⛔ đụng (R47). Tìm lại qua chip <b>'+ttNhan(m)+'</b>');
+ /* 🔁 RSTT R98 — bo qua canh bao ma van luu ⇒ AUDIT GHI KEM NGUYEN VAN canh bao da hien */
+ const cbb=capBatBuoc(m);
+ m.ngung={d:HOMNAY,ng:nguoiLog(),ly:ly,nguon:'truong',boQua:cbb||''};
+ logMon(m,ttNhan(m),ly+(cbb?' · ⚠ ĐÃ BỎ QUA cảnh báo: môn bắt buộc của cấp '+cbb+', khác với quy định của '+VANBAN_MON:''),'w');
+ V.tt.ngung=1;V.namNay=0;closeModal();render();
+ toast(ttIcon(m)+' Đã đặt <b>'+esc(tenTai(m,HOMNAY))+'</b> — <b>thôi hiện ở bộ chọn</b>; bản ghi «môn được phép dạy» ở M4.4 và quan hệ môn ⟷ tổ <b>giữ nguyên</b>. Trạng thái mang nguồn <b>trường</b> — lượt kéo M10.8 ⛔ đụng (R47).'+
+  (cbb?'<br>⚠ Đã <b>bỏ qua cảnh báo</b> môn bắt buộc — Audit ghi kèm <b>nguyên văn</b> cảnh báo đã hiện (R98).':''));
 };
 ACT.dungLai=function(el){
  const m=monM(el.dataset.m);if(docQuaKhu()){toast('⛔ Đang đọc quá khứ — quay về hôm nay để ghi');return}
@@ -1849,34 +2087,81 @@ ACT.luuDtSua=function(el){
 };
 
 /* ----- ✎ Doi ten · dia chi — LICH SU THEO NGAY HIEU LUC (chot 2 · HDCT ① · R30) ----- */
+/* 🆕 SUAD R53 (3/10/2026) — hop nay co HAI NHANH, chon bang mot o tich (§5b.4 · §3b.5 · R30 · R54).
+   TAT (mac dinh) = sua chu viet sai ⇒ sua THANG dong dang hieu luc, ⛔ sinh dong lich su,
+                    ⛔ hoi ngay, ⛔ hoi so QD — mot loi chinh ta ⛔ co quyet dinh nao, hoi so QD
+                    cho no la day nguoi dung di BIA mot so.
+   BAT = doi theo quyet dinh ⇒ hien o ngay ＋ so QD, sinh mot dong lich su (y nguyen co che v4.0). */
 ACT.mDtDoi=function(el){
  const x=DTM[el.dataset.m],chi=!can('dtQL');
  if(chi&&!(can('dtHep')&&trongPham(x.ma))){toast('⛔ Ngoài phạm vi của vai');return}
- const tr=chi?['dia_chi']:['ten','ten_viet_tat','dia_chi'];
- window.__doi={ma:x.ma,xn:0};
- modal('✎ Đổi '+(chi?'địa chỉ':'tên · địa chỉ')+' — '+esc(dtTen(x.ma)),
-  '<div class="info">Mỗi lần đổi là <b>một dòng lịch sử</b> — giá trị cũ · giá trị mới · <b>hiệu lực từ ngày</b> · số QĐ · lý do (chốt 2 · HDCT ①). ⛔ Không ghi đè: báo cáo năm cũ đọc <b>tên tại thời điểm đó</b>. Ngày hiệu lực <b>lùi được</b> — hệ thống nêu năm học nào sẽ đọc giá trị mới.'+
-   (chi?' Vai <b>'+esc(R().ten)+'</b> chỉ đổi được <b>địa chỉ</b> điểm trường mình (R32); đổi tên là việc của Hiệu trưởng.':'')+'</div>'+
-  '<label class="lbl">Trường đổi <b>*</b></label><select class="din" id="ddTr">'+tr.map(t=>'<option value="'+t+'">'+TRTEN[t]+' — hiện tại: '+esc(giaTriTai(x,t,HOMNAY)||'—')+'</option>').join('')+'</select>'+
-  '<label class="lbl">Giá trị mới <b>*</b></label><input class="din" id="ddMoi">'+
-  '<div class="grid2"><div><label class="lbl">Hiệu lực từ ngày <b>*</b></label><input class="din" type="date" id="ddTu" value="'+d2i(HOMNAY)+'"></div>'+
-  '<div><label class="lbl">Số quyết định</label><input class="din" id="ddQd" placeholder="vd 125/QĐ-UBND"></div></div>'+
-  '<label class="lbl">Lý do <b>*</b></label><textarea class="ta" id="ddLy"></textarea>',
-  '<button class="btn" data-x="close">Hủy</button><button class="btn p" data-x="luuDtDoi">Lưu</button>');
+ window.__doi={ma:x.ma,xn:0,tr:chi?'dia_chi':'ten',moi:'',tu:d2i(HOMNAY),qd:'',ly:'',that:0,chi:chi};
+ veDtDoi(x);
 };
+function gomDD(){const w=window.__doi,a=$('#ddTr'),b=$('#ddMoi'),c=$('#ddTu'),d=$('#ddQd'),e=$('#ddLy');
+ if(a)w.tr=a.value;if(b)w.moi=b.value;if(c)w.tu=c.value;if(d)w.qd=d.value;if(e)w.ly=e.value}
+/* trang thai o tich lay tu BIEN w.that, ⛔ doc el.checked sau khi ve lai (R53 ④) */
+ACT.ddThat=function(el){
+ if(el.disabled)return;
+ gomDD();const w=window.__doi;w.that=w.that?0:1;w.xn=0;veDtDoi(DTM[w.ma]);
+ toast(w.that?'📅 <b>Đổi theo quyết định</b> — sinh một dòng lịch sử, hồ sơ năm cũ giữ giá trị cũ'
+   :'🧹 <b>Sửa chữ viết sai</b> — sửa thẳng, giá trị mới áp cho cả năm cũ');
+};
+function veDtDoi(x){
+ const w=window.__doi,chi=w.chi,that=w.that?1:0;
+ const tr=chi?['dia_chi']:['ten','ten_viet_tat','dia_chi'];
+ const dsDoi=x.lich_su.filter(l=>l.truong===w.tr&&l.hieu_luc_tu);   /* R54 */
+ modal('✎ Đổi '+(chi?'địa chỉ':'tên · địa chỉ')+' — '+esc(dtTen(x.ma)),
+  '<div class="info">Bắt <b>lý do</b> ở <b>cả hai nhánh</b> (R53 ③). ⛔ Ký số — quyết định giấy đã có chữ ký của cơ quan ban hành (§9).'+
+   (chi?' Vai <b>'+esc(R().ten)+'</b> chỉ đổi được <b>địa chỉ</b> điểm trường mình (R32); đổi tên là việc của Hiệu trưởng.':'')+'</div>'+
+  '<label class="lbl">Trường đổi <b>*</b></label><select class="din" id="ddTr" data-x="ddDoiTr">'+tr.map(t=>'<option value="'+t+'"'+(w.tr===t?' selected':'')+'>'+TRTEN[t]+' — hiện tại: '+esc(giaTriTai(x,t,HOMNAY)||'—')+'</option>').join('')+'</select>'+
+  '<label class="lbl">Giá trị mới <b>*</b></label><input class="din" id="ddMoi" value="'+esc(w.moi)+'">'+
+  '<label class="ck" style="display:flex;gap:8px;align-items:flex-start;margin:10px 0 4px">'+
+   '<input type="checkbox" data-x="ddThat"'+(that?' checked':'')+'>'+
+   '<span><b>Đổi theo quyết định</b> — có hiệu lực từ một ngày</span></label>'+
+  '<div class="'+(that?'info':'ro')+'" style="margin:0 0 8px">'+(that
+    ? '📅 <b>Ghi một dòng lịch sử.</b> Bìa học bạ và báo cáo của <b>năm cũ GIỮ giá trị cũ</b>. Ngày hiệu lực <b>lùi được</b> — hệ thống nêu năm học nào sẽ đọc giá trị mới.'
+    : '🧹 <b>Sửa chữ viết sai.</b> Giá trị mới áp cho <b>cả năm cũ</b> — bìa học bạ in lại sẽ ra giá trị mới. Đúng, vì giá trị cũ <b>chưa bao giờ là thật</b>. Vết ở <b>nhật ký</b>.')+'</div>'+
+  (!that&&dsDoi.length?'<div class="warn">⚠ <b>'+esc(TRTEN[w.tr])+' đã đổi '+dsDoi.length+' lần theo quyết định</b> (R54): '+
+    dsDoi.map(l=>'<b>'+esc(l.gia_tri_cu||'—')+'</b> → <b>'+esc(l.gia_tri_moi)+'</b> hiệu lực '+d2s(l.hieu_luc_tu)+(l.so_qd?' · QĐ '+esc(l.so_qd):'')).join('; ')+
+    '. Lượt sửa này <b>chỉ gõ lại giá trị đang dùng</b>; các dòng cũ giữ nguyên.</div>':'')+
+  (that?'<div class="grid2"><div><label class="lbl">Có hiệu lực từ ngày <b>*</b></label><input class="din" type="date" id="ddTu" value="'+esc(w.tu)+'"></div>'+
+   '<div><label class="lbl">Số quyết định</label><input class="din" id="ddQd" value="'+esc(w.qd)+'" placeholder="vd 125/QĐ-UBND"></div></div>':'')+
+  '<label class="lbl">Lý do <b>*</b></label><textarea class="ta" id="ddLy">'+esc(w.ly)+'</textarea>',
+  '<button class="btn" data-x="close">Hủy</button><button class="btn p" data-x="luuDtDoi">'+
+   (that?'Lưu — có hiệu lực từ ngày đã chọn':'Lưu — sửa thẳng, ⛔ sinh dòng lịch sử')+'</button>');
+}
+ACT.ddDoiTr=function(){gomDD();veDtDoi(DTM[window.__doi.ma])};
 ACT.luuDtDoi=function(){
- const w=window.__doi,x=DTM[w.ma],tr=$('#ddTr').value,moi=$('#ddMoi').value.trim(),tu=p2d($('#ddTu').value),qd=$('#ddQd').value.trim(),ly=$('#ddLy').value.trim();
+ gomDD();
+ const w=window.__doi,x=DTM[w.ma],tr=w.tr,moi=w.moi.trim(),qd=w.qd.trim(),ly=w.ly.trim();
  if(tr!=='dia_chi'&&!can('dtQL')){toast('⛔ Chỉ Hiệu trưởng đổi tên điểm trường (chốt 4)');return}
  if(!moi){toast('⛔ Giá trị mới không được trống');return}
+ if(!ly){toast('⚠ <b>Bắt buộc ghi lý do</b> — cả hai nhánh (R30 · R53 ③)');return}
+ if(moi===giaTriTai(x,tr,HOMNAY)){toast('⛔ Giá trị mới trùng giá trị đang hiệu lực');return}
+ /* ===== NHANH SUA CHUA DU LIEU (o tich TAT) — sua THANG dong dang hieu luc (R54) ===== */
+ if(!w.that){
+  const cu0=giaTriTai(x,tr,HOMNAY);
+  const z=x.lich_su.filter(l=>l.truong===tr&&l.hieu_luc_tu).sort((a,b)=>b.hieu_luc_tu-a.hieu_luc_tu)[0];
+  if(z)z.gia_tri_moi=moi;else x[tr]=moi;
+  logDT(x,'Sửa chữa',TRTEN[tr]+': '+cu0+' → '+moi+' · sửa thẳng, ⛔ sinh dòng lịch sử · lý do: '+ly,'w');
+  closeModal();V.nhan=x.ma;render();
+  toast('🧹 <b>Đã sửa thẳng</b> '+TRTEN[tr]+' — ⛔ sinh dòng lịch sử.<br>'+
+   'Giá trị mới áp cho <b>cả năm cũ</b>: bìa học bạ in lại ra <b>'+esc(moi)+'</b>. Vết ở <b>nhật ký</b>.');
+  return;
+ }
+ /* ===== NHANH GHI SU THAT MOI (o tich BAT) — y nguyen co che v4.0 ===== */
+ const tu=p2d(w.tu);
  if(!tu){toast('⛔ Bắt buộc chọn <b>ngày hiệu lực</b> (R30)');return}
- if(!ly){toast('⚠ <b>Bắt buộc ghi lý do</b> (R30)');return}
  if(moi===giaTriTai(x,tr,tu)){toast('⛔ Giá trị mới trùng giá trị đang hiệu lực tại '+d2s(tu));return}
- if(x.lich_su.some(l=>l.truong===tr&&l.hieu_luc_tu&&+l.hieu_luc_tu===+tu)){toast('⛔ Đã có một lần đổi <b>'+TRTEN[tr]+'</b> hiệu lực đúng ngày '+d2s(tu)+' — hai giá trị cùng ngày thì «tên tại ngày» không đọc được (R30). Chọn ngày khác.');return}
+ if(x.lich_su.some(l=>l.truong===tr&&l.hieu_luc_tu&&+l.hieu_luc_tu===+tu)){
+  toast('⛔ Đã có một lần đổi <b>'+TRTEN[tr]+'</b> hiệu lực đúng ngày '+d2s(tu)+' — hai giá trị cùng ngày thì «tên tại ngày» ⛔ đọc được (R30).<br>'+
+   '🧹 <b>Lối ra:</b> <b>bỏ tích</b> ô «Đổi theo quyết định» để <b>sửa thẳng</b> dòng ấy — ⛔ phải chọn một ngày khác.');return}
  if(tr==='ten'&&!qd&&!w.xn){w.xn=1;toast('⚠ Đổi <b>tên</b> điểm trường thường đi kèm quyết định — chưa ghi số QĐ. <b>Cảnh báo, không chặn</b>: bấm <b>Lưu</b> lần nữa để vẫn lưu');return}
  const cu=giaTriTai(x,tr,new Date(tu.getTime()-864e5));
  const ah=coHoSo()?NAM.filter(n=>ngayDocNam(n)>=tu&&n.dt.some(d=>d.ma===x.ma)):[];
  x.lich_su.push({truong:tr,gia_tri_cu:cu,gia_tri_moi:moi,hieu_luc_tu:tu,so_qd:qd,ly_do:ly,nguoi:nguoiLog(),chuc_danh_luc_do:R().ten});
- logDT(x,'Đổi '+TRTEN[tr].toLowerCase(),cu+' → '+moi+' · hiệu lực từ '+d2s(tu)+(qd?' · QĐ '+qd:' · chưa có số QĐ')+' · lý do: '+ly,'w');
+ logDT(x,'Đổi theo quyết định — '+TRTEN[tr].toLowerCase(),cu+' → '+moi+' · hiệu lực từ '+d2s(tu)+(qd?' · QĐ '+qd:' · chưa có số QĐ')+' · lý do: '+ly,'w');
  closeModal();V.nhan=x.ma;render();
  toast('Đã thêm dòng lịch sử <b>'+TRTEN[tr]+'</b> · hiệu lực từ '+d2s(tu)+(tu>HOMNAY?' — <b>chưa tới ngày</b>, dòng hiện «⏳»':'')+
   (ah.length?'<br>Hồ sơ năm học đọc giá trị mới: <b>'+ah.map(n=>n.ten).join(' · ')+'</b>':'')+'<br>Không ký số — Audit');
@@ -1911,20 +2196,77 @@ ACT.mDtThem=function(){
    ' — kể cả <b>giữa năm</b>, từ ngày sáp nhập (dòng có <code>tu_ngay</code>, HDCT ④). Cấp học, hệ áp dụng, sức chứa khai ở đó — là thuộc tính <b>của năm</b>.</div>'+
   '<div class="grid2"><div><label class="lbl">Mã <b>*</b> <span class="sub">không đổi sau khi tạo</span></label><input class="din" id="dtMa" placeholder="vd PL"></div><div><label class="lbl">Tên viết tắt</label><input class="din" id="dtVt"></div></div>'+
   '<label class="lbl">Tên <b>*</b></label><input class="din" id="dtTen" placeholder="vd ĐT Phú Lợi">'+
-  '<label class="lbl">Địa chỉ <b>*</b></label><input class="din" id="dtDc">'+
+  /* 🆕 RSTT (1/10/2026) — o Dia chi la CUM SAU PHAN cua HDCS ①, ⛔ mot o chuoi.
+     Hop dong da khai dieu nay tu 19/9 («Truong ap dung: … truong · diem truong» + quy tac a),
+     nhung §5b.3 chi ghi von ven chu «dia chi» nen ban Dev dung mot o text. */
+  formDcDT()+
   '<div class="grid2"><div><label class="lbl">Liên hệ</label><input class="din" id="dtLh"></div><div><label class="lbl">Tọa độ</label><input class="din" id="dtTd" placeholder="vĩ độ, kinh độ"></div></div>'+
   '<div class="grid2"><div><label class="lbl">Diện tích (m²)</label><input class="din" id="dtM2"></div><div><label class="lbl">Khoảng cách đến cơ sở chính (km)</label><input class="din" id="dtKm"></div></div>'+
   '<div class="grid2"><div><label class="lbl">Hiệu lực từ ngày <b>*</b> <span class="sub">ngày QĐ thành lập / sáp nhập có hiệu lực</span></label><input class="din" type="date" id="dtTu" value="'+d2i(HOMNAY)+'"></div>'+
   '<div><label class="lbl">Số quyết định</label><input class="din" id="dtQd" placeholder="vd 45/QĐ-UBND"></div></div>',
   '<button class="btn" data-x="close">Hủy</button><button class="btn p" data-x="luuDtThem">Thêm và ký</button>');
 };
+/* ===== RSTT — o Dia chi cua diem truong: CUM SAU PHAN HDCS ①, mac dinh «Chon danh muc» =====
+   Dung dung khuon §4.1d.a cua tab ①: cong tac · hai cap tinh/xa dropdown CO TIM KIEM (R50) · o chi tiet.
+   `chuoi_hien_thi` la DAN XUAT — khong co o nhap; lich su `dia_chi` luu chinh chuoi ay. */
+let DC_THEM={che_do:'danh_muc',tinh_id:null,xa_id:null,chi_tiet:'',chuoi_tu_do:''};
+function formDcDT(){
+ const a=DC_THEM;
+ return '<label class="lbl">Địa chỉ <b>*</b> <span class="pill">cụm sáu phần · HDCS ①</span></label>'+
+ '<div class="seg"><button class="sgb'+(a.che_do==='danh_muc'?' on':'')+'" data-x="dtDcChe" data-v="danh_muc">Chọn danh mục</button>'+
+  '<button class="sgb'+(a.che_do==='tu_do'?' on':'')+'" data-x="dtDcChe" data-v="tu_do">Nhập tự do</button></div>'+
+ (a.che_do==='danh_muc'
+  ?'<div class="grid2"><div><label class="lbl">Tỉnh / Thành phố <b>*</b></label>'+oTinh('dtTinh',a.tinh_id)+'</div>'+
+   '<div><label class="lbl">Xã / Phường <b>*</b></label>'+oXa('dtXa',a.tinh_id,a.xa_id)+'</div></div>'+
+   '<label class="lbl">Chi tiết <span class="pill">tổ, thôn, xóm, số nhà</span></label><input class="din" id="dtCT" value="'+esc(a.chi_tiet||'')+'">'+
+   '<div class="hint">Mặc định <b>Chọn danh mục</b> (HDCS ① quy tắc a). Hai ô trên là <b>dropdown có tìm kiếm</b>, ô xã lọc theo tỉnh (R50). ⛔ Không có ô <b>Quận/Huyện</b></div>'
+  :'<label class="lbl">Địa chỉ đầy đủ <b>*</b></label><input class="din" id="dtTD" value="'+esc(a.chuoi_tu_do||'')+'">'+
+   '<div class="hint">⚠ Chế độ <b>hợp lệ</b> — dòng mang nhãn <i>chưa chuẩn hóa</i>, <b>không bị chặn</b> (R19)</div>');
+}
+ACT.dtDcChe=function(el){
+ const v=el.dataset.v;if(v===DC_THEM.che_do)return;
+ gomDcDT();DC_THEM.che_do=v;ACT.mDtThem();
+ toast(v==='tu_do'?'Chế độ <b>Nhập tự do</b> — nhãn ⚠ <i>chưa chuẩn hóa</i>, ⛔ chặn (R19)':'Chế độ <b>Chọn danh mục</b> — hai cấp, ⛔ có ô Quận/Huyện');
+};
+function gomDcDT(){
+ const g=id=>{const e=$('#'+id);return e?e.value:null};
+ if(g('dtCT')!=null)DC_THEM.chi_tiet=g('dtCT');
+ if(g('dtTD')!=null)DC_THEM.chuoi_tu_do=g('dtTD');
+ if(g('dtTinh')!=null)DC_THEM.tinh_id=g('dtTinh')||null;
+ if(g('dtXa')!=null)DC_THEM.xa_id=g('dtXa')||null;
+}
+/* o Tinh cua form them dung chung ACT.doiTinh cua tab ① khong duoc (no ghi vao TRUONG.dc),
+   nen bat rieng: doi tinh ⇒ o xa VE RONG (R50). */
+document.addEventListener('change',function(e){
+ const s=e.target;if(!s||s.id!=='dtTinh')return;
+ gomDcDT();DC_THEM.tinh_id=s.value||null;DC_THEM.xa_id=null;ACT.mDtThem();
+ toast(s.value?'Đã chọn <b>'+esc(TINH[s.value].ten)+'</b> — ô <b>Xã / Phường</b> về rỗng, chỉ còn xã của tỉnh này (R50)':'Chưa chọn tỉnh — ô <b>Xã / Phường</b> khóa lại (R50)');
+});
+
+/* ===== RSTT R31 — DUONG GHI DUY NHAT cua «them diem truong» =====
+   🛑 Dieu kien chan phai nam o NHANH GHI, ⛔ chi o form: `＋ Thêm` va `✎ Sửa` la HAI LENH,
+   ⛔ dung chung mot duong ghi «PUT theo ma». Goi thang ham nay voi ma trung ⇒ van bi chan. */
+function themDT(ma,x){
+ const cu=DTM[ma];
+ if(cu)throw new Error('R31: mã «'+ma+'» đã thuộc «'+dtTen(ma)+'»'+
+   (cu.trang_thai_to_chuc==='da_giai_the'?' (đã giải thể — mã không tái dùng)':'')+
+   ' — lệnh Thêm ⛔ bao giờ ghi lên bản ghi đang có');
+ DTM[ma]=x;return x;
+}
 ACT.luuDtThem=function(){
- const w=window.__them,ma=$('#dtMa').value.trim().toUpperCase(),ten=$('#dtTen').value.trim(),dc=$('#dtDc').value.trim(),tu=p2d($('#dtTu').value),qd=$('#dtQd').value.trim();
+ gomDcDT();
+ const w=window.__them,ma=$('#dtMa').value.trim().toUpperCase(),ten=$('#dtTen').value.trim(),tu=p2d($('#dtTu').value),qd=$('#dtQd').value.trim();
+ const dc=dcHien(DC_THEM);
  const td=$('#dtTd').value.trim(),s1=$('#dtM2').value.trim(),s2=$('#dtKm').value.trim().replace(',','.');
  if(!ma){toast('⛔ Mã không được trống (R31)');return}
  if(!/^[A-Z0-9_]{1,12}$/.test(ma)){toast('⛔ Mã chỉ gồm chữ không dấu, số, gạch dưới — tối đa 12 ký tự (R31)');return}
- if(DTM[ma]){toast('⛔ Trùng mã <b>'+ma+'</b> với '+esc(dtTen(ma))+(DTM[ma].trang_thai_to_chuc==='da_giai_the'?' <i>(đã giải thể — mã không tái dùng)</i>':'')+' (R31)');return}
- if(!ten||!dc){toast('⛔ Bắt buộc: <b>tên · địa chỉ</b>');return}
+ /* 🛑 Day chi la HANG RAO THU NHAT (o form). Hang rao THAT o nhanh ghi — themDT() duoi day. */
+ if(DTM[ma]){toast('⛔ Trùng mã <b>'+ma+'</b> với <b>'+esc(dtTen(ma))+'</b> · trạng thái <b>'+
+   (DTM[ma].trang_thai_to_chuc==='da_giai_the'?'đã giải thể — mã không tái dùng':'đang tồn tại')+
+   '</b>. Lệnh <b>Thêm</b> ⛔ bao giờ ghi lên bản ghi đang có — muốn sửa thì dùng <b>✎ Sửa</b> trên dòng ấy (R31)');return}
+ if(!ten){toast('⛔ Bắt buộc: <b>tên</b>');return}
+ if(DC_THEM.che_do==='danh_muc'&&(!DC_THEM.tinh_id||!DC_THEM.xa_id)){toast('⛔ Bắt buộc chọn đủ <b>Tỉnh / Thành phố</b> và <b>Xã / Phường</b> — hoặc đổi sang <b>Nhập tự do</b> (R50)');return}
+ if(DC_THEM.che_do==='tu_do'&&!DC_THEM.chuoi_tu_do.trim()){toast('⛔ Bắt buộc nhập <b>địa chỉ đầy đủ</b>');return}
  if(!tu){toast('⛔ Bắt buộc chọn <b>ngày hiệu lực</b>');return}
  if(td&&!/^-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?$/.test(td)){toast('⛔ Tọa độ phải có dạng <b>vĩ độ, kinh độ</b>');return}
  const m2=s1===''?null:+s1,km=s2===''?null:+s2;
@@ -1933,8 +2275,12 @@ ACT.luuDtThem=function(){
  const x=dtMoi(ma,ten,$('#dtVt').value.trim()||ma,dc,$('#dtLh').value.trim(),td||null,m2,false,km,tu);
  x.lich_su.forEach(l=>{l.so_qd=qd;l.nguoi=nguoiLog();l.chuc_danh_luc_do=R().ten});
  x.thanh_lap.so_qd=qd;   /* CCTT-Z A8 — HDCT ① thanh_lap: ngay = «Hieu luc tu ngay» cua form them */
+ x.dc=JSON.parse(JSON.stringify(DC_THEM));   /* giu cum sau phan tren ban ghi — chuoi hien thi la dan xuat */
  kyCT('Thêm điểm trường '+ten,function(ky){
-  DTM[ma]=x;logDT(x,'Thêm điểm trường','Hiệu lực từ '+d2s(tu)+' · QĐ '+(qd||'— chưa có')+' · '+(ky?'đã ký số':'BỎ QUA ký số'),ky?'':'w');V.nhan=ma;render();
+  /* 🛑 R31 — goi qua DUONG GHI DUY NHAT; ma trung thi nem loi ngay o day, ⛔ ghi de */
+  try{themDT(ma,x)}catch(err){toast('⛔ '+esc(err.message)+' (R31)');return}
+  logDT(x,'Thêm điểm trường','Hiệu lực từ '+d2s(tu)+' · QĐ '+(qd||'— chưa có')+' · địa chỉ: '+dc+' · '+(ky?'đã ký số':'BỎ QUA ký số'),ky?'':'w');
+  DC_THEM={che_do:'danh_muc',tinh_id:null,xa_id:null,chi_tiet:'',chuoi_tu_do:''};V.nhan=ma;render();
   toast('Đã thêm <b>'+esc(ten)+'</b> — trường có <b>'+soDT()+' điểm trường</b> đang tồn tại. <b>Chưa tham gia năm học nào</b>: chọn vào năm ở M10.1 ② (được từ giữa năm — <code>tu_ngay</code>)'+
    (dtChinh()?'':'<br>⚠ Chưa có cơ sở chính (R27)'));
  });
@@ -2158,6 +2504,53 @@ function logTo(t,tt,nd,c){t.ls.push({d:HOMNAY,ng:nguoiLog(),t:tt,n:nd||'',c:c||'
 /* ghi mot dong LICH SU GIA TRI — ⛔ khong ghi de (chot d · R43) */
 function ghiTO(t,truong,cu,moi,hl,ly){t.lsh.push({truong:truong,cu:cu,moi:moi,hl:hl,d:HOMNAY,ng:nguoiLog(),ly:ly})}
 
+/* ===== SUAD (3/10/2026) — HAI NHANH: sua chua du lieu ⟂ ghi su that co moc thoi gian =====
+   §3b.5 · R53 · R54 · R55.  O tich TAT = sua chua (sua thang / go han) · BAT = sinh dong lich su.
+   🛑 Trang thai o tich lay tu BIEN (w.that / V.*), ⛔ doc tu DOM — luot ve lai huy chinh o tich do.
+      Bo bat su kien cua demo nay: click + preventDefault (app.90), ⛔ phai `change`. */
+/* dau nam hoc tu TEN nam «2026-2027» ⇒ 01/09/2026 — mac dinh cua o ngay (R53 ③) */
+function dauNam(ten){const y=+String(ten).slice(0,4);return y?new Date(y,8,1):null}
+function namHD(){return NAM.filter(n=>n.tt==='hd')[0]||NAM[0]}
+function dauNamHD(){return dauNam(namHD().ten)||HOMNAY}
+/* «dong thuoc nam da khoa so / da ket thuc» — xap xi bang MOC dau nam Dang hoat dong.
+   ⚠ XAP XI co y thuc: NAM cua demo ⛔ mang ngay bat dau/ket thuc that (app.10 namMoi).
+   Dong truoc moc ay thuoc mot nam da khoa so hoac da ket thuc ⇒ ⛔ go han duoc (R55). */
+function namKhoaSo(d){return !!d&&d<dauNamHD()}
+function tenNamCua(d){const n=NAM.filter(x=>dauNam(x.ten)&&dauNam(x.ten)<=d).sort((a,b)=>dauNam(b.ten)-dauNam(a.ten))[0];return n?n.ten+' ('+TT[n.tt][0]+')':'năm cũ'}
+/* GO HAN mot dong ③b — bo khoi du lieu van hanh, VET o nhat ky cua tab (§12 diem 55).
+   ⛔ them co «da go» len dong du lieu: HDCT ③b co bay truong, them la ra ban 6. */
+function goHanMTT(l,ly){
+ const i=MTT.indexOf(l);if(i<0)return null;
+ const nd=monTen(l.mon_id)+' · '+tenTai(TOM[l.to_id],HOMNAY)+' · từ '+(l.hieu_luc_tu?d2s(l.hieu_luc_tu):'di trú')+
+  (l.hieu_luc_den?' đến '+d2s(l.hieu_luc_den):'')+(l.ly_do?' · lý do cũ: '+l.ly_do:'');
+ MTT.splice(i,1);
+ if(TOM[l.to_id])logTo(TOM[l.to_id],'Gỡ hẳn dòng',''+nd+' — '+ly,'w');
+ return nd;
+}
+/* dong ③b VUONG voi mot ngay moi (R36) — tra ve DONG, ⛔ chi cau chu, de hop chan go han duoc */
+function dongVuong(dsMon,tu){
+ const r=[];
+ dsMon.forEach(m=>MTT.forEach(function(l){
+  if(l.mon_id===m&&l.hieu_luc_tu&&l.hieu_luc_tu>=tu&&(!l.hieu_luc_den||l.hieu_luc_den>tu)&&r.indexOf(l)<0)r.push(l);
+ }));
+ return r;
+}
+/* 🔴 MOT NGUON cho cau hoi «luot nay se GO HAN nhung dong nao» — man hinh va nhanh GHI dung
+   CUNG ham nay (quy tac 9: mot luat song o mot cho).
+   ⚠ Lo da do duoc 3/10/2026: ban dau chi lay `dongVuong()` (dong BAT DAU tu/sau `tu`), nen
+   bo sot dong DANG MO TU TRUOC — dung ca thuong gap nhat: mon dang thuoc to cu tu nam truoc.
+   Thieu no thi R55 lot, va mot dong lich su THAT cua nam da khoa so bi go han mat. */
+function dongSeGo(w,tu){
+ if(w.that)return [];                      /* nhanh BAT ⛔ go han gi — no DONG dong */
+ const t=w.ma?TOM[w.ma]:null;if(!t)return [];
+ const cu=monCuaToTai(t.ma,tu),r=[];
+ const them=(l)=>{if(l&&r.indexOf(l)<0)r.push(l)};
+ w.chon.forEach(function(m){const o=toCuaMonTai(m,tu);if(o&&o!==t.ma)them(dongMTT(m,tu))});  /* chuyen to */
+ cu.filter(m=>w.chon.indexOf(m)<0).forEach(m=>them(dongMTT(m,tu)));                          /* bo tich */
+ dongVuong(w.chon.concat(cu),tu).forEach(them);                                              /* vuong R36 */
+ return r;
+}
+
 function tabTo(){
  const n=namBy(V.nam),all=Object.keys(TOM).map(k=>TOM[k]),nK=all.filter(t=>t.trang_thai!=='dang_hoat_dong').length;
  const chua=MON.filter(m=>!m.ngung&&!toCuaMonTai(m.ma,ngayDoc));
@@ -2246,92 +2639,211 @@ function oNgayDoc(){
 ACT.datNgayDoc=function(el){ngayDoc=new Date(+el.dataset.i);render()};
 ACT.doiNhin=function(el){V.nhin=el.dataset.n;render()};
 ACT.nhinMon=function(){V.nhin='mon';V.chuaTo=1;if(V.tab!=='to'){V.tab='to'}render()};
+/* 🔁 RSTT (1/10/2026) — R52 ①: o «To nhan mon» BAT BUOC, ⛔ mac dinh to nao.
+   Ban truoc lay `Object.keys(TOM)…[0]` lam mac dinh ⇒ nguoi dung bam «Gán vào tổ» roi «Lưu»
+   la mon vao NHAM TO ma man hinh chua bao gio hoi. Mot o chon CO SAN DAP AN thi no
+   ⛔ con la mot cau hoi. */
 ACT.ganVaoTo=function(el){
- const t=toCuaMonTai(el.dataset.m,ngayDoc)||Object.keys(TOM).filter(k=>TOM[k].trang_thai==='dang_hoat_dong')[0];
- V.nhin='to';V.nhan=t;render();ACT.mToMon({dataset:{t:t}});
- toast('📘 → 🗂 <b>Một đường, một hộp</b> — đã chuyển sang cách nhìn Theo tổ và mở hộp «⇄ Môn thuộc tổ»');
+ V.nhin='to';render();
+ window.__tm={ma:'',chon:[el.dataset.m],tu:d2i(dauNamHD()),ly:'',that:0,moNgay:0};veToMon();
+ toast('📘 → 🗂 <b>Một đường, một hộp</b> — môn đã tích sẵn, <b>chọn tổ nhận môn</b> để tiếp tục');
 };
 
-/* ----- ⇄ Mon thuoc to — HOP CHUYEN TO mot giao dich (chot i · R36) ----- */
+/* ----- ⇄ Mon thuoc to — MOT luot mo hop = MOT lan ghi, cho NHIEU mon (R52) ----- */
 ACT.mToMon=function(el){
  if(!can('to')){toast('⛔ Vai này chỉ xem tổ bộ môn');return}
  if(docQuaKhu()){toast('⛔ Đang đọc tại '+d2s(ngayDoc)+' — quay về hôm nay để sửa');return}
- const t=TOM[el.dataset.t];window.__tm={ma:t.ma,chon:monCuaToTai(t.ma,HOMNAY).slice(),tu:d2i(HOMNAY),ly:''};veToMon();
+ const t=TOM[el.dataset.t];window.__tm={ma:t.ma,chon:monCuaToTai(t.ma,HOMNAY).slice(),tu:d2i(dauNamHD()),ly:'',that:0,moNgay:0};veToMon();
 };
+/* mon dang tich ma dang thuoc TO KHAC tai ngay hieu luc ⇒ phai CHUYEN TO */
+function dsChuyen(){
+ const w=window.__tm,tu=p2d(w.tu)||HOMNAY;
+ return w.chon.map(function(m){const cu=toCuaMonTai(m,tu);return (cu&&cu!==w.ma)?{m:m,cu:cu}:null}).filter(Boolean);
+}
 function veToMon(){
- const w=window.__tm,t=TOM[w.ma];
- modal('⇄ Môn thuộc '+esc(toTen(t,HOMNAY)),
-  '<div class="info">Mỗi thay đổi <b>đóng dòng cũ, mở dòng mới cùng ngày hiệu lực</b> (HDCT ③b). Tích một môn <b>đang thuộc tổ khác</b> thì máy <b>hỏi lại bằng hộp xác nhận CHUYỂN TỔ</b> — ⛔ không âm thầm sửa hai bản ghi (chốt i). Ngày hiệu lực <b>lùi được</b>.</div>'+
-  '<div style="display:flex;flex-wrap:wrap;gap:6px;margin:10px 0">'+MON.filter(m=>!m.ngung).map(function(m){const o=toCuaMonTai(m.ma,HOMNAY),on=w.chon.indexOf(m.ma)>=0;
-   return '<button class="qf '+(on?'on':'')+'" data-x="togToMon" data-m="'+m.ma+'" title="'+(o?'Hiện thuộc '+esc(toTen(TOM[o],HOMNAY)):'Chưa thuộc tổ nào')+'">'+esc(tenTai(m,HOMNAY))+
-    (o&&o!==w.ma?' <span class="sub">· đang ở '+esc(toTen(TOM[o],HOMNAY).replace('Tổ ',''))+'</span>':'')+(!o?' <span class="sub">· chưa có tổ</span>':'')+'</button>'}).join('')+'</div>'+
-  '<div class="grid2"><div><label class="lbl">Hiệu lực từ ngày <b>*</b></label><input class="din" type="date" id="tmTu" value="'+esc(w.tu)+'"></div><div><label class="lbl">Lý do <b>*</b></label><input class="din" id="tmLy" value="'+esc(w.ly)+'"></div></div>',
-  '<button class="btn" data-x="close">Hủy</button><button class="btn p" data-x="luuToMon">Lưu</button>');
+ const w=window.__tm,t=w.ma?TOM[w.ma]:null,ds=w.ma?dsChuyen():[],tu=p2d(w.tu)||HOMNAY;
+ const dsTo=Object.keys(TOM).filter(k=>TOM[k].trang_thai==='dang_hoat_dong');
+ modal(t?'⇄ Môn thuộc '+esc(toTen(t,HOMNAY)):'⇄ Gán môn vào tổ',
+  /* ① o chon TO NHAN MON — bat buoc, mo ra o «Chon to…» */
+  '<label class="lbl">Tổ nhận môn <b>*</b></label>'+
+  '<select class="din" id="tmTo" data-x="doiToNhan"><option value=""'+(w.ma?'':' selected')+'>— Chọn tổ… —</option>'+
+   dsTo.map(k=>'<option value="'+k+'"'+(w.ma===k?' selected':'')+'>'+esc(toTen(TOM[k],HOMNAY))+'</option>').join('')+'</select>'+
+  (w.ma?'':'<div class="warn" style="margin-top:8px">⛔ <b>Chưa chọn tổ nhận môn</b> — danh sách môn khóa và nút <b>Lưu</b> khóa. 🛑 Ô này ⛔ mặc định tổ nào: <i>một ô chọn có sẵn đáp án thì nó ⛔ còn là một câu hỏi</i> (R52).</div>')+
+  (!w.ma?'':
+   '<div class="info" style="margin-top:8px">🔑 <b>Một lượt mở hộp = MỘT lần ghi</b> — tích / bỏ tích bao nhiêu môn cũng chỉ <b>một Ngày hiệu lực và một Lý do</b> (R52), ghi trong <b>một giao dịch</b>. '+
+   'Môn đang thuộc tổ khác ⇒ dòng phụ đổi ngay sang <b>chuyển từ Tổ …</b> và khối xác nhận hiện ở cuối hộp (chốt i). Ngày hiệu lực <b>lùi được</b>.</div>'+
+   '<div style="display:flex;gap:10px;align-items:center;margin:10px 0 6px"><b>Môn thuộc tổ</b>'+
+    '<span class="sub">Đã chọn '+w.chon.length+' / '+MON.filter(m=>!m.ngung).length+'</span><div class="spacer"></div>'+
+    '<button class="btn xs" data-x="tmTatCa">Chọn tất cả</button><button class="btn xs" data-x="tmBoChon">Bỏ chọn</button></div>'+
+   '<input class="din" id="tmTim" placeholder="🔍 Tìm môn…" data-x="tmLoc" value="'+esc(w.q||'')+'" style="margin-bottom:6px">'+
+   '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px">'+MON.filter(m=>!m.ngung)
+     .filter(m=>!w.q||tenTai(m,HOMNAY).toLowerCase().indexOf(w.q.toLowerCase())>=0)
+     .map(function(m){const o=toCuaMonTai(m.ma,tu),on=w.chon.indexOf(m.ma)>=0,ch=on&&o&&o!==w.ma;
+    return '<button class="qf '+(on?'on':'')+'" data-x="togToMon" data-m="'+m.ma+'">'+esc(tenTai(m,HOMNAY))+
+     (ch?'<span class="sub" style="color:#b45309;font-weight:700"> · chuyển từ '+esc(toTen(TOM[o],HOMNAY))+'</span>'
+       :o&&o!==w.ma?'<span class="sub"> · đang thuộc '+esc(toTen(TOM[o],HOMNAY))+'</span>'
+       :!o?'<span class="sub"> · chưa thuộc tổ nào</span>':'')+'</button>'}).join('')+'</div>'+
+   /* 🆕 SUAD — O TICH HAI NHANH, CHO CA LUOT (R53 ⑤). Khoa khi luot dung dong cua nam da khoa so (R55). */
+   (function(){
+    /* 🔴 CUNG ham voi nhanh GHI (dongSeGo) — ⛔ hai phep do khac nhau cho cung mot cau hoi.
+       Do tren gia dinh «neu bo tich» ⇒ tam dat that=0 roi tra lai. */
+    const g0=w.that;w.that=0;const vg=dongSeGo(w,tu);w.that=g0;
+    const kh=vg.filter(l=>namKhoaSo(l.hieu_luc_tu)),that=kh.length?1:(w.that?1:0);
+    if(kh.length&&!w.that)w.that=1;   /* R55 — luot nay ⛔ go han duoc, buoc sang nhanh «thay doi that» */
+    return '<label class="ck" style="display:flex;gap:8px;align-items:flex-start;margin:10px 0 4px">'+
+     '<input type="checkbox" data-x="tmThat"'+(that?' checked':'')+(kh.length?' disabled':'')+'>'+
+     '<span><b>Đây là thay đổi thật</b> — có hiệu lực từ một ngày'+
+     (kh.length?'<br><span class="sub" style="color:#b45309">🔒 Khóa ở nhánh này (R55)</span>':'')+'</span></label>'+
+     (kh.length?'<div class="warn">🔒 <b>Lượt này ⛔ gỡ hẳn được</b> (R55) — '+
+       kh.map(l=>'<b>'+esc(monTen(l.mon_id))+'</b> thuộc '+esc(tenTai(TOM[l.to_id],HOMNAY))+' từ '+d2s(l.hieu_luc_tu)+', nằm trong <b>'+esc(tenNamCua(l.hieu_luc_tu))+'</b>').join('; ')+
+       '. Báo cáo và biên bản của năm ấy <b>đã in ra rồi</b>. <b>Hai lối ra:</b> bỏ môn ấy khỏi lượt, hoặc giữ ô tích để <b>kết thúc hiệu lực</b> từ một ngày.</div>':'')+
+     '<div class="'+(that?'info':'ro')+'" style="margin:0 0 8px">'+(that
+       ? '📅 <b>Ghi một sự thật mới.</b> Dòng ở tổ cũ bị <b>ĐÓNG</b> tại ngày đã chọn, dòng mới mở từ ngày ấy — báo cáo và biên bản của <b>trước ngày đó giữ nguyên tổ cũ</b>.'
+       : '🧹 <b>Sửa chữa dữ liệu ghi nhầm.</b> Dòng ở tổ cũ bị <b>GỠ HẲN</b> — coi như chưa từng có; vết ở <b>nhật ký của tab</b>. Dòng mới áp từ ngày đã chọn.')+'</div>'+
+     /* 🔁 SUAD-1B (5/10/2026) — NHANH TAT ⛔ CON O NHAP NGAY: may tu dien «dau nam hoc» va
+        NOI RA BANG CHU, loi «doi ngay» la loi phu. Ngay van ton tai trong du lieu — dong ③b
+        bat buoc co moc bat dau — nhung nguoi dung o nhanh sua chua dang noi «dong nay toi go sai»,
+        ⛔ dang tra loi mot cau hoi ve thoi gian. Dua mat nhin ve khop luat chung R53 ①. */
+     ((that||w.moNgay)
+      ? '<div class="grid2"><div><label class="lbl">'+(that?'Có hiệu lực từ':'Áp dụng từ')+' <b>*</b> '+
+        '<span class="sub">'+(d2i(dauNamHD())===w.tu?'đầu năm học '+esc(namHD().ten):'lùi được · hẹn trước được')+'</span></label>'+
+        '<input class="din" type="date" id="tmTu" value="'+esc(w.tu)+'"></div>'+
+        '<div><label class="lbl">Lý do <b>*</b> <span class="sub">một lý do cho cả lượt</span></label><input class="din" id="tmLy" value="'+esc(w.ly)+'"></div></div>'
+      : '<div class="ro" style="display:flex;gap:8px;align-items:center;margin:0 0 8px">'+
+        '<span>Áp dụng từ <b>'+(d2i(dauNamHD())===w.tu?'đầu năm học '+esc(namHD().ten)+' ('+d2s(p2d(w.tu))+')':d2s(p2d(w.tu)))+'</b></span>'+
+        '<button class="btn xs" data-x="tmMoNgay">đổi ngày</button></div>'+
+        '<label class="lbl">Lý do <b>*</b> <span class="sub">một lý do cho cả lượt</span></label>'+
+        '<input class="din" id="tmLy" value="'+esc(w.ly)+'">');
+   })()+
+   /* ② khoi xac nhan CHUYEN TO — NAM TRONG hop, liet ke DU mon phai chuyen */
+   (ds.length?'<div class="warn" style="margin-top:10px"><b>⚠ Chuyển môn giữa hai tổ</b>'+
+     ds.map(function(x){const l=dongMTT(x.m,tu);
+      return '<div style="margin-top:4px">'+esc(monTen(x.m))+' đang thuộc <b>'+esc(toTen(TOM[x.cu],HOMNAY))+'</b>'+
+       (l&&l.hieu_luc_tu?' từ '+d2s(l.hieu_luc_tu):' <span class="sub">(dòng di trú — không rõ ngày)</span>')+'.</div>'}).join('')+
+     '<div style="margin-top:6px">Máy <b>'+(w.that?'đóng dòng cũ':'GỠ HẲN dòng cũ')+' và mở dòng mới từ '+d2s(tu)+' trong một lần ghi</b>. Thành viên của hai tổ '+dlink('M4.4')+' đổi theo từ ngày ấy.'+
+      (w.that?'':' <b>Dòng cũ coi như chưa từng có</b> — vết ở nhật ký của tab.')+'</div>'+
+     '<div style="margin-top:8px"><button class="btn '+(w.xn?'p':'d')+'" data-x="tmXacNhan">'+(w.xn?'✓ Đã xác nhận chuyển tổ':'Tôi xác nhận chuyển tổ')+'</button></div></div>':'')),
+  '<button class="btn" data-x="close">Đóng</button><button class="btn p" data-x="luuToMon"'+((!w.ma||(ds.length&&!w.xn))?' disabled title="'+(!w.ma?'Chọn tổ nhận môn trước':'Bấm «Tôi xác nhận chuyển tổ»')+'"':'')+'>Lưu</button>');
 }
+function gomTM(){const w=window.__tm,a=$('#tmTu'),b=$('#tmLy'),c=$('#tmTim');if(a)w.tu=a.value;if(b)w.ly=b.value;if(c)w.q=c.value}
+ACT.doiToNhan=function(el){gomTM();window.__tm.ma=el.value||'';window.__tm.xn=0;veToMon();
+ toast(el.value?'Tổ nhận môn: <b>'+esc(toTen(TOM[el.value],HOMNAY))+'</b>':'⛔ Chưa chọn tổ nhận môn — danh sách môn và nút Lưu đang khóa (R52)')};
+ACT.tmLoc=function(){gomTM();veToMon();const e=$('#tmTim');if(e){e.focus();e.setSelectionRange(e.value.length,e.value.length)}};
+ACT.tmTatCa=function(){gomTM();window.__tm.chon=MON.filter(m=>!m.ngung).map(m=>m.ma);window.__tm.xn=0;veToMon()};
+ACT.tmBoChon=function(){gomTM();window.__tm.chon=[];window.__tm.xn=0;veToMon()};
+ACT.tmXacNhan=function(){gomTM();window.__tm.xn=1;veToMon();toast('✓ Đã xác nhận — nút <b>Lưu</b> đã mở; mọi thay đổi ghi trong <b>một giao dịch</b>')};
+/* 🆕 SUAD R53 — o tich hai nhanh. Trang thai lay tu BIEN w.that, ⛔ doc el.checked sau khi ve lai. */
+/* 🔁 SUAD-1B — loi phu «doi ngay» cua nhanh TAT. Mo roi thi GIU MO ca luot, ⛔ dong lai sau
+   moi lan ve: nguoi dung vua noi ho can chon ngay khac. */
+ACT.tmMoNgay=function(){gomTM();window.__tm.moNgay=1;veToMon();
+ toast('Chọn ngày khác — dòng mới sẽ áp dụng từ ngày anh chọn, ⛔ còn là đầu năm học')};
+ACT.tmThat=function(el){
+ if(el.disabled)return;
+ gomTM();const w=window.__tm;w.that=w.that?0:1;w.xn=0;veToMon();
+ toast(w.that?'📅 <b>Thay đổi thật</b> — dòng ở tổ cũ sẽ bị <b>đóng</b>, báo cáo trước ngày đó giữ tổ cũ'
+   :'🧹 <b>Sửa chữa dữ liệu</b> — dòng ở tổ cũ sẽ bị <b>gỡ hẳn</b>, vết ở nhật ký của tab');
+};
 ACT.togToMon=function(el){
- const w=window.__tm;w.tu=$('#tmTu').value;w.ly=$('#tmLy').value;const ma=el.dataset.m,i=w.chon.indexOf(ma);
- if(i>=0){w.chon.splice(i,1);veToMon();return}
- /* 🆕 chot i — tich mot mon DANG THUOC TO KHAC ⇒ HOP XAC NHAN CHUYEN TO */
- const cu=toCuaMonTai(ma,p2d(w.tu)||HOMNAY);
- if(cu&&cu!==w.ma){hopChuyenTo(ma,cu);return}
- w.chon.push(ma);veToMon();
+ gomTM();const w=window.__tm,ma=el.dataset.m,i=w.chon.indexOf(ma);
+ if(i>=0)w.chon.splice(i,1);else w.chon.push(ma);
+ w.xn=0;   /* doi danh sach ⇒ phai xac nhan lai, ⛔ giu lai cai «da xac nhan» cua danh sach cu */
+ veToMon();
 };
-function hopChuyenTo(ma,cu){
- const w=window.__tm,t=TOM[w.ma],l=dongMTT(ma,p2d(w.tu)||HOMNAY);
- modal('⇄ Chuyển môn giữa hai tổ',
-  '<div class="danger">🛑 Đây <b>không phải hai việc nhỏ</b> — đó là <b>một quyết định tổ chức</b>: nó đổi thành viên hai tổ, đổi người duyệt giáo án, đổi báo cáo chuyên môn.</div>'+
-  '<div class="blk"><div class="ic">▸</div><div class="tx">Môn <b>'+esc(tenTai(monM(ma),HOMNAY))+'</b> đang thuộc <b>'+esc(toTen(TOM[cu],HOMNAY))+'</b>'+
-   (l&&l.hieu_luc_tu?' từ '+d2s(l.hieu_luc_tu):' <span class="sub">(dòng di trú — không rõ ngày)</span>')+'.</div></div>'+
-  '<div class="grid2"><div><label class="lbl">Chuyển sang <b>'+esc(toTen(t,HOMNAY))+'</b> từ ngày <b>*</b></label><input class="din" type="date" id="ctTu" value="'+esc(w.tu)+'"></div>'+
-  '<div><label class="lbl">Lý do <b>*</b></label><input class="din" id="ctLy" value="'+esc(w.ly)+'"></div></div>'+
-  '<div class="ro" style="margin-top:10px"><b>Máy sẽ làm HAI việc trong MỘT giao dịch:</b><br>'+
-   '· đóng dòng «'+esc(monTen(ma))+' ∈ '+esc(toTen(TOM[cu],HOMNAY))+'» — <code>hieu_luc_den</code> = ngày trên<br>'+
-   '· mở dòng «'+esc(monTen(ma))+' ∈ '+esc(toTen(t,HOMNAY))+'» — <code>hieu_luc_tu</code> = ngày trên<br>'+
-   '⇒ <b>MỘT dòng nhật ký «Chuyển tổ»</b>, đọc được từ cả hai tổ.</div>'+
-  '<div class="warn" style="margin-top:8px">⚠ Thành viên của hai tổ (dẫn xuất từ '+dlink('M4.4')+') đổi theo từ ngày ấy.</div>',
-  '<button class="btn" data-x="close">Hủy</button><button class="btn p" data-x="doChuyenTo" data-m="'+ma+'" data-c="'+cu+'">⇄ Chuyển tổ</button>');
-}
-ACT.doChuyenTo=function(el){
- const w=window.__tm,t=TOM[w.ma],ma=el.dataset.m,cu=el.dataset.c,tu=p2d($('#ctTu').value),ly=$('#ctLy').value.trim();
- if(!tu){toast('⛔ Bắt buộc chọn <b>ngày hiệu lực</b>');return}
- if(!ly){toast('⚠ <b>Bắt buộc ghi lý do</b> — lý do là thứ người duyệt vốn đọc (chốt o)');return}
- const vuong=viPhamR36([ma],tu);
- if(vuong.length){toast('⛔ R36 — '+vuong.join('<br>'));return}
- /* MOT GIAO DICH: dong dong cu + mo dong moi cung ngay */
- const l=dongMTT(ma,tu);if(l)l.hieu_luc_den=tu;
- MTT.push({mon_id:ma,to_id:t.ma,hieu_luc_tu:tu,hieu_luc_den:null,ly_do:ly,nguoi:nguoiLog()});
- const nd=monTen(ma)+': '+tenTai(TOM[cu],HOMNAY)+' → '+tenTai(t,HOMNAY)+' · từ '+d2s(tu)+' · '+ly;
- logTo(t,'Chuyển tổ',nd);logTo(TOM[cu],'Chuyển tổ',nd,'w');   /* MOT dong nhat ky, doc duoc tu ca hai to */
- w.chon.push(ma);w.tu=d2i(tu);w.ly=ly;closeModal();V.nhan=t.ma;render();veToMon();
- toast('⇄ Đã chuyển <b>'+esc(monTen(ma))+'</b> · <b>một giao dịch</b> — đóng dòng ở '+esc(tenTai(TOM[cu],HOMNAY))+', mở dòng ở '+esc(tenTai(t,HOMNAY))+' cùng ngày '+d2s(tu));
-};
-/* R36 — tai MOI ngay mot mon thuoc toi da MOT to: ngay moi phai DUNG SAU dong dang co */
-function viPhamR36(dsMon,tu){
- const loi=[];
- dsMon.forEach(m=>MTT.forEach(function(l){
-  if(l.mon_id===m&&l.hieu_luc_tu&&l.hieu_luc_tu>=tu&&(!l.hieu_luc_den||l.hieu_luc_den>tu))
-   loi.push('<b>'+esc(monTen(m))+'</b> — đã có dòng ở '+esc(tenTai(TOM[l.to_id],HOMNAY))+' hiệu lực từ '+d2s(l.hieu_luc_tu)+'; chọn ngày sau đó');
- }));
- return loi;
-}
+/* 🔁 SUAD — `viPhamR36()` (tra ve CAU CHU) da thay bang `dongVuong()` (tra ve DONG) o dau tep:
+   hop chan phai GO HAN duoc chinh dong vuong, nen no can bản ghi chu ⛔ phai mot chuoi HTML. */
+/* 🔁 RSTT R52 ② — MOT lan ghi cho CA LUOT: them · bot · CHUYEN TO cung mot giao dich,
+   mot Ngay hieu luc, mot Ly do. Khoi xac nhan chuyen to nam trong hop (⛔ hop thoai rieng tung mon).
+   🛑 Van la MOT dong nhat ky «Chuyen to» cho MOI MON — doc duoc tu ca hai to (ly do 3 cua chot i). */
 ACT.luuToMon=function(){
- const w=window.__tm,t=TOM[w.ma],tu=p2d($('#tmTu').value),ly=$('#tmLy').value.trim();
+ const w=window.__tm;
+ if(!w.ma){toast('⛔ Chưa chọn <b>tổ nhận môn</b> (R52)');return}
+ /* 🆕 SUAD — doc tu BIEN w, ⛔ tu DOM (quy tac 34). Vi sao doi: dieu kien chan cua R55 phai song
+    o NHANH GHI, nen phep thu phai goi duoc THANG ham nay khi hop ⛔ mo — ban truoc doc
+    $('#tmTu').value nen goi thang la vo ngay o dong dau (do duoc 3/10/2026). */
+ /* 🔁 SUAD-1B — do bang `#tmLy` (LUON co) chu ⛔ `#tmTu`: o ngay nay ⛔ hien o nhanh TAT,
+    do bang no thi mot hop dang mo bi coi la «dong» ⇒ `Ly do` nguoi dung vua go bi bo qua. */
+ if($('#tmLy'))gomTM();
+ const t=TOM[w.ma],tu=p2d(w.tu),ly=(w.ly||'').trim();
  if(!tu){toast('⛔ Bắt buộc chọn <b>ngày hiệu lực</b>');return}
- if(!ly){toast('⚠ <b>Bắt buộc ghi lý do</b>');return}
- const cu=monCuaToTai(t.ma,HOMNAY),them=w.chon.filter(m=>cu.indexOf(m)<0&&!toCuaMonTai(m,tu)),bot=cu.filter(m=>w.chon.indexOf(m)<0);
- if(!them.length&&!bot.length){closeModal();toast('Không có gì thay đổi — các lượt chuyển tổ đã ghi ngay lúc xác nhận');return}
- const loi=viPhamR36(them.concat(bot),tu);
- if(loi.length){toast('⛔ Ngày hiệu lực '+d2s(tu)+' không đứng sau dòng đang có (R36):<br>'+loi.join('<br>'));return}
+ if(!ly){toast('⚠ <b>Bắt buộc ghi lý do</b> — một lý do cho cả lượt (R52)');return}
+ const cu=monCuaToTai(t.ma,tu);
+ const chuyen=w.chon.map(function(m){const o=toCuaMonTai(m,tu);return (o&&o!==t.ma)?{m:m,cu:o}:null}).filter(Boolean);
+ if(chuyen.length&&!w.xn){toast('⛔ Lượt này có <b>'+chuyen.length+' môn phải chuyển tổ</b> — bấm <b>Tôi xác nhận chuyển tổ</b> trước khi lưu (chốt i)');return}
+ const them=w.chon.filter(m=>cu.indexOf(m)<0&&!toCuaMonTai(m,tu)),bot=cu.filter(m=>w.chon.indexOf(m)<0);
+ if(!them.length&&!bot.length&&!chuyen.length){closeModal();toast('Không có gì thay đổi');return}
+ /* 🆕 SUAD — R36 van la BAT BIEN, nhung ⛔ con la DUONG CUNG.
+    Nhanh BAT  ⇒ chan, va hop chan mang DUNG MOT NUT «go han dong do roi luu luot nay».
+    Nhanh TAT  ⇒ dong vuong bi GO HAN (do la chinh y dinh nguoi dung vua khai).
+    Dong thuoc nam da khoa so ⇒ ⛔ go han duoc o ca hai nhanh (R55). */
+ const vuong=dongVuong(them.concat(bot).concat(chuyen.map(x=>x.m)),tu);
+ /* 🛑 R55 o NHANH GHI (⛔ chi o nhanh ve o tich) — mot dong thuoc nam da khoa so / da ket thuc
+    thi ⛔ go han duoc, vi bao cao va bien ban cua nam ay DA IN RA ROI. */
+ const seGo=dongSeGo(w,tu),khoaGo=seGo.filter(l=>namKhoaSo(l.hieu_luc_tu));
+ if(khoaGo.length){hopChanR55(khoaGo,tu);return}
+ if(vuong.length&&w.that){hopChanR36(vuong,vuong.filter(l=>namKhoaSo(l.hieu_luc_tu)),tu,t);return}
+ /* ===== MOT GIAO DICH ===== */
+ const daGo=[];
+ seGo.forEach(function(l){const nd=goHanMTT(l,ly);if(nd)daGo.push(nd)});
+ chuyen.forEach(function(x){
+  if(w.that){const l=dongMTT(x.m,tu);if(l)l.hieu_luc_den=tu}   /* nhanh TAT: dong da go o tren */
+  MTT.push({mon_id:x.m,to_id:t.ma,hieu_luc_tu:tu,hieu_luc_den:null,ly_do:ly,nguoi:nguoiLog()});
+  const nd=monTen(x.m)+': '+tenTai(TOM[x.cu],HOMNAY)+' → '+tenTai(t,HOMNAY)+' · từ '+d2s(tu)+' · '+ly;
+  logTo(t,'Chuyển tổ',nd);logTo(TOM[x.cu],'Chuyển tổ',nd,'w')});
  them.forEach(m=>MTT.push({mon_id:m,to_id:t.ma,hieu_luc_tu:tu,hieu_luc_den:null,ly_do:ly,nguoi:nguoiLog()}));
- bot.forEach(m=>{const l=dongMTT(m,tu);if(l)l.hieu_luc_den=tu});
- logTo(t,'Sửa môn thuộc tổ',(them.length?'+ '+them.map(m=>monTen(m)).join(', ')+' ':'')+(bot.length?'− '+bot.map(m=>monTen(m)).join(', ')+' ':'')+'· hiệu lực từ '+d2s(tu)+' · '+ly);
+ if(w.that)bot.forEach(function(m){const l=dongMTT(m,tu);if(l)l.hieu_luc_den=tu});
+ if(them.length||bot.length)
+  logTo(t,'Sửa môn thuộc tổ',(them.length?'+ '+them.map(m=>monTen(m)).join(', ')+' ':'')+(bot.length?'− '+bot.map(m=>monTen(m)).join(', ')+' ':'')+'· hiệu lực từ '+d2s(tu)+' · '+ly);
  closeModal();V.nhan=t.ma;render();
- toast('Đã lưu · Audit'+
+ toast('Đã lưu <b>một giao dịch</b> · một lý do cho cả lượt (R52)'+
+  (daGo.length?'<br>🧹 <b>Gỡ hẳn '+daGo.length+' dòng</b> ghi nhầm — coi như chưa từng có; vết ở nhật ký của tab:<br><span class="sub">'+daGo.map(esc).join('<br>')+'</span>':'')+
+  (chuyen.length?'<br>⇄ Chuyển tổ <b>'+chuyen.length+' môn</b>: '+chuyen.map(x=>monTen(x.m)+' (từ '+tenTai(TOM[x.cu],HOMNAY)+')').join(' · ')+' — mỗi môn một dòng nhật ký, đọc được từ cả hai tổ':'')+
   (bot.length?'<br>⚠ '+bot.map(m=>monTen(m)).join(', ')+' <b>chưa thuộc tổ nào</b> từ '+d2s(tu)+' (R38) — M10.1 chặn 🚀 Bắt đầu năm học nếu năm ấy còn dạy môn':'')+
   (tu<HOMNAY?'<br>⚠ Hiệu lực <b>lùi</b> — thành viên tổ (M4.4) và báo cáo của tổ đọc theo ngày từ '+d2s(tu):'')+(tu>HOMNAY?'<br>⏳ Chưa tới ngày — dòng hiện «⏳»':''));
 };
 
-/* ----- ＋ Them to · ✎ Sua (co ngay hieu luc) · ⏸ Giai the (HT) · 🕘 Lich su ----- */
+/* 🆕 SUAD — HOP CHAN R36 mang DUNG MOT NUT GIAI QUYET TRON VIEC (khuon M4.3 §6.2.6).
+   ⛔ co nut nay thi R36 van la duong cung: nguoi dung biet VI DONG NAO ma van ⛔ lam gi duoc.
+   Nut TAT khi dong vuong thuoc nam da khoa so (R55) — kem so dong va loi ra bang chu. */
+function hopChanR36(vuong,khoa,tu,t){
+ const w=window.__tm;
+ modal('⛔ Trùng với một dòng «môn thuộc tổ» đã có',
+  '<div class="danger"><b>Ngày '+d2s(tu)+' đứng trước hoặc trùng '+vuong.length+' dòng đang có</b> (R36) — '+
+   'nếu lưu thì một môn thuộc <b>hai tổ</b> trong cùng một ngày, và câu «tổ của môn tại ngày d» ⛔ có một đáp án.</div>'+
+  '<table class="tb sm" style="margin-top:8px"><thead><tr><th>Môn</th><th>Tổ</th><th>Từ</th><th>Đến</th><th>Năm</th></tr></thead><tbody>'+
+   vuong.map(l=>'<tr'+(namKhoaSo(l.hieu_luc_tu)?' class="w"':'')+'><td><b>'+esc(monTen(l.mon_id))+'</b></td><td>'+esc(tenTai(TOM[l.to_id],HOMNAY))+'</td>'+
+    '<td><b>'+d2s(l.hieu_luc_tu)+'</b></td><td>'+(l.hieu_luc_den?d2s(l.hieu_luc_den):'—')+'</td>'+
+    '<td class="sub">'+esc(tenNamCua(l.hieu_luc_tu))+'</td></tr>').join('')+'</tbody></table>'+
+  (khoa.length
+   ? '<div class="warn" style="margin-top:8px">🔒 <b>'+khoa.length+' dòng ⛔ gỡ hẳn được</b> (R55) — chúng thuộc một năm <b>đã khóa sổ / đã kết thúc</b>, và báo cáo cùng biên bản của năm ấy <b>đã in ra rồi</b>.<br>'+
+     '<b>Hai lối ra:</b> bỏ môn ấy khỏi lượt, hoặc giữ ô tích <b>«Đây là thay đổi thật»</b> rồi chọn một ngày <b>đứng sau</b> dòng vướng để <b>kết thúc hiệu lực</b>.</div>'
+   : '<div class="ro" style="margin-top:8px">🧹 Các dòng trên nằm trong <b>năm đang hoạt động</b> nên <b>gỡ hẳn được</b>. Gỡ hẳn rồi lưu lượt này thì dòng cũ <b>coi như chưa từng có</b>, '+
+     'và lượt này ghi bình thường từ '+d2s(tu)+'. Vết của dòng bị gỡ nằm ở <b>nhật ký của tab</b> (§12 điểm 55).</div>'),
+  '<button class="btn" data-x="close">Để tôi tự xem lại</button>'+
+  (khoa.length?'':'<button class="btn d" data-x="tmGoRoiLuu">🗑 Gỡ hẳn '+vuong.length+' dòng đó rồi lưu lượt này</button>'));
+}
+/* 🆕 SUAD R55 — hop chan rieng cho ca «dong thuoc nam da khoa so», ⛔ gop vao hop R36:
+   o day luat chan KHAC (⛔ phai trung khoang, ma la «bao cao nam ay da in ra roi»),
+   va loi ra cung khac — HAI loi ra, ⛔ mot nut giai quyet tron viec. */
+function hopChanR55(khoa,tu){
+ modal('🔒 Lượt này ⛔ gỡ hẳn được — dòng của năm đã khóa sổ',
+  '<div class="danger"><b>'+khoa.length+' dòng</b> mà lượt này định gỡ hẳn thuộc một năm <b>đã khóa sổ / đã kết thúc</b> (R55).</div>'+
+  '<table class="tb sm" style="margin-top:8px"><thead><tr><th>Môn</th><th>Tổ</th><th>Từ</th><th>Năm</th></tr></thead><tbody>'+
+   khoa.map(l=>'<tr class="w"><td><b>'+esc(monTen(l.mon_id))+'</b></td><td>'+esc(tenTai(TOM[l.to_id],HOMNAY))+'</td>'+
+    '<td><b>'+d2s(l.hieu_luc_tu)+'</b></td><td class="sub">'+esc(tenNamCua(l.hieu_luc_tu))+'</td></tr>').join('')+'</tbody></table>'+
+  '<div class="warn" style="margin-top:8px">Báo cáo và biên bản của năm ấy <b>đã in ra rồi</b> — gỡ hẳn là làm bản in và dữ liệu <b>nói khác nhau</b>.<br>'+
+   '<b>Hai lối ra:</b> ① bỏ môn ấy khỏi lượt · ② tích ô <b>«Đây là thay đổi thật»</b> để <b>kết thúc hiệu lực</b> từ một ngày — dòng cũ giữ nguyên, báo cáo năm cũ vẫn đúng.</div>',
+  '<button class="btn" data-x="close">Để tôi tự xem lại</button><button class="btn p" data-x="tmChuyenNhanhThat">☑ Tích ô «thay đổi thật» rồi mở lại hộp</button>');
+}
+ACT.tmChuyenNhanhThat=function(){window.__tm.that=1;window.__tm.xn=0;closeModal();veToMon();
+ toast('📅 Đã tích <b>«Đây là thay đổi thật»</b> — dòng cũ sẽ bị <b>đóng</b> chứ ⛔ gỡ hẳn. Chọn ngày <b>đứng sau</b> dòng vướng rồi lưu')};
+
+/* MOT lan bam = MOT giao dich: go han cac dong vuong ＋ luu luot nay.
+   ⛔ hoi lai lan hai — hop chan DA LA lan hoi. */
+ACT.tmGoRoiLuu=function(){
+ const w=window.__tm;w.that=0;closeModal();veToMon();ACT.luuToMon();
+};
+
+/* ----- ＋ Them to · ✎ Sua (HAI NHANH — SUAD) · ⏸ Giai the (HT) · 🕘 Lich su ----- */
 ACT.mToThem=function(){
  if(!can('to')){toast('⛔ Vai này không thêm được tổ');return}
  if(docQuaKhu()){toast('⛔ Đang đọc quá khứ — quay về hôm nay để ghi');return}
@@ -2352,32 +2864,82 @@ ACT.luuToThem=function(){
  TOM[ma]=toMoi(ma,ten,$('#toMt').value.trim());logTo(TOM[ma],'Thêm tổ',ly);
  closeModal();V.nhan=ma;V.nhin='to';render();toast('Đã thêm <b>'+esc(ten)+'</b> · <b>ghi ngay</b>, ⛔ không ký số — Audit (§9)');
 };
+/* 🆕 SUAD R53 — hop `✎ Sua` to co HAI NHANH, chon bang mot o tich (§3b.5 · R43 · R54).
+   TAT (mac dinh) = sua chu viet sai ⇒ sua THANG dong dang hieu luc, ⛔ sinh dong lich su, ⛔ hoi ngay.
+   BAT = doi ten theo quyet dinh ⇒ hien o ngay, sinh mot dong lich su (y nguyen co che v5.1). */
+function veToSua(t){
+ const w=window.__ts,that=w.that?1:0;
+ const dsDoi=t.lsh.filter(z=>z.truong==='ten'&&z.hl);   /* R54 — dong «doi ten theo quyet dinh» da co */
+ modal('✎ Sửa tổ — '+esc(tenTai(t,HOMNAY)),
+  '<div class="info">🔓 Lưu là <b>đổi ngay</b> — ⛔ không qua duyệt, ⛔ không ký số (chốt o · A4). Bắt <b>lý do</b> ở <b>cả hai nhánh</b>.<br>'+
+  '🛑 Tên tổ đọc bằng <b>cùng hàm <code>tenTai()</code></b> với tên môn và tên điểm trường (§3b.2).</div>'+
+  '<label class="lbl">Tên <b>*</b></label><input class="din" id="tsTen" value="'+esc(w.ten)+'">'+
+  '<label class="lbl">Mô tả</label><input class="din" id="tsMt" value="'+esc(w.mt)+'">'+
+  '<label class="ck" style="display:flex;gap:8px;align-items:flex-start;margin:10px 0 4px">'+
+   '<input type="checkbox" data-x="tsThat"'+(that?' checked':'')+'>'+
+   '<span><b>Đổi tên theo quyết định</b> — có hiệu lực từ một ngày</span></label>'+
+  '<div class="'+(that?'info':'ro')+'" style="margin:0 0 8px">'+(that
+    ? '📅 <b>Ghi một dòng lịch sử.</b> Biên bản sinh hoạt tổ '+dlink('M5.4')+' và báo cáo của <b>năm cũ GIỮ tên cũ</b> — đó là việc đúng khi tổ <b>thật sự</b> đổi tên.'
+    : '🧹 <b>Sửa chữ viết sai.</b> Tên mới áp cho <b>cả năm cũ</b> — biên bản và báo cáo in lại sẽ ra tên mới. Đúng, vì tên cũ <b>chưa bao giờ là tên thật</b>. Vết ở <b>nhật ký của tab</b>.')+'</div>'+
+  (!that&&dsDoi.length?'<div class="warn">⚠ <b>Tổ này đã đổi tên '+dsDoi.length+' lần theo quyết định</b> (R54): '+
+    dsDoi.map(z=>'<b>'+esc(z.cu)+'</b> → <b>'+esc(z.moi)+'</b> hiệu lực '+d2s(z.hl)).join('; ')+
+    '. Lượt sửa này <b>chỉ gõ lại tên đang dùng</b>; các dòng cũ giữ nguyên.</div>':'')+
+  (that?'<label class="lbl">Có hiệu lực từ <b>*</b> <span class="sub">lùi được · hẹn trước được</span></label>'+
+    '<input class="din" type="date" id="tsHl" value="'+esc(w.hl)+'">':'')+
+  '<label class="lbl">Lý do <b>*</b></label><input class="din" id="tsLy" value="'+esc(w.ly)+'">',
+  '<button class="btn" data-x="close">Hủy</button><button class="btn p" data-x="luuToSua" data-t="'+t.ma+'">'+
+   (that?'💾 Lưu — có hiệu lực từ ngày đã chọn':'💾 Lưu — sửa thẳng, ⛔ sinh dòng lịch sử')+'</button>');
+}
 ACT.mToSua=function(el){
  const t=TOM[el.dataset.t];
- modal('✎ Sửa tổ — GHI NGAY, có ngày hiệu lực','<div class="info">🔓 Lưu là <b>đổi ngay</b> — ⛔ không qua duyệt. Bù lại: <b>ngày hiệu lực</b> + <b>lý do</b> + một dòng <b>lịch sử không xóa được</b>.<br>'+
-  '🛑 Tên tổ đọc bằng <b>cùng hàm <code>tenTai()</code></b> với tên môn và tên điểm trường (§3b.2) — báo cáo của một năm cũ in <b>tên tại ngày ấy</b>, nên đổi tên ở đây ⛔ <b>không</b> làm sai báo cáo cũ.</div>'+
-  '<label class="lbl">Tên <b>*</b></label><input class="din" id="tsTen" value="'+esc(tenTai(t,HOMNAY))+'">'+
-  '<label class="lbl">Mô tả</label><input class="din" id="tsMt" value="'+esc(t.mo_ta||'')+'">'+
-  '<div class="grid2"><div><label class="lbl">Ngày hiệu lực <b>*</b> <span class="sub">lùi được · hẹn trước được</span></label><input class="din" type="date" id="tsHl" value="'+esc(d2i(HOMNAY))+'"></div>'+
-  '<div><label class="lbl">Lý do <b>*</b></label><input class="din" id="tsLy"></div></div>',
-  '<button class="btn" data-x="close">Hủy</button><button class="btn p" data-x="luuToSua" data-t="'+t.ma+'">💾 Lưu — có hiệu lực từ ngày đã chọn</button>');
+ window.__ts={t:t.ma,ten:tenTai(t,HOMNAY),mt:t.mo_ta||'',hl:d2i(HOMNAY),ly:'',that:0};
+ veToSua(t);
+};
+function gomTS(){const w=window.__ts,a=$('#tsTen'),b=$('#tsMt'),c=$('#tsHl'),d=$('#tsLy');
+ if(a)w.ten=a.value;if(b)w.mt=b.value;if(c)w.hl=c.value;if(d)w.ly=d.value}
+/* trang thai o tich lay tu BIEN w.that, ⛔ doc el.checked sau khi ve lai (R53 ④) */
+ACT.tsThat=function(el){
+ if(el.disabled)return;
+ gomTS();const w=window.__ts;w.that=w.that?0:1;veToSua(TOM[w.t]);
+ toast(w.that?'📅 <b>Đổi tên theo quyết định</b> — sinh một dòng lịch sử, biên bản năm cũ giữ tên cũ'
+   :'🧹 <b>Sửa chữ viết sai</b> — sửa thẳng, tên mới áp cho cả năm cũ');
 };
 ACT.luuToSua=function(el){
- const t=TOM[el.dataset.t],ten=$('#tsTen').value.trim(),mt=$('#tsMt').value.trim(),hl=p2d($('#tsHl').value),ly=$('#tsLy').value.trim();
+ gomTS();
+ const w=window.__ts,t=TOM[el.dataset.t],ten=w.ten.trim(),mt=w.mt.trim(),ly=w.ly.trim();
  const cu=tenTai(t,HOMNAY);
  if(!ten){toast('⛔ Tên tổ không được trống');return}
- if(!hl){toast('⛔ Bắt buộc chọn <b>ngày hiệu lực</b>');return}
- if(!ly){toast('⚠ <b>Bắt buộc ghi lý do</b> (R44)');return}
+ if(!ly){toast('⚠ <b>Bắt buộc ghi lý do</b> — cả hai nhánh (R44 · R53 ③)');return}
  const doiTen=ten!==cu,doiMt=mt!==(t.mo_ta||'');
- if(!doiTen&&!doiMt){toast('⛔ Giá trị mới trùng giá trị đang hiệu lực — một dòng lịch sử không đổi gì là rác (R43)');return}
+ if(!doiTen&&!doiMt){toast('⛔ Giá trị mới trùng giá trị đang hiệu lực — một lượt ghi ⛔ đổi gì là rác (R43)');return}
+ /* ===== NHANH SUA CHUA DU LIEU (o tich TAT) — sua THANG dong dang hieu luc ===== */
+ if(!w.that){
+  const dongTen=t.lsh.filter(z=>z.truong==='ten'&&z.hl).sort((a,b)=>b.hl-a.hl)[0];
+  if(doiTen){
+   /* R54 — chi dung dong DANG HIEU LUC: co dong lich su thi sua `moi` cua dong moi nhat,
+      chua co dong nao thi sua chinh `ten` goc. Cac dong cu ⛔ bi dung. */
+   if(dongTen)dongTen.moi=ten;else t.ten=ten;
+  }
+  if(doiMt)t.mo_ta=mt;
+  logTo(t,'Sửa chữa',(doiTen?'Tên: '+cu+' → '+ten+' (sửa thẳng, ⛔ sinh dòng lịch sử) ':'')+
+   (doiMt?'· Mô tả: sửa thẳng ':'')+'· '+ly,'w');
+  closeModal();render();
+  toast('🧹 <b>Đã sửa thẳng</b> — ⛔ sinh dòng lịch sử, số dòng lịch sử ⛔ đổi.<br>'+
+   'Tên mới áp cho <b>cả năm cũ</b>: biên bản và báo cáo in lại ra <b>'+esc(ten)+'</b>. Vết ở <b>nhật ký của tab</b>.');
+  return;
+ }
+ /* ===== NHANH GHI SU THAT MOI (o tich BAT) — y nguyen co che v5.1 ===== */
+ const hl=p2d(w.hl);
+ if(!hl){toast('⛔ Bắt buộc chọn <b>ngày có hiệu lực</b>');return}
  if(doiTen&&t.lsh.some(z=>z.truong==='ten'&&z.hl&&z.hl.getTime()===hl.getTime())){
-  toast('⛔ R43 — đã có một dòng đổi tên <b>CÙNG NGÀY '+d2s(hl)+'</b>; hai dòng cùng trường cùng ngày thì <code>tenTai()</code> không xác định được lấy dòng nào');return}
+  toast('⛔ R43 — đã có một dòng đổi tên <b>CÙNG NGÀY '+d2s(hl)+'</b>; hai dòng cùng trường cùng ngày thì <code>tenTai()</code> ⛔ xác định được lấy dòng nào.<br>'+
+   '🧹 <b>Lối ra:</b> <b>bỏ tích</b> ô «Đổi tên theo quyết định» để <b>sửa thẳng</b> dòng ấy — ⛔ phải chờ sang ngày mai.');return}
  if(doiTen)ghiTO(t,'ten',cu,ten,hl,ly);
  if(doiMt){ghiTO(t,'mo_ta',t.mo_ta||'',mt,hl,ly);t.mo_ta=mt}
- logTo(t,'Sửa tổ',(doiTen?'Tên: '+cu+' → '+ten+' ':'')+(doiMt?'· Mô tả ':'')+'· hiệu lực từ '+d2s(hl)+' · '+ly);
+ logTo(t,'Đổi theo quyết định',(doiTen?'Tên: '+cu+' → '+ten+' ':'')+(doiMt?'· Mô tả ':'')+'· hiệu lực từ '+d2s(hl)+' · '+ly);
  closeModal();render();
- toast(hl>HOMNAY?'💾 Đã ghi — <b>hẹn hiệu lực từ '+d2s(hl)+'</b>; hôm nay bảng vẫn in tên cũ'
-  :'💾 Đã ghi ngay — tên mới có hiệu lực từ <b>'+d2s(hl)+'</b>, báo cáo năm cũ vẫn in tên cũ');
+ toast(hl>HOMNAY?'📅 Đã ghi — <b>hẹn hiệu lực từ '+d2s(hl)+'</b>; hôm nay bảng vẫn in tên cũ'
+  :'📅 Đã ghi ngay — tên mới có hiệu lực từ <b>'+d2s(hl)+'</b>, biên bản và báo cáo năm cũ vẫn in tên cũ');
 };
 ACT.mToDong=function(el){
  if(!can('toDong')){toast('⛔ Chỉ Hiệu trưởng giải thể tổ');return}
@@ -2409,7 +2971,12 @@ ACT.mToLS=function(el){
   '<div class="sech">Môn thuộc tổ — mọi dòng <span class="pill">HDCT ③b</span></div><table class="tb sm"><thead><tr><th>Môn</th><th>Từ</th><th>Đến</th><th>Tại ngày đọc</th><th>Lý do</th></tr></thead><tbody>'+
   (ds.map(l=>'<tr><td><b>'+esc(monTen(l.mon_id))+'</b></td><td>'+(l.hieu_luc_tu?d2s(l.hieu_luc_tu):'<span class="sub">di trú</span>')+'</td><td>'+(l.hieu_luc_den?d2s(l.hieu_luc_den):'—')+'</td><td>'+
    (trongKhoang(l,ngayDoc)?'<span class="st2 o">thuộc tổ</span>':l.hieu_luc_tu&&l.hieu_luc_tu>ngayDoc?'<span class="st2 b">⏳ chưa tới</span>':'<span class="st2 n">đã rời</span>')+'</td><td class="sub">'+esc(l.ly_do||'')+'</td></tr>').join('')||'<tr><td colspan="5"><span class="sub">— chưa có dòng nào —</span></td></tr>')+'</tbody></table>'+
-  (t.ls.length?'<div class="sech">Nhật ký thao tác <span class="sub">(⟂ lịch sử của bản ghi — hai cách nhìn của MỘT nguồn, §3b.4)</span></div><div class="logl">'+t.ls.slice().reverse().map(l=>'<div class="logi '+(l.c||'')+'"><b>'+esc(l.t)+'</b><span class="mm">'+d2s(l.d)+' · '+esc(l.ng)+'</span><div style="font-size:12px;color:var(--ink2)">'+esc(l.n)+'</div></div>').join('')+'</div>':''));
+  /* 🆕 SUAD §3b.4 — dai RIENG cho dong da go han: nhat ky la TAP CHA, dong thoi gian la tap con da loc */
+  (function(){const g=t.ls.filter(l=>l.t==='Gỡ hẳn dòng');
+   return g.length?'<div class="sech">Dòng đã gỡ hẳn ('+g.length+') <span class="pill">⛔ không ở dòng thời gian</span></div>'+
+    '<div class="ro" style="margin-bottom:6px">Những dòng này <b>coi như chưa từng có</b> với <code>toCuaMonTai()</code> — nhưng vết của việc đã khai <b>⛔ mất</b>. Nhật ký là <b>tập cha</b>, dòng thời gian là <b>tập con đã lọc</b> (§3b.4 · §12 điểm 55).</div>'+
+    '<div class="logl">'+g.slice().reverse().map(l=>'<div class="logi w"><b>đã gỡ hẳn</b><span class="mm">'+d2s(l.d)+' · '+esc(l.ng)+'</span><div style="font-size:12px;color:var(--ink2)">'+esc(l.n)+'</div></div>').join('')+'</div>':''})()+
+  (t.ls.length?'<div class="sech">Nhật ký thao tác <span class="sub">(⟂ lịch sử của bản ghi — §3b.4)</span></div><div class="logl">'+t.ls.slice().reverse().map(l=>'<div class="logi '+(l.c||'')+'"><b>'+esc(l.t)+'</b><span class="mm">'+d2s(l.d)+' · '+esc(l.ng)+'</span><div style="font-size:12px;color:var(--ink2)">'+esc(l.n)+'</div></div>').join('')+'</div>':''));
 };
 
 /* ═══════════════════════════════════════════════════════════════

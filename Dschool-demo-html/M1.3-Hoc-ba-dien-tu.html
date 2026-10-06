@@ -3488,7 +3488,7 @@ render();
    =================================================================== */
 
 var mauXem = 'tt22';      /* 'tt22' (mặc định) | 'lam_viec' */
-var khaiAnh = 1;          /* công tắc demo: trường đã khai ảnh dấu + ảnh chữ ký chưa */
+var khaiAnh = 1;          /* cong tac demo: nguoi ky da khai anh chu ky chua (BADD 30/9/2026: ⛔ con anh dau) */
 var mauCtx = null;        /* {ma,nam,ban} — bản in đang mở, để vẽ lại sau khi đổi công tắc */
 var banXuat = 'mot_nam';  /* mot_nam | day_du | chuyen_truong | phieu */
 var mucDich = '';         /* BẮT BUỘC — Luật BVDLCN 91/2025 */
@@ -3496,12 +3496,14 @@ var canhMD = 0;           /* đã bấm Xuất mà chưa chọn mục đích */
 var xuatD = null;
 
 /* ===== dữ liệu đọc 🔗 từ menu khác — M1.3 KHÔNG sở hữu trường nào ở đây =====
-   TRUONG.dau   ← M10.2 §4.1 trường MỚI `anh_dau`  (Master, chỉ HT khai, tùy chọn)
-   CKCN[người]  ← M4.1 §6.2.1 trường MỚI `anh_chu_ky` (Master, tùy chọn)
+   🔁 BADD 30/9/2026 — TRUONG.dau (anh_dau cua M10.2) DA GO HAN: con dau la thu NGUOI GIU DAU
+      dong len giay; anh dau nhung san lam to giay TU NHAN da duoc dong. Duong mang gia tri
+      con dau la CHU KY SO TO CHUC (M10.2 khoi «Chu ky so to chuc» · M4.11). ⛔ dung lai.
+   CKCN[người]  ← M4.1 §6.2.1 trường `anh_chu_ky` (Master, tùy chọn) — GIU (phuong an b)
    ANHHS[mã]    ← M1.1 ảnh 4×6 của học sinh
    Người KHÔNG có trong CKCN = chưa khai ⇒ ô chữ ký ĐỂ TRỐNG, không vẽ khung giả. */
 const TRUONG = {ten:'THCS & THPT Nguyễn Tất Thành', huyen:'Quận Cầu Giấy',
-  tinh:'Thành phố Hà Nội', ht:'Phạm Anh Tuấn', dau:'anh_dau_truong.png'};
+  tinh:'Thành phố Hà Nội', ht:'Phạm Anh Tuấn'};
 
 const CKCN = {
  'Phạm Anh Tuấn':'ck-pham-anh-tuan.png',   /* Hiệu trưởng đương nhiệm */
@@ -3545,10 +3547,10 @@ const LL0 = {ns2:'—',dt:'Kinh',dtuong:'—',oh:'—',cha:'—',me:'—',nghi:0
 const llOf = ma => LYLICH[ma] || LL0;
 
 /* ===== quy tắc ảnh ===== */
-/* Bản chuyển trường KHÔNG BAO GIỜ mang ảnh dấu và ảnh chữ ký (§6.6, ràng buộc 35).
-   Phiếu kết quả môn của trường cũng không — nó in ra rồi KÝ TAY, ĐÓNG DẤU THẬT. */
+/* Bản chuyển trường KHÔNG BAO GIỜ mang ảnh chữ ký (§6.6, ràng buộc 35).
+   Phiếu kết quả môn của trường cũng không — nó in ra rồi KÝ TAY, ĐÓNG DẤU THẬT.
+   🔁 BADD 30/9/2026 — coDau() DA GO: ⛔ con anh dau o bat ky ban in nao. */
 const banCoAnh = b => b === 'mot_nam' || b === 'day_du';
-const coDau = b => !!(khaiAnh && TRUONG.dau && banCoAnh(b || 'mot_nam'));
 const coCK = (ten, b) => !!(khaiAnh && CKCN[ten] && banCoAnh(b || 'mot_nam'));
 
 /* capOf da chuyen sang app.js — GDDP-2B: khung mon theo CAP doc no ngay khi nap */
@@ -3576,7 +3578,7 @@ function oAnh(kind, ten) {
     một ảnh chụp màn hình demo mà giống hệt giấy tờ có dấu là thứ mang đi dùng được.
     Chưa khai → ĐỂ TRỐNG, không khung, không nét vẽ giả (ràng buộc 36). */
  if (!ten) return '<div class="oanh trong"></div>';
- return `<div class="oanh ${kind}"><span class="ic">${kind === 'dau' ? '🔴' : '✍️'}</span>
+ return `<div class="oanh ${kind}"><span class="ic">✍️</span>
    <span class="fn">${ten}</span></div>`;
 }
 function gl(k, v) {return `<div class="gl"><span class="k">${k}</span><span class="v">${v}</span></div>`}
@@ -3598,11 +3600,10 @@ const cauXacThuc = () => ketNoiSo
  : 'Trường <b>chưa kết nối</b> hệ thống học bạ số tập trung Sở / Bộ — bản in <b>không có mã tra cứu và QR</b>.';
 
 function daiPhapLy(ban) {
- if (!coDau(ban) && !khaiAnh) return '';
  if (!banCoAnh(ban)) return '';
  if (!khaiAnh) return '';
  return `<div class="daipl">🛡 <div><b>Bản in từ học bạ số — giá trị pháp lý nằm ở CHỮ KÝ SỐ.</b>
-   Ảnh chữ ký và ảnh con dấu trên bản in này <b>chỉ để đọc cho giống bản giấy</b>, chúng
+   Ảnh chữ ký trên bản in này <b>chỉ để đọc cho giống bản giấy</b>, nó
    <b>không tạo ra giá trị pháp lý nào</b>. ${cauXacThuc()}</div></div>`;
 }
 
@@ -3625,7 +3626,7 @@ function mauBar(ma, nam) {
   <button class="mchip ${mauXem === 'lam_viec' ? 'on' : ''}" data-x="mau" data-m="lam_viec" data-ma="${ma}" data-nam="${nam}">🖥 Bản làm việc trên màn hình</button>
   <span class="mchip xam" title="TT 70/2026 Điều 6 giao Bộ quy định cấu trúc trường dữ liệu, định dạng, quy tắc hiển thị và mã hóa. Tra 18/9/2026: chưa có văn bản hướng dẫn kỹ thuật nào. Không đoán trước nội dung chuẩn đó.">🗄 Bản dữ liệu gửi ngành — ⏳ chờ quy định kỹ thuật của Bộ</span>
   <span class="sp"></span>
-  <button class="mchip demo" data-x="khaianh" data-v="${khaiAnh ? 0 : 1}">🎛 Demo: trường ${khaiAnh ? 'ĐÃ' : 'CHƯA'} khai ảnh dấu &amp; ảnh chữ ký</button></div>`;
+  <button class="mchip demo" data-x="khaianh" data-v="${khaiAnh ? 0 : 1}">🎛 Demo: ${khaiAnh ? 'ĐÃ' : 'CHƯA'} có ai khai ảnh chữ ký</button></div>`;
 }
 
 /* ===== bản in mẫu TT 22 ===== */
@@ -3639,11 +3640,10 @@ function giayTT22(h, ban) {
   if (banCoAnh(ban) && khaiAnh) cks.push(ten);
   return '<div class="oanh trong"></div>';
  };
- /* 🛑 Ảnh dấu CHỈ in khi ô chữ ký lãnh đạo có ảnh đi kèm. Dấu đóng LÊN chữ ký, không
-    đứng một mình: một tờ giấy có dấu mà không ai ký là thứ trông đã có hiệu lực
-    trong khi chưa ai chịu trách nhiệm về nó. */
+ /* 🔁 BADD 30/9/2026 — o anh dau GO HAN (rang buoc 38 xoa). Lap luan cu «dau dong LEN chu ky»
+    chi doi rui ro tu «dau khong kem ai» sang «dau kem mot cai anh» — anh chu ky cung ⛔ phai chu ky.
+    Thu khu duoc rui ro la CHU KY SO, va no da co. */
  const kyLD = !!(k4 && coCK(k4.ai, ban));
- const oDauLD = () => (coDau(ban) && kyLD) ? oAnh('dau', TRUONG.dau) : '<div class="oanh trong"></div>';
  /* 🆕 GDDP-2B §6.3.3b1 · ràng buộc 48 — ô `Chữ ký của giáo viên môn học` chứa MỘT KHỐI CHO MỖI PHẦN.
     Môn một phần ⇒ MỘT khối, KHÔNG in tên phần (tên phần của PT0 là tên môn — in lại là in hai lần) ⇒ ca PC1.
     Ràng buộc 36 áp cho TỪNG khối: ai chưa khai ảnh thì ô của RIÊNG người đó để trống, không khung giả, không nét ký giả.
@@ -3692,7 +3692,7 @@ function giayTT22(h, ban) {
     <div></div>
     <div class="kyo2"><div class="nt">${TRUONG.tinh}, ngày 28 tháng 5 năm ${+String(h.nam).slice(0, 4) + 1}</div>
      <div class="cd">HIỆU TRƯỞNG</div><div class="sub">(Ký, ghi rõ họ tên và đóng dấu)</div>
-     <div class="dauky">${oDauLD()}${oKy(k4 ? k4.ai : null)}</div>
+     <div class="dauky">${oKy(k4 ? k4.ai : null)}</div>
      <div class="ten">${k4 ? k4.ai : '<span class="sub">(chưa ký tầng 4 — in ra để ký tay)</span>'}</div></div></div>
   </div>
 
@@ -3727,7 +3727,7 @@ function giayTT22(h, ban) {
     ${h.hl === 'Tốt' ? 'kết quả học tập tốt và đều ở các môn' : h.hl === 'Khá' ? 'kết quả học tập khá, còn lệch giữa các môn' : 'cần cố gắng nhiều hơn ở các môn có kết quả thấp'}.</div>
    <div class="kyhang2">
     <div class="kyo2"><div class="cd">XÁC NHẬN CỦA HIỆU TRƯỞNG</div><div class="sub">(Ký, ghi rõ họ tên và đóng dấu)</div>
-     <div class="dauky">${oDauLD()}${oKy(k4 ? k4.ai : null)}</div>
+     <div class="dauky">${oKy(k4 ? k4.ai : null)}</div>
      <div class="ten">${k4 ? k4.ai : '<span class="sub">(chưa ký tầng 4 — in ra để ký tay)</span>'}</div></div>
     <div class="kyo2"><div class="nt">Ngày 28 tháng 5 năm ${+String(h.nam).slice(0, 4) + 1}</div>
      <div class="cd">GIÁO VIÊN CHỦ NHIỆM</div><div class="sub">(Ký, ghi rõ họ tên)</div>
@@ -3737,14 +3737,15 @@ function giayTT22(h, ban) {
      — ${k4.ai}, ${k4.cd} — <b>không phải</b> Hiệu trưởng đương nhiệm (${TRUONG.ht}).
      Học bạ là hồ sơ của <b>một năm học</b>: in chữ ký người đang tại chức lên trang của năm mà họ chưa ký
      là làm sai lệch chính cái mà chữ ký chứng thực. <i>(H5-P1)</i></div>` : ''}
-   ${!khaiAnh && banCoAnh(ban) ? `<div class="giaychu">⬜ <b>Trường chưa khai ảnh con dấu (<code>M10.2</code>) và chưa ai khai ảnh chữ ký (<code>M4.1</code>)</b>
+   ${!khaiAnh && banCoAnh(ban) ? `<div class="giaychu">⬜ <b>Chưa ai khai ảnh chữ ký (<code>M4.1</code>)</b>
      — mọi ô ảnh <b>để trống</b>, không khung giả, không nét vẽ giả. <b>Bản in vẫn hợp lệ và vẫn đúng mẫu TT 22</b>:
-     nó là tờ học bạ giấy chưa ký, in ra rồi <b>ký tay và đóng dấu thật</b>. Hai trường ảnh là <b>tùy chọn</b> —
+     nó là tờ học bạ giấy chưa ký, in ra rồi <b>ký tay và đóng dấu thật</b>. Ảnh chữ ký là <b>tùy chọn</b> —
      không khai thì không có gì hỏng, chỉ là bản in không giống bản giấy đã ký.</div>` : ''}
-   ${coDau(ban) && !kyLD ? `<div class="giaychu">🔴 <b>Ô ảnh con dấu để TRỐNG</b> — trường đã khai ảnh dấu, nhưng
-     ô chữ ký lãnh đạo của năm ${h.nam} <b>chưa có ảnh chữ ký</b>${k4 ? ' (' + k4.ai + ' chưa khai ở <code>M4.1</code>)' : ' (năm này chưa ký tầng 4)'}.
-     <b>Dấu đóng LÊN chữ ký, không đứng một mình:</b> một tờ giấy có dấu mà không ai ký là thứ trông như đã có hiệu lực
-     trong khi chưa ai chịu trách nhiệm về nó.</div>` : ''}
+   ${banCoAnh(ban) ? `<div class="giaychu">🔴 <b>Bản in không có ô con dấu — và đó là chủ ý</b> <i>(30/9/2026 · cụm <code>BADD</code>)</i>.
+     Con dấu là thứ <b>người giữ dấu đóng lên giấy</b>; một tệp ảnh dấu nhúng sẵn làm ra tờ giấy
+     <b>trông như đã đóng dấu mà không ai đóng</b>. Trường <code>anh_dau</code> ở <code>M10.2</code> đã <b>gỡ hẳn</b>.
+     Muốn bản in mang giá trị của con dấu thì đường đi là <b>chữ ký số tổ chức</b>
+     <span class="rolnk" data-go="M10.2">🔗 M10.2</span> — xem <code>Bản chuyển trường</code>.</div>` : ''}
    ${cks.length ? `<div class="giaychu">⬜ <b>Ô chữ ký của ${[...new Set(cks)].join(' · ')} để TRỐNG</b> vì những người này
      <b>chưa khai ảnh chữ ký</b> ở <code>M4.1</code>. Ràng buộc <b>36</b> áp cho <b>từng người</b>: môn ba giáo viên mà hai người đã khai ảnh
      thì in <b>hai ảnh và một ô trống</b>, bản in <b>vẫn hợp lệ và vẫn đúng mẫu</b>. Bản in <b>vẫn hợp lệ</b> — ô trống để ký tay lên bản in,
@@ -3767,10 +3768,11 @@ function xemTT22(ma, nam, ban) {
  $('#mdl').classList.remove('sm');
  modal(`📄 Mẫu TT 22 — Học bạ ${nam} · ${h.n} <span class="st2 ${st[1]}" style="margin-left:7px">${st[0]}</span>`,
   `${mauBar(ma, nam)}
-   ${ban === 'chuyen_truong' ? `<div class="danger"><b>Bản chuyển trường — KHÔNG có ảnh con dấu, KHÔNG có ảnh chữ ký.</b>
+   ${ban === 'chuyen_truong' ? `<div class="danger"><b>Bản chuyển trường — KHÔNG có ảnh chữ ký.</b>
      Khóa cứng, không có công tắc. Trường nhận đọc bản này <b>như một học bạ hợp lệ</b>, nên thứ duy nhất
      được phép đứng ở chỗ chữ ký là <b>chữ ký số của Hiệu trưởng</b> và <b>chữ ký số của tổ chức</b>.
-     Dán một ảnh dấu vào đó là dựng một bản trông như đã đóng dấu mà <b>không có gì kiểm chứng được</b>.</div>
+     <b>Chữ ký số của tổ chức chính là con dấu trong môi trường điện tử</b> — đây là bản duy nhất
+     mang giá trị ấy, và nó có được nhờ <b>ký số</b> chứ không nhờ một tệp ảnh.</div>
     <div class="ok"><b>✓ Hai chữ ký số trên bản này:</b> 🔐 Hiệu trưởng ${TRUONG.ht} · 🔐 Chứng thư số tổ chức của trường
      <span class="rolnk" data-go="M10.2">🔗 M10.2</span> — ${cauXacThuc()}</div>` : ''}
    ${chuaKS(h) ? `<div class="danger">🖨 <b>Dòng đầu trang của bản in:</b> <i>«Chưa ký số — không phải học bạ số. Chỉ có giá trị khi in ra, ký tay và đóng dấu.»</i>
@@ -3825,7 +3827,7 @@ function xuatPDF(d) {
      <div><b>📄 Mẫu TT 22 — như bản giấy</b> <span class="st2 b">mặc định</span><br>
       <span class="sub">Đúng Phụ lục <b>TT 22/2021</b>: trang bìa và sơ yếu lý lịch có <b>ảnh học sinh</b>,
       bảng kết quả từng môn có cột <b>chữ ký giáo viên môn học</b>, khối chữ ký cuối trang có
-      <b>ảnh chữ ký</b> và <b>ảnh con dấu</b> nếu trường đã khai.</span></div></label>
+      <b>ảnh chữ ký</b> nếu người ký đã khai. <b>Không có ô con dấu</b> — con dấu phải được đóng.</span></div></label>
     <label class="mrow xam"><input type="radio" name="mx" disabled style="width:15px;height:15px">
      <div><b>🗄 Bản dữ liệu gửi ngành</b> <span class="st2 n">⏳ chưa dựng</span><br>
       <span class="sub"><b>TT 70/2026 Điều 6</b> giao Bộ quy định riêng cấu trúc trường dữ liệu, định dạng,
@@ -3841,13 +3843,14 @@ function xuatPDF(d) {
     ${row('chuyen_truong', 'Bản chuyển trường', 'Dùng ở M1.5', '<b style="color:var(--red)">KHÔNG BAO GIỜ</b><br><span class="sub">khóa cứng, không có công tắc</span>', 'HT + chữ ký số tổ chức')}
     ${mtrX.length ? row('phieu', '🏫 Phiếu kết quả môn học của nhà trường', 'Chỉ môn Của trường — in rời', 'chính nó', '<b>không có ô ký số nào</b>') : ''}
    </table></div>
-   <div class="danger" style="margin-top:11px"><b>Vì sao Bản chuyển trường không có ảnh dấu, ảnh chữ ký — và không có công tắc để bật.</b>
-    Trường nhận đọc bản đó <b>như một học bạ hợp lệ</b>. Ảnh dấu và ảnh chữ ký <b>không kiểm chứng được</b>:
-    ai có tệp ảnh cũng dán được, và dán xong thì bản in <b>trông y như đã đóng dấu</b>. Thứ duy nhất trả lời được
+   <div class="danger" style="margin-top:11px"><b>Vì sao Bản chuyển trường không có ảnh chữ ký — và không có công tắc để bật.</b>
+    Trường nhận đọc bản đó <b>như một học bạ hợp lệ</b>. Ảnh chữ ký <b>không kiểm chứng được</b>:
+    ai có tệp ảnh cũng dán được, và dán xong thì bản in <b>trông y như đã ký</b>. Con dấu thì <b>không có ảnh nào</b> —
+    nó phải được đóng, hoặc thay bằng <b>chữ ký số tổ chức</b> như chính bản này. Thứ duy nhất trả lời được
     câu <i>"ai ký, ký lúc nào, nội dung có bị đổi sau đó không"</i> là <b>chữ ký số</b>. Cùng lập luận với việc bản đó
     không được nhét môn ngoài chuẩn — <b>TT 70/2026</b> Điều 4 khoản 2 đòi <b>đúng chuẩn dữ liệu và được ký số</b>.</div>
-   ${khaiAnh ? `<div class="warn"><b>Bản in mang ảnh dấu và ảnh chữ ký phải có dải ghi rõ giá trị pháp lý</b> ở đầu bản:
-     <i>"Bản in từ học bạ số — giá trị pháp lý nằm ở chữ ký số; ảnh chữ ký và ảnh dấu chỉ để đọc cho giống bản giấy"</i>,
+   ${khaiAnh ? `<div class="warn"><b>Bản in mang ảnh chữ ký phải có dải ghi rõ giá trị pháp lý</b> ở đầu bản:
+     <i>"Bản in từ học bạ số — giá trị pháp lý nằm ở chữ ký số; ảnh chữ ký chỉ để đọc cho giống bản giấy"</i>,
      kèm <b>mã tra cứu và QR</b> khi đã kết nối hệ thống tập trung. Không có dải này thì tờ giấy tự nhận là bản gốc.</div>` : ''}
    ${mtrX.length && keX.length ? `<div class="warn"><b>Phiếu môn của trường sẽ mang dấu "BẢN CHƯA ĐẦY ĐỦ"</b> —
      còn ${keX.length} môn chưa đủ kết quả (${keX.map(t => t.m + ': thiếu ' + (t.tong - t.co) + ' em').join(' · ')}).
@@ -3868,8 +3871,8 @@ function xuatPDF(d) {
      const ten = {mot_nam: 'Học bạ một năm', day_du: 'Học bạ đầy đủ', chuyen_truong: 'Bản chuyển trường', phieu: 'Phiếu kết quả môn học của nhà trường'}[banXuat];
      toast(`Đã xuất <b>${ten}</b> · mẫu <b>TT 22</b> · mục đích "<b>${mucDich}</b>" · ghi audit`
       + (ketNoiSo ? ' · <b>mã và QR học bạ số</b> của hệ thống tập trung Sở / Bộ' : ' · <b>không có mã tra cứu và QR</b> — chưa kết nối hệ thống tập trung')
-      + (banCoAnh(banXuat) && khaiAnh ? ' · có ảnh dấu và ảnh chữ ký ⇒ in kèm <b>dải giá trị pháp lý</b>'
-         : banXuat === 'chuyen_truong' ? ' · <b>không ảnh dấu, không ảnh chữ ký</b> · ký số HT + ký số tổ chức' : ''));
+      + (banCoAnh(banXuat) && khaiAnh ? ' · có ảnh chữ ký ⇒ in kèm <b>dải giá trị pháp lý</b>'
+         : banXuat === 'chuyen_truong' ? ' · <b>không ảnh chữ ký</b> · ký số HT + ký số tổ chức' : ''));
    }]]);
 }
 
@@ -3884,16 +3887,13 @@ function actTT22(a, d) {
  }
  if (a === 'khaianh') {
   khaiAnh = +d.v;
-  toast(khaiAnh ? 'Trường ĐÃ khai ảnh con dấu (M10.2) và một số người đã khai ảnh chữ ký (M4.1)'
-                : 'Trường CHƯA khai ảnh nào — mọi ô ảnh dấu và ảnh chữ ký để TRỐNG, bản in vẫn hợp lệ');
+  toast(khaiAnh ? 'Một số người ĐÃ khai ảnh chữ ký (M4.1)'
+                : 'CHƯA ai khai ảnh chữ ký — mọi ô ảnh để TRỐNG, bản in vẫn hợp lệ');
   if (mauCtx) {mauXem === 'tt22' ? xemTT22(mauCtx.ma, mauCtx.nam, mauCtx.ban) : xemHB(mauCtx.ma, mauCtx.nam)}
   return true;
  }
- if (a === 'taidau') {
-  /* H5-P3 — không cho tải ảnh dấu ra ngoài dạng tệp rời */
-  toast('⛔ Không tải ảnh con dấu ra tệp rời — ảnh dấu chỉ nhúng trong bản in. Một tệp dấu rời là một con dấu mang đi dán được.');
-  return true;
- }
+ /* BADD 30/9/2026 — nhanh 'taidau' (chan tai anh dau ra tep roi, H5-P3) DA GO:
+    khong con anh dau de ma tai. Rang buoc 40 xoa han. */
  return false;
 }
 function chgTT22(e) {

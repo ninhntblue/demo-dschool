@@ -390,7 +390,7 @@ table.tt2 tr:last-child td{border-bottom:none}
       Trường học và tài khoản Admin đầu tiên do CMS CỦA CÔNG TY tạo rồi
       bàn giao. Đăng nhập lần đầu là đã có sẵn cả hai (§4).
       ⟹ trạng thái chua_khoi_tao ⛔ không còn tồn tại trong hệ thống:
-             dang_khoi_tao ──[ký bàn giao]──► dang_van_hanh
+             dang_khoi_tao ──[xác nhận bàn giao]──► dang_van_hanh
 
    ② MENU CHỈ DÀNH CHO DUY NHẤT TÀI KHOẢN ADMIN ĐẦU TIÊN, và ⛔ KHÔNG
       có mặt trong danh sách menu để phân quyền của M10.4 (§4.3 · §6 · §9).
@@ -633,16 +633,30 @@ document.addEventListener('click', e => {
     D.B08b.trangThaiNam = 'nhap';
     dong(); ve(); return bao('🧪 Demo: năm chưa có bản ghi nào ⇒ về Nháp được. Nút «✓ Tạo hồ sơ năm học» hiện lại ở B08b ⓓ');
   }
-  /* Tab ② Bàn giao — 🔁 29/9: người ký là CHỦ TÀI KHOẢN ADMIN ĐẦU TIÊN */
-  if (x === 'ky-ban-giao' || x === 'bo-qua-ky'){
+  /* Tab ② Bàn giao — 🔁 30/9: MỘT nút, ⛔ KHÔNG ký số (bỏ 'ky-ban-giao' và 'bo-qua-ky').
+     Vết ghi kèm BẢN CHỤP SỐ LIỆU của bảng §4c.2 — đó là thứ trả lời được câu
+     «dữ liệu sai từ lúc nào», ⛔ không phải chữ ký. */
+  if (x === 'xac-nhan-ban-giao'){
+    if (!duBanGiao() || !moDuocMenu()) return bao('⛔ Chưa đủ điều kiện bàn giao — hoặc tài khoản này ⛔ mở được menu');
+    const chup = anhSoLieu();
+    return modal('Trường đã nhận hệ thống?',
+      '<div class="ro">Ghi lại <b>trạng thái dữ liệu tại thời điểm này</b>:<br>' + chup + '</div>' +
+      '<div class="warn">🛑 Thao tác này ⛔ <b>hoàn tác được</b> — <b>quyền khởi tạo tạm hết hiệu lực ngay</b> ' +
+      '<i>(hợp đồng <code>HDKT</code> ④, ⛔ không gia hạn)</i>.</div>',
+      '<button class="btn" data-x="dong">Huỷ</button>' +
+      '<button class="btn p" data-x="ghi-ban-giao">✓ Trường đã nhận hệ thống</button>');
+  }
+  if (x === 'ghi-ban-giao'){
+    /* 🛑 Hàng rào THẬT, ⛔ dựa vào nút bị tắt — xem chú thích duBanGiao() ở app.30. */
+    if (!duBanGiao() || !moDuocMenu() || S.trangThai !== 'dang'){
+      dong(); return bao('⛔ Bị chặn: chưa đủ bước bắt buộc, sai tài khoản, hoặc trường đã vận hành');
+    }
     S.trangThai = 'van_hanh'; S.soNhanSu = 63;
-    ghiNhatKy('Bàn giao hệ thống', x === 'ky-ban-giao'
-      ? S.nguoiDau.ten + ' (tài khoản Admin đầu tiên) ký số Nhóm A'
-      : S.nguoiDau.ten + ' (tài khoản Admin đầu tiên) BỎ QUA ký số — ghi audit, đồng bộ M4.3');
+    ghiNhatKy('Bàn giao hệ thống',
+      S.nguoiDau.ten + ' (tài khoản Admin đầu tiên) xác nhận trường đã nhận hệ thống — ⛔ không ký số; bản chụp: ' + anhSoLieuTho());
     document.querySelectorAll('.tt').forEach((t, i) => t.classList.toggle('on', i === 1));
-    ve();
-    return bao(x === 'ky-ban-giao' ? '⚖ Đã ký bàn giao — trường chuyển sang Đang vận hành; quyền khởi tạo tạm HẾT HIỆU LỰC'
-      : '⚠ Đã bỏ qua ký số — ghi audit và đồng bộ sang M4.3; trường chuyển sang Đang vận hành');
+    dong(); ve();
+    return bao('✅ Đã xác nhận bàn giao — trường chuyển sang Đang vận hành; quyền khởi tạo tạm HẾT HIỆU LỰC');
   }
 });
 
@@ -707,7 +721,7 @@ const BUOC = [
   {ma:'B12',  ten:'Khoản thu cho đợt sau mốc',     tang:'Tài chính', loai:'form',       hang:'N', menu:'M7.1 · M7.2', cd:'KT',          nhanh:'tc',    pt:['B08b'], tuyChon:true},
   {ma:'B13',  ten:'Bật dịch vụ App PH-HS',         tang:'Ra ngoài',  loai:'quyết định', hang:'N', menu:'M10.10 · M10.5', cd:'HT',        nhanh:'tc',    pt:['B09']},
   /* 🔁 TNHM: chỉ còn F6 — «Tạo hồ sơ» (F5) đã lên B08b ⓓ; pt ghi thẳng B09 (N3)
-     ✅ TNHM-Z · chốt P-2 (anh Ninh 24/9/2026): B14 ⛔ KHÔNG chặn ký bàn giao — trường nhận hệ thống mùa hè ký được
+     ✅ TNHM-Z · chốt P-2 (anh Ninh 24/9/2026): B14 ⛔ KHÔNG chặn bàn giao — trường nhận hệ thống mùa hè ký được
      ngay khi đã «Tạo hồ sơ» (B08b ⓓ) và xếp học sinh vào lớp (B09); 🚀 làm ở M10.1 vào ngày tựu trường như mọi năm.
      Cờ khongChanBG ≠ tuyChon: B14 vẫn là bước BẮT BUỘC của luồng (thanh tiến độ vẫn đếm), chỉ không vào checklist bàn giao. */
   {ma:'B14',  ten:'🚀 Bắt đầu năm học',             tang:'Chạy',      loai:'quyết định', hang:'M', menu:'M10.1 F6',  cd:'HT ⚖',           nhanh:'chinh', pt:['B09','B11','B12','B13','B10'], khongChanBG:true},
@@ -868,7 +882,7 @@ function veLuong(){
    Thứ thay chỗ nó là QUYỀN KHỞI TẠO TẠM — gắn vào TÀI KHOẢN + TRẠNG THÁI. */
 function quyenLuong(){
   return '<span class="qok">🔑 ' + esc(R().cd) + ' · <b>quyền khởi tạo tạm</b> — ' +
-    'thao tác được MỌI bước của luồng, hết hiệu lực khi <b>ký bàn giao</b> <i>(HDKT ④)</i>. ' +
+    'thao tác được MỌI bước của luồng, hết hiệu lực khi <b>xác nhận bàn giao</b> <i>(⛔ ký số — 30/9/2026)</i> <i>(HDKT ④)</i>. ' +
     '⛔ Menu này ⛔ có ô quyền nào <i>(§9)</i>.</span>';
 }
 
@@ -1024,8 +1038,12 @@ function demGhiVaoNam(){
    TAB ② — BÀN GIAO  ·  cụm KTLD
    🔁 29/9/2026: tab ③ → tab ② (bỏ tab ① Khai trường lần đầu), và NGƯỜI KÝ
    đổi từ «chỉ Hiệu trưởng» sang CHỦ TÀI KHOẢN ADMIN ĐẦU TIÊN — vì Hiệu trưởng
-   ⛔ mở được menu này nữa (§4.3 · §4.4 · ràng buộc 17). Phần Ký số Option
-   Nhóm A của H8 GIỮ NGUYÊN.
+   ⛔ mở được menu này nữa (§4.3 · §4.4 · ràng buộc 17).
+   🔁 30/9/2026 — anh Ninh: «Bỏ bước Ký bàn giao đi». MỐC BÀN GIAO GIỮ NGUYÊN,
+   bỏ CHỮ KÝ SỐ: chốt H8 hết hiệu lực ở menu này. Hai nút «⚖ Ký bằng USB Token
+   / SmartCA» và «Bỏ qua ký số» BỎ; thay bằng MỘT nút «✓ Trường đã nhận hệ
+   thống», ghi M10.7 kèm BẢN CHỤP SỐ LIỆU của bảng §4c.2 tại thời điểm bấm.
+   ⛔ Không đồng bộ chứng thư sang M4.3; tab này ⛔ còn nhóm ký số A.
 
    Mốc PHÁP LÝ «trường nhận hệ thống»: ai ký, ngày nào, trạng thái dữ liệu
    lúc đó (chốt H8 — Ký số Option Nhóm A, bỏ qua được nhưng ghi audit).
@@ -1036,16 +1054,15 @@ function demGhiVaoNam(){
 function veBanGiao(){
 
   /* ✅ TNHM-Z · P-2: bước chặn bàn giao = bắt buộc VÀ không mang cờ khongChanBG (B14 🚀) */
-  const chanBG = b => !b.tuyChon && !b.khongChanBG;
   const chua = BUOC.filter(b => chanBG(b) && trangThai(b) !== 'xong');
-  const du = chua.length === 0;
+  const du = duBanGiao();
   const daXong = S.trangThai === 'van_hanh';
 
   let h = '';
 
   if (daXong)
-    h += '<div class="ok">✅ <b>Trường đã nhận hệ thống</b> — bàn giao lúc <b>24/09/2026 09:20</b>, người ký: <b>' + esc(S.nguoiDau.ten) + ' · tài khoản Admin đầu tiên (' + S.taiKhoan.u + ')</b> ' +
-      '<i>(Ký số Option Nhóm A)</i>. Luồng khởi tạo nay là <b>bản ghi lịch sử</b> — mở ra xem được, ⛔ không thao tác được.</div>';
+    h += '<div class="ok">✅ <b>Trường đã nhận hệ thống</b> — bàn giao lúc <b>24/09/2026 09:20</b>, người xác nhận: <b>' + esc(S.nguoiDau.ten) + ' · tài khoản Admin đầu tiên (' + S.taiKhoan.u + ')</b> ' +
+      '<i>(⛔ không ký số — chốt 30/9/2026)</i>. Luồng khởi tạo nay là <b>bản ghi lịch sử</b> — mở ra xem được, ⛔ không thao tác được.</div>';
   else if (du)
     h += '<div class="ok">✅ <b>Đủ điều kiện bàn giao</b> — ' + BUOC.filter(chanBG).length + ' bước chặn bàn giao đã xong' + (trangThai(BUOC.filter(b => b.ma === 'B14')[0]) === 'xong' ? '' : ' — 🚀 <b>B14 Bắt đầu năm học</b> chưa làm: ⛔ không chặn, làm ở M10.1 vào ngày tựu trường (chốt P-2)') + '.</div>';
   else
@@ -1084,26 +1101,55 @@ function veBanGiao(){
   if (daXong) return h + '<div class="ro">🛑 <b>Quyền khởi tạo tạm đã HẾT HIỆU LỰC</b> <i>(hợp đồng <code>HDKT</code> ④)</i> — ' +
     'từ đây mọi thao tác đi qua ma trận <b>Chức danh × Feature × Phạm vi</b> như mọi menu khác. ⛔ Không gia hạn.</div>';
 
-  /* Ô ký */
-  /* 🔁 29/9/2026 — người ký là CHỦ TÀI KHOẢN ADMIN ĐẦU TIÊN, ⛔ không phải chức danh HT.
+  /* Ô xác nhận mốc bàn giao — ⛔ KHÔNG ký số (🔁 30/9/2026) */
+  /* Người bấm là CHỦ TÀI KHOẢN ADMIN ĐẦU TIÊN, ⛔ không phải chức danh HT.
      Tài khoản khác ⛔ tới được đây (màn chặn ở app.js), nên vế này luôn đúng khi vẽ ra. */
-  const laHT = moDuocMenu();
-  h += '<div class="card"><div class="ch">⚖ Ký bàn giao <span class="st2 n">Nhóm A</span></div><div class="cb">' +
-    '<div class="info">Đây là <b>mốc pháp lý «trường nhận hệ thống»</b>: ai ký, ngày nào, trạng thái dữ liệu lúc đó. ' +
-    'Về sau nếu có tranh luận <i>«dữ liệu sai từ lúc nào»</i> thì đây là mốc duy nhất trả lời được <i>(chốt <code>H8</code>)</i>.<br>' +
-    '🔁 <b>29/9/2026 — đổi người ký:</b> chốt cũ ghi <i>«chỉ Hiệu trưởng ký»</i>; nay Hiệu trưởng ⛔ <b>không mở được menu này</b> ' +
-    '<i>(§4.3)</i>, nên người ký là <b>chủ tài khoản Admin đầu tiên</b>. Thực tế hai người thường là một <i>(§4.2)</i>.<br>' +
-    'Ký số Option <b>Nhóm A</b> — <b>bỏ qua được</b>, bỏ qua thì <b>ghi audit</b> và đồng bộ sang <code>M4.3</code>.</div>' +
+  const duocBam = moDuocMenu();
+  h += '<div class="card"><div class="ch">✅ Mốc bàn giao <span class="st2 n">⛔ không ký số</span></div><div class="cb">' +
+    '<div class="info">Đây là <b>mốc «trường nhận hệ thống»</b>: ai bấm, lúc nào, <b>trạng thái dữ liệu lúc đó</b>. ' +
+    'Về sau nếu có tranh luận <i>«dữ liệu sai từ lúc nào»</i> thì đây là mốc duy nhất trả lời được.<br>' +
+    '🔁 <b>30/9/2026 — bỏ chữ ký số:</b> chốt <code>H8</code> <i>(Ký số Option Nhóm A)</i> <b>hết hiệu lực ở menu này</b>. ' +
+    'Thứ trả lời được câu trên là <b>vết <code>M10.7</code> kèm bản chụp số liệu</b>, ⛔ không phải chữ ký — ' +
+    'ký số chỉ thêm giá trị khi bản ghi <b>rời hệ thống thành văn bản cho bên thứ ba</b>, còn mốc này ⛔ rời đi đâu.<br>' +
+    '🔁 <b>29/9/2026 — người bấm:</b> Hiệu trưởng ⛔ <b>mở được menu này</b> <i>(§4.3)</i>, nên người xác nhận là ' +
+    '<b>chủ tài khoản Admin đầu tiên</b>. Thực tế hai người thường là một <i>(§4.2)</i>.</div>' +
     '<div class="cact"><span style="font-size:12px;color:var(--ink2)">' +
-      (laHT ? 'Người ký: <b>' + esc(S.nguoiDau.ten) + '</b> — chủ tài khoản Admin đầu tiên <i>(' + S.taiKhoan.u + ')</i>'
-            : '🔒 Chỉ <b>chủ tài khoản Admin đầu tiên</b> ký được — tài khoản hiện tại là ' + esc(R().cd)) + '</span>' +
+      (duocBam ? 'Người xác nhận: <b>' + esc(S.nguoiDau.ten) + '</b> — chủ tài khoản Admin đầu tiên <i>(' + S.taiKhoan.u + ')</i>'
+               : '🔒 Chỉ <b>chủ tài khoản Admin đầu tiên</b> xác nhận được — tài khoản hiện tại là ' + esc(R().cd)) + '</span>' +
     '<div class="spacer" style="flex:1"></div>' +
-    '<button class="btn" data-x="bo-qua-ky"' + (du && laHT ? '' : ' disabled') + '>Bỏ qua ký số</button>' +
-    '<button class="btn p" data-x="ky-ban-giao"' + (du && laHT ? '' : ' disabled') + '>⚖ Ký bằng USB Token / SmartCA</button></div>' +
+    '<button class="btn p" data-x="xac-nhan-ban-giao"' + (du && duocBam ? '' : ' disabled') + '>✓ Trường đã nhận hệ thống</button></div>' +
     (du ? '' : '<div class="ro">Nút khoá vì còn bước bắt buộc chưa xong — ⛔ không phải vì quyền.</div>') +
     '</div></div>';
   return h;
 }
+/* 🆕 30/9/2026 — ĐIỀU KIỆN ĐỦ để bấm mốc bàn giao, tách thành HÀM.
+   🔴 Lý do tách: trước bản này, điều kiện chỉ sống trong veBanGiao() để tắt nút —
+   gọi thẳng dispatcher vẫn ghi được (đo 30/9: B13 chưa xong mà trạng thái vẫn
+   nhảy sang van_hanh). «Nút khoá» ⛔ là một hàng rào. Nay app.js hỏi lại hàm này. */
+const chanBG = b => !b.tuyChon && !b.khongChanBG;
+function duBanGiao(){ return BUOC.filter(b => chanBG(b) && trangThai(b) !== 'xong').length === 0; }
+
+/* 🆕 30/9/2026 — BẢN CHỤP SỐ LIỆU của mốc bàn giao (thay chỗ chữ ký số).
+   Đúng sáu dòng của bảng §4c.2; đọc TẠI THỜI ĐIỂM BẤM, ⛔ không tính lại về sau. */
+function soLieuBanGiao(){
+  return [
+    ['Nhân sự',      tongDT(D.B04.theoDT) + ' hồ sơ'],
+    ['Học sinh',     tongDT(D.B09.theoDT).toLocaleString('vi') + ' hồ sơ'],
+    ['Lớp học',      D.B11.lop + ' lớp (' + D.B11.lopCoTKB + ' đã có TKB)'],
+    ['Môn của lớp',  D.B11.mon + ' bản ghi (' + D.B11.monCoKHGD + ' đã có KHGD)'],
+    ['Khoản thu',    D.B12.khoanThu + ' khoản'],
+    ['App PH-HS',    D.B13.dichVu + ' dịch vụ · ' + D.B13.moiPH + ' em đã tạo link'],
+  ];
+}
+function anhSoLieu(){
+  return '<table class="tt2" style="margin-top:6px"><tbody>' +
+    soLieuBanGiao().map(r => '<tr><td class="t2a">' + r[0] + '</td><td class="t2b"><b>' + r[1] + '</b></td></tr>').join('') +
+    '</tbody></table>';
+}
+function anhSoLieuTho(){
+  return soLieuBanGiao().map(r => r[0] + ' ' + r[1]).join(' · ');
+}
+
 function tt2(a, b, c){
   return '<tr><td class="t2a">' + a + '</td><td class="t2b"><b>' + b + '</b></td>' +
     '<td class="t2c">' + esc(c) + '</td></tr>';

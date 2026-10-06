@@ -604,7 +604,9 @@ const bbCua=cap=>MON.filter(m=>m.nhom[cap]==='bb').map(m=>m.ma);
 /* dung danh sach mon mac dinh cua mot lop */
 function mlMacDinh(lop,o){
  o=o||{};const cap=capOf(lop.khoi);if(cap==='TH')return [];
- const a=bbCua(cap).map(ma=>({ma:ma,vai:'bb',kdg:monM(ma).kdg,tx:null,cd:0,pt:'PT0'}));
+ /* 🔁 RSTT — danh sach bat buoc nhan tu ngoai (cau hinh buoc ② theo KHOI — R97).
+    Khong truyen thi roi ve bbCua(cap) de du lieu gieo luc khoi tao van chay. */
+ const a=(o.bb&&o.bb.length?o.bb:bbCua(cap)).map(ma=>({ma:ma,vai:'bb',kdg:monM(ma).kdg,tx:null,cd:0,pt:'PT0'}));
  a.push({ma:o.nn1||'ANH',vai:'nn1',kdg:'ds',tx:null,cd:0,pt:'PT0'});
  if(o.nn2)a.push({ma:o.nn2,vai:'nn2',kdg:'ds',tx:null,cd:0,pt:'PT0'});
  if(cap==='THPT'){(o.lc||[]).forEach(ma=>a.push({ma:ma,vai:'lc',kdg:monM(ma).kdg,tx:null,cd:0,pt:'PT0'}));
@@ -1106,8 +1108,14 @@ function lopTT(n,lop){
  const ml=mlOf(n,lop.id),cap=capOf(lop.khoi),msg=[],chan=[];
  if(!ml.length)return {st:'o',msg:['Chưa có môn nào'],chan:['chưa có môn']};
  const co=ml.map(e=>e.ma);
- const thieu=bbCua(cap).filter(ma=>co.indexOf(ma)<0);
- if(thieu.length)chan.push('thiếu môn bắt buộc: '+thieu.map(monTen).join(', '));
+ /* 🔁 RSTT (1/10/2026) — R48 DOI NGUON ＋ DOI MUC.
+    ① Nguon: doc «Là môn bắt buộc của khối» o buoc ② khoi b theo DUNG KHOI cua lop (R97),
+       ⛔ con doc hai danh sach co dinh trong ma theo CAP.
+    ② Muc: thieu mon bat buoc nay la ⚠ CANH BAO co neu TEN VAN BAN, ⛔ chan (R98) —
+       danh sach ay la LOI KHAI CUA TRUONG, ⛔ phai chu cua van ban.
+    🛑 Ve «chua co mon nao» ⇒ VAN CHAN: do la «nam hoc khong chay duoc», ⛔ phai viec tuan thu. */
+ const thieu=bbCuaKhoiLop(n,lop).filter(ma=>co.indexOf(ma)<0);
+ if(thieu.length)msg.push('thiếu môn bắt buộc của khối '+lop.khoi+': '+thieu.map(monTen).join(', ')+' — khác với quy định của '+VANBAN_BB+' (R48 · R98, không chặn)');
  if(!ml.some(e=>e.vai==='nn1'))chan.push('chưa chọn Ngoại ngữ 1');
  const mc=(HEM[lop.he]||{}).mc;
  if(TRUONG.chuyen&&mc&&co.indexOf(mc)<0)msg.push('lớp thuộc hệ '+heTen(lop.he)+' nhưng chưa có môn chuyên '+monTen(mc)+' (R45)');
@@ -2183,12 +2191,20 @@ function ttLop(n,l){
  if(!l.gvcn)return '<span class="st2 w">⚠ Chưa có GVCN</span>';
  return '<span class="st2 o">Đang hoạt động</span>';
 }
+/* RSTT-1B (1/10) — bon co dac diem cua lop o MOT COT RIENG «Dac diem lop», KHONG con la dai chip duoi ten lop */
+const DDLOP=[
+ ['songngu','🔤 song ngữ','v','Lớp song ngữ — lớp học chương trình song ngữ (có môn dạy bằng tiếng nước ngoài). Là nguồn duy nhất của dòng «Có học chương trình song ngữ» ở mục ⑦ (R63)'],
+ ['ghep',   '⇄ ghép',    'b','Lớp ghép — nhiều khối ngồi chung một phòng, một giáo viên dạy (điểm trường lẻ, lớp quá ít HS). Bật thì cột «Ghép vào lớp» liền sau mới mở'],
+ ['botuc',  '📘 bổ túc', 'n','Lớp bổ túc THPT — lớp học chương trình giáo dục thường xuyên cấp THPT mở trong trường phổ thông («bổ túc» là chữ cũ của cổng CSDL ngành)'],
+ ['hocnghe','🔧 học nghề','n','Có học sinh học nghề — trong lớp có ít nhất một em vừa học văn hóa vừa học nghề. Nuôi phân nhóm «lớp có HS học nghề» của báo cáo EMIS']
+];
 function chipLop(l){
- /* CSDL-1B — bon co moi hien thanh chip tren dong phu cua ten lop */
- return (l.songngu?'<span class="st2 v" title="Lớp song ngữ — làm dòng «Có học chương trình song ngữ» ở mục ⑦ thành Có (R63)">🔤 song ngữ</span> ':'')+
-  (l.ghep?'<span class="st2 b" title="Lớp ghép">⇄ ghép</span> ':'')+
-  (l.botuc?'<span class="st2 n">📘 bổ túc</span> ':'')+
-  (l.hocnghe?'<span class="st2 n">🔧 học nghề</span> ':'');
+ return DDLOP.filter(o=>l[o[0]]).map(o=>'<span class="st2 '+o[2]+'" title="'+o[3]+'">'+o[1]+'</span>').join(' ');
+}
+function oDacDiem(l,e){
+ /* Sua duoc thi chinh chip la bat/tat (chip on = co dang bat) — KHONG mo form */
+ if(!(e&&l.tt==='mo'))return chipLop(l)||'<span class="sub">—</span>';
+ return DDLOP.map(o=>'<span class="chip '+(l[o[0]]?'on':'')+'" data-x="lopCo" data-l="'+l.id+'" data-c="'+o[0]+'" title="'+o[3]+'">'+o[1]+'</span>').join('');
 }
 function sec3(n){
  gieoLop1B(n);   /* CSDL-1B — lop tao sau (tay · hang loat · ke thua · import) cung co bay truong moi */
@@ -2204,12 +2220,12 @@ function sec3(n){
  s+='<div class="bar" style="padding:0 0 8px">'+(e?'<button class="btn sm" data-x="mTaoLop">＋ Tạo từng lớp</button><button class="btn sm" data-x="mHangLoat">⊞ Tạo hàng loạt theo khối</button>':'')+
   '<span class="spacer" style="flex:1"></span><button class="qf '+(M3DONG?'on':'')+'" data-x="m3dong">Đã đóng ('+c.lop.filter(l=>l.tt!=='mo').length+')</button>'+
   '<span class="sub">Mọi cách chỉ tạo <b>cái hộp</b> — học sinh vào lớp qua M3.3 kết chuyển, M1.4 tuyển sinh</span></div>';
- s+='<div class="tbw"><table class="tb"><thead><tr><th style="width:40px" title="Máy điền sẵn theo thứ tự tạo trong Điểm trường × Khối — sửa tay được (R61)">TT</th><th>Lớp</th><th>Hệ</th><th>Sĩ số (đang học / tối đa + giữ chỗ)</th><th>GVCN — ô ghi hộ M4.5</th><th title="Nguồn của trường cùng tên ở hồ sơ học sinh — M1.1">Buổi/tuần</th><th title="Danh mục bộ sách 🔗 M12.4 — mặc định bộ dùng chung (QĐ 3588)">Bộ SGK</th><th>Ghép vào lớp</th><th>← Nhận HS từ</th><th>Trạng thái</th>'+(e?'<th></th>':'')+'</tr></thead><tbody>';
+ s+='<div class="tbw"><table class="tb"><thead><tr><th style="width:40px" title="Máy điền sẵn theo thứ tự tạo trong Điểm trường × Khối — sửa tay được (R61)">TT</th><th>Lớp</th><th>Hệ</th><th>Sĩ số (đang học / tối đa + giữ chỗ)</th><th>GVCN — ô ghi hộ M4.5</th><th title="Nguồn của trường cùng tên ở hồ sơ học sinh — M1.1">Buổi/tuần</th><th title="Danh mục bộ sách 🔗 M12.4 — mặc định bộ dùng chung (QĐ 3588)">Bộ SGK</th><th style="min-width:124px" title="Bốn cờ của lớp (CSDL-1B) — RSTT-1B 1/10: một cột riêng, không còn là dải chip dưới tên lớp">Đặc điểm lớp</th><th>Ghép vào lớp</th><th>← Nhận HS từ</th><th>Trạng thái</th>'+(e?'<th></th>':'')+'</tr></thead><tbody>';
  const dts=uniq(lops.map(l=>l.dt));
  dts.forEach(function(dm){
-  s+='<tr class="gh"><td colspan="11">'+esc(dtTen(dm))+'</td></tr>';
+  s+='<tr class="gh"><td colspan="12">'+esc(dtTen(dm))+'</td></tr>';
   uniq(lops.filter(l=>l.dt===dm).map(l=>l.khoi)).sort((a,b)=>a-b).forEach(function(k){
-   s+='<tr class="gh"><td colspan="11" style="background:#fcfdfe;font-weight:600">Khối '+k+'</td></tr>';
+   s+='<tr class="gh"><td colspan="12" style="background:#fcfdfe;font-weight:600">Khối '+k+'</td></tr>';
    lops.filter(l=>l.dt===dm&&l.khoi===k).sort((a,b)=>(a.stt||0)-(b.stt||0)||(a.ten<b.ten?-1:1)).forEach(function(l){
     const tr=tranSS(l),vt=l.ssMax>tr.v,nt=nhanTu(n,l.id);
     /* R61 — trung thu tu trong cung Diem truong × Khoi: ⚠ KHONG chan */
@@ -2224,11 +2240,7 @@ function sec3(n){
     s+='<tr class="'+(l.tt==='mo'?'':'dong')+'">'+
      '<td>'+(e&&l.tt==='mo'?'<input class="nin" style="width:40px" data-f="lopStt" data-l="'+l.id+'" value="'+(l.stt||'')+'">':'<span class="sub">'+(l.stt||'')+'</span>')+
       (trungTT?' <span class="st2 w" title="Trùng thứ tự với '+trungTT+' lớp khác trong cùng Điểm trường × Khối — R61, không chặn">⚠</span>':'')+'</td>'+
-     '<td><b>'+esc(l.ten)+'</b>'+(l.nguon?'<span class="src">'+esc(l.nguon)+'</span>':'')+
-      (chipLop(l)?'<div class="sub" style="margin-top:2px">'+chipLop(l)+'</div>':'')+
-      (e&&l.tt==='mo'?'<div class="sub" style="margin-top:3px">'+
-        [['songngu','🔤 Lớp song ngữ'],['ghep','⇄ Lớp ghép'],['botuc','📘 Bổ túc THPT'],['hocnghe','🔧 Có HS học nghề']].map(o=>
-         '<span class="chip '+(l[o[0]]?'on':'')+'" data-x="lopCo" data-l="'+l.id+'" data-c="'+o[0]+'">'+o[1]+'</span>').join('')+'</div>':'')+'</td>'+
+     '<td><b>'+esc(l.ten)+'</b>'+(l.nguon?'<span class="src">'+esc(l.nguon)+'</span>':'')+'</td>'+
      '<td>'+(e&&l.tt==='mo'?'<select class="sm-sel" data-f="lopHe" data-l="'+l.id+'">'+dtNam(n,l.dt).he.map(h=>'<option value="'+h+'"'+(l.he===h?' selected':'')+'>'+heTen(h)+'</option>').join('')+'</select>':heTen(l.he))+
       ((HEM[l.he]||{}).mc?' <span class="st2 v">★ '+monTen(HEM[l.he].mc)+'</span>':'')+'</td>'+
      '<td>'+(l.hs||0)+' / '+(e&&l.tt==='mo'?'<input class="nin" data-f="ssMax" data-l="'+l.id+'" value="'+l.ssMax+'">':l.ssMax)+(l.giu?' <span class="sub">(+'+l.giu+' giữ chỗ)</span>':'')+
@@ -2238,6 +2250,7 @@ function sec3(n){
       ((l.buoi!=null&&(l.buoi<1||l.buoi>12))?' <span class="st2 w" title="Ngoài khoảng 1–12 — R62, không chặn">⚠</span>':'')+'</td>'+
      '<td>'+(e&&l.tt==='mo'?'<select class="sm-sel" data-f="lopSgk" data-l="'+l.id+'">'+BOSGK.map(b=>'<option value="'+b.ma+'"'+(l.sgk===b.ma?' selected':'')+'>'+esc(b.ten)+(b.vai==='chung'?' ★':'')+'</option>').join('')+'</select>'
        :'<span class="sub">'+esc(sgkTen(l.sgk))+(l.sgk===SGK_CHUNG?' ★':'')+'</span>')+'</td>'+
+     '<td>'+oDacDiem(l,e)+'</td>'+
      '<td>'+oGhep+'</td>'+
      '<td class="sub">'+(nt.length?nt.map(x=>x.ten).join(', ')+(nt.length>1?' <span class="st2 b">gộp '+nt.length+' lớp</span>':''):(l.khoi===6||l.khoi===10?'đầu cấp — tuyển sinh':'—'))+'</td>'+
      '<td>'+ttLop(n,l)+'</td>'+(e?'<td>'+(l.tt==='mo'?'<button class="btn xs" data-x="dongLop" data-l="'+l.id+'">Đóng lớp</button>':'')+'</td>':'')+'</tr>';
@@ -2247,7 +2260,10 @@ function sec3(n){
  s+='</tbody></table></div>';
  s+='<div class="ro">🆕 <b>Bảy trường mới</b> (CSDL-1B): <b>Thứ tự</b> máy điền sẵn, trùng chỉ ⚠ (R61) · <b>Số buổi học/tuần</b> là <b>nguồn</b> của trường cùng tên ở hồ sơ học sinh M1.1 · <b>Lớp song ngữ</b> bật ở một lớp là dòng «Có học chương trình song ngữ» ở '+
   (can('xem7')?'<button class="rolnk" data-x="muc" data-m="7">mục ⑦</button>':'<b>mục ⑦</b>')+' thành <b>Có</b> và khóa lại (R63) · <b>Lớp ghép</b> mở ô <b>Ghép vào lớp</b>, ⛔ không ghép vòng (R64) · <b>Bộ SGK</b> chọn trong danh mục '+dlink('M12.4')+', mặc định bộ dùng chung ★. '+
-  '⛔ <b>Phân ban KHÔNG làm</b> — di sản chương trình trước 2018; tổ hợp môn lựa chọn ở mục ⑥, khi đẩy lên cổng thì ô Phân ban để trống kèm ghi chú.</div>';
+  '⛔ <b>Phân ban KHÔNG làm</b> — di sản chương trình trước 2018; tổ hợp môn lựa chọn ở mục ⑥, khi đẩy lên cổng thì ô Phân ban để trống kèm ghi chú.</div>'+
+  '<div class="ro">🖥 <b>Cột «Đặc điểm lớp»</b> (RSTT-1B 1/10) chở bốn cờ — <b>🔤 song ngữ</b> lớp học chương trình song ngữ (có môn dạy bằng tiếng nước ngoài) · <b>⇄ ghép</b> nhiều khối ngồi chung một phòng, một GV dạy · '+
+  '<b>📘 bổ túc</b> lớp chương trình giáo dục thường xuyên cấp THPT mở trong trường phổ thông · <b>🔧 học nghề</b> lớp có ít nhất một em vừa học văn hóa vừa học nghề. Cả bốn là ô của <b>form lớp cổng CSDL ngành</b>; '+
+  'trước đây bày thành dải chip dưới tên lớp — nay <b>một cột riêng</b> để quét dọc được, ⛔ tách thành bốn cột (99% ô sẽ trống).</div>';
  if(ghiChu)s+='<div class="dnote">💡 <b>Sĩ số là ba con số</b> — đang học (M1.1) · tối đa (trường khai) · bảo lưu giữ chỗ (M1.6). Danh mục lớp không lưu sĩ số hiện tại, nó tính ra. Trần 35/45 nêu đúng văn bản đang áp.</div>';
  return s;
 }
@@ -2363,6 +2379,49 @@ function napMacDinh4(n){
  n._pre4=1;return k;
 }
 const soLopHoc=(n,ma)=>lopMo(n).filter(l=>mlOf(n,l.id).some(e=>e.ma===ma));
+
+/* =================================================================================
+   🆕 R97 (1/10/2026 · cum RSTT) — «LA MON BAT BUOC CUA KHOI»
+   Anh Ninh: «sau Quy định mà thay đổi thì trường đang không có chỗ để chủ động Update
+   nội dung này.» He chay ON-PREMISE ⇒ danh sach bat buoc co dinh trong ma la mot
+   LOI TUYEN BO CU DAN ma truong ⛔ sua duoc, va hang rao nao ai cung quen bo qua
+   thi mat luon suc nang cho nhung ca that.
+   🔑 Hat la «Mon × Khoi», NEO VAO HO SO NAM HOC — ⛔ vao danh muc Master cua M10.2:
+      quy dinh do Bo dinh nen no CO CHIEU THOI GIAN; de o Master thi sua mot lan la
+      moi nam cu doc ra danh sach moi (dung cai bay ma tenTai() dung ra de tranh).
+   🛑 Va no doi luon LOAI cua hang rao: danh sach nay nay la LOI KHAI CUA TRUONG,
+      ⛔ phai chu cua van ban ⇒ may ⛔ con tu cach chan cung nhan danh quy dinh (R98). ================================================================================= */
+const khoiCuaMon=(n,x)=>uniq(dtHoatDong(n).filter(d=>x.dts.indexOf(d.ma)>=0)
+  .reduce((a,d)=>a.concat(d.cap.reduce((b,cp)=>b.concat(CAPK[cp]||[]),[])),[])).sort((a,b)=>a-b);
+/* goi y lan dau: tich san theo quy dinh hien hanh — roi TRUONG SUA DUOC.
+   🛑 CHI nhom «bb». ⛔ nhom «nn»: «Ngoại ngữ 1» la mot O CHUAN bat buoc, nhung THU TIENG
+   thi truong chon — mot o, mot thu tieng (R49), va no di duong rieng `vai==='nn1'`.
+   Gop ca nhom nn vao day thi MOI LOP bao «thiếu môn bắt buộc: Tiếng Nhật» — do dung
+   la cai bay ma §5.8a đã ghi o M10.2: nhom nn ⛔ doc duoc nhu nhom bb. */
+function goiYBB(n,x){
+ const m=monM(x.ma);if(m.cua)return [];
+ return khoiCuaMon(n,x).filter(function(k){
+  const cp=Object.keys(CAPK).filter(c=>CAPK[c].indexOf(k)>=0)[0];
+  return m.nhom[cp]==='bb';
+ });
+}
+function bbKhoi(n,x){if(!x.bb){x.bb=goiYBB(n,x);x.bbNguon='gợi ý theo CT GDPT 2018'}return x.bb}
+/* 🔑 NGUON DUY NHAT cua danh sach mon bat buoc o buoc ④ — doc theo DUNG KHOI cua lop.
+   ⛔ bbCua(cap) nua: hai danh sach co dinh trong ma la thu truong ⛔ sua duoc (R48 · R97). */
+function bbCuaKhoiLop(n,lop){
+ const c=cfgOf(n);if(!c||!c.mon)return [];
+ return c.mon.filter(x=>x.dts.indexOf(lop.dt)>=0&&bbKhoi(n,x).indexOf(lop.khoi)>=0).map(x=>x.ma);
+}
+/* R48 (M10.1) — mon bat buoc cua mot KHOI ma lop cua khoi ay chua co mon ⇒ ⚠, ⛔ chan */
+function thieuBB(n){
+ const c=cfgOf(n),r=[];
+ lopMo(n).forEach(function(l){
+  const co=mlOf(n,l.id).map(e=>e.ma);
+  c.mon.forEach(function(x){if(bbKhoi(n,x).indexOf(l.khoi)<0)return;
+   if(co.indexOf(x.ma)<0)r.push({lop:l,mon:x.ma})});
+ });
+ return r;
+}
 function sec4(n){
  const c=cfgOf(n),e=ed(n,4);
  if(!dtHoatDong(n).length)return '<div class="empty"><b>Bước ④ cần điểm trường</b>Môn cần điểm trường áp dụng — bước ② chưa có.<div style="margin-top:10px"><button class="btn p" data-x="muc" data-m="2">Sang bước ②</button></div></div>';
@@ -2381,7 +2440,7 @@ function sec4(n){
  s+='<div class="bar" style="padding:0 0 8px">'+(e?'<button class="btn sm" data-x="mChonMon">＋ Chọn từ danh mục môn 🔗 M10.2</button>':'')+
   (can('taoMon')&&mucGhi(n,'mot')!=='lock'?'<button class="btn sm" data-x="mTaoMon" title="Ô ghi hộ danh mục Master M10.2">＋ Tạo môn riêng của trường</button>':'')+
   '<span class="spacer" style="flex:1"></span><span class="sub">'+c.mon.length+' môn · '+c.mon.filter(x=>!monM(x.ma).cua).length+' CT GDPT · '+c.mon.filter(x=>monM(x.ma).cua).length+' Của trường</span></div>';
- s+='<div class="tbw"><table class="tb"><thead><tr><th>Môn <span class="lbm">🔗 M10.2 tab ② — tên tại '+d2s(ngayDoc(n))+'</span></th><th>Nguồn chương trình 🔗 M10.2 ②</th><th>Cấp · Nhóm chuẩn</th><th>Điểm trường áp dụng</th><th>Số lớp học</th><th>Tổ (② c)</th><th>Trạng thái ở danh mục</th>'+(e?'<th></th>':'')+'</tr></thead><tbody>'+
+ s+='<div class="tbw"><table class="tb"><thead><tr><th>Môn <span class="lbm">🔗 M10.2 tab ② — tên tại '+d2s(ngayDoc(n))+'</span></th><th>Nguồn chương trình 🔗 M10.2 ②</th><th>Cấp · Nhóm chuẩn</th><th>Điểm trường áp dụng</th><th>🆕 Môn bắt buộc của khối <span class="lbm">R97</span></th><th>Số lớp học</th><th>Tổ (② c)</th><th>Trạng thái ở danh mục</th>'+(e?'<th></th>':'')+'</tr></thead><tbody>'+
   c.mon.map(function(x){const m=monM(x.ma),nl=soLopHoc(n,x.ma).length,to=toCuaMon(n,x.ma);
    const dcap=dtHoatDong(n).filter(d=>capsMon(m).some(cp=>d.cap.indexOf(cp)>=0));
    return '<tr><td><b>'+esc(m.ten)+'</b>'+(mc.indexOf(m.ma)>=0?' <span class="st2 v">★ môn chuyên</span>':'')+(x.nguon?'<span class="src">'+esc(x.nguon)+'</span>':'')+
@@ -2389,17 +2448,60 @@ function sec4(n){
     '<td>'+(m.cua?'<span class="st2 w">Của trường</span>':'<span class="st2 o">CT GDPT</span>')+'</td>'+
     '<td class="sub">'+capsMon(m).map(cp=>cp+' · '+NHOMTEN[m.nhom[cp]]).join('<br>')+'</td>'+
     '<td>'+dcap.map(d=>e?'<span class="chip '+(x.dts.indexOf(d.ma)>=0?'on':'')+'" data-x="monDT" data-m="'+x.ma+'" data-d="'+d.ma+'">'+esc(DTM[d.ma].ten.replace('ĐT ',''))+'</span>':(x.dts.indexOf(d.ma)>=0?'<span class="chip ro on">'+esc(DTM[d.ma].ten.replace('ĐT ',''))+'</span>':'')).join('')+'</td>'+
+    /* 🆕 R97 — dai chip, MOT chip MOT KHOI. Chi chao khoi cua cac diem truong mon dang ap dung. */
+    '<td>'+(function(){const bb=bbKhoi(n,x),ks=khoiCuaMon(n,x);
+      if(!ks.length)return '<span class="sub">— chưa chọn điểm trường</span>';
+      return ks.map(k=>e?'<span class="chip '+(bb.indexOf(k)>=0?'on':'')+'" data-x="monBB" data-m="'+x.ma+'" data-k="'+k+'">Khối '+k+'</span>'
+        :(bb.indexOf(k)>=0?'<span class="chip ro on">Khối '+k+'</span>':'')).join('')+
+       (x.bbNguon?'<div class="sub">'+esc(x.bbNguon)+'</div>':'')})()+'</td>'+
     '<td>'+nl+'</td><td>'+(to?esc(toTenTai(to.ma,ngayDoc(n)))+' <span class="lbm">🔗 ③b</span>':'<span class="kh">⚠ chưa thuộc tổ</span>')+'</td>'+
     /* chot e — Khoa la BO LOC HIEN THI: mon da co trong nam bi khoa giua nam thi DONG VAN O DO,
        ⚠ neu dich danh, ⛔ khong tu bo khoi nam, ⛔ khong dung mot ban ghi phan cong nao (R91 · MH-4) */
     '<td>'+(m.tt==='khoa'?'<span class="st2 w" title="Bản ghi «môn được phép dạy» ở M4.4 GIỮ NGUYÊN — mở khóa là hiện lại, ⛔ không phải phân công lại">⚠ đã khóa ở danh mục</span>':'<span class="st2 o">Đang dùng</span>')+'</td>'+
     (e?'<td><button class="btn xs" data-x="boMon" data-m="'+x.ma+'">Bỏ khỏi năm</button></td>':'')+'</tr>'}).join('')+'</tbody></table></div>';
+ s+='<div class="okbx" style="margin-top:8px">🆕 <b>Cột «Môn bắt buộc của khối» (R97).</b> Đây là <b>nguồn duy nhất</b> của danh sách môn bắt buộc ở <b>bước ④ · Môn của từng lớp</b> — ⛔ không còn danh sách cố định trong mã. '+
+  'Lần đầu máy <b>tích sẵn theo quy định hiện hành</b> (nhãn <i>gợi ý theo CT GDPT 2018</i>), <b>trường sửa được</b>; sửa khác gợi ý thì dòng mang <b>⚠ trường đã sửa</b> và bắt ghi lý do.<br>'+
+  '🔑 <b>Vì sao ô này ở đây mà ⛔ ở danh mục môn của M10.2:</b> quy định do Bộ định nên nó <b>có chiều thời gian</b> — đổi từ năm sau, ⛔ hồi tố năm cũ. Để ở Master thì sửa một lần là <b>mọi năm cũ đọc ra danh sách mới</b>.<br>'+
+  '🛑 Và vì danh sách này nay là <b>lời khai của trường</b> chứ ⛔ phải chữ của văn bản, mọi chỗ cũ chặn cứng nhân danh quy định <b>hạ xuống cảnh báo có nêu tên văn bản</b> (R98) — kể cả '+dlink('M10.2')+' <i>R46 «Thôi dùng môn bắt buộc»</i>.</div>';
  if(ghiChu)s+='<div class="dnote">💡 Mục ④ trả lời ở mức <b>trường</b> — thứ M1.4 (nguyện vọng môn lựa chọn), M4.4 (môn được phép dạy), M5.1 (chọn môn cho KHGD) hỏi. Không có mục này thì môn vừa mở chưa có lớp nào học sẽ biến mất khỏi mọi danh sách chọn.</div>';
  return s;
 }
 ACT.nap4=function(){const n=namBy(V.mo),k=napMacDinh4(n);n._moi4=k;logNam(n,4,'Điền sẵn môn CT GDPT 2018',k+' môn');render()};
 ACT.canCu=function(){modal('Căn cứ — môn Của trường','<div class="ro"><b>TT 22/2021 Điều 4</b> — đánh giá căn cứ yêu cầu cần đạt trong Chương trình GDPT; <b>Điều 9</b> — "tất cả các môn học". Môn trường tự mở không có yêu cầu cần đạt trong CT GDPT ⇒ nằm ngoài khuôn TT 22.<br><b>TT 70/2026</b> — học bạ số gồm các trường dữ liệu theo quy định của Bộ.</div>'+
  '<div class="okbx">Không phải là cấm: <b>vẫn nhập điểm ở M2.5 bình thường</b> — chỉ là cột đó không chảy vào tổng kết, học bạ, CSDL ngành.</div>')};
+/* 🆕 R97 — bat / tat mot KHOI. Sua khac goi y ⇒ nhan «trường đã sửa» + bat ly do.
+   ⚠ Nam «Đang hoạt động» VAN SUA DUOC (khuon CT-4) — chi ⚠ neu dich danh lop doi nhan. */
+ACT.monBB=function(el){
+ const n=namBy(V.mo),x=monNam(n,el.dataset.m),k=parseInt(el.dataset.k,10);
+ const bb=bbKhoi(n,x),co=bb.indexOf(k)>=0;
+ const lam=function(ly){
+  if(co)bb.splice(bb.indexOf(k),1);else bb.push(k);
+  bb.sort((a,b)=>a-b);
+  x.bbNguon=JSON.stringify(bb)===JSON.stringify(goiYBB(n,x))?'gợi ý theo CT GDPT 2018':'⚠ trường đã sửa';
+  logNam(n,4,'Sửa môn bắt buộc của khối',monTen(x.ma)+': '+(co?'bỏ ':'thêm ')+'khối '+k+(ly?' · lý do: '+ly:''));
+  closeModal();render();
+  const lp=lopMo(n).filter(l=>l.khoi===k);
+  toast((co?'Đã bỏ':'Đã đặt')+' <b>'+esc(monTen(x.ma))+'</b> là môn bắt buộc của <b>khối '+k+'</b> (R97)'+
+   (lp.length?'<br>⚠ '+lp.length+' lớp khối '+k+' đổi nhãn thiếu/thừa môn ở bước ④ — ⛔ chặn, ⛔ tự thêm hay tự bỏ môn của lớp nào':''));
+ };
+ /* sua khac goi y ⇒ bat ly do; tro ve dung goi y thi thoi */
+ const thu=bb.slice();if(co)thu.splice(thu.indexOf(k),1);else thu.push(k);thu.sort((a,b)=>a-b);
+ if(JSON.stringify(thu)===JSON.stringify(goiYBB(n,x))){lam('');return}
+ const lp=lopMo(n).filter(l=>l.khoi===k);
+ modal((co?'Bỏ':'Đặt')+' «'+esc(monTen(x.ma))+'» khỏi môn bắt buộc của khối '+k,
+  '<div class="info">Bạn đang <b>sửa khác gợi ý</b> của quy định hiện hành — <b>'+esc(VANBAN_BB)+'</b>. '+
+   'Đây là việc bình thường: hệ chạy <b>on-premise</b>, quy định có thể đổi trước khi có bản phát hành mới, nên <b>người quyết định cuối là bạn</b> (R98).</div>'+
+  '<div class="ro">Hệ quả: danh sách môn bắt buộc của <b>khối '+k+'</b> ở bước ④ đổi theo'+
+   (lp.length?' — <b>'+lp.length+' lớp</b> ('+lp.slice(0,8).map(l=>l.ten).join(', ')+(lp.length>8?' …':'')+') đổi nhãn thiếu/thừa môn':'')+
+   '. ⛔ Máy <b>không</b> tự thêm hay tự bỏ môn của lớp nào.</div>'+
+  (n.tt==='hd'?'<div class="warn">⚠ Năm <b>đang hoạt động</b> — vẫn sửa được (khuôn CT-4), nhật ký ghi kèm lý do.</div>':'')+
+  '<label class="lbl">Lý do <b>*</b></label><textarea class="ta" id="bbLy"></textarea>',
+  '<button class="btn" data-x="close">Hủy</button><button class="btn p" data-x="doMonBB">Vẫn sửa</button>');
+ window.__bb=lam;
+};
+ACT.doMonBB=function(){const ly=$('#bbLy').value.trim();if(!ly){toast('⚠ <b>Bắt buộc ghi lý do</b> — sửa khác quy định hiện hành (R97)');return}window.__bb(ly)};
+const VANBAN_BB='TT 32/2018/TT-BGDĐT (sửa bởi TT 13/2022/TT-BGDĐT)';
+
 ACT.monDT=function(el){
  const n=namBy(V.mo),x=monNam(n,el.dataset.m),d=el.dataset.d,co=x.dts.indexOf(d)>=0;
  if(co){const l=soLopHoc(n,x.ma).filter(l=>l.dt===d);
@@ -2590,14 +2692,17 @@ function edLop(n,l,e){
   (mc?'<span class="st2 v">★ môn chuyên: '+monTen(mc)+'</span>':'')+'<span class="spacer" style="flex:1"></span>'+
   (e&&ml.length?'<button class="btn sm" data-x="mNhanBan" data-l="'+l.id+'">⧉ Nhân bản sang lớp khác</button><button class="btn sm" data-x="mlMacDinh" data-l="'+l.id+'">↺ Đặt lại mặc định</button>':'')+'</div>';
  if(!ml.length)return s+'<div class="empty"><b>Lớp '+esc(l.ten)+' chưa có môn nào</b>🚀 Bắt đầu năm học sẽ chặn cho tới khi lớp có danh sách môn phủ đủ môn bắt buộc.'+
-  (e?'<div style="margin-top:10px"><button class="btn p" data-x="mlMacDinh" data-l="'+l.id+'">＋ Điền môn bắt buộc theo cấp '+cap+'</button> <span class="sub">hoặc chọn một lớp đã cấu hình rồi ⧉ Nhân bản sang lớp này</span></div>':'')+'</div>';
+  (e?'<div style="margin-top:10px"><button class="btn p" data-x="mlMacDinh" data-l="'+l.id+'">＋ Điền môn bắt buộc của khối '+l.khoi+'</button> <span class="sub">theo cấu hình ở <b>bước ② khối b</b> (R97) — ⛔ theo danh sách cố định trong mã; hoặc ⧉ Nhân bản từ lớp đã cấu hình</span></div>':'')+'</div>';
  const nCT=ml.filter(x=>!monM(x.ma).cua).length,nCua=ml.length-nCT;
  s+='<div class="tot"><span><b>'+nCT+'</b> môn CT GDPT → vào học bạ, CSDL ngành, xếp loại</span><span><b>'+nCua+'</b> môn Của trường → KHÔNG vào ba thứ trên</span></div>';
  if(t.chan.length)s+='<div class="danger">⛔ '+t.chan.map(esc).join(' · ')+' — 🚀 Bắt đầu năm học chặn (R48)</div>';
  if(t.msg.length)s+='<div class="warn">⚠ '+t.msg.map(esc).join(' · ')+'</div>';
  const rows=(vai)=>ml.filter(x=>x.vai===vai).map(x=>rowMon(n,l,x,e)).join('');
  const head='<table class="tb"><thead><tr><th>Môn</th><th>Nguồn</th><th title="Phương thức tổ chức kiến thức — danh mục ở M10.2 tab ② (HDPC ①). Môn một phương thức thì chỉ hiện một dòng chữ, không có ô chọn">Phương thức</th><th>Kiểu ĐG</th><th>Số cột điểm ĐGtx HK1 · HK2</th><th>Căn cứ / trạng thái</th></tr></thead><tbody>';
- s+='<div class="blkm"><div class="bh">MÔN BẮT BUỘC ('+cap+' · '+bbCua(cap).length+') <span class="sub" style="font-weight:400">🔒 không bỏ được — thiếu là vi phạm A2</span></div>'+head+rows('bb')+'</tbody></table></div>';
+ /* 🔁 RSTT — nguon la cau hinh buoc ② theo DUNG KHOI cua lop (R97), ⛔ danh sach co dinh theo cap */
+ s+='<div class="blkm"><div class="bh">MÔN BẮT BUỘC (khối '+l.khoi+' · '+bbCuaKhoiLop(n,l).length+') '+
+  '<span class="sub" style="font-weight:400">🔁 đọc <b>«Là môn bắt buộc của khối»</b> ở bước ② khối b (R97) — bỏ được, thiếu thì ⚠ nêu tên văn bản, ⛔ chặn (R48 · R98) '+
+  '<button class="rolnk" data-x="muc" data-m="4">↗ sửa ở bước ②</button></span></div>'+head+rows('bb')+'</tbody></table></div>';
  const nnDung=cfgOf(n).mon.filter(x=>monM(x.ma).nn&&x.dts.indexOf(l.dt)>=0).map(x=>x.ma);
  const nn1=ml.filter(x=>x.vai==='nn1')[0],nn2=ml.filter(x=>x.vai==='nn2')[0];
  const selNN=(f,v,loai)=>e?'<select class="sm-sel" data-f="'+f+'" data-l="'+l.id+'">'+(f==='mlNN2'?'<option value="">— Không học —</option>':(v?'':'<option value="">— chọn —</option>'))+
@@ -2674,7 +2779,9 @@ ACT.mlCt=function(el){const c=ctx6(el),ma=el.dataset.m,co=c.ml.some(x=>x.ma===ma
 ACT.mlMacDinh=function(el){const c=ctx6(el);
  if(c.ml.some(x=>coDiem(c.n,c.l,x))){modal('⛔ Không đặt lại được','<div class="danger">'+c.l.ten+' đã có điểm ở M2.5 — đặt lại sẽ bỏ các môn đã có điểm (R31). Sửa từng môn.</div>');return}
  const nn=cfgOf(c.n).mon.filter(x=>monM(x.ma).nn&&x.dts.indexOf(c.l.dt)>=0).map(x=>x.ma);
- cfgOf(c.n).ml[c.l.id]=mlMacDinh(c.l,{nn1:nn.indexOf('ANH')>=0?'ANH':nn[0]});logNam(c.n,6,'Điền môn bắt buộc — '+c.l.ten,'theo cấp '+capOf(c.l.khoi));render();};
+ /* 🔁 RSTT — dien theo cau hinh buoc ② cua DUNG KHOI, ⛔ theo bbCua(cap) */
+ cfgOf(c.n).ml[c.l.id]=mlMacDinh(c.l,{nn1:nn.indexOf('ANH')>=0?'ANH':nn[0],bb:bbCuaKhoiLop(c.n,c.l)});
+ logNam(c.n,6,'Điền môn bắt buộc — '+c.l.ten,'theo cấu hình «Là môn bắt buộc của khối '+c.l.khoi+'» ở bước ② (R97)');render();};
 function doiNN(el,vai){
  const c=ctx6(el),v=el.value,cu=c.ml.filter(x=>x.vai===vai)[0];
  if(cu&&cu.ma===v)return;

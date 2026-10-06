@@ -220,6 +220,42 @@ tr:last-child td{border-bottom:none}
 .lgd{display:flex;gap:14px;font-size:11.5px;color:var(--ink3);padding:9px 13px;border-top:1px solid var(--line);flex-wrap:wrap;align-items:center}
 .chip{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:3px 9px;color:var(--ink2)}
 
+/* ===== T3 — dòng gộp một người một dòng (§6.7.2b) ===== */
+.t3h,.t3g{grid-template-columns:24px 22px 2fr 2.2fr .9fr 1.4fr 1.1fr}
+.t3h.nar,.t3g.nar{grid-template-columns:24px 22px 2fr 1.3fr}
+.t3h.nar div:nth-child(n+5),.t3g.nar div:nth-child(n+5){display:none}
+.t3s{grid-template-columns:24px 22px 2.6fr 1.7fr 1.3fr;background:#fbfdff;border-left-color:#dbeafe}
+.t3s.nar{grid-template-columns:24px 22px 2.6fr}
+.t3s.nar div:nth-child(n+4){display:none}
+.t3hd{padding:5px 13px 5px 46px;background:#f1f5f9;border-bottom:1px solid var(--line);
+  font-size:10.5px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em}
+.t3none{padding:7px 13px 7px 46px;font-size:11.5px;color:var(--ink3);border-bottom:1px solid var(--line)}
+.xp{width:20px;height:20px;border:1px solid var(--line);background:#fff;border-radius:5px;cursor:pointer;
+  font-size:10px;color:var(--ink2);line-height:1;padding:0}
+.xp:hover{background:var(--brand-soft);border-color:var(--brand)}
+.kho{color:var(--ink3);font-size:15px;line-height:1}
+/* ===== Tab Lý lịch — một nút sửa cho mỗi NHÓM thông tin (§6.2.3b) ===== */
+.ch .gsua{margin-left:auto}
+.card.ged{box-shadow:0 0 0 2px var(--brand) inset}
+.gbar{display:flex;gap:8px;align-items:center;padding:9px 13px;background:#0f172a;color:#fff;font-size:12px;flex-wrap:wrap}
+.gbar .sp{flex:1}
+.gf{display:grid;grid-template-columns:200px 1fr;gap:9px;padding:7px 13px;border-bottom:1px solid var(--line);
+  font-size:12.5px;align-items:center}
+.gf>.k{color:var(--ink2);font-weight:600}
+.gf input[type=text],.gf select{width:100%;max-width:340px;padding:5px 7px;border:1px solid var(--line);
+  border-radius:6px;font:inherit;font-size:12.5px}
+.gf.t2{background:#fffbeb}
+.gf.t3{background:#f8fafc}
+.gf.ro{background:#f8fafc;color:var(--ink3)}
+.gf.hl{background:#fef9c3;box-shadow:0 0 0 2px #facc15 inset}
+.gf .why{font-size:11px;color:var(--ink3);font-weight:400;display:block}
+.gdai{padding:8px 13px;background:#f1f5f9;border-bottom:1px solid var(--line);font-size:11.5px;color:var(--ink2)}
+.gchips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.gchip{padding:3px 9px;border:1px solid var(--line);background:#fff;border-radius:999px;cursor:pointer;
+  font:inherit;font-size:11.5px;color:var(--ink2)}
+.gchip:hover{border-color:var(--brand);color:var(--brand)}
+.gchip.on{background:var(--brand);border-color:var(--brand);color:#fff;font-weight:700}
+
 /* ═══ MNXL-0B — BỘ NHẬP / XUẤT DÙNG CHUNG · style.08-bo-nhap-xuat.css ═══
    🔁 MNXL-Z 26/9/2026 (HDMX bản 2): + .bnx-bao (BNX.bao) · toast #toast và modal #mask.bnx-tren-hop của menu nổi TRÊN hộp.
    🛑 TỆP NỀN (MX-4) — chép NGUYÊN BYTE sang demo khác, đo băm; ⛔ sửa ở bản chép.
@@ -393,9 +429,12 @@ const ROLE={
  /* Vai trò gộp dùng để rà toàn bộ luồng nghiệp vụ trong một lần —
     KHÔNG phải một chức danh thật. Phân quyền theo chức danh là các vai bên dưới. */
  FULL:  {n:'Đủ quyền — rà luồng nghiệp vụ',sc:'Toàn trường · mọi thao tác',scLock:0,menu:'all',full:1,edit:1,
-         duyet:['yeucau','hdld'],nkxem:1,imp:1,dongbo:1,xuat:['ds','luong','cocau','thieu'],
+         duyet:['yeucau','hdld'],nkxem:1,imp:1,dongbo:1,xuat:['ds','luong','cocau','thieu'],capTK:1,
          mchu:['M4.2','M4.11','M4.5','M4.9','M4.10','M10.5','M4.3'],ava:'DQ'},
- TCNS:  {n:'Tổ chức nhân sự',sc:'Toàn trường',scLock:0,menu:'all',full:1,edit:1,duyet:['yeucau'],
+ /* capTK — BLOOP 2/10/2026 §4b.2b: bit T của m10.5.tai_khoan_nhan_su @ School.
+    Đo bảng chuẩn 2/10: TCNS «X T» · IT «X T S D XD» · HT «X D XD» ⇒ HT ⛔ có capTK.
+    Hộp ＋ Thêm hồ sơ còn đòi bit T của m4.1.danh_sach_nhan_su (chỉ TCNS) ⇒ thực tế chỉ TCNS thấy khối. */
+ TCNS:  {n:'Tổ chức nhân sự',sc:'Toàn trường',scLock:0,menu:'all',full:1,edit:1,duyet:['yeucau'],capTK:1,
          nkxem:1,imp:1,dongbo:1,xuat:['ds','luong','cocau','thieu'],mchu:['M4.2','M4.11','M4.5','M4.9','M4.10','M10.5','M4.3'],ava:'TC'},
  HT:    {n:'Hiệu trưởng',sc:'Toàn trường',scLock:0,menu:'all',full:1,edit:0,duyet:['hdld'],
          nkxem:1,imp:0,dongbo:1,xuat:['ds','cocau'],mchu:['M4.2','M4.11','M4.5','M4.9','M4.10','M10.5','M4.3'],ava:'HT'},
@@ -449,6 +488,10 @@ let NS=[
       ['09/2001','08/2016','THPT Nguyễn Trãi','Giáo viên Ngữ văn',0]]},
 
  {id:3,dien:'vc',n:'Phạm Đức Thắng',i:'PT',ma:'NS-2016-0034',tk:{u:'NS-2016-0034',tt:'ok',sdt:'0913 887 221',mail:'thang.pdt@ntt.edu.vn',tao:'01/09/2016',lan:'25/08/2026 16:40'},nhom:1,cd:'Phó HT phụ trách điểm trường',to:'Ban giám hiệu',dt:'Điểm trường A',
+  /* BLOOP 2/10/2026 — CA MẪU của sổ BUG LOOP dòng 15: được gán phụ trách ĐIỂM TRƯỜNG B,
+     nhưng NGỒI LÀM VIỆC ở Điểm trường A. Hai thứ ĐỘC LẬP (M4.3 §6.2.4) ⇒ dòng chức danh in
+     «· Điểm trường B», còn chip Điểm trường vẫn là A. Hệ thống ⛔ tự sửa bên nào. */
+  cdDv:'Điểm trường B',
   hang:'Hạng II',mon:'Vật lý',sinh:'21/07/1980',gt:'Nam',cccd:'034080007731',bhxh:'0117220945',stk:'19034112009985',
   dantoc:'Kinh',qq:'Thái Bình',tt:'lamviec',anh:1,lhkc:'Nguyễn Thị Vân · Vợ · 0913 887 220',csdl:1,maCsdl:'01001PDT19800721034',
   doichieu:'12/09/2025',vaonganh:'01/09/2003',
@@ -1456,6 +1499,9 @@ const LYDO=['Đối chiếu hồ sơ giấy','Xét nâng lương, nâng hạng',
 
 /* ================= TRẠNG THÁI ỨNG DỤNG ================= */
 let role='FULL', tab='ds', ptab='lylich', cur=null, openG={}, sel=new Set(), selT3=new Set();
+let t3Open=new Set();          /* §6.7.2b — dòng T3 đang MỞ. Ngữ cảnh của một lượt xem, ⛔ nhớ qua lượt sau */
+let gEdit=null;                /* §6.2.3b — {ns, g} nhóm thông tin đang ở chế độ sửa. Mỗi lúc MỘT nhóm */
+let gNhap={}, gMC=[];          /* giá trị đang gõ · các tệp minh chứng đã đính của lượt lưu */
 let unmask=new Set();          /* 'id:truong' đã bấm Hiện */
 let fDT=new Set(), fNHOM=new Set(), fTO=new Set(), fHD=new Set(), fDIEN=new Set();
 let fTT=new Set(['lamviec','tamnghi']);
@@ -1473,6 +1519,29 @@ function modal(title,body,foot){$('#mh').innerHTML=title;$('#mb').innerHTML=body
 
 /* ================= SUY DIỄN ================= */
 /* Trạng thái công tác — DẪN XUẤT từ ticket đã ký ở M4.2, M4.1 không có nút đổi */
+/* ---- BLOOP 2/10/2026 — DANH MUC cua M10.2, nguon cua o loc (§6.1.2b ③) ----
+   To cuoi cung CHUA CO NGUOI nao: no VAN phai hien trong o loc. */
+const DMTO=['Ban giám hiệu','Tổ Toán — Tin','Tổ Ngữ văn — Sử — Địa','Tổ Lý — Hóa — Sinh',
+            'Tổ Ngoại ngữ','Tổ Nghệ thuật — Thể dục','Bộ phận Hành chính','Bộ phận Phục vụ'];
+const DMDT=['Điểm trường A','Điểm trường B'];
+
+/* ═══ BLOOP 2/10/2026 · M4.3 §6.2.4 — DÒNG CHỨC DANH IN «<tên chức danh> · <tên đơn vị>» ═══
+   Đơn vị là PHẠM VI của bản ghi chức danh ở M4.3 (⛔ phải «Điểm trường công tác» của người đó —
+   hai thứ ĐỘC LẬP, M4.3 §6.4.4 «cùng một tên cột, hai nghĩa»).
+   🛑 Chức danh ⛔ gắn đơn vị (Hiệu trưởng, Kế toán) in tên TRƠN — ⛔ in dấu `·` cụt.
+   🛑 Chức danh LOẠI 2 (nhóm ③: Giáo viên chủ nhiệm, Giáo viên bộ môn) ⛔ in đơn vị ở đây —
+      phạm vi của chúng ở M4.5, và §6.11.1 đã cấm «tên chức danh ⛔ kèm môn · ⛔ kèm lớp».
+   Bản ghi ⏳ Chờ gắn phạm vi in «· ⏳ chưa gắn phạm vi» — ⛔ in trơn, vì trơn thì trông như đã khai đủ. */
+const CD_GAN_DV={'Phó HT phụ trách điểm trường':'dt','Tổ trưởng chuyên môn':'to','Tổ phó chuyên môn':'to',
+                 'Văn thư':'dt','Bảo vệ':'dt','Giám thị':'dt','Thư viện':'dt','Tổ trưởng văn phòng':'vp'};
+function cdNhan(p){
+ const loai=CD_GAN_DV[p.cd];
+ if(!loai) return p.cd;                                  /* ⛔ gắn đơn vị ⇒ tên trơn */
+ const dv = loai==='to' ? p.cdDv||p.to : p.cdDv||p.dt;   /* cdDv = phạm vi thật của bản ghi M4.3 */
+ if(!dv||dv==='—') return p.cd+' · <span class="st2 w">⏳ chưa gắn phạm vi</span>';
+ return p.cd+' · '+dv;
+}
+
 const TT={
  lamviec:['✓ Đang làm việc','o'],
  tamnghi:['🌙 Tạm nghỉ','b'],
@@ -1594,13 +1663,16 @@ function myc(p){
  o.m2=Object.values(g).map(x=>{const n=x.han?ngayCon(x.han):null;
   x.tt= n===null?'cho' : n<0?'qua':'con'; x.con=n; return x});
  const nc=dcChua(p); if(nc) o.m3.push('Nên chuẩn hóa địa chỉ — '+nc+'/5 trường ở chế độ tự do');
- /* Việc cần xử lý — ⛔ không phải trường */
- const hc=hdCho(p); if(hc) o.viec.push(['HĐLĐ chờ Hiệu trưởng duyệt','hdld','w',hc.ghi||'']);
+ /* Việc cần xử lý — ⛔ không phải trường.
+    Ô thứ NĂM = NHẮC ĐƯỢC không (§6.7.2b.5): chỉ việc mà chính nhân sự làm được thì mới có ô chọn.
+    Hợp đồng là việc của TCNS / Hiệu trưởng, đối chiếu giấy là việc của chính người đang nhìn màn hình
+    ⇒ nhắc họ là TRÁCH SAI NGƯỜI. */
+ const hc=hdCho(p); if(hc) o.viec.push(['HĐLĐ chờ Hiệu trưởng duyệt','hdld','w',hc.ghi||'',false]);
  if(p.hd&&p.hd.den){const n=dleft(p.hd.den);
-  if(n<0) o.viec.push(['⛔ HĐLĐ đã hết hạn '+(-n)+' ngày','hdld','r','Cần xử lý tại M4.2']);
-  else if(n<=60) o.viec.push(['HĐLĐ hết hạn còn '+n+' ngày','hdld','w','Ngưỡng cảnh báo 60 ngày']);}
- if(p.tk&&p.tk.tt==='moi') o.viec.push(['Chưa đổi mật khẩu lần đầu — chưa vào hệ thống lần nào','congtac','w','Nhắc nhân sự đăng nhập lần đầu']);
- if(!o.m1.length&&!o.m2.length&&!p.doichieu) o.viec.push(['Đủ trường · chưa đối chiếu hồ sơ giấy','lylich','n','Máy đếm xong, chờ người đối chiếu']);
+  if(n<0) o.viec.push(['⛔ HĐLĐ đã hết hạn '+(-n)+' ngày','hdld','r','Cần xử lý tại M4.2',false]);
+  else if(n<=60) o.viec.push(['HĐLĐ hết hạn còn '+n+' ngày','hdld','w','Ngưỡng cảnh báo 60 ngày',false]);}
+ if(p.tk&&p.tk.tt==='moi') o.viec.push(['Chưa đổi mật khẩu lần đầu — chưa vào hệ thống lần nào','congtac','w','Nhắc nhân sự đăng nhập lần đầu',true]);
+ if(!o.m1.length&&!o.m2.length&&!p.doichieu) o.viec.push(['Đủ trường · chưa đối chiếu hồ sơ giấy','lylich','n','Máy đếm xong, chờ người đối chiếu',false]);
  return o;
 }
 const ttMau={cho:'n',con:'w',qua:'r'};
@@ -1622,6 +1694,25 @@ function hsBadge(p){
  return [tt,'Thiếu '+m.m2.length+' nhóm',m.m2.map(x=>x.ten+' — '+ttChu(x)).join('\n')];
 }
 /* Mức ① chặn lưu: kiểm trùng CCCD / SĐT với hồ sơ đang có */
+/* BLOOP 2/10/2026 — đọc cả bảy ô mức ① VÀ ba ô của khối cấp tài khoản (§4b.2b) */
+function docFormMoi(){
+ const g=id=>{const e=$('#'+id);return e?e.value:undefined};
+ const bat=$('#m1tkBat')?$('#m1tkBat').checked:false;
+ return {n:g('m1n')||'',sinh:(g('m1sinh')||'').trim(),gt:g('m1gt')||'',cccd:(g('m1cccd')||'').trim(),
+         sdt:(g('m1sdt')||'').trim(),dien:g('m1dien')||'',cd:g('m1cd')||'',tao:d2s(HOMNAY),
+         tkBat:bat,tkU:g('m1tkU'),tkP:g('m1tkP')||'',tkP2:g('m1tkP2')||''};
+}
+/* §4b.2b — ba phép kiểm của khối cấp tài khoản. ⛔ chạy khi khối đang tắt. */
+function kiemTK(v){
+ if(!v.tkBat||!duocCapTK()) return [];
+ const loi=[], u=(v.tkU||'').trim();
+ if(!u) loi.push('Tên đăng nhập');
+ else if(tenDNdaDung(u)) loi.push('tên đăng nhập đã có người dùng');
+ if(!v.tkP) loi.push('Mật khẩu');
+ else if(v.tkP.length<8) loi.push('mật khẩu chưa đủ mạnh');   /* chính sách của trường — M10.5 tab ③ */
+ else if(v.tkP!==v.tkP2) loi.push('hai lần nhập mật khẩu không trùng');
+ return loi;
+}
 function kiemM1(v){
  const loi=[];
  M1F.forEach(([k,ten])=>{if(!coGiaTri(v[k])) loi.push(ten)});
@@ -1671,8 +1762,11 @@ function nsMoi(v,id){
  const nhom=(cdTim(v.cd)||[0,0,3])[2], ma='NS-2026-0'+(200+id);
  const ten=v.n.trim().split(/\s+/);
  return {id,dien:v.dien,n:v.n.trim(),i:(ten[0][0]+(ten[ten.length-1][0]||'')).toUpperCase(),ma,
-  tk:{u:ma,tt:'moi',sdt:v.sdt,mail:'',tao:v.tao,lan:''},nhom,cd:v.cd,
+  /* BLOOP 2/10/2026 — trigger ĐÃ BỎ: nsMoi() ⛔ sinh tài khoản nữa.
+     Người gọi quyết định: bật khối §4b.2b thì gán p.tk, bỏ trống thì p.tk=null. */
+  tk:null,nhom,cd:v.cd,
   to:'—',dt:'Điểm trường A',hang:'',mon:'',vtvl:'',   /* ⛔ không đoán tổ theo chức danh — tổ / bộ phận gắn ở M4.3, môn dạy khai ở mức ② */
+  taoHS:v.tao,   /* BLOOP 2/10/2026 — ⛔ suy ngày tạo từ p.tk nữa: tk có thể null */
   sinh:v.sinh,gt:v.gt,cccd:v.cccd,bhxh:'',stk:'',dantoc:'',qq:'',tt:'lamviec',anh:0,lhkc:'',
   csdl:dien(v.dien).vc?1:0,maCsdl:'',doichieu:'',vaonganh:'',
   hd:{loai:'—',ky:'',hl:'',den:null,ngach:'',bac:'—',hs:'—',pc:'—',tep:0,tt:'hieuluc',duyet:'',pcThuHut:'',ngayNgach:'',pcKiemNhiem:''},
@@ -1689,12 +1783,16 @@ function nsMoi(v,id){
   taoHS:v.tao, sauDot:RS.map(d=>d.id)};      /* đợt đang có đã MỞ TRƯỚC hồ sơ này ⇒ người này ⛔ không thuộc đợt ấy */
 }
 /* ---- CA MẪU MYC ---- */
-NS.forEach(p=>{p.taoHS=p.taoHS||p.tk.tao;});
+NS.forEach(p=>{p.taoHS=p.taoHS||(p.tk&&p.tk.tao);});   /* BLOOP — tk có thể null */
 /* MYC-C3 — Đinh Văn Khải: HỒ SƠ CŨ nhập từ năm 2012, TRƯỚC luật MYC-1 — thiếu Diện làm việc và số điện thoại.
    Đường duy nhất để mức ① thiếu: hiện đỏ «Thiếu thông tin định danh». */
 (function(){const p=nsMoi({n:'Đinh Văn Khải',sinh:'02/03/1968',gt:'Nam',cccd:'034068009931',sdt:'',dien:'',
   cd:'Bảo vệ',tao:'01/09/2012'},21);
- p.ma='NS-2012-0019'; p.tk.u=p.ma; p.tk.tt='ok'; p.tk.lan='25/08/2026 18:02'; p.to='Bộ phận Phục vụ';
+ p.ma='NS-2012-0019';
+ /* BLOOP 2/10/2026 — nsMoi() thôi tự sinh tài khoản (trigger đã bỏ, §4b.2a) ⇒ ca mẫu nào CÓ
+    tài khoản thì phải gán tay. Người này vào trường 2012, tài khoản cấp thời còn trigger. */
+ p.tk={u:p.ma,tt:'ok',sdt:'',mail:'',tao:'01/09/2012',lan:'25/08/2026 18:02'};
+ p.to='Bộ phận Phục vụ';
  p.vtvl='Bảo vệ'; p.anh=1; p.lhkc='Đinh Thị Hoa · Vợ · 0356 118 204'; p.dantoc='Kinh'; p.qq='Phú Thọ';
  p.hd={loai:'Không thời hạn',ky:'01/09/2012',hl:'01/09/2012',den:null,ngach:'—',bac:'—',hs:'—',pc:'—',tep:1,tt:'hieuluc',
        duyet:'Trần Văn Hùng (HT) · 01/09/2012',pcThuHut:'',ngayNgach:'',pcKiemNhiem:''};
@@ -1830,31 +1928,49 @@ function scopeBar(){
 }
 
 /* ================= BỘ LỌC ================= */
+/* BLOOP 2/10/2026 — §6.1.2b ①: nut loc hien TEN gia tri dang chon, KHONG hien con so dem.
+   0 => ten o loc tron · 1 => ten · 2 => hai ten · >=3 => ten dau + "+N" · chon het => "tat ca". */
+function nhanLoc(label,set,opts){
+ const ch=opts.filter(o=>set.has(o));           // giu dung thu tu danh muc
+ if(!ch.length)return label;
+ if(ch.length===opts.length)return label+': tất cả';
+ if(ch.length<=2)return label+': '+ch.join(', ');
+ return label+': '+ch[0]+' ＋'+(ch.length-1);
+}
 function msBtn(id,label,set,opts){
- return `<div class="ms"><button class="msb ${set.size?'act':''}" data-ms="${id}">${label}
-   ${set.size?`<span class="cnt">${set.size}</span>`:'<span style="color:var(--ink3)">▾</span>'}</button>
+ const nhan=nhanLoc(label,set,opts);
+ const tip=set.size?opts.filter(o=>set.has(o)).join(' · '):'';
+ return `<div class="ms"><button class="msb ${set.size?'act':''}" data-ms="${id}"${tip?` title="${tip}"`:''}>${nhan}
+   ${set.size?'':'<span style="color:var(--ink3)">▾</span>'}</button>
   <div class="msp" id="msp-${id}">${opts.map(o=>
    `<label class="mso"><input type="checkbox" data-msv="${id}" value="${o}" ${set.has(o)?'checked':''}>${o}</label>`).join('')}</div></div>`;
 }
-function filters(){
+function filters(tab){
  const all=base();
- const TOs=[...new Set(all.map(x=>x.to))];
+ /* BLOOP 2/10/2026 — §6.1.2b ③: o loc DANH MUC doc DANH MUC cua M10.2, KHONG doc tap dang hien.
+    DMTO co mot to CHUA CO NGUOI (To Nghe thuat — The duc) de thay dung luat. */
+ const TOs=[...new Set([...DMTO,...all.map(x=>x.to)])];
  const NHs=[...new Set(all.map(nhomTen))];
  const HDs=[...new Set(all.map(x=>x.hd.loai))];
  const DIENs=[...new Set(all.map(x=>dien(x.dien).ten))];
- const ttOpts=[['lamviec','Đang làm việc'],['tamnghi','Tạm nghỉ'],
+ /* BLOOP 2/10/2026 — §6.1.2b ②: o loc chi liet ke gia tri CO TRONG TAP ma tab ay phuc vu.
+    T3 Ho so can hoan thien chi chua nguoi dang lam viec hoac tam nghi => dung 2 gia tri. */
+ const ttFull=[['lamviec','Đang làm việc'],['tamnghi','Tạm nghỉ'],
                ['chuyendi','Đã chuyển đi'],['nghiviec','Đã nghỉ việc']];
+ const ttOpts=(tab==='t3')?ttFull.filter(([k])=>TAICHUC.includes(k)):ttFull;
  return `<div class="bar">
   <input class="inp" id="q" placeholder="🔍 Họ tên, mã nhân sự, CCCD…" value="${$('#q')?.value||''}">
-  ${showDTfilter()?msBtn('dt','Điểm trường',fDT,['Điểm trường A','Điểm trường B']):
-   `<span class="ro" style="margin:0;padding:6px 10px">Bộ lọc Điểm trường ẩn — ${R().scLock
-     ?`scope khoá về <b>${R().scLock}</b>`:`header đang chọn <b>${hdt()}</b>`}</span>`}
+  ${msBtn('dt','Điểm trường',fDT,DMDT)}${R().scLock
+    ?`<span class="ro" style="margin:0;padding:6px 10px">scope khoá về <b>${R().scLock}</b> — ô chọn ở header bị <b>khóa</b>, ⛔ ẩn</span>`
+    :(hdt()==='Toàn trường'?'':`<span class="ro" style="margin:0;padding:6px 10px">header đang chọn <b>${hdt()}</b></span>`)}
   ${msBtn('nhom','Nhóm chức danh',fNHOM,NHs)}
   ${R().toLock?'':msBtn('to','Tổ / Bộ phận',fTO,TOs)}
   ${msBtn('dien','Diện làm việc',fDIEN,DIENs)}
   ${msBtn('hd','Loại hợp đồng',fHD,HDs)}
-  <div class="ms"><button class="msb ${fTT.size!==2?'act':''}" data-ms="tt">Trạng thái công tác
-   <span class="cnt">${fTT.size}</span></button>
+  <div class="ms"><button class="msb ${fTT.size!==2?'act':''}" data-ms="tt"${
+    fTT.size?` title="${ttOpts.filter(([k])=>fTT.has(k)).map(([,v])=>v).join(' · ')}"`:''}>${
+    nhanLoc('Trạng thái công tác',new Set(ttOpts.filter(([k])=>fTT.has(k)).map(([,v])=>v)),ttOpts.map(([,v])=>v))
+   }${fTT.size?'':'<span style="color:var(--ink3)">▾</span>'}</button>
    <div class="msp" id="msp-tt">${ttOpts.map(([k,v])=>
     `<label class="mso"><input type="checkbox" data-msv="tt" value="${k}" ${fTT.has(k)?'checked':''}>${v}</label>`).join('')}</div></div>
   <button class="msb ${fDCHUA?'act':''}" data-x="f-dcchua" title="Lọc hồ sơ còn trường địa chỉ ở chế độ nhập tự do — HDCS ① quy tắc e">⚠ Địa chỉ chưa chuẩn hóa${fDCHUA?' <span class=\"cnt\">bật</span>':''}</button>
@@ -1875,7 +1991,7 @@ function nsRow(p,sub){
  return `<div class="hrow ${sub?'sub':''} ${cur===p.id?'on':''} ${TAICHUC.includes(p.tt)?'':'gone'}" data-ns="${p.id}">
   <div class="who2"><div class="ava2 ${p.anh?'':'noimg'}" title="${p.anh?'':'Chưa có ảnh 4×6'}">${p.anh?p.i:'?'}</div>
    <div class="i"><b>${hi(p.n)}</b><span>${p.ma} · ${p.dt}</span></div></div>
-  <div class="hcol">${p.cd}${p.nhom===2&&p.mon?`<br><span style="font-size:11px;color:var(--ink3)">môn ${p.mon}</span>`:''}${p.cdphu?`<br><span style="font-size:11px;color:var(--violet);font-weight:600">${p.cdphu}</span>`:''}</div>
+  <div class="hcol">${cdNhan(p)}${p.nhom===2&&p.mon?`<br><span style="font-size:11px;color:var(--ink3)">môn ${p.mon}</span>`:''}${p.cdphu?`<br><span style="font-size:11px;color:var(--violet);font-weight:600">${p.cdphu}</span>`:''}</div>
   <div class="hcol">${cot3}</div>
   <div class="hcol keep"><span class="st2 ${cl}">${lb}</span>
    ${p.tt==='tamnghi'?`<br><span style="font-size:11px;color:var(--ink3)">${p.tnLy} · đến ${p.tnDen}</span>`:''}
@@ -1892,8 +2008,17 @@ function listTab(){
  const r=rows(), q=($('#q')?.value||'').trim();
  const flat = fGOM==='Không gom' || !!q || !r.length;   /* TỰ PHẲNG HOÁ khi đang tìm kiếm */
  let body='';
- if(!r.length) body=`<div class="empty">Không có nhân sự nào khớp bộ lọc.<br>
-   <span style="font-size:12px">Người đã rời trường bị bộ lọc <b>Trạng thái công tác</b> ẩn theo mặc định — bật lại để tra cứu.</span></div>`;
+ if(!r.length){
+  /* BLOOP 2/10/2026 — §6.1.2b ③: chon mot to CHUA CO NGUOI thi noi ro, kem loi sang M10.2 */
+  const toRong=[...fTO].filter(t=>!base().some(x=>x.to===t));
+  body = toRong.length
+   ? `<div class="empty">${toRong.map(t=>'<b>'+t+'</b>').join(' · ')} ${toRong.length>1?'chưa có':'chưa có'} nhân sự nào.<br>
+      <span style="font-size:12px">Tổ có trong <b>cơ cấu của M10.2</b> nhưng chưa xếp người — ô lọc vẫn liệt kê nó,
+       vì ẩn đi thì đầu năm học ⛔ ai biết tổ nào còn rỗng.</span><br>
+      ${dlink('M10.2','M10.2 Cơ cấu tổ chức')}</div>`
+   : `<div class="empty">Không có nhân sự nào khớp bộ lọc.<br>
+      <span style="font-size:12px">Người đã rời trường bị bộ lọc <b>Trạng thái công tác</b> ẩn theo mặc định — bật lại để tra cứu.</span></div>`;
+ }
  else if(flat) body=r.map(x=>nsRow(x)).join('');
  else{
   const key = fGOM==='Theo điểm trường'?(x=>x.dt) : fGOM==='Theo nhóm chức danh'?nhomTen : (x=>x.to);
@@ -1915,7 +2040,7 @@ function listTab(){
     ${ho.slice(0,3).map(p=>p.n+' ('+(p.tt==='chuyendi'?'chuyển đi ':'nghỉ việc ')+p.roiTu+')').join(' · ')}
     ${ho.length>3?` · và <b>${ho.length-3}</b> người khác`:''}</span>
    <button class="btn xs" data-x="show-gone">Xem</button>${dlink('M10.5','M10.5')}</div></div>`:'';
- return `${filters()}${alert}
+ return `${filters('t1')}${alert}
   <div class="stage ${cur?'open':''}">
    <div class="listw">
     <div class="hdrow"><div class="kc">Nhân sự</div><div>Chức danh</div>
@@ -1987,18 +2112,56 @@ function queueHD(){
 /* ================= T3 — HỒ SƠ CẦN HOÀN THIỆN ================= */
 /* Đơn vị dòng = Nhân sự × Hạng mục còn thiếu */
 function t3rows(){
- /* Đơn vị dòng: ① Nhân sự × trường · ② Nhân sự × NHÓM (MYC-3) · ③ Nhân sự × trường · Việc cần xử lý: Nhân sự × việc */
+ /* Đơn vị HẠNG MỤC (⛔ đổi — MYC-3): ① Nhân sự × trường · ② Nhân sự × NHÓM · ③ Nhân sự × trường · việc: Nhân sự × việc.
+    Đơn vị DÒNG của danh sách thì nay là NGƯỜI — gộp ở t3groups() (§6.7.2b).
+    `nh` = nhắc được không · `x` = object nhóm ② (mang tt · con) để dòng gộp đọc hạn. */
  const o=[];
  rows().forEach(p=>{const m=myc(p);
-  m.m1.forEach((f,i)=>o.push({p,t:['⛔ Thiếu thông tin định danh — '+f,'lylich','r','Mức ① · hồ sơ cũ nhập TRƯỚC luật MYC-1 — sửa ngay','1'],k:p.id+'-m1-'+i}));
-  m.m2.forEach(x=>o.push({p,t:['Thiếu nhóm «'+x.ten+'»: '+x.truong.join(' · '),x.tab,ttMau[x.tt],'Mức ② · '+ttChu(x),'2'],k:p.id+'-m2-'+x.nh}));
-  m.m3.forEach((f,i)=>o.push({p,t:['⚪ '+f,'lylich','n','Mức ③ · nên có — ⛔ không tính là thiếu, ⛔ không nhắc','3'],k:p.id+'-m3-'+i}));
-  m.viec.forEach((v,i)=>o.push({p,t:[v[0],v[1],v[2],v[3],'v'],k:p.id+'-v-'+i}));
+  m.m1.forEach((f,i)=>o.push({p,t:['⛔ Thiếu thông tin định danh — '+f,'lylich','r','Mức ① · hồ sơ cũ nhập TRƯỚC luật MYC-1 — sửa ngay','1'],k:p.id+'-m1-'+i,nh:true,g:gNhom1(f)}));
+  m.m2.forEach(x=>o.push({p,t:['Thiếu nhóm «'+x.ten+'»: '+x.truong.join(' · '),x.tab,ttMau[x.tt],'Mức ② · '+ttChu(x),'2'],k:p.id+'-m2-'+x.nh,nh:true,x,g:gNhom2(x)}));
+  m.m3.forEach((f,i)=>o.push({p,t:['⚪ '+f,'lylich','n','Mức ③ · nên có — ⛔ không tính là thiếu, ⛔ không nhắc','3'],k:p.id+'-m3-'+i,nh:false,g:gNhom1(f)}));
+  m.viec.forEach((v,i)=>o.push({p,t:[v[0],v[1],v[2],v[3],'v'],k:p.id+'-v-'+i,nh:!!v[4]}));
  });
  return o;
 }
+/* §6.7.2b — GỘP MỘT NGƯỜI MỘT DÒNG.
+   🛑 Danh sách con khi MỞ và con số khi ĐÓNG sinh từ ĐÚNG mảng này ⇒ ⛔ có đường nào để hai bên lệch nhau
+   (ràng buộc 121). Bộ lọc Mức và lọc ctx áp Ở ĐÂY, một lần. */
+function t3groups(){
+ const byP=new Map();
+ t3rows().forEach(o=>{
+  if(t3Ctx&&o.p.id!==t3Ctx)return;
+  if(!fMUC.has(o.t[4]))return;
+  let g=byP.get(o.p.id); if(!g){g={p:o.p,thieu:[],viec:[]};byP.set(o.p.id,g)}
+  (o.t[4]==='v'?g.viec:g.thieu).push(o);
+ });
+ return [...byP.values()].map(g=>{
+  /* hạng nặng: ① = 0 · ② quá hạn = 1 · ② còn hạn = 2 · ② chưa tới hạn = 3 · ③ = 4 · chỉ có việc = 5 */
+  let w=5, han=null;
+  g.thieu.forEach(o=>{
+   const r = o.t[4]==='1' ? 0
+     : o.t[4]==='2' ? (o.x.tt==='qua'?1:o.x.tt==='con'?2:3)
+     : 4;
+   if(r<w)w=r;
+   if(o.x&&o.x.con!==null&&(han===null||o.x.con<han))han=o.x.con;
+  });
+  g.w=w; g.han=han;
+  g.n1=g.thieu.filter(o=>o.t[4]==='1').length;
+  g.n2=g.thieu.filter(o=>o.t[4]==='2').length;
+  g.n3=g.thieu.filter(o=>o.t[4]==='3').length;
+  g.cl = g.n1?'r' : g.thieu.some(o=>o.x&&o.x.tt==='qua')?'r' : g.thieu.some(o=>o.x&&o.x.tt==='con')?'w' : g.n2?'n' : 'n';
+  return g;
+ }).sort((a,b)=>a.w-b.w
+   || ((a.han===null?9e9:a.han)-(b.han===null?9e9:b.han))
+   || a.p.n.localeCompare(b.p.n,'vi'));
+}
+/* «hồ sơ chưa đủ» ⛔ là số dòng (ràng buộc 120) — đọc CÙNG hàm thieu() của T1 */
+const t3SoChuaDu=()=>rows().filter(p=>thieu(p).length).length;
+const t3SoDo    =()=>rows().filter(p=>{const m=myc(p);return m.m1.length||m.m2.some(x=>x.tt==='qua')}).length;
+const PTEN={lylich:'Lý lịch',hdld:'Hợp đồng',quatrinh:'Quá trình công tác',congtac:'Công tác'};
 function thieuTab(){
- const all=t3rows().filter(o=>!t3Ctx||o.p.id===t3Ctx), list=all.filter(o=>o.t[4]!=='v'&&fMUC.has(o.t[4])), viec=fMUC.has('v')?all.filter(o=>o.t[4]==='v'):[];
+ const all=t3rows().filter(o=>!t3Ctx||o.p.id===t3Ctx);
+ const G=t3groups();
  const hdSap=rows().filter(p=>{const[,c]=hdLabel(p);return c==='w'});
  const hdHet=rows().filter(p=>{const[,c]=hdLabel(p);return c==='r'});
  const nm=a=>a.slice(0,3).map(p=>p.n).join(' · ')+(a.length>3?` · và <b>${a.length-3}</b> người khác`:'');
@@ -2008,7 +2171,7 @@ function thieuTab(){
  if(hdHet.length)al.push(`<div class="alert r">⛔ <span class="sp"><b>${hdHet.length}</b> hợp đồng <b>đã hết hạn</b> — người đó vẫn đang đi làm, cần quyết định ký tiếp hay chấm dứt</span>
    <button class="btn xs" data-x="f-hd">Xem</button>${R().mchu.includes('M4.2')?'<button class="btn xs" data-x="dl" data-m="M4.2">↗ M4.2</button>':''}</div>`);
  const nsel=selT3.size;
- return `${filters()}
+ return `${filters('t3')}
   ${al.length?`<div class="alerts">${al.join('')}</div>`:''}
   ${t3Ctx?`<div class="info" id="t3ctx">🔎 <b>Đang lọc đúng một người: ${byId(t3Ctx).n}</b> (${byId(t3Ctx).ma}) — mở bằng deep-link${t3Return?' từ <b>'+t3Return+'</b> Việc cần làm':''}.
     Bộ lọc Mức vẫn áp; mọi người khác bị ẩn. ${t3Return?`<button class="btn xs" data-x="t3-back">↩ Quay lại ${t3Return}</button>`:''}
@@ -2026,36 +2189,58 @@ function thieuTab(){
    🔒 Nhóm nhạy cảm ⛔ không bao giờ hiện ở tab này — chỉ đếm trong Đợt rà soát.</div>
   <div class="info">Hệ thống chỉ đếm được <b>trường có trống hay không</b> và <b>tệp có tồn tại hay không</b>.
    Việc <b>đối chiếu hồ sơ giấy</b> là của Tổ chức nhân sự — vì thế “đủ trường” và “đã đối chiếu” là hai chỉ số tách bạch.</div>
+  <div class="info r">🔴 <b>BA con số, BA phép đếm — ⛔ lấy chiều dài bảng làm con số báo cáo</b> (§6.7.2b.3):
+   <b>${G.length}</b> dòng <span style="color:var(--ink3)">= người còn ít nhất một hạng mục hoặc một việc, trong phạm vi vai và bộ lọc đang bật</span> ·
+   <b>${t3SoChuaDu()}</b> hồ sơ chưa đủ <span style="color:var(--ink3)">= thiếu ① hoặc thiếu ≥ 1 nhóm ② — ⛔ kể ③, ⛔ kể việc; cùng hàm <code>thieu()</code> của T1</span> ·
+   <b>${t3SoDo()}</b> hồ sơ đỏ <span style="color:var(--ink3)">= có ① hoặc có nhóm ② quá hạn — thứ sinh việc V2 ở M0.2</span></div>
   <div class="stage ${cur?'open':''}">
    <div class="listw">
-    ${nsel?`<div class="bulkbar">Đã chọn <b>${nsel}</b> hạng mục<span class="sp"></span>
+    ${nsel?`<div class="bulkbar">Đã chọn <b>${nsel}</b> hạng mục của <b>${new Set([...selT3].map(k=>String(k).split('-')[0])).size}</b> người<span class="sp"></span>
       <button class="btn xs" data-x="bulk-nhac">🔔 Nhắc bổ sung</button>
       <button class="btn xs" data-x="bulk-clear3">Bỏ chọn</button></div>`:''}
-    <div class="hdrow" style="grid-template-columns:26px 2fr 2.2fr 1.6fr 1fr">
-     <div></div><div class="kc">Nhân sự</div><div>Hạng mục còn thiếu</div><div>Căn cứ yêu cầu</div><div class="kc">Xử lý</div></div>
-    ${list.map(o=>{const p=o.p,[lbl,ptb,cl,why]=o.t;
-     return `<div class="hrow" data-ns="${p.id}" data-pt="${ptb}" style="grid-template-columns:26px 2fr 2.2fr 1.6fr 1fr">
-      <div>${o.t[4]==='3'?'':`<input type="checkbox" data-selt3="${o.k}" ${selT3.has(o.k)?'checked':''}>`}</div>
-      <div class="who2"><div class="ava2 ${p.anh?'':'noimg'}">${p.anh?p.i:'?'}</div>
-       <div class="i"><b>${p.n}</b><span>${p.cd} · ${p.dt}</span></div></div>
-      <div><span class="st2 ${cl}">${lbl}</span></div>
-      <div style="font-size:11.5px;color:var(--ink2)">${why}</div>
-      <div style="font-size:11.5px;color:var(--brand)">Mở tab ${{lylich:'Lý lịch',hdld:'Hợp đồng',congtac:'Công tác'}[ptb]}</div></div>`}).join('')
-     ||'<div class="empty">Không còn dòng nào ở các mức đang bật</div>'}
-    <div class="lgd">Một dòng = <b>Nhân sự × trường</b> (① ③) hoặc <b>Nhân sự × nhóm</b> (② — MYC-3).</div>
-    ${viec.length?`<h4 style="margin:14px 0 6px">Việc cần xử lý — trạng thái nghiệp vụ, ⛔ không phải trường thiếu <span class="cnt">${viec.length}</span></h4>
-     ${viec.map(o=>{const p=o.p,[lbl,ptb,cl,why]=o.t;
-      return `<div class="hrow" data-ns="${p.id}" data-pt="${ptb}" style="grid-template-columns:26px 2fr 2.2fr 1.6fr 1fr">
-       <div><input type="checkbox" data-selt3="${o.k}" ${selT3.has(o.k)?'checked':''}></div>
-       <div class="who2"><div class="ava2 ${p.anh?'':'noimg'}">${p.anh?p.i:'?'}</div>
-        <div class="i"><b>${p.n}</b><span>${p.cd} · ${p.dt}</span></div></div>
-       <div><span class="st2 ${cl}">${lbl}</span></div>
-       <div style="font-size:11.5px;color:var(--ink2)">${why}</div>
-       <div style="font-size:11.5px;color:var(--brand)">Mở tab ${{lylich:'Lý lịch',hdld:'Hợp đồng',congtac:'Công tác'}[ptb]}</div></div>`}).join('')}
-     <div class="lgd">⛔ Không cộng vào số «hồ sơ chưa đủ» — điền thêm một ô ⛔ không làm hợp đồng hết hạn biến mất.</div>`:''}
+    <div class="hdrow t3h ${cur?'nar':''}">
+     <div></div><div></div><div class="kc">Nhân sự</div><div>Hạng mục còn thiếu</div>
+     <div>Việc cần xử lý</div><div>Mức cao nhất · hạn gần nhất</div><div class="kc">Xử lý</div></div>
+    ${G.map(g=>t3Row(g)).join('')||'<div class="empty">Không còn người nào ở các mức đang bật</div>'}
+    <div class="lgd"><span>Một dòng = <b>một NGƯỜI</b>. Mở <code>▸</code> mới thấy từng hạng mục —
+      đơn vị hạng mục ⛔ đổi: <b>Nhân sự × trường</b> (① ③) · <b>Nhân sự × nhóm</b> (② — MYC-3).</span></div>
    </div>
    <div class="panel">${cur?panel(cur):''}</div>
   </div>`;
+}
+/* một dòng gộp + (khi mở) các dòng con. §6.7.2b.2 */
+function t3Row(g){
+ const p=g.p, mo=t3Open.has(p.id), nar=cur?'nar':'';
+ const nhacDuoc=[...g.thieu,...g.viec].filter(o=>o.nh);
+ const chon=nhacDuoc.length&&nhacDuoc.every(o=>selT3.has(o.k));
+ const hanChu = g.n1 ? '⛔ Sửa ngay — mức ①'
+   : g.han===null ? (g.n2?'Chưa tới hạn':'—')
+   : g.han<0 ? '⛔ Quá hạn '+(-g.han)+' ngày' : 'Còn '+g.han+' ngày';
+ const dich=(g.thieu[0]||g.viec[0]||{t:[,'lylich']}).t[1];
+ const huy=[g.n1?`<span class="st2 r">① ${g.n1}</span>`:'',
+            g.n2?`<span class="st2 ${g.thieu.some(o=>o.x&&o.x.tt==='qua')?'r':g.thieu.some(o=>o.x&&o.x.tt==='con')?'w':'n'}">② ${g.n2} nhóm</span>`:'',
+            g.n3?`<span class="st2 n">③ ${g.n3}</span>`:''].filter(Boolean).join(' ');
+ const head=`<div class="hrow t3g ${nar} ${cur===p.id?'on':''}" data-ns="${p.id}" data-pt="${dich}">
+   <div><button class="xp" data-x="t3-exp" data-ns="${p.id}">${mo?'▾':'▸'}</button></div>
+   <div>${nhacDuoc.length?`<input type="checkbox" data-selt3p="${p.id}" ${chon?'checked':''}>`:''}</div>
+   <div class="who2"><div class="ava2 ${p.anh?'':'noimg'}">${p.anh?p.i:'?'}</div>
+    <div class="i"><b>${p.n}</b><span>${p.cd} · ${p.dt}</span></div></div>
+   <div><span class="st2 ${g.cl}"><b>${g.thieu.length}</b> hạng mục</span> ${huy}</div>
+   <div>${g.viec.length?`<span class="st2 w">⚠ ${g.viec.length} việc</span>`:'<span style="color:var(--ink3)">—</span>'}</div>
+   <div style="font-size:11.5px;color:var(--ink2)">${hanChu}</div>
+   <div style="font-size:11.5px;color:var(--brand)">Mở tab ${PTEN[dich]||dich}</div></div>`;
+ if(!mo)return head;
+ const sub=(o,i)=>{const[lbl,ptb,cl,why]=o.t;
+  return `<div class="hrow t3s ${nar}" data-ns="${p.id}" data-pt="${ptb}" ${o.g?`data-g2="${o.g}"`:''}>
+   <div></div>
+   <div>${o.nh?`<input type="checkbox" data-selt3="${o.k}" ${selT3.has(o.k)?'checked':''}>`:'<span class="kho" title="⛔ nhắc được — xem §6.7.2b.5">·</span>'}</div>
+   <div><span class="st2 ${cl}">${lbl}</span></div>
+   <div style="font-size:11.5px;color:var(--ink2)">${why}</div>
+   <div style="font-size:11.5px;color:var(--brand)">${o.t[4]==='v'&&/đã hết hạn/.test(lbl)?'↗ M4.2':'Mở tab '+(PTEN[ptb]||ptb)+(o.g&&typeof GNHOM!=='undefined'&&GNHOM[o.g]?' · nhóm '+GNHOM[o.g].ten:'')}</div></div>`};
+ return head
+  +`<div class="t3hd">Hạng mục còn thiếu (${g.thieu.length})</div>`
+  +(g.thieu.map(sub).join('')||'<div class="t3none">⛔ còn hạng mục nào ở các mức đang bật</div>')
+  +(g.viec.length?`<div class="t3hd">Việc cần xử lý (${g.viec.length}) — ⛔ cộng vào ${g.thieu.length} hạng mục trên</div>`+g.viec.map(sub).join(''):'');
 }
 
 /* ================= T4 — KHO QUYẾT ĐỊNH (toàn trường) ================= */
@@ -2099,7 +2284,7 @@ function qdTab(){
 /* ================= TAB CỦA KẾ TOÁN ================= */
 function luongTab(){
  const r=rows().filter(p=>TAICHUC.includes(p.tt));
- return `${filters()}
+ return `${filters('luong')}
   <div class="warn">Kế toán chỉ nhận <b>tập trường phục vụ tính lương</b>. Các phần lý lịch, gia đình, sức khỏe,
    quá trình công tác, kho quyết định <b>không có trong dữ liệu trả về</b> — không phải bị ẩn bằng giao diện.</div>
   <div class="listw"><table><thead><tr>
@@ -2285,13 +2470,10 @@ function panel(id){
 /* ---- helper dựng dòng trường theo TẦNG ---- */
 function fld(p,key,label,val,tang){
  const R0=R();
+ /* 🔁 1/10/2026 §6.2.3b — nút sửa TỪNG TRƯỜNG gỡ hẳn (ràng buộc 123). Nhãn «đang chờ duyệt» thì GIỮ:
+    nó ⛔ phải nút, nó là trạng thái người đọc cần thấy ngay ở chế độ xem. */
  let act='';
- if(tang===1&&R0.edit) act=`<button class="btn xs" data-x="sua1" data-ns="${p.id}" data-f="${label}">✎</button>`;
- if(tang===2&&R0.edit){
-  act = ycKhoa(p.id,label)
-   ? `<span class="st2 b">📝 Đang chờ duyệt</span>`
-   : `<button class="btn xs" data-x="sua2" data-ns="${p.id}" data-f="${label}">📝 Sửa</button>`;
- }
+ if(tang===2&&ycKhoa(p.id,label)) act=`<span class="st2 b">📝 Đang chờ duyệt</span>`;
  const tg = tang===1?'<span class="tg c">tầng 1</span>':tang===2?'<span class="tg b">tầng 2</span>':'<span class="tg a">tầng 3</span>';
  return `<div class="f ${tang===2?'t2':tang===3?'t3':''}"><div class="k">${label} ${tg}</div>
    <div class="v">${val}${act?' '+act:''}</div></div>`;
@@ -2409,11 +2591,10 @@ function ncRow(p,key,label,tang,muc,nhom){
   <div class="v" style="flex-wrap:wrap;gap:5px">${body}</div></div>`;
 }
 function khoiN(p){
- return `<div class="card"><div class="ch">N — 🔒 Nhóm nhạy cảm mức cao <span class="tg c">mới 19/9/2026 · HDVC ④</span>
-   <span class="sp"></span><span class="st2 ${ncMoDuoc()?'w':'n'}">${ncMoDuoc()?'Vai '+role+' mở được':'Vai '+role+' ⛔ không mở được'}</span></div><div class="cb">
+ return gWrap(p,'nhaycam','N — 🔒 Nhóm nhạy cảm mức cao <span class="tg c">mới 19/9/2026 · HDVC ④</span>',`
   ${NCF.map(([k,lb,tg,muc,nh])=>ncRow(p,k,lb,tg,muc,nh)).join('')}
- </div>
- <div class="cact"><span style="font-size:11.5px;color:var(--ink2)">
+ `,`<span class="st2 ${ncMoDuoc()?'w':'n'}">${ncMoDuoc()?'Vai '+role+' mở được':'Vai '+role+' ⛔ không mở được'}</span>`,
+ `<div class="cact"><span style="font-size:11.5px;color:var(--ink2)">
   🔴 <b>RANH GIỚI — mục 37 của mẫu 38 mục KHÔNG nhạy cảm cả cụm</b> (sửa 20/9/2026, sau khi đọc Phụ lục gốc).
   Mục 37 gồm <b>ba phần</b>: <b>37.1</b> quá trình lương và <b>37.2</b> các loại phụ cấp nằm ở <b>tab Hợp đồng lao động</b> —
   ⛔ <b>KHÔNG</b> thuộc nhóm này, <b>Kế toán vẫn xem được</b>; chỉ <b>37.3</b> (nguồn thu nhập, nhà ở, đất ở) mới thuộc nhóm nhạy cảm.
@@ -2424,7 +2605,7 @@ function khoiN(p){
   Chín ô này là <b>lý lịch chính trị của một con người và của gia đình họ</b>: không sửa được, không đổi được, không xin cấp lại được,
   và phần lớn <b>không do người khai làm ra</b>. Lộ ra thì <b>không thu lại được</b>, hậu quả rơi vào <b>quan hệ con người</b> chứ không phải ví tiền,
   và người chịu hậu quả thường là <b>người không có lỗi gì</b>. Vì vậy: chỉ <b>Hiệu trưởng</b> và <b>Tổ chức nhân sự</b> mở được,
-  ⛔ <b>không Kế toán</b>; mỗi lượt mở vào <b>nhật ký truy cập</b>; và ⛔ <b>không lên App, không vào báo cáo, không vào tệp xuất, không vào phiên đồng bộ nào</b>.</span></div></div>`;
+  ⛔ <b>không Kế toán</b>; mỗi lượt mở vào <b>nhật ký truy cập</b>; và ⛔ <b>không lên App, không vào báo cáo, không vào tệp xuất, không vào phiên đồng bộ nào</b>.</span></div>`);
 }
 
 /* Bảng gia đình — sáu cột cũ + BỐN cột mới, áp cho CẢ HAI bảng (HS01 mục VI · HS02 mục 30) */
@@ -2621,7 +2802,7 @@ function pLyLich(p){
   <div class="card"><div class="ch">Thông tin cơ bản</div><div class="cb">
    <div class="f"><div class="k">Họ và tên</div><div class="v">${p.n}</div></div>
    <div class="f"><div class="k">Mã nhân sự</div><div class="v">${p.ma}</div></div>
-   <div class="f"><div class="k">Chức danh</div><div class="v">${p.cd}${p.cdphu?' · '+p.cdphu:''}</div></div>
+   <div class="f"><div class="k">Chức danh</div><div class="v">${cdNhan(p)}${p.cdphu?' · '+p.cdphu:''}</div></div>
    <div class="f"><div class="k">Tổ / Bộ phận</div><div class="v">${p.to}</div></div>
    <div class="f"><div class="k">Điểm trường công tác</div><div class="v">${p.dt} <span class="tg c">khai báo</span></div></div>
    <div class="f"><div class="k">Diện làm việc</div><div class="v"><b>${dien(p.dien).ten}</b>
@@ -2637,64 +2818,65 @@ function pLyLich(p){
      <b>Mọi lượt xem đều ghi audit.</b> Phần sức khỏe còn lại vẫn ngoài phạm vi.</span></div></div>`:''}`;
 
  const ct=p.qt&&p.qt[0];
- return `<div class="card"><div class="ch">A — Thông tin cá nhân<span class="sp"></span>
-   ${R0.edit?`<button class="btn xs" data-x="doi-anh" data-ns="${p.id}">🖼 Đổi ảnh 4×6</button>`:''}</div><div class="cb">
-   ${dienBlock(p)}
-  ${fld(p,'n','Họ và tên',p.n,2)}
-  ${fld(p,'sinh','Ngày sinh',p.sinh+' · '+p.gt,2)}
-  ${fld(p,'cccd','Số CCCD',maskField(p,'cccd','Số CCCD'),2)}
-  ${fld(p,'bhxh','Số BHXH',maskField(p,'bhxh','Số BHXH'),2)}
-  ${fld(p,'stk','Số tài khoản ngân hàng',maskField(p,'stk','Số tài khoản ngân hàng'),2)}
-  <div class="f"><div class="k">Dân tộc · Tôn giáo · Quốc tịch</div><div class="v">${p.dantoc} · Không · Việt Nam</div></div>
-  <div class="f"><div class="k">Tình trạng hôn nhân</div><div class="v">${p.honnhan} <span class="tg b">tầng 2</span></div></div>
-  ${DCF.map(([k,lb,tg])=>dcRow(p,k,lb,tg)).join('')}
-  ${fld(p,'sdt','Số điện thoại',(p.tk.sdt||'<span class="st2 r">Chưa khai</span>')
-    +' <span class="tg b">định danh đăng nhập · duy nhất toàn trường</span>',2)}
-  ${fld(p,'email','Email',(p.tk.mail||'<span class="st2 w">Chưa khai — chỉ đăng nhập được bằng mã nhân sự</span>')
-    +' <span class="tg b">định danh đăng nhập · duy nhất toàn trường</span>',2)}
-  <div class="f"><div class="k">Ngày vào Đảng</div><div class="v">${p.ngayDang||'<span style="color:var(--ink3)">—</span>'}</div></div>
-  <div class="f"><div class="k">Là Đảng viên</div><div class="v">
+ /* §6.2.3b — khối A: thân ĐỌC giữ nguyên, truyền vào gKhoiA() để nó đổi sang FORM khi một nhóm con đang sửa */
+ return gDaiLyLich(p) + khoiA7(p,[
+  `   ${dienBlock(p)}`,
+  `  ${fld(p,'n','Họ và tên',p.n,2)}`,
+  `  ${fld(p,'sinh','Ngày sinh',p.sinh+' · '+p.gt,2)}`,
+  `  ${fld(p,'cccd','Số CCCD',maskField(p,'cccd','Số CCCD'),2)}`,
+  `  ${fld(p,'bhxh','Số BHXH',maskField(p,'bhxh','Số BHXH'),2)}`,
+  `  ${fld(p,'stk','Số tài khoản ngân hàng',maskField(p,'stk','Số tài khoản ngân hàng'),2)}`,
+  `  <div class="f"><div class="k">Dân tộc · Tôn giáo · Quốc tịch</div><div class="v">${p.dantoc} · Không · Việt Nam</div></div>`,
+  `  <div class="f"><div class="k">Tình trạng hôn nhân</div><div class="v">${p.honnhan} <span class="tg b">tầng 2</span></div></div>`,
+  `  ${DCF.map(([k,lb,tg])=>dcRow(p,k,lb,tg)).join('')}`,
+  /* BLOOP 2/10/2026 — p.tk CÓ THỂ null (hồ sơ chưa cấp tài khoản, §4b.2a) ⇒ đọc có canh */
+  `  ${fld(p,'sdt','Số điện thoại',((p.tk&&p.tk.sdt)||'<span class="st2 r">Chưa khai</span>')
+    +' <span class="tg b">định danh đăng nhập · duy nhất toàn trường</span>',2)}`,
+  `  ${fld(p,'email','Email',((p.tk&&p.tk.mail)||'<span class="st2 w">Chưa khai — chỉ đăng nhập được bằng mã nhân sự</span>')
+    +' <span class="tg b">định danh đăng nhập · duy nhất toàn trường</span>',2)}`,
+  `  <div class="f"><div class="k">Ngày vào Đảng</div><div class="v">${p.ngayDang||'<span style="color:var(--ink3)">—</span>'}</div></div>`,
+  `  <div class="f"><div class="k">Là Đảng viên</div><div class="v">
     ${p.dangVien?'<span class="st2 o">Có</span>':'<span class="st2 n">Không</span>'}
     <span class="tg g">dẫn xuất từ Ngày vào Đảng</span>
     <div style="width:100%;font-size:11px;color:var(--ink3);font-weight:400;margin-top:3px">
      ⛔ <b>Không có ô nhập riêng.</b> Đẻ thêm một cờ nhập tay cho thứ đã suy được từ <b>Ngày vào Đảng</b> là tạo
-     <b>hai nguồn sự thật</b> — sớm muộn hồ sơ sẽ có người <i>«là Đảng viên»</i> mà không có ngày vào Đảng.</div></div></div>
-  <div class="f t2"><div class="k">Là Đoàn viên <span class="tg b">tầng 2</span></div><div class="v">${co3(p.doanVien)}</div></div>
-  <div class="f t3"><div class="k">Là tuyển mới <span class="tg a">tầng 3</span></div><div class="v">
+     <b>hai nguồn sự thật</b> — sớm muộn hồ sơ sẽ có người <i>«là Đảng viên»</i> mà không có ngày vào Đảng.</div></div></div>`,
+  `  <div class="f t2"><div class="k">Là Đoàn viên <span class="tg b">tầng 2</span></div><div class="v">${co3(p.doanVien)}</div></div>`,
+  `  <div class="f t3"><div class="k">Là tuyển mới <span class="tg a">tầng 3</span></div><div class="v">
     ${co3(p.tuyenMoi)} ${p.tuyenMoiNam?'<span class="tg c">'+p.tuyenMoiNam+'</span>':''}
-    <span style="font-size:11px;color:var(--ink3);font-weight:400">— Tổ chức nhân sự khai, có năm áp dụng</span></div></div>
-  <div class="f"><div class="k">Ngày vào ngành</div><div class="v">${p.vaonganh}
-    <span style="font-size:11px;color:var(--ink3);font-weight:400">— ngày bắt đầu làm việc trong ngành, kể cả ở đơn vị khác</span></div></div>
-  <div class="f"><div class="k">Ảnh 4×6</div><div class="v">${p.anh?'<span class="st2 o">✓ Đã có</span>':'<span class="st2 r">⚠ Chưa có — hồ sơ chưa đủ</span>'}</div></div>
-  ${ma4Block(p)}
-  <div class="f t3"><div class="k">Số hiệu viên chức <span class="tg a">tầng 3</span>
+    <span style="font-size:11px;color:var(--ink3);font-weight:400">— Tổ chức nhân sự khai, có năm áp dụng</span></div></div>`,
+  `  <div class="f"><div class="k">Ngày vào ngành</div><div class="v">${p.vaonganh}
+    <span style="font-size:11px;color:var(--ink3);font-weight:400">— ngày bắt đầu làm việc trong ngành, kể cả ở đơn vị khác</span></div></div>`,
+  `  <div class="f"><div class="k">Ảnh 4×6</div><div class="v">${p.anh?'<span class="st2 o">✓ Đã có</span>':'<span class="st2 r">⚠ Chưa có — hồ sơ chưa đủ</span>'}</div></div>`,
+  `  ${ma4Block(p)}`,
+  `  <div class="f t3"><div class="k">Số hiệu viên chức <span class="tg a">tầng 3</span>
     <div style="font-size:10.5px;color:var(--ink3);font-weight:400;margin-top:2px">HS01 bìa · HS02 đầu trang · BNV</div></div><div class="v">
     ${p.shvc?'<b>'+esc(p.shvc)+'</b>':'<span style="color:var(--ink3)">— không phải viên chức thì KHÔNG có số hiệu, ⛔ không tính là hồ sơ thiếu</span>'}
-    ${p.shvc?'<span class="tg c">do cơ quan quản lý viên chức cấp — hệ thống ⛔ không tự sinh</span>':''}</div></div>
-  <div class="f"><div class="k">Mã nhân sự nội bộ</div><div class="v">${p.ma} <span class="tg c">tự sinh</span></div></div>
-  <div class="f"><div class="k">Thuộc diện khai CSDL ngành</div><div class="v">
+    ${p.shvc?'<span class="tg c">do cơ quan quản lý viên chức cấp — hệ thống ⛔ không tự sinh</span>':''}</div></div>`,
+  `  <div class="f"><div class="k">Mã nhân sự nội bộ</div><div class="v">${p.ma} <span class="tg c">tự sinh</span></div></div>`,
+  `  <div class="f"><div class="k">Thuộc diện khai CSDL ngành</div><div class="v">
     ${p.csdl?'<span class="st2 o">Có</span>':'<span class="st2 n">Không</span>'}
-    <span style="font-size:11px;color:var(--ink3)">${p.csdl?'':'— hợp đồng ngắn hạn, không khai lên ngành'}</span></div></div>
-  <div class="f"><div class="k">Mã định danh CSDL ngành</div><div class="v">
+    <span style="font-size:11px;color:var(--ink3)">${p.csdl?'':'— hợp đồng ngắn hạn, không khai lên ngành'}</span></div></div>`,
+  `  <div class="f"><div class="k">Mã định danh CSDL ngành</div><div class="v">
     ${p.maCsdl?`<span class="mask-val">${p.maCsdl}</span>`
      : p.csdl?`<span class="st2 w">⚠ Chưa có</span>
         ${R0.edit?'<button class="btn xs" data-x="xin-ma">Xin cấp mã tự động</button>':''}`
-     :'<span style="color:var(--ink3)">Không áp dụng</span>'}</div></div>
-  <div class="f"><div class="k">Trạng thái đồng bộ ngành</div><div class="v">
+     :'<span style="color:var(--ink3)">Không áp dụng</span>'}</div></div>`,
+  `  <div class="f"><div class="k">Trạng thái đồng bộ ngành</div><div class="v">
     ${!p.csdl?'<span style="color:var(--ink3)">Không thuộc diện khai — không vào phiên đồng bộ nào</span>'
      : p.maCsdl?'<span class="st2 o">Đã đồng bộ</span> <span style="font-size:11px;color:var(--ink3)">20/08/2026 · phiên P-0820</span>'
      :'<span class="st2 w">⚠ Có việc chưa xong</span> <span style="font-size:11px;color:var(--ink3)">chờ Sở cấp mã</span>'}
     <a href="#" style="font-size:11px;color:var(--blue);text-decoration:none;margin-left:6px"
        data-x="di-m108">🔗 M10.8</a>
-    <div style="font-size:11px;color:var(--ink3);margin-top:2px">Chiếu chỉ đọc từ <b>M10.8</b> — mọi tác vụ đồng bộ nằm ở đó, M4.1 không giữ hàng đợi đẩy nào.</div></div></div>
-  <div class="f t2"><div class="k">Trình độ giáo dục phổ thông <span class="tg b">tầng 2</span>
+    <div style="font-size:11px;color:var(--ink3);margin-top:2px">Chiếu chỉ đọc từ <b>M10.8</b> — mọi tác vụ đồng bộ nằm ở đó, M4.1 không giữ hàng đợi đẩy nào.</div></div></div>`,
+  `  <div class="f t2"><div class="k">Trình độ giáo dục phổ thông <span class="tg b">tầng 2</span>
     <div style="font-size:10.5px;color:var(--ink3);font-weight:400;margin-top:2px">HS01 15.1 · HS02 15.1 · 38 mục 19</div></div>
-   <div class="v"><b>12/12</b> <span class="tg c">vẫn là trường thật</span>
+   <div class="v"><b>${esc(p.tdpt||'12/12')}</b> <span class="tg c">vẫn là trường thật</span>
     <div style="width:100%;font-size:11px;color:var(--ink3);font-weight:400;margin-top:3px">
      ⚠ Ô này ⛔ <b>KHÔNG</b> chuyển sang dẫn xuất: mẫu hỏi <b>đã tốt nghiệp lớp mấy, thuộc hệ nào</b> ở
      <b>mục 19</b> — một mục RIÊNG, ⛔ không nằm trong bảng 32 nào. Bảng <b>32.1</b> chỉ nhận
-     <b>từ trung cấp trở lên</b>, nên nó ⛔ không suy ra được bằng tốt nghiệp phổ thông.</div></div></div>
-  ${(function(){const d=hvChuyenMon(p);return `<div class="f"><div class="k">Trình độ chuyên môn cao nhất
+     <b>từ trung cấp trở lên</b>, nên nó ⛔ không suy ra được bằng tốt nghiệp phổ thông.</div></div></div>`,
+  `  ${(function(){const d=hvChuyenMon(p);return `<div class="f"><div class="k">Trình độ chuyên môn cao nhất
     <div style="font-size:10.5px;color:var(--ink3);font-weight:400;margin-top:2px">HS01 15.2 · HS02 15.2 · 38 mục 20 — suy từ bảng 32.1</div></div>
    <div class="v">${hvDX(d?d.vb:'','32.1')}
     ${d&&d.nganh?`<span class="chip">${esc(d.nganh)}</span>`:''}
@@ -2702,16 +2884,16 @@ function pLyLich(p){
     <div style="width:100%;font-size:11px;color:var(--ink3);font-weight:400;margin-top:3px">
      🛑 Lấy <b>văn bằng CAO NHẤT</b> theo thứ bậc của chính mẫu (<i>TSKH · TS · chuyên khoa II · Ths · chuyên khoa I ·
      đại học · cao đẳng · trung cấp · sơ cấp</i>), ⛔ <b>không lấy dòng cuối cùng</b> — học thêm một bằng
-     <b>sau</b> thạc sĩ là chuyện rất thật, và lấy dòng cuối thì hồ sơ <b>tụt hạng</b> mà không ai thấy.</div></div></div>`})()}
-  ${(function(){const d=hvLyLuan(p);return `<div class="f"><div class="k">Trình độ lý luận chính trị
+     <b>sau</b> thạc sĩ là chuyện rất thật, và lấy dòng cuối thì hồ sơ <b>tụt hạng</b> mà không ai thấy.</div></div></div>`})()}`,
+  `  ${(function(){const d=hvLyLuan(p);return `<div class="f"><div class="k">Trình độ lý luận chính trị
     <div style="font-size:10.5px;color:var(--ink3);font-weight:400;margin-top:2px">HS01 15.3 · HS02 15.3 · 38 mục 32.2 — suy từ bảng 32.2</div></div>
    <div class="v">${hvDX(d?d.vb:'','32.2')}
-    ${d?`<span style="font-size:11px;color:var(--ink3);font-weight:400">— ${esc(d.coso)} · ${esc(d.den)}</span>`:''}</div></div>`})()}
-  ${(function(){const d=hvTinHoc(p);return `<div class="f"><div class="k">Trình độ tin học
+    ${d?`<span style="font-size:11px;color:var(--ink3);font-weight:400">— ${esc(d.coso)} · ${esc(d.den)}</span>`:''}</div></div>`})()}`,
+  `  ${(function(){const d=hvTinHoc(p);return `<div class="f"><div class="k">Trình độ tin học
     <div style="font-size:10.5px;color:var(--ink3);font-weight:400;margin-top:2px">HS01 15.7 · HS02 15.7 · 38 mục 32.5 — suy từ bảng 32.5</div></div>
    <div class="v">${hvDX(d?d.cc:'','32.5')}
-    ${d?`<span style="font-size:11px;color:var(--ink3);font-weight:400">— ${esc(d.coso)} · ${esc(d.den)}</span>`:''}</div></div>`})()}
-  ${(function(){const d=hvNgoaiNgu(p),t=hvTiengDT(p);return `
+    ${d?`<span style="font-size:11px;color:var(--ink3);font-weight:400">— ${esc(d.coso)} · ${esc(d.den)}</span>`:''}</div></div>`})()}`,
+  `  ${(function(){const d=hvNgoaiNgu(p),t=hvTiengDT(p);return `
    <div class="f"><div class="k">Ngoại ngữ — nhóm / loại chứng chỉ
      <div style="font-size:10.5px;color:var(--ink3);font-weight:400;margin-top:2px">HS01 15.6 · HS02 15.6 · 38 mục 32.6 — suy từ DÒNG MỚI NHẤT của bảng 32.6</div></div>
     <div class="v">${hvDX(d?d.loai:'','32.6')}
@@ -2729,15 +2911,15 @@ function pLyLich(p){
       :'<span class="st2 n">Chưa có</span>'} <span class="tg g">dẫn xuất</span> <span class="tg c">bảng 32.6</span>
      <div style="width:100%;font-size:11px;color:var(--ink3);font-weight:400;margin-top:3px">
       Dòng <b>tiếng dân tộc</b> nằm ngay trong bảng <b>32.6</b> — mẫu đặt tên bảng là
-      <i>«Ngoại ngữ / tiếng dân tộc»</i>, ⛔ không tách bảng thứ bảy.</div></div></div>`})()}
-  <div class="f t2"><div class="k">Trình độ quản lý giáo dục <span class="tg b">tầng 2</span></div><div class="v">
+      <i>«Ngoại ngữ / tiếng dân tộc»</i>, ⛔ không tách bảng thứ bảy.</div></div></div>`})()}`,
+  `  <div class="f t2"><div class="k">Trình độ quản lý giáo dục <span class="tg b">tầng 2</span></div><div class="v">
     ${p.bd.qlgd?esc(p.bd.qlgd):'<span class="st2 n">Chưa khai</span>'}
-    <span style="font-size:11px;color:var(--ink3);font-weight:400">— đứng cạnh Trình độ chính trị, ⛔ không gộp</span></div></div>
-  <div class="f t2"><div class="k">Bồi dưỡng nghiệp vụ QLGD <span class="tg b">tầng 2</span></div><div class="v">${co3(p.bd.a)}</div></div>
-  <div class="f t2"><div class="k">Bồi dưỡng CBQL và GV cốt cán <span class="tg b">tầng 2</span></div><div class="v">${co3(p.bd.b)}</div></div>
-  <div class="f t2"><div class="k">Bồi dưỡng thay sách <span class="tg b">tầng 2</span></div><div class="v">${co3(p.bd.c)}
-    <span style="font-size:11px;color:var(--ink3);font-weight:400">⏳ bốn ô bồi dưỡng lẽ ra dẫn xuất từ M5.6 khi đợt có trường phân loại — đề nghị cho 3Z</span></div></div>
-  ${(function(){const d=hvANQP(p);return `<div class="f"><div class="k">Đã bồi dưỡng kiến thức an ninh, quốc phòng
+    <span style="font-size:11px;color:var(--ink3);font-weight:400">— đứng cạnh Trình độ chính trị, ⛔ không gộp</span></div></div>`,
+  `  <div class="f t2"><div class="k">Bồi dưỡng nghiệp vụ QLGD <span class="tg b">tầng 2</span></div><div class="v">${co3(p.bd.a)}</div></div>`,
+  `  <div class="f t2"><div class="k">Bồi dưỡng CBQL và GV cốt cán <span class="tg b">tầng 2</span></div><div class="v">${co3(p.bd.b)}</div></div>`,
+  `  <div class="f t2"><div class="k">Bồi dưỡng thay sách <span class="tg b">tầng 2</span></div><div class="v">${co3(p.bd.c)}
+    <span style="font-size:11px;color:var(--ink3);font-weight:400">⏳ bốn ô bồi dưỡng lẽ ra dẫn xuất từ M5.6 khi đợt có trường phân loại — đề nghị cho 3Z</span></div></div>`,
+  `  ${(function(){const d=hvANQP(p);return `<div class="f"><div class="k">Đã bồi dưỡng kiến thức an ninh, quốc phòng
     <div style="font-size:10.5px;color:var(--ink3);font-weight:400;margin-top:2px">38 mục 32.4 · BNV — suy từ bảng 32.4</div></div><div class="v">
     ${d?'<span class="st2 o">Có</span>':'<span class="st2 n">Chưa có</span>'}
     <span class="tg g">dẫn xuất</span> <span class="tg c">bảng 32.4</span>
@@ -2745,14 +2927,14 @@ function pLyLich(p){
       <span style="font-size:11px;color:var(--ink3);font-weight:400">— ${esc(d.coso)}</span>`:''}
     <div style="width:100%;font-size:11px;color:var(--ink3);font-weight:400;margin-top:3px">
      ✅ Thẻ vá <b>HSVC-1A2</b> (20/9 sáng) dựng ô này thành <b>cờ tóm tắt</b> và hẹn <i>«khi có bảng thì chuyển sang dẫn xuất»</i>.
-     <b>Bảng 32.4 nay đã có</b> ⇒ lời hẹn ấy đã trả xong; cờ ⛔ <b>không còn ô nhập</b>.</div></div></div>`})()}
-  <div class="f t2"><div class="k">Học hàm được phong <span class="tg b">tầng 2</span>
+     <b>Bảng 32.4 nay đã có</b> ⇒ lời hẹn ấy đã trả xong; cờ ⛔ <b>không còn ô nhập</b>.</div></div></div>`})()}`,
+  `  <div class="f t2"><div class="k">Học hàm được phong <span class="tg b">tầng 2</span>
     <div style="font-size:10.5px;color:var(--ink3);font-weight:400;margin-top:2px">HS01 19.2 · HS02 19.2 · 38 mục 21 · BNV</div></div><div class="v">
     ${p.bnv.hocham?'<b>'+esc(p.bnv.hocham)+'</b> <span class="chip">Năm '+esc(p.bnv.hochamNam)+'</span>':'<span style="color:var(--ink3)">Không có</span>'}
     <div style="width:100%;font-size:11px;color:var(--ink3);font-weight:400;margin-top:3px">
      ⚠ <b>Khác «Danh hiệu phong tặng»</b> (HS01 19.1 — Nhà giáo Ưu tú…): danh hiệu là <b>thi đua khen thưởng</b>, ánh xạ từ M4.10;
-     học hàm là <b>chức danh khoa học do Hội đồng Giáo sư nhà nước công nhận</b> — trường <b>thật</b>, ⛔ không ánh xạ.</div></div></div>
-  ${(function(){const q=hvQLNN(p);return `<div class="f"><div class="k">Trình độ quản lý nhà nước
+     học hàm là <b>chức danh khoa học do Hội đồng Giáo sư nhà nước công nhận</b> — trường <b>thật</b>, ⛔ không ánh xạ.</div></div></div>`,
+  `  ${(function(){const q=hvQLNN(p);return `<div class="f"><div class="k">Trình độ quản lý nhà nước
     <div style="font-size:10.5px;color:var(--ink3);font-weight:400;margin-top:2px">HS01 15.4 · HS02 15.4 · 38 mục 32.3 — suy từ bảng 32.3</div></div><div class="v">
     ${hvDX(q?q.ten:'','32.3')}
     ${q?`<span style="font-size:11px;color:var(--ink3);font-weight:400">— ${esc(q.r.coso)} · ${esc(q.r.den)}</span>`:''}
@@ -2762,21 +2944,21 @@ function pLyLich(p){
      <br>🛑 Bảng <b>32.3</b> gộp <b>BA</b> loại chứng chỉ (<i>quản lý nhà nước · chức danh nghề nghiệp · nghiệp vụ chuyên ngành</i>),
      nên ô này <b>LỌC theo loại</b> rồi mới lấy <b>ngạch cao nhất</b> — ⛔ không lấy bừa một dòng của bảng.
      <br>⚠ <b>Trình độ quản lý giáo dục</b> ở ô trên <b>VẪN là trường thật</b> ở phiên này: nó thuộc bộ trường của cụm
-     <code>CSDL</code>, và thẻ giao dặn ⛔ <b>không gộp hai việc</b>. Đã ghi phiếu cho <code>CSDL-3Z</code>.</div></div></div>`})()}
-  <div class="f t2"><div class="k">Nhập ngũ · Xuất ngũ · Quân hàm cao nhất <span class="tg b">tầng 2</span>
+     <code>CSDL</code>, và thẻ giao dặn ⛔ <b>không gộp hai việc</b>. Đã ghi phiếu cho <code>CSDL-3Z</code>.</div></div></div>`})()}`,
+  `  <div class="f t2"><div class="k">Nhập ngũ · Xuất ngũ · Quân hàm cao nhất <span class="tg b">tầng 2</span>
     <div style="font-size:10.5px;color:var(--ink3);font-weight:400;margin-top:2px">HS01 18 · HS02 18 · 38 mục 17 · BNV</div></div><div class="v">
     ${p.bnv.coNgu?`<b>${p.bnv.nhapNgu}</b> → <b>${p.bnv.xuatNgu}</b> <span class="chip">${esc(p.bnv.quanHam)}</span>`
-     :'<span style="color:var(--ink3)">Chưa từng phục vụ trong quân đội — ba ô ẩn</span>'}</div></div>
-  <div class="f t2"><div class="k">Thương binh · con gia đình chính sách <span class="tg b">tầng 2</span>
+     :'<span style="color:var(--ink3)">Chưa từng phục vụ trong quân đội — ba ô ẩn</span>'}</div></div>`,
+  `  <div class="f t2"><div class="k">Thương binh · con gia đình chính sách <span class="tg b">tầng 2</span>
     <div style="font-size:10.5px;color:var(--ink3);font-weight:400;margin-top:2px">HS01 22 · HS02 24 · 38 mục 18 · BNV</div></div><div class="v">
     ${p.bnv.tbHang?`Thương binh hạng <b>${esc(p.bnv.tbHang)}/${esc(p.bnv.tbTong)}</b>`:'<span style="color:var(--ink3)">Không</span>'}
     ${p.bnv.conCS?`<span class="chip">${esc(p.bnv.conCS)}</span>`:''}
     <div style="width:100%;font-size:11px;color:var(--ink3);font-weight:400;margin-top:3px">
-     ⚠ Đây là diện chính sách <b>của nhân sự</b> — ⛔ <b>không dùng chung danh mục với M1.2</b> (diện chính sách của học sinh).</div></div></div>
-  <div class="f t2"><div class="k">Tham gia tổ chức chính trị - xã hội <span class="tg b">tầng 2</span>
+     ⚠ Đây là diện chính sách <b>của nhân sự</b> — ⛔ <b>không dùng chung danh mục với M1.2</b> (diện chính sách của học sinh).</div></div></div>`,
+  `  <div class="f t2"><div class="k">Tham gia tổ chức chính trị - xã hội <span class="tg b">tầng 2</span>
     <div style="font-size:10.5px;color:var(--ink3);font-weight:400;margin-top:2px">HS01 17 · HS02 17 · 38 mục 16 · BNV</div></div><div class="v">
-    <b>${esc(p.bnv.ngayTCXH)}</b> <span style="font-weight:400">— ${esc(p.bnv.vaiTCXH)}</span></div></div>
-  <div class="f t2"><div class="k">🆕 Nhiệm vụ kiêm nhiệm <span class="tg b">tầng 2</span>
+    <b>${esc(p.bnv.ngayTCXH)}</b> <span style="font-weight:400">— ${esc(p.bnv.vaiTCXH)}</span></div></div>`,
+  `  <div class="f t2"><div class="k">🆕 Nhiệm vụ kiêm nhiệm <span class="tg b">tầng 2</span>
     <div style="font-size:10.5px;color:var(--ink3);font-weight:400;margin-top:2px">cổng 37 ô tích · GDĐT + BNV</div></div><div class="v">
     ${(p.bnv.nvkn&&p.bnv.nvkn.length)||p.bnv.nvknKhac
       ? (p.bnv.nvkn||[]).map(x=>'<span class="chip">'+esc(x)+'</span>').join('')
@@ -2788,8 +2970,8 @@ function pLyLich(p){
     <div style="width:100%;font-size:11px;color:var(--ink3);font-weight:400;margin-top:3px">
      Tích chọn <b>một hoặc nhiều</b> trong <b>${NVKN.length} mục</b>, kèm mục <b>Khác</b> tự điền.
      🛑 <b>Hệ thống chỉ LƯU thông tin</b> — ⛔ không sinh quyền, ⛔ không mở cửa nào vào dữ liệu.
-     ⛔ <b>Không vào phép đếm hồ sơ cần hoàn thiện</b>: phần lớn giáo viên không kiêm nhiệm gì, ô trống là <b>trạng thái bình thường nhất</b>.</div></div></div>
-  <div class="f t2"><div class="k">Chức vụ Đảng hiện tại · kiêm nhiệm <span class="tg c">dẫn xuất</span>
+     ⛔ <b>Không vào phép đếm hồ sơ cần hoàn thiện</b>: phần lớn giáo viên không kiêm nhiệm gì, ô trống là <b>trạng thái bình thường nhất</b>.</div></div></div>`,
+  `  <div class="f t2"><div class="k">Chức vụ Đảng hiện tại · kiêm nhiệm <span class="tg c">dẫn xuất</span>
     <div style="font-size:10.5px;color:var(--ink3);font-weight:400;margin-top:2px">HS01 12.1 · 12.2 · 38 mục 26 · 27 · BNV</div></div><div class="v">
     ${cvDangNay(p)?'<b>'+esc(cvDangNay(p))+'</b>':'<span style="color:var(--ink3)">Không</span>'}
     ${cvDangKiem(p)?'<span class="chip">Kiêm: '+esc(cvDangKiem(p))+'</span>':''}
@@ -2797,23 +2979,23 @@ function pLyLich(p){
      🔗 <b>Suy từ ô «Nhiệm vụ kiêm nhiệm» ở trên</b> — ⛔ không có ô nhập riêng, ⛔ không còn khai tay.
      Ô 12 lấy chức vụ Đảng <b>cao nhất</b> đang tích <i>(Bí thư đảng bộ → Bí thư chi bộ → Phó bí thư chi bộ)</i>; ô 13 lấy phần còn lại.<br>
      🛑 ⛔ KHÔNG biến thành chức danh ở <b>M4.3</b> — chức danh <b>cấp quyền truy cập menu</b>,
-     mà tư cách trong tổ chức Đảng do <b>đại hội chi bộ bầu</b>; nhà trường ⛔ không có thẩm quyền trao.</div></div></div>
-  <div class="f t2"><div class="k">Số thẻ bảo hiểm y tế <span class="tg b">tầng 2</span>
+     mà tư cách trong tổ chức Đảng do <b>đại hội chi bộ bầu</b>; nhà trường ⛔ không có thẩm quyền trao.</div></div></div>`,
+  `  <div class="f t2"><div class="k">Số thẻ bảo hiểm y tế <span class="tg b">tầng 2</span>
     <div style="font-size:10.5px;color:var(--ink3);font-weight:400;margin-top:2px">38 mục 9 · BNV</div></div><div class="v">
-    ${esc(p.bnv.bhyt)} <span class="tg c">khác số sổ BHXH ở trên</span></div></div>
-  <div class="f t3"><div class="k">Quy hoạch chức danh <span class="tg a">tầng 3</span>
+    ${esc(p.bnv.bhyt)} <span class="tg c">khác số sổ BHXH ở trên</span></div></div>`,
+  `  <div class="f t3"><div class="k">Quy hoạch chức danh <span class="tg a">tầng 3</span>
     <div style="font-size:10.5px;color:var(--ink3);font-weight:400;margin-top:2px">38 mục 24 · BNV</div></div><div class="v">
     ${p.bnv.quyHoach?`<b>${esc(p.bnv.quyHoach)}</b> <span class="chip">${esc(p.bnv.quyHoachGD)}</span>`
      :'<span style="color:var(--ink3)">Chưa quy hoạch</span>'}
-    <span style="font-size:11px;color:var(--ink3);font-weight:400">— kết luận của cấp có thẩm quyền, ⛔ không phải thông tin chính chủ khai</span></div></div>
-  ${p.nhom===2?`<div class="f"><div class="k">Hạng CDNN · Môn dạy</div><div class="v">${p.hang} · ${p.mon}
-    <span class="tg b">Nhóm 2 — bắt buộc</span></div></div>`:''}
-  ${p.nhom===3?`<div class="f"><div class="k">Vị trí việc làm</div><div class="v">${p.vtvl
+    <span style="font-size:11px;color:var(--ink3);font-weight:400">— kết luận của cấp có thẩm quyền, ⛔ không phải thông tin chính chủ khai</span></div></div>`,
+  `  ${p.nhom===2?`<div class="f"><div class="k">Hạng CDNN · Môn dạy</div><div class="v">${p.hang} · ${p.mon}
+    <span class="tg b">Nhóm 2 — bắt buộc</span></div></div>`:''}`,
+  `  ${p.nhom===3?`<div class="f"><div class="k">Vị trí việc làm</div><div class="v">${p.vtvl
     ?p.vtvl:'<span class="st2 r">⚠ Chưa khai — Nhóm 3 bắt buộc</span>'}
-    <span class="tg b">Nhóm 3 — bắt buộc</span></div></div>`:''}
- </div></div>
+    <span class="tg b">Nhóm 3 — bắt buộc</span></div></div>`:''}`
+ ]) + `
 
- <div class="card"><div class="ch">Tuyển dụng <span class="tg a">tầng 3 — chỉ TCNS ghi</span></div><div class="cb">
+ ` + gWrap(p,'tuyendung','Tuyển dụng <span class="tg a">tầng 3 — chỉ TCNS ghi</span>',`
   <div class="f t3"><div class="k">Ngày tuyển dụng <span class="tg a">tầng 3</span></div><div class="v">${p.tuyen.ngay}
    <div style="width:100%;font-size:11px;color:var(--ink3);font-weight:400;margin-top:2px">
     Ngày ghi trên <b>quyết định tuyển dụng</b> của cơ quan có thẩm quyền — có thể ở một đơn vị khác, trước khi về trường này.</div></div></div>
@@ -2833,7 +3015,7 @@ function pLyLich(p){
   <div class="f t2"><div class="k">Công việc làm lâu nhất <span class="tg b">tầng 2</span>
    <div style="font-size:10.5px;color:var(--ink3);font-weight:400;margin-top:2px">38 mục 29 · BNV</div></div><div class="v">${esc(p.tuyen.lauNhat)}
    <span style="font-size:11px;color:var(--ink3);font-weight:400">— tầng 2: chính chủ biết rõ hơn ai hết</span></div></div>
- </div></div>
+ `) + `
  ${ngay4Block(p)}
 
  ${gdTable(p,p.giadinh,'ban','B — Quan hệ gia đình <span class="tg c">bốn cột mới 19/9/2026</span>',
@@ -2844,7 +3026,7 @@ function pLyLich(p){
 
  ${khoiN(p)}
 
- <div class="card"><div class="ch">C — Thông tin sức khỏe</div><div class="cb">
+ ` + gWrap(p,'suckhoe','C — Thông tin sức khỏe',`
   <div class="f t2"><div class="k">Tình trạng sức khỏe · Chiều cao · Cân nặng · Nhóm máu <span class="tg b">tầng 2</span>
    <div style="font-size:10.5px;color:var(--ink3);font-weight:400;margin-top:2px">HS01 21 · HS02 23 · 38 mục 31 · BNV — mẫu in cả bốn trên MỘT dòng</div></div><div class="v">
    <b>${esc(p.sk.tt)}</b> · Cao <b>${p.sk.cao} cm</b> · Nặng <b>${p.sk.nang} kg</b> · Nhóm máu <b>${['O','A','B','AB'][p.id%4]}</b>
@@ -2853,22 +3035,21 @@ function pLyLich(p){
     ⛔ Không để tầng 1: đây là <b>số liệu của một lần khám</b>, có ngày và có người ký.
     🛑 ⛔ Không lấy từ <b>M6.6</b> — đó là sức khỏe <b>học sinh</b>.</div></div></div>
   ${fld(p,'lhkc','Người liên hệ khẩn cấp',p.lhkc||'<span class="st2 r">⚠ Chưa khai — bắt buộc</span>',1)}
- </div></div>
+ `) + `
 
  ${hvKhoi(p)}
 
- ${p.nhom!==2?'':`<div class="card"><div class="ch">Giảng dạy <span class="tg c">chỉ nhóm 2 — GV / CBQL</span></div><div class="cb">
+ ${p.nhom!==2?'':gWrap(p,'giangday','Giảng dạy <span class="tg c">chỉ nhóm 2 — GV / CBQL</span>',`
   ${tietRow(p,'day','Số tiết thực dạy / tuần','M4.5 phân công + M4.6 thời khóa biểu')}
   ${tietRow(p,'kn','Số tiết kiêm nhiệm / tuần','M4.3 chức danh kiêm nhiệm × định mức quy đổi')}
   <div class="f t2"><div class="k">Dạy học sinh khuyết tật học hòa nhập <span class="tg b">tầng 2</span></div>
    <div class="v">${co3(p.gd.hoanhap)}</div></div>
   <div class="f t2"><div class="k">Đã tập huấn dạy kỹ năng sống <span class="tg b">tầng 2</span></div>
    <div class="v">${co3(p.gd.kns,'— HIV, sức khỏe sinh sản…')}</div></div>
- </div>
- <div class="cact"><span style="font-size:11.5px;color:var(--ink2)">
+ `,'',`<div class="cact"><span style="font-size:11.5px;color:var(--ink2)">
   🛑 Hai ô số tiết đọc từ <b>phân công</b> và <b>thời khóa biểu</b>, ⛔ <b>không đọc từ M4.9 Chấm công</b> —
   «đã dạy bao nhiêu» và «được giao dạy bao nhiêu» là hai con số khác nhau, cổng CSDL ngành hỏi cái thứ hai.
-  Cùng con số này hiện ở tab <b>Công tác</b> trong khối Định mức &amp; cân đối; <b>nút sửa tay chỉ có ở đây</b>.</span></div></div>`}
+  Cùng con số này hiện ở tab <b>Công tác</b> trong khối Định mức &amp; cân đối; <b>nút sửa tay chỉ có ở đây</b>.</span></div>`)}
 
  <div class="card"><div class="ch">Đối chiếu hồ sơ giấy</div><div class="cb">
   <div class="f"><div class="k">Trạng thái đối chiếu</div><div class="v">${p.doichieu
@@ -3019,12 +3200,18 @@ function tkBlock(p){
  const chiTT=R0.coban&&role!=='PHT_DT';       /* PHT_CM, TTCM: chỉ trạng thái */
  const head=`<div class="ch">Tài khoản đăng nhập hệ thống <span class="tg a">🔗 M10.5</span>
    <span class="sp"></span>${dlink('M10.5','Mở tại M10.5',p.ma)}</div>`;
- /* Bất biến §4b.1 — mọi hồ sơ đều có tài khoản. Thiếu = lỗi toàn vẹn dữ liệu, thuộc M10.7. */
+ /* 🔁 BLOOP 2/10/2026 — bất biến §4b.1 cũ («có hồ sơ thì có tài khoản, ⛔ ngoại lệ») HẾT HIỆU LỰC.
+    Hồ sơ ⛔ có tài khoản nay là trạng thái HỢP LỆ, nhưng nó phải LUÔN đứng trong một danh sách
+    có người xử lý: M10.5 §6.1.4 «Nhân sự chưa có tài khoản». ⛔ còn là lỗi dữ liệu của M10.7. */
  if(!p.tk) return `<div class="card exp">${head}<div class="cb"><div style="padding:9px 12px">
-   <div class="danger" style="margin:0">⛔ <b>Lỗi toàn vẹn dữ liệu.</b> Hồ sơ này không có tài khoản —
-    theo bất biến <b>§4b.1</b> trạng thái này không được phép tồn tại.<br>
-    <span style="font-size:11.5px">Đây <b>không phải việc của Tổ chức nhân sự</b> đi xử lý.
-    Phải báo IT_Admin qua <b>M10.7 Nhật ký hệ thống</b>.</span></div></div></div></div>`;
+   <div class="warn" style="margin:0">⛔ <b>Chưa cấp tài khoản đăng nhập.</b> Người này <b>⛔ đăng nhập được</b>.<br>
+    <span style="font-size:11.5px">Hồ sơ đang đứng trong danh sách <b>Nhân sự chưa có tài khoản</b> của M10.5 —
+     cấp bù ở đó <i>(§6.1.4)</i>. Ba đường sinh hồ sơ ⛔ cấp tài khoản: <b>nhập từ danh sách</b>,
+     <b>Hiệu trưởng ký quyết định tuyển dụng</b>, và <b>người tạo bỏ trống mục cấp tài khoản</b>
+     <i>(§4b.2a)</i>.</span><br>
+    <span style="font-size:11.5px">🔁 Trước 2/10/2026 chỗ này báo <i>«lỗi toàn vẹn dữ liệu, báo IT qua M10.7»</i> —
+     bất biến ấy <b>đã hết hiệu lực</b>.</span></div>
+   <div style="margin-top:8px">${dlink('M10.5','↗ Cấp tài khoản ở M10.5',p.ma)}</div></div></div></div>`;
  const t=p.tk, [lb,cl]=TKTT[t.tt];
  const lech=tkHoSo(p), moi=t.tt==='moi';
  return `<div class="card ${lech?'exp':''}">${head}<div class="cb">
@@ -3039,25 +3226,37 @@ function tkBlock(p){
   <div class="f"><div class="k">Trạng thái tài khoản</div><div class="v"><span class="st2 ${cl}">${lb}</span>
    ${t.khoaLy?`<span style="font-weight:400;font-size:11.5px;color:var(--ink3)">${t.khoaLy}</span>`:''}</div></div>
   <div class="f"><div class="k">Tên đăng nhập</div><div class="v"><span class="mask-val">${t.u}</span>
-   <span class="tg b">= mã nhân sự · bất biến</span></div></div>
+   <span class="tg b">do người cấp đặt · ⛔ sửa được sau khi cấp</span>
+   <div style="width:100%;font-size:11px;color:var(--ink3);font-weight:400;margin-top:3px">
+    🔁 <b>Từ 2/10/2026 tên đăng nhập ⛔ còn = mã nhân sự</b> <i>(§4b.3)</i> — người cấp đặt, hệ gợi ý sẵn từ họ tên.<br>
+    🛑 Và mã nhân sự <b>${p.ma}</b> cũng <b>THÔI là định danh đăng nhập</b> — tên đăng nhập <b>thay chỗ</b> nó,
+    vì nó <b>khó nhớ</b> <i>(§4b.4)</i>. Ba định danh nay là <b>tên đăng nhập · số điện thoại · email</b>.<br>
+    Mã nhân sự <b>GIỮ</b> vai <b>khóa chính</b> và <b>định danh chuẩn của audit</b> <i>(§4b.4a)</i>.</div></div></div>
   ${chiTT?`<div class="f"><div class="k">Chi tiết tài khoản</div><div class="v" style="font-weight:400;color:var(--ink3)">
     Ngoài phạm vi vai trò ${role} — không có trong dữ liệu trả về</div></div>`
   :`${full?`<div class="f"><div class="k">Định danh đăng nhập khác</div><div class="v" style="font-weight:400">
      ${t.sdt?`<span class="chip">📱 ${t.sdt}</span>`:'<span class="st2 r">Chưa khai SĐT</span>'}
      ${t.mail?`<span class="chip">✉ ${t.mail}</span>`:'<span class="st2 w">Chưa khai email</span>'}
-     <br><span style="font-size:11px;color:var(--ink3)">Cả ba định danh dùng <b>chung một mật khẩu</b>.
-      Màn hình đăng nhập Web chỉ dò trong kho tài khoản nhân sự — tài khoản phụ huynh không vào được.</span></div></div>
+     <br><span style="font-size:11px;color:var(--ink3)">Cả ba định danh — <b>tên đăng nhập</b> ＋ hai thứ trên — dùng <b>chung một mật khẩu</b>.
+      Màn hình đăng nhập Web chỉ dò trong kho tài khoản nhân sự — tài khoản phụ huynh không vào được.
+      <br>🛑 ⛔ gõ được <b>mã nhân sự</b> vào ô đăng nhập nữa <i>(🔁 2/10/2026 · §4b.4)</i> —
+      trừ tài khoản cấp <b>trước</b> ngày ấy, vì <b>tên đăng nhập của họ ĐÚNG BẰNG chuỗi mã nhân sự</b> <i>(§4b.4b)</i>.</span></div></div>
     <div class="f"><div class="k">Ngày tạo</div><div class="v" style="font-weight:400">${t.tao}
      <span style="color:var(--ink3);font-size:11.5px">— cùng ngày tạo hồ sơ, hai bản ghi sinh cùng giao dịch</span></div></div>
     <div class="f"><div class="k">Lần đăng nhập gần nhất</div><div class="v" style="font-weight:400">
      ${t.lan||'<span class="st2 w">Chưa đăng nhập lần nào</span>'}</div></div>
     <div class="f"><div class="k">Chức danh được gán <span class="tg a">🔗 M10.4</span></div><div class="v" style="font-weight:400">
-     <b>${p.cd}</b> <span class="tg c">chính</span>
+     <b>${cdNhan(p)}</b> <span class="tg c">chính</span>
+     ${CD_GAN_DV[p.cd]?`<div style="width:100%;font-size:11px;color:var(--ink3);margin-top:3px">
+      Phần sau dấu <b>·</b> là <b>phạm vi của chức danh</b> ở M4.3 — ⛔ phải <b>Điểm trường công tác</b> của người này.
+      Hai thứ <b>độc lập</b>: phạm vi nói «quản dữ liệu của đâu», điểm trường công tác nói «ngồi làm việc ở đâu»
+      <i>(M4.3 §6.4.4 · §6.2.4)</i>.</div>`:''}
      ${p.cdphu?`<br><b>${p.cdphu}</b> <span class="tg b">phụ · hiệu lực 01/09/2026 — 31/08/2029</span>`:''}</div></div>`:''}`}
  </div>
  <div class="cact"><span style="font-size:11.5px;color:var(--ink2)">
   <b>Không hiển thị mật khẩu dưới mọi dạng.</b> Không có nút reset, khoá, mở khoá, hay sửa tên đăng nhập tại đây —
-  reset thuộc IT_Admin, khoá thuộc HT và IT_Admin (nh6.3 §10). Tên đăng nhập <b>không sửa được ở bất kỳ đâu</b>.
+  reset thuộc IT_Admin, khoá thuộc HT và IT_Admin (nh6.3 §10). Tên đăng nhập <b>⛔ sửa được sau khi đã cấp</b> —
+  nhưng nó <b>do người cấp đặt lúc tạo</b>, ⛔ còn là mã nhân sự <i>(🔁 §4b.3, 2/10/2026)</i>.
   MVP <b>chưa có xác thực hai lớp</b> cho tài khoản Web.</span></div></div>`;
 }
 
@@ -3392,7 +3591,7 @@ document.addEventListener('click',e=>{
  if(!t)return;
 
  /* --- đổi vai trò --- */
- if(t.dataset.r){role=t.dataset.r;cur=null;t3Ctx=null;sel.clear();selT3.clear();unmask.clear();XEMNC=[];tab='ds';ptab='lylich';
+ if(t.dataset.r){role=t.dataset.r;cur=null;t3Ctx=null;sel.clear();selT3.clear();t3Open.clear();gEdit=null;gNhap={};gMC=[];gHienHet=false;unmask.clear();XEMNC=[];tab='ds';ptab='lylich';
   fDT.clear();fTO.clear();fNHOM.clear();fHD.clear();fDIEN.clear();fTT=new Set(['lamviec','tamnghi']);fDCHUA=false;
   document.querySelectorAll('.rb').forEach(b=>b.classList.toggle('on',b.dataset.r===role));
   const L=R().scLock; const s=$('#hdt');
@@ -3411,15 +3610,19 @@ document.addEventListener('click',e=>{
  if(t.dataset.g){openG[t.dataset.g]=openG[t.dataset.g]===false;render();return}
 
  /* --- tab --- */
- if(t.dataset.tab){tab=t.dataset.tab;cur=null;sel.clear();selT3.clear();t3Ctx=null;render();return}   /* MYC-3A: đổi tab là bỏ lọc deep-link */
- if(t.dataset.ptab){ptab=t.dataset.ptab;render();return}
+ if(t.dataset.tab){if(!gRoi())return; tab=t.dataset.tab;cur=null;sel.clear();selT3.clear();t3Open.clear();t3Ctx=null;render();return}   /* MYC-3A: đổi tab là bỏ lọc deep-link */
+ if(t.dataset.ptab){if(!gRoi())return; ptab=t.dataset.ptab;render();return}
 
  const x=t.dataset.x;
 
  /* --- mở panel --- */
- if(!x&&t.dataset.ns){cur=+t.dataset.ns; if(t.dataset.pt)ptab=t.dataset.pt;
+ if(!x&&t.dataset.ns){if(!gRoi())return; cur=+t.dataset.ns; if(t.dataset.pt)ptab=t.dataset.pt;
   else if(t.dataset.hd)ptab='hdld'; else ptab=ptabList()[0][0];
-  render();return}
+  /* §6.2.3b.7 — dòng con của T3 mở sẵn ĐÚNG nhóm sửa chứa trường thiếu đầu tiên, cuộn tới và tô sáng */
+  gEdit=null;gNhap={};gMC=[];gHL=null;
+  if(t.dataset.g2&&typeof GNHOM!=='undefined'&&GNHOM[t.dataset.g2]&&ptab==='lylich'){gEdit={ns:cur,g:t.dataset.g2};gSeed();gHL=t.dataset.g2}
+  render(); if(gHL)setTimeout(()=>{const e=document.querySelector('.card.ged');if(e)e.scrollIntoView({block:'center'})},60);
+  return}
  if(!x&&t.dataset.yc){cur='yc'+t.dataset.yc;render();return}
 
  switch(x){
@@ -3636,15 +3839,23 @@ document.addEventListener('click',e=>{
     <button class="btn" data-x="tiep-nhap">Tiếp tục nhập (khởi tạo ban đầu)</button>`);break;
  case 'tiep-nhap': closeModal(); formMoi({}); break;
  case 'luu-moi': {
-   const v={n:$('#m1n').value,sinh:$('#m1sinh').value.trim(),gt:$('#m1gt').value,cccd:$('#m1cccd').value.trim(),
-            sdt:$('#m1sdt').value.trim(),dien:$('#m1dien').value,cd:$('#m1cd').value,tao:d2s(HOMNAY)};
-   const loi=kiemM1(v);
+   const v=docFormMoi();
+   const loi=kiemM1(v).concat(kiemTK(v));
    if(loi.length){formMoi(v,loi);break}
-   const id=Math.max(...NS.map(x=>x.id))+1, p=nsMoi(v,id); NS.push(p);
+   const id=Math.max(...NS.map(x=>x.id))+1, p=nsMoi(v,id);
+   /* §4b.2b — hồ sơ và tài khoản ghi trong MỘT giao dịch; bỏ trống ⇒ ⛔ có tài khoản */
+   if(v.tkBat){ p.tk={u:v.tkU.trim(),tt:'moi',sdt:v.sdt,mail:'',tao:d2s(HOMNAY),lan:''}; }
+   else { p.tk=null; }
+   NS.push(p);
    closeModal(); tab='thieu'; cur=p.id; render();
-   toast('✓ Đã lưu hồ sơ <b>'+p.n+'</b> với đúng 7 trường mức ① → <b>tự sinh tài khoản</b> '+p.ma+' · mật khẩu '+MKMVP
-     +'<br>T3: nhóm của Bộ Nội vụ / CSDL ngành <b>chưa tới hạn</b> (người này ⛔ không thuộc đợt đang mở) · ảnh 4×6, liên hệ khẩn cấp <b>còn 30 ngày</b>');}break;
+   toast(v.tkBat
+     ? '✓ Đã lưu hồ sơ <b>'+p.n+'</b> (7 trường mức ①) <b>cùng một giao dịch</b> với tài khoản <b>'+p.tk.u+'</b> · trạng thái <b>Chờ đổi mật khẩu lần đầu</b>'
+       +'<br>🔒 Mật khẩu ⛔ hiện lại ở đâu — audit chỉ ghi tên đăng nhập.'
+     : '✓ Đã lưu hồ sơ <b>'+p.n+'</b> (7 trường mức ①) — <b>⛔ kèm tài khoản</b>.'
+       +'<br>Hồ sơ này <b>vào danh sách «Nhân sự chưa có tài khoản»</b> của M10.5 §6.1.4 để cấp bù.');}break;
  case 'f-muc': {const k=t.dataset.m; fMUC.has(k)?fMUC.delete(k):fMUC.add(k); render();}break;
+ /* §6.7.2b — mũi ▸ CHỈ mở / đóng: ⛔ mở panel, ⛔ đổi hồ sơ đang xem */
+ case 't3-exp': {const id=+t.dataset.ns; t3Open.has(id)?t3Open.delete(id):t3Open.add(id); render();}break;
  case 'myc-ngay': NGAYXEM=t.dataset.v==='1'?NGAYXEM_SAU:HOMNAY; render(); break;
  /* MYC-3A — hai nút của dải lọc deep-link T3 */
  case 't3-bo': t3Ctx=null; cur=null; render(); toast('Đã bỏ lọc — T3 hiện cả trường trong phạm vi của vai'); break;
@@ -3775,15 +3986,21 @@ document.addEventListener('click',e=>{
    closeModal();toast('⬇ Đã xuất <b>'+t.dataset.w+'</b> · mục đích <b>'+md+'</b> · đã ghi audit kèm danh sách trường');}break;
 
  /* --- T3 --- */
+ /* §6.7.2b.5 — MỘT thông báo cho MỘT người, liệt kê mọi hạng mục đã chọn của họ.
+    ⛔ Một thông báo mỗi hạng mục: hai mươi tin một buổi chiều thì chính chủ học cách phớt lờ,
+    mà notification cho chính chủ CHÍNH LÀ lớp kiểm soát của trường tầng 2 (§4.1 điểm 3). */
  case 'bulk-nhac': {const ok=[],skip=[];
-   const t3=t3rows();
-   [...selT3].forEach(k=>{const r=t3.find(o=>o.k===k); if(!r)return; const p=r.p, th=r.t;
-    if(th[4]==='3'){skip.push([p.n,'Mức ③ — ⛔ không gửi thông báo']);return}
-    if(!TAICHUC.includes(p.tt))skip.push([p.n,'Đã rời trường — không gửi nhắc']);
-    else ok.push([p.n,'Đã gửi nhắc: '+th[0].replace(/<[^>]+>/g,'')])});
+   const t3=t3rows(), theoNguoi=new Map();
+   [...selT3].forEach(k=>{const r=t3.find(o=>o.k===k); if(!r)return;
+    if(!r.nh){skip.push([r.p.n, r.t[4]==='3'?'Mức ③ — ⛔ gửi thông báo (luật MYC ③)':'⛔ việc của chính nhân sự — nhắc là trách sai người']);return}
+    if(!TAICHUC.includes(r.p.tt)){skip.push([r.p.n,'Đã rời trường — ⛔ gửi nhắc']);return}
+    if(!theoNguoi.has(r.p.id))theoNguoi.set(r.p.id,{p:r.p,hm:[]});
+    theoNguoi.get(r.p.id).hm.push(r.t[0].replace(/<[^>]+>/g,''))});
+   theoNguoi.forEach(v=>ok.push([v.p.n,'<b>1 thông báo</b> nêu '+v.hm.length+' hạng mục: '+v.hm.join(' · ')]));
    selT3.clear();render();
    modal('Kết quả gửi nhắc bổ sung',bangKQ(ok,skip)
-    +`<div class="ro" style="margin-top:10px">Nội dung nhắc nêu <b>đích danh mục còn thiếu</b>, không phải một câu chung chung.</div>`,
+    +`<div class="ro" style="margin-top:10px"><b>${theoNguoi.size}</b> thông báo cho <b>${theoNguoi.size}</b> người —
+      ⛔ một thông báo mỗi hạng mục. Nội dung nêu <b>đích danh mục còn thiếu</b>, không phải một câu chung chung.</div>`,
     `<button class="btn" data-x="close">Đóng</button>`);}break;
  case 'doichieu': {const p=byId(+t.dataset.ns);p.doichieu=d2s(HOMNAY);render();
    toast('✓ Đã ghi <b>đã đối chiếu hồ sơ giấy</b> — người tích: Ngô Thị Hạnh (TCNS)');}break;
@@ -3858,12 +4075,22 @@ document.addEventListener('click',e=>{
 
 document.addEventListener('change',e=>{
  const el=e.target;
+ /* BLOOP 2/10/2026 — §4b.2b bật / tắt khối «Cấp tài khoản đăng nhập».
+    🛑 Phải đi bằng sự kiện `change`: bộ bắt `click` ở trên CỐ Ý bỏ qua mọi input[type=checkbox]
+    (render lại sẽ hủy chính ô tích trước khi `change` kịp chạy). */
+ if(el.id==='m1tkBat'){ const v=docFormMoi();
+  if(v.tkBat&&!v.tkU)v.tkU=goiYTenDN(v.n);
+  formMoi(v,[]); return }
  if(el.dataset.msv){const k=el.dataset.msv;
   const S={dt:fDT,nhom:fNHOM,to:fTO,hd:fHD,dien:fDIEN,tt:fTT}[k];
   el.checked?S.add(el.value):S.delete(el.value);render();
   setTimeout(()=>{const p=$('#msp-'+k);if(p)p.classList.add('on')},0);return}
  if(el.dataset.selyc){el.checked?sel.add('yc'+el.dataset.selyc):sel.delete('yc'+el.dataset.selyc);render();return}
  if(el.dataset.selt3){el.checked?selT3.add(el.dataset.selt3):selT3.delete(el.dataset.selt3);render();return}
+ /* §6.7.2b.5 — ô của DÒNG NGƯỜI quét đúng những hạng mục NHẮC ĐƯỢC, ⛔ quét mức ③ và việc ⛔ phải của họ */
+ if(el.dataset.selt3p){const id=+el.dataset.selt3p, g=t3groups().find(x=>x.p.id===id);
+  if(g)[...g.thieu,...g.viec].filter(o=>o.nh).forEach(o=>el.checked?selT3.add(o.k):selT3.delete(o.k));
+  render();return}
  if(el.id==='fgom'){fGOM=el.value.replace(/^Gom /,'');
   fGOM=['Theo tổ / bộ phận','Theo điểm trường','Theo nhóm chức danh','Không gom']
    .find(o=>o.toLowerCase()===fGOM)||fGOM;render();return}
@@ -3948,8 +4175,67 @@ function formMoi(v,loi){
     Ô chỉ chọn <b>tên chức danh</b>: chọn <b>Giáo viên bộ môn</b> ⛔ không kèm môn, chọn <b>Giáo viên chủ nhiệm</b> ⛔ không kèm lớp —
     chức danh nhóm ③ chỉ cấp vai trò, <b>phạm vi đến từ phân công ở M4.5</b> <i>(M4.3 ràng buộc 6)</i>.
     <b>Môn dạy chính</b> là trường mức ② của hồ sơ, khai sau ở panel.
-    Chức danh gắn điểm trường / tổ <i>(${CD_CAN_PV.join(' · ')})</i> sinh bản ghi <b>chưa có phạm vi</b>: M4.3 nhận nó ở trạng thái <b>⏳ Chờ gắn phạm vi</b> <i>(M4.3 §3.4.1 — nới ràng buộc 5 cho đúng nguồn này, chốt 26/9/2026)</i>. Người đó <b>có vai trò ngay</b>, phạm vi <b>rỗng ⇒ truy vấn rỗng</b> — ⛔ không rơi về Toàn trường.</div>`,
+    Chức danh gắn điểm trường / tổ <i>(${CD_CAN_PV.join(' · ')})</i> sinh bản ghi <b>chưa có phạm vi</b>: M4.3 nhận nó ở trạng thái <b>⏳ Chờ gắn phạm vi</b> <i>(M4.3 §3.4.1 — nới ràng buộc 5 cho đúng nguồn này, chốt 26/9/2026)</i>. Người đó <b>có vai trò ngay</b>, phạm vi <b>rỗng ⇒ truy vấn rỗng</b> — ⛔ không rơi về Toàn trường.</div>
+   ${khoiCapTK(v,loi)}`,
   `<button class="btn" data-x="close">Hủy</button><button class="btn p" data-x="luu-moi">Lưu</button>`);
+}
+
+/* ═══ BLOOP 2/10/2026 · §4b.2b — mục TÙY CHỌN «Cấp tài khoản đăng nhập» ═══
+   Cổng: bit T của m10.5.tai_khoan_nhan_su, phạm vi Toàn trường ⇒ TCNS · IT.
+   Vì hộp này còn đòi bit T của m4.1.danh_sach_nhan_su (chỉ TCNS) ⇒ thực tế là TCNS.
+   HT ⛔ thấy khối này (⛔ có T ở M10.5).
+   🛑 ⛔ là ô thứ tám của luật MYC-1: luật ấy nói về TRƯỜNG CỦA HỒ SƠ, còn đây là
+      bản ghi của MỘT MENU KHÁC (M10.5) ghi kèm trong cùng giao dịch. */
+const CAP_TK_BIT = 'm10.5.tai_khoan_nhan_su:T';
+function duocCapTK(){ const r=R(); return !!(r.capTK); }
+
+/* gợi ý tên đăng nhập từ họ tên: «Nguyễn Thị Hương» → huong.nt
+   🔑 xử lý đ/Đ TRƯỚC khi tách dấu, rồi mới bỏ dấu — ⛔ đảo thứ tự. */
+function boDau(s){
+ return String(s||'').replace(/[đ]/g,'d').replace(/[Đ]/g,'D')
+   .normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+}
+function goiYTenDN(hoTen){
+ const w=boDau(hoTen).trim().split(/\s+/).filter(Boolean);
+ if(!w.length)return '';
+ const ten=w[w.length-1], dau=w.slice(0,-1).map(x=>x[0]).join('');
+ return dau?ten+'.'+dau:ten;
+}
+/* tên đăng nhập đã dùng — duy nhất trong (trường, loại kho, tên đăng nhập) */
+function tenDNdaDung(u){ return NS.some(p=>p.tk&&p.tk.u&&p.tk.u.toLowerCase()===String(u||'').toLowerCase()); }
+
+function khoiCapTK(v,loi){
+ if(!duocCapTK())
+  return `<div class="ro" style="margin-top:10px">🔒 Mục <b>Cấp tài khoản đăng nhập</b> ⛔ hiện với vai này —
+    cần bit <b>T (Tạo mới)</b> của <code>${CAP_TK_BIT.split(':')[0]}</code> phạm vi <b>Toàn trường</b>
+    <i>(§4b.2b — Hiệu trưởng ⛔ có bit này; xem M10.5 §9 điểm 15)</i>.
+    Hồ sơ vẫn lưu được, và sẽ vào danh sách <b>Nhân sự chưa có tài khoản</b> của ${dlink('M10.5','M10.5')}.</div>`;
+ const bat = !!v.tkBat;
+ const loiU = loi.indexOf('tên đăng nhập đã có người dùng')>=0;
+ const loiP = loi.indexOf('mật khẩu chưa đủ mạnh')>=0;
+ const loiP2= loi.indexOf('hai lần nhập mật khẩu không trùng')>=0;
+ const vien = e=>e?' style="border-color:var(--red);box-shadow:0 0 0 2px #fee2e2"':'';
+ return `<div class="capTK" style="margin-top:12px;border:1px solid var(--line);border-radius:8px;padding:10px 12px">
+  <label class="mso" style="font-weight:600"><input type="checkbox" id="m1tkBat" ${bat?'checked':''}>
+   Cấp tài khoản đăng nhập <span style="font-weight:400;color:var(--ink3)">— TÙY CHỌN, bỏ trống vẫn lưu được hồ sơ</span></label>
+  ${bat?`
+   <label class="lbl">Tên đăng nhập <span style="color:var(--red)">*</span>
+    <span style="font-weight:400;color:var(--ink3)">— gợi ý sẵn từ họ tên, sửa được</span></label>
+   <input class="fldi" id="m1tkU" value="${esc(v.tkU!==undefined?v.tkU:goiYTenDN(v.n))}"${vien(loiU)}>
+   ${loiU?`<div class="danger" style="margin:4px 0">⛔ Tên đăng nhập này <b>đã có người dùng</b> — 🛑 màn hình ⛔ nói <b>ai</b> đang dùng.</div>`:''}
+   <label class="lbl">Mật khẩu <span style="color:var(--red)">*</span>
+    <span style="font-weight:400;color:var(--ink3)">— đo theo chính sách của trường ở M10.5 tab ③</span></label>
+   <input class="fldi" id="m1tkP" type="password" value="${esc(v.tkP)}"${vien(loiP)}>
+   <label class="lbl">Nhập lại mật khẩu <span style="color:var(--red)">*</span></label>
+   <input class="fldi" id="m1tkP2" type="password" value="${esc(v.tkP2)}"${vien(loiP2)}>
+   <div class="info" style="margin-top:8px">Hai bản ghi ghi trong <b>MỘT giao dịch</b> — hoặc có cả hồ sơ lẫn tài khoản, hoặc ⛔ có gì.
+    Tài khoản vào trạng thái <b>Chờ đổi mật khẩu lần đầu</b>.
+    🔒 Mật khẩu ⛔ vào sự kiện · ⛔ vào audit <i>(audit chỉ ghi <b>tên đăng nhập</b>)</i> · ⛔ vào log · ⛔ vào URL.</div>`
+  :`<div class="warn" style="margin-top:8px">Bỏ trống ⇒ hồ sơ ra đời <b>chưa có tài khoản</b>, và nó <b>vào ngay</b>
+     danh sách <b>Nhân sự chưa có tài khoản</b> của ${dlink('M10.5','M10.5 §6.1.4')}.
+     <br>🔁 Bất biến cũ <i>«có hồ sơ thì có tài khoản, ⛔ ngoại lệ»</i> <b>hết hiệu lực 2/10/2026</b> —
+     thay bằng <i>«hồ sơ ⛔ có tài khoản phải LUÔN đứng trong một danh sách có người xử lý»</i>.</div>`}
+ </div>`;
 }
 function render(){
  sidebar();tabs();
@@ -3960,31 +4246,11 @@ function render(){
               tab==='qd'?qdTab(): tab==='cd'?cdTab(): tab==='rs'?rsTab(): tab==='dongbo'?dbTab(): luongTab();
  $('#content').innerHTML=scopeBar()+body;
 }
-render();
-
-/* ===== MYC-3A — deep-link ĐẾN T3 «Hồ sơ cần hoàn thiện» (M4.1 §6.7.4 · PHIEU-MYC-2B E.4) =====
-   Nguyên văn M0.2 §4.2.2e dòng V2: ?tab=ho_so_can_hoan_thien&ctx={ns_id}&return=M0.2 — ⛔ không đặt tên khác.
-   ctx nhận mã nhân sự (NS-…) — cũng nhận id nội bộ cho tiện gõ tay. Mở T3, lọc đúng người, mở sẵn panel đúng tab của nhóm thiếu đầu tiên.
-   Chỉ demo: &vai=<mã vai thanh đen> (mặc định giữ vai đang chọn) · &xem=sau (đồng hồ ② như ngày 15/11/2026 = chip «Ngày xem hồ sơ» 15/11 của M0.2).
-   Thiếu / sai tham số ⇒ mở chỗ gần nhất và NÓI ra — ⛔ không im lặng. Vai không có quyền X ở T3 hoặc người ngoài phạm vi ⇒ ⛔ không lộ tên. */
-var t3Ctx=null, t3Return=null;
-(function t3DeepLink(){const q=new URLSearchParams(location.search), tb=q.get('tab');
- if(!tb)return;
- const vai=q.get('vai'); if(vai&&ROLE[vai]){const btn=document.querySelector(`.rb[data-r="${vai}"]`);if(btn)btn.click();}
- if(q.get('xem')==='sau')NGAYXEM=NGAYXEM_SAU;
- if(tb!=='ho_so_can_hoan_thien'){render();toast('Tham số tab «'+esc(tb)+'» không nhận ra — mở Danh sách nhân sự');return}
- if(!tabList().some(t=>t[0]==='thieu')){render();toast('Vai '+role+' không có tab Hồ sơ cần hoàn thiện — mở Danh sách nhân sự');return}
- tab='thieu'; t3Return=q.get('return');
- const ctx=q.get('ctx'), p=ctx?NS.find(x=>x.ma===ctx||String(x.id)===ctx):null;
- let bao;
- if(!ctx) bao='Thiếu tham số ctx — mở T3 cả trường';
- else if(!p||!rows().includes(p)) bao='Không có hồ sơ «'+esc(ctx)+'» trong phạm vi của vai '+role+' — mở T3 cả trường';
- else{t3Ctx=p.id; cur=p.id; const m=myc(p); ptab=(m.m2[0]&&m.m2[0].tab)||'lylich';
-  bao=`T3 · lọc đúng một người: <b>${p.n}</b> — ${m.m2.length?'thiếu '+m.m2.length+' nhóm':'không còn nhóm ② nào thiếu'}`;}
- render(); toast(bao+(NGAYXEM!==HOMNAY?' · đồng hồ ② xem như 15/11/2026':''));
- /* dải lọc đứng ngay đầu T3 ⇒ chỉ cần giữ trang ở đầu: tắt khôi phục cuộn của trình duyệt (bài học MYC-2B), ⛔ scrollIntoView — nó đẩy dải khỏi tầm nhìn */
- try{history.scrollRestoration='manual'}catch(e){} setTimeout(()=>window.scrollTo(0,0),60);
-})();
+/* 🛑 render() LẦN ĐẦU và deep-link ĐÃ CHUYỂN sang app.90-khoi-chay.js (1/10/2026 · GDHT).
+   Lý do đo được: cả bộ app.*.js nằm trong MỘT <script>; render() ở đây chạy TRƯỚC khi
+   app.20-sua-theo-nhom.js gán GNHOM ⇒ gDaiA() ăn `Object.keys(undefined)`, và một lỗi
+   chưa bắt ở câu lệnh cấp cao DỪNG LUÔN phần script còn lại — tức dừng cả app.20 và app.70.
+   Triệu chứng đã thấy: deep-link ?tab=ho_so_can_hoan_thien mở ra tab Danh sách nhân sự. */
 
 /* ═══════════════════════════════════════════════════════════════════════
    MNXL-0B — BỘ NHẬP / XUẤT DÙNG CHUNG · app.08-bo-nhap-xuat.js
@@ -5466,6 +5732,790 @@ if (typeof importModal === 'function'){
 }
 })();
 
+/* =====================================================================================
+   M4.1 §6.2.3b — MỘT thao tác sửa cho MỖI NHÓM thông tin  (1/10/2026 · cụm GDHT)
+
+   Trước: mỗi trường một nút ⇒ điền hồ sơ mới = 20 lượt lưu, 20 bản ghi audit, 20 thông báo
+   cho chính chủ trong một buổi chiều. Mà notification cho chính chủ CHÍNH LÀ lớp kiểm soát
+   của trường tầng 2 (§4.1 điểm 3) — làm nó thành tiếng ồn là tháo mất hàng rào ấy.
+
+   Sau: 12 nhóm, mỗi nhóm một nút ✎ Sửa. Một lượt 💾 Lưu là MỘT GIAO DỊCH:
+     · tách trường đã đổi theo TẦNG rồi áp đúng luật cũ của từng tầng (ràng buộc 124)
+     · audit MỘT bản ghi MỖI TRƯỜNG · thông báo MỘT bản MỖI LƯỢT (ràng buộc 126)
+     · minh chứng NHIỀU tệp, mỗi trường tầng 2 phải TRỎ tới ≥ 1 tệp (ràng buộc 127)
+     · mọi hàng rào kiểm lại ở NHÁNH GHI, theo TỪNG TRƯỜNG (ràng buộc 128)
+   ===================================================================================== */
+
+var gHL=null;            /* nhóm vừa mở bằng deep-link từ T3 — để tô sáng */
+var gLuot=0;             /* mã lượt lưu, để §6.10.1 nhóm các bản ghi audit cùng lượt */
+
+/* ---- đọc / ghi theo đường dẫn có dấu chấm ---- */
+function gGet(p,path){return path.split('.').reduce((o,k)=>o==null?o:o[k],p)}
+function gSet(p,path,v){const a=path.split('.');let o=p;
+ for(let i=0;i<a.length-1;i++){if(o[a[i]]==null)o[a[i]]={};o=o[a[i]]}
+ o[a[a.length-1]]=v}
+
+/* ---- MƯỜI HAI nhóm sửa của tab Lý lịch (§6.2.3b.2) ----
+   mỗi trường: [đường dẫn, nhãn, tầng, kiểu, ghi chú]
+   kiểu: 't' ô chữ · 's|a|b|c' ô chọn · 'co3' cờ ba giá trị · 'ro' CHỈ ĐỌC (ghi chú = lý do)
+   🛑 Trường chỉ đọc vẫn HIỆN, kèm một câu nói vì sao (ràng buộc 130) — ⛔ ẩn, ⛔ vẽ ô mờ. */
+var GNHOM={
+ a1:{ten:'A1 — Nhân thân và liên hệ',khoi:'A',nhom2:'Lý lịch',f:[
+  ['n','Họ và tên',2,'t','Mức ① — ⛔ xóa trắng được','ch'],
+  ['sinh','Ngày sinh',2,'t','Mức ① · dd/mm/yyyy','ch'],
+  ['gt','Giới tính',2,'s|Nam|Nữ','Mức ①','ch'],
+  ['cccd','Số căn cước công dân',2,'t','Mức ① · khóa chống trùng toàn trường','ch'],
+  ['dantoc','Dân tộc',2,'t','Mức ② nhóm Lý lịch','ch'],
+  ['tongiao','Tôn giáo',2,'t','HS01 7 · 38 mục 7','ch'],
+  ['quoctich','Quốc tịch',2,'t','Cổng CSDL ngành hỏi','gd'],
+  ['dc.qq','Quê quán',2,'ro','Cụm sáu phần — hai chế độ nhập và ⇄ Chuẩn hóa GIỮ ở từng cụm (§6.2.1c)','ch'],
+  ['dc.nsinh','Nơi sinh',2,'ro','Như trên','ch'],
+  ['dc.nks','Nơi khai sinh',2,'ro','Như trên','gd'],
+  ['dc.ttru','Nơi đăng ký thường trú',2,'ro','Như trên','ch'],
+  ['dc.ohn','Nơi ở hiện tại',1,'ro','Như trên — tầng 1, chính chủ tự sửa ở M0.4','ch'],
+  ['honnhan','Tình trạng hôn nhân',2,'s|Độc thân|Đã kết hôn|Ly hôn','Mức ③','nb'],
+  ['tk.sdt','Số điện thoại',2,'t','Mức ① · định danh đăng nhập · duy nhất toàn trường','ch'],
+  ['tk.mail','Email',2,'t','Mức ③ · định danh đăng nhập · duy nhất toàn trường','nb'],
+  ['anh','Ảnh 4×6',2,'tep','Bản Dev: là NÚT ở đầu khối, ⛔ phải một Ô — ⛔ dựng khối A7 cho một cái nút','ch'],
+  ['anh_chu_ky','Ảnh chữ ký cá nhân',1,'tep','TÙY CHỌN — ⛔ vào phép đếm (§6.2.1b). ⚠ bản Dev ⛔ có Ô này','nb']]},
+
+ a2:{ten:'A2 — Các số do cơ quan khác cấp',khoi:'A',nhom2:'Khai báo CSDL ngành',f:[
+  ['bhxh','Số sổ bảo hiểm xã hội',2,'t','Mức ② nhóm Lý lịch','ch'],
+  ['bnv.bhyt','Số thẻ bảo hiểm y tế',2,'t','Mức ② · chỉ viên chức','bnv'],
+  ['stk','Số tài khoản ngân hàng',2,'t','Căn cứ CHI TIỀN LƯƠNG — minh chứng phải là sao kê','nb'],
+  ['shvc','Số hiệu viên chức',3,'t','Cơ quan quản lý viên chức cấp — hệ thống ⛔ tự sinh (§6.2.1h)','bnv'],
+  ['ma','Mã nhân sự nội bộ',3,'ro','Máy sinh, BẤT BIẾN — cũng là tên đăng nhập (§4b.3)','nb'],
+  ['maCsdl','Mã định danh CSDL ngành',3,'t','Bộ GD&ĐT cấp — ⛔ đổi suốt đời (ràng buộc 36 · 37)','gd'],
+  ['csdl','Thuộc diện khai CSDL ngành',3,'s|Có|Không','🔑 Chính nó là CÔNG TẮC của trục GDĐT — ⛔ bao giờ thu gọn','gd!'],
+  ['_dbng','Trạng thái đồng bộ ngành',3,'ro','🔗 M10.8 — mọi tác vụ đồng bộ nằm ở đó','gd']]},
+
+ a3:{ten:'A3 — Học vấn, bồi dưỡng và học hàm',khoi:'A',nhom2:'Học vấn',f:[
+  ['tdpt','Trình độ giáo dục phổ thông',2,'t','Mục 19 RIÊNG của mẫu, ⛔ nằm trong bảng 32 nào','ch'],
+  ['_cm','Trình độ chuyên môn cao nhất',0,'ro','Dẫn xuất 🔗 bảng 32.1 — sửa bằng cách thêm/sửa DÒNG của bảng','ch'],
+  ['_llct','Trình độ lý luận chính trị',0,'ro','Dẫn xuất 🔗 bảng 32.2','ch'],
+  ['_qlnn','Trình độ quản lý nhà nước',0,'ro','Dẫn xuất 🔗 bảng 32.3 — lọc loại rồi lấy ngạch cao nhất','bnv'],
+  ['_th','Trình độ tin học',0,'ro','Dẫn xuất 🔗 bảng 32.5','ch'],
+  ['_nn','Ngoại ngữ — loại · điểm · khung · tiếng dân tộc',0,'ro','Dẫn xuất 🔗 bảng 32.6 (bốn ô — §6.2.1f a)','ch'],
+  ['_anqp','Đã bồi dưỡng kiến thức an ninh, quốc phòng',0,'ro','Dẫn xuất 🔗 bảng 32.4','bnv'],
+  ['bd.qlgd','Trình độ quản lý giáo dục',2,'t','⛔ cùng loại bằng với Trình độ quản lý nhà nước (§6.2.1i ô 4)','ch'],
+  ['bd.a','Bồi dưỡng nghiệp vụ quản lý giáo dục',2,'co3','','gd'],
+  ['bd.b','Bồi dưỡng cán bộ quản lý và giáo viên cốt cán',2,'co3','','gd'],
+  ['bd.c','Bồi dưỡng thay sách',2,'co3','','gd'],
+  ['bnv.hocham','Học hàm được phong',2,'s|Không có|Phó Giáo sư|Giáo sư','⛔ cùng ô với Danh hiệu phong tặng (HS01 19.1 ⇄ 19.2)','bnv'],
+  ['bnv.hochamNam','Năm được phong học hàm',2,'t','Chỉ hiện khi học hàm ≠ Không có','bnv'],
+  ['_danhhieu','Danh hiệu phong tặng cao nhất',0,'ro','Ánh xạ 🔗 M4.10 — là KHEN THƯỞNG, khác học hàm','ch']]},
+
+ a4:{ten:'A4 — Chính trị - xã hội',khoi:'A',nhom2:'Khai báo CSDL ngành',f:[
+  ['ngayDang','Ngày vào Đảng · ngày chính thức',2,'t','— chỉ có khi có sự kiện','ch'],
+  ['dangVien','Là Đảng viên',0,'ro','Dẫn xuất từ Ngày vào Đảng — ⛔ có ô nhập (hai nguồn sự thật)','gd'],
+  ['doanVien','Là Đoàn viên',2,'co3','Mức ② nhóm Khai báo CSDL ngành','gd'],
+  ['bnv.ngayTCXH','Ngày tham gia tổ chức chính trị - xã hội',2,'t','BNV · HS01 17','bnv'],
+  ['bnv.vaiTCXH','Làm gì trong tổ chức chính trị - xã hội',2,'t','BNV · HS01 17','bnv'],
+  ['_cvd','Chức vụ Đảng hiện tại · kiêm nhiệm',0,'ro','Dẫn xuất 🔗 Nhiệm vụ kiêm nhiệm (§6.2.1q)','bnv']]},
+
+ a5:{ten:'A5 — Quân ngũ và diện chính sách',khoi:'A',nhom2:'',f:[
+  ['bnv.nhapNgu','Ngày nhập ngũ',2,'t','— chỉ có khi có sự kiện','bnv'],
+  ['bnv.xuatNgu','Ngày xuất ngũ',2,'t','— chỉ có khi có sự kiện','bnv'],
+  ['bnv.quanHam','Quân hàm cao nhất',2,'t','— chỉ có khi có sự kiện','bnv'],
+  ['bnv.tbHang','Là thương binh hạng',2,'t','— chỉ có khi có sự kiện','bnv'],
+  ['bnv.conCS','Là con gia đình chính sách',2,'t','— chỉ có khi có sự kiện','bnv']]},
+
+ a6:{ten:'A6 — Công tác, ngạch bậc và quy hoạch',khoi:'A',nhom2:'Tuyển dụng và ngạch bậc',f:[
+  ['dien','Diện làm việc',3,'ro','Mức ① — đổi diện làm việc là việc của M4.2 (§3b.4), ⛔ của hồ sơ','ch'],
+  ['_dt','Điểm trường công tác',0,'ro','Thuộc tính KHAI BÁO 🔗 M4.3, ⛔ phải điều động (§4c)','nb'],
+  ['cd','Chức danh công tác hiện tại',0,'ro','Ánh xạ 🔗 M4.3 — chức danh SINH QUYỀN, M4.1 chỉ đọc (§6.14)','ch'],
+  ['_cdkiem','Chức danh kiêm nhiệm',0,'ro','Ánh xạ 🔗 M4.3','ch'],
+  ['_nbn','Ngày bổ nhiệm · phê chuẩn chức vụ hiện tại',0,'ro','Ánh xạ 🔗 M4.3','bnv'],
+  ['_nbnl','Ngày bổ nhiệm lại · nhiệm kỳ tiếp theo',0,'ro','Ánh xạ 🔗 M4.3','bnv'],
+  ['_nvkn','Nhiệm vụ kiêm nhiệm',2,'ro','Bộ tích 18 mục — giữ CỬA RIÊNG, ⛔ nhét vào form nhóm (§6.2.1q)','ch'],
+  ['hang','Hạng chức danh nghề nghiệp',3,'t','Mức ② ⏱ 30 ngày với nhóm 2','ch'],
+  ['mon','Môn dạy chính',2,'t','🔑 M4.5 phân công đọc ô này — ⛔ bao giờ thu gọn','gd!'],
+  ['vtvl','Vị trí việc làm',3,'ro','Ánh xạ — ô thật nằm trong khối tiền lương ở tab Hợp đồng (§6.3.1c)','ch'],
+  ['tuyenMoi','Là tuyển mới',3,'co3','TCNS khai, có năm áp dụng','gd'],
+  ['vaonganh','Ngày vào ngành',3,'t','🔑 Căn cứ tính thâm niên — ⛔ bao giờ thu gọn','gd!'],
+  ['bienche','Ngày biên chế',3,'t','Mức ③ · chỉ viên chức','nb'],
+  ['bnv.quyHoach','Quy hoạch chức danh',3,'t','Kết luận của cấp có thẩm quyền, ⛔ thông tin chính chủ khai','bnv'],
+  ['bnv.quyHoachGD','Giai đoạn quy hoạch',3,'t','38 mục 24 · BNV','bnv']]},
+
+ tuyendung:{ten:'Tuyển dụng',khoi:'Tuyển dụng',nhom2:'Tuyển dụng và ngạch bậc',f:[
+  ['tuyen.ngay','Ngày tuyển dụng',3,'t','Mức ② ⏱ Đợt','ch'],
+  ['tuyen.cq','Cơ quan tuyển dụng',3,'t','','ch'],
+  ['tuyen.nghe','Nghề nghiệp khi được tuyển',3,'t','','ch'],
+  ['tuyen.ngach','Mã số ngạch khi được tuyển',3,'t','','ch'],
+  ['tuyen.vaoCQ','Ngày vào cơ quan hiện tại',3,'t','Chỉ viên chức','bnv'],
+  ['tuyen.congViec','Công việc chính được giao',3,'t','','bnv'],
+  ['tuyen.soTruong','Sở trường',3,'t','','bnv'],
+  ['tuyen.lauNhat','Công việc làm lâu nhất',3,'t','','bnv']]},
+
+ nhaycam:{ten:'🔒 N — Nhóm nhạy cảm',khoi:'N',nhom2:'🔒 Nhóm nhạy cảm',nc:true,f:[
+  ['nc.dacdiem','Đặc điểm lịch sử bản thân',3,'ro','BẢNG có dòng — sửa theo DÒNG, ⛔ theo trường (luật MYC e)','bnv'],
+  ['nc.bibat','Bị bắt, bị tù, làm việc trong chế độ cũ',3,'t','HS02 29 ý ① — ⛔ đếm ở T3, chỉ đếm trong Đợt rà soát (§2c.2)','bnv'],
+  ['nc.tcnn','Quan hệ với tổ chức ở nước ngoài',3,'t','HS02 29 ý ②','bnv'],
+  ['nc.thannhan','Thân nhân ở nước ngoài',3,'t','HS02 29 ý ③','bnv'],
+  ['nc.xuatthan','Thành phần gia đình xuất thân',2,'t','38 mục 11 — TẦNG 2: chính chủ đề nghị được trong bản khai đợt (ràng buộc 80)','bnv'],
+  ['nc.kinhte','Nguồn thu nhập chính của gia đình',3,'t','HS03 VII · 38 mục 37.3','bnv'],
+  ['nc.nhadat','Nhà ở, đất ở (kèm nguồn gốc)',3,'t','HS03 VII · 38 mục 37.3','bnv'],
+  ['nc.taisan','Tài sản có giá trị lớn',3,'t','HS03 VII · 38 mục 37.3','bnv'],
+  ['nc.kekhai','Bản kê khai tài sản (tệp)',3,'tep','Thành phần hồ sơ — TT 07/2019','bnv'],
+  ['nc.nuocngoai','Đi nước ngoài',3,'ro','BẢNG có dòng — HS03 mục V, sửa theo DÒNG','bnv']]},
+
+ suckhoe:{ten:'C — Sức khỏe',khoi:'C',nhom2:'Sức khỏe',f:[
+  ['nhommau','Nhóm máu',1,'s|O|A|B|AB','Tầng 1 — chính chủ tự sửa ở M0.4 (chốt #24)','ch'],
+  ['sk.tt','Tình trạng sức khỏe',2,'t','Mức ② · chỉ viên chức · số liệu của MỘT LẦN KHÁM, có ngày và người ký','bnv'],
+  ['sk.cao','Chiều cao (cm)',2,'t','','bnv'],
+  ['sk.nang','Cân nặng (kg)',2,'t','','bnv'],
+  ['benhnen','Bệnh nền, bệnh mãn tính, dị ứng',1,'t','Tầng 1 — chính chủ tự sửa','nb'],
+  ['lhkc','Liên hệ khẩn cấp',1,'t','Mức ② ⏱ 30 ngày nhóm Giấy tờ nội bộ · bắt buộc','nb']]},
+
+ giangday:{ten:'Giảng dạy',khoi:'Giảng dạy',nhom2:'Khai báo CSDL ngành',nhom2only:true,f:[
+  ['gd.hoanhap','Dạy học sinh khuyết tật học hòa nhập',2,'co3','Mức ② chỉ nhóm 2','gd'],
+  ['gd.kns','Đã tập huấn dạy kỹ năng sống',2,'co3','HIV, sức khỏe sinh sản…','gd'],
+  ['_tiet','Số tiết thực dạy · kiêm nhiệm / tuần',0,'ro','Đọc từ phân công M4.5 ＋ thời khóa biểu M4.6 — ⛔ từ M4.9 Chấm công','gd']]}
+};
+
+/* ===================== §6.2.3c — Ô ⛔ ÁP DỤNG cho người đang xem =====================
+   🛑 ⛔ có cờ «Là hồ sơ viên chức» nào: công tắc là `Diện làm việc` (laVC) ＋ cờ `Thuộc diện
+   khai CSDL ngành` (p.csdl) — HAI TRỤC, ⛔ gộp. Trạng thái này là DẪN XUẤT, ⛔ lưu.
+   Phần tử thứ 6 của mỗi ô = nguồn yêu cầu: bnv · gd · ch (cả hai) · nb (nội bộ) · gd! (ngoại lệ). */
+var gHienHet=false;   /* công tắc 👁 — trạng thái của MỘT LƯỢT XEM, ⛔ nhớ qua lượt sau */
+function gApDung(p,f){
+ const ng=f[5];
+ if(ng==='ch'||ng==='nb')return true;                 /* cả hai · nội bộ ⇒ mọi người */
+ if(ng==='gd!')return true;                           /* ngoại lệ: ô có MENU KHÁC đọc (ràng buộc 134) */
+ if(f[3]==='ro'||f[2]===0)return true;                /* `dẫn xuất` · `ánh xạ` — nguồn là menu của trường */
+ if(ng==='bnv')return laVC(p);
+ if(ng==='gd')return !!p.csdl;
+ return true;
+}
+/* thu gọn khi ĐỦ BỐN điều kiện — ô ĐÃ CÓ GIÁ TRỊ thì ⛔ bao giờ thu gọn (ràng buộc 132) */
+const gThuGon=(p,f)=>!gHienHet&&!gApDung(p,f)&&!coGiaTri(gCur(p,f[0]));
+const gGapNhom=(p,gk)=>GNHOM[gk].f.every(f=>gThuGon(p,f));
+function gViSao(p){
+ return laVC(p)? '' : 'người này là <b>'+esc(dien(p.dien).ten)+'</b>';
+}
+/* dải đầu tab Lý lịch — nói ra con số, ⛔ ẩn im lặng */
+function gDaiLyLich(p){
+ if(typeof GNHOM==='undefined')return '';
+ const het=[]; for(const k in GNHOM) GNHOM[k].f.forEach(f=>{if(!gApDung(p,f))het.push(f)});
+ const trong=het.filter(f=>!coGiaTri(gCur(p,f[0]))).length;
+ const daKhai=het.length-trong;
+ if(!het.length) return `<div class="info">👤 <b>${esc(dien(p.dien).ten)}</b>${p.csdl?' · <b>thuộc diện khai CSDL ngành</b>':''}
+   — mọi ô của tab này đều áp dụng cho người này.</div>`;
+ return `<div class="info w">👤 <b>${esc(dien(p.dien).ten)}</b>${p.csdl?' · thuộc diện khai CSDL ngành':' · ⛔ thuộc diện khai CSDL ngành'}
+   — <b>${het.length}</b> ô của tab này <b>⛔ áp dụng</b> cho người này
+   <span style="color:var(--ink3)">(mẫu 38 mục của Bộ Nội vụ là mẫu của <b>cán bộ · công chức · viên chức</b>;
+   người hợp đồng lên cơ sở dữ liệu quốc gia bằng <b>mẫu hợp đồng lao động</b> Phụ lục II TT 05/2023 — ⏳ §9 dòng 40)</span>.
+   <b>${trong}</b> ô trống ⇒ <b>thu gọn</b>${daKhai?` · <b>${daKhai}</b> ô <b>đã có giá trị</b> ⇒ <b>vẫn hiện đủ</b> kèm cảnh báo`:''}.
+   <button class="btn xs" data-x="g-hien-het">👁 ${gHienHet?'Thu gọn lại':'Hiện cả ô không áp dụng'}</button>
+   <div style="font-size:11px;color:var(--ink3);margin-top:3px">🛑 Thu gọn ⛔ đụng <b>phép đếm</b> (T3 · T1 · F12 · M9.4),
+   ⛔ đụng <b>bản in</b> HS01 · HS02 · 38 mục, ⛔ ẩn <b>cả một tab</b>, ⛔ ẩn ô <code>dẫn xuất</code> · <code>ánh xạ</code>.</div></div>`;
+}
+
+/* ---- T3 trỏ về nhóm sửa (§6.2.3b.7) ---- */
+var NHOM2G={LL:'a1',TD:'a6',HV:'a3',GD:null,SK:'suckhoe',QT:null,LU:null,NG:'a2',NB:'a7'};
+/* 🛑 app.js chạy render() LẦN ĐẦU TRƯỚC khi tệp này gán GNHOM (một <script>, var mới hoisted).
+   Lần paint ấy ⛔ cần con trỏ nhóm; app.70 gọi render() lại sau khi mọi phần đã nạp. */
+function gNhom1(nhan){
+ if(typeof GNHOM==='undefined')return null;
+ const s=String(nhan||'').toLowerCase();
+ for(const k in GNHOM) if(GNHOM[k].f.some(f=>s.indexOf(f[1].toLowerCase())>=0||f[1].toLowerCase().indexOf(s)>=0)) return k;
+ return null;
+}
+function gNhom2(x){
+ if(typeof NHOM2G==='undefined')return null;
+ /* nhóm đếm ② trải HAI nhóm sửa (ví dụ Lý lịch = Định danh ＋ Địa chỉ)
+    ⇒ mở nhóm sửa của TRƯỜNG THIẾU ĐẦU TIÊN, ⛔ của nhóm đếm */
+ return (x.truong&&x.truong.length&&gNhom1(x.truong[0]))||NHOM2G[x.nh]||null;
+}
+
+/* ---- rời nhóm khi còn thay đổi chưa lưu ⇒ HỎI LẠI (ràng buộc 125) ---- */
+function gDirty(){
+ if(!gEdit)return false;
+ const p=byId(gEdit.ns); if(!p)return false;
+ return GNHOM[gEdit.g].f.some(f=>gCanGhi(p,f)&&gNhap[f[0]]!==undefined&&gNhap[f[0]]!==gCur(p,f[0]));
+}
+function gRoi(){
+ if(!gDirty()){if(gEdit){gEdit=null;gNhap={};gMC=[]}return true}
+ if(confirm('Nhóm «'+GNHOM[gEdit.g].ten+'» còn thay đổi CHƯA LƯU.\n\nBỏ các thay đổi đó?')){
+  gEdit=null;gNhap={};gMC=[];return true}
+ return false;
+}
+const gCur=(p,path)=>{const v=gGet(p,path);return v==null?'':String(v)};
+function gCanGhi(p,f){
+ if(f[3]==='ro'||f[2]===0)return false;                       /* dẫn xuất · ánh xạ · máy sinh */
+ if(ycKhoa(p.id,f[1]))return false;                           /* đang có yêu cầu chờ duyệt */
+ return true;
+}
+
+/* ---- đầu nhóm ở chế độ XEM: thêm nút ✎ Sửa ---- */
+/* 🔒 §6.2.3b.8 — khối N phải ĐÃ MỞ CHE mới có nút: ⛔ có đường nào vừa sửa vừa còn che */
+function ncDaMo(p){return typeof ncMoDuoc==='function'&&ncMoDuoc()&&NCF.every(([k])=>unmask.has(p.id+':nc:'+k))}
+function gSua(p,gk){
+ if(!R().edit||!GNHOM[gk])return '';
+ if(gEdit&&gEdit.ns===p.id&&gEdit.g===gk)return '<span class="st2 b">đang sửa</span>';
+ if(GNHOM[gk].nc&&!ncDaMo(p))
+  return `<span class="tg c" title="§6.2.3b.8">🔒 mở che đủ ${NCF.length} ô mới sửa được</span>`;
+ return `<button class="btn xs gsua" data-x="g-sua" data-ns="${p.id}" data-g2="${gk}">✎ Sửa</button>`;
+}
+/* ---- khuôn một khối có nút sửa nhóm ---- */
+function gVisao2(p){return laVC(p)?'⛔ áp dụng cho người ⛔ thuộc diện khai CSDL ngành':'chỉ áp dụng cho viên chức — người này là <b>'+esc(dien(p.dien).ten)+'</b>'}
+function gWrap(p,gk,tieuDe,xem,extra,cact){
+ const ed=gEdit&&gEdit.ns===p.id&&gEdit.g===gk;
+ /* nhóm mà MỌI ô đều ⛔ áp dụng ⇒ GẬP, nhưng nút ✎ Sửa VẪN CÒN (có thể cần khai ngược khi diện làm việc sắp đổi) */
+ if(!ed&&gGapNhom(p,gk))
+  return `<div class="card"><div class="ch">${tieuDe}<span class="sp"></span>${extra||''}${gSua(p,gk)}</div>
+   <div class="cb"><div class="gf ro"><div class="k">⛔ áp dụng</div><div>
+    Cả <b>${GNHOM[gk].f.length}</b> ô của khối này ${gVisao2(p)}, và ⛔ ô nào đang có giá trị ⇒ <b>thu gọn</b>.
+    <span class="why">⛔ ẩn: bấm <b>👁 Hiện cả ô không áp dụng</b> ở đầu tab, hoặc <b>✎ Sửa</b> để khai.
+     ⛔ một con số đếm nào đổi vì dòng này.</span></div></div></div></div>`;
+ return `<div class="card ${ed?'ged':''}"><div class="ch">${tieuDe}<span class="sp"></span>${extra||''}${gSua(p,gk)}</div>
+  <div class="cb">${ed?gForm(p,gk):xem}</div>${cact||''}</div>`;
+}
+/* ---- khối A chia làm BẢY KHỐI CON, mỗi khối một nút ✎ Sửa như B · C (1/10/2026) ----
+   🛑 Đơn vị sửa là KHỐI ĐANG HIỆN TRÊN MÀN — bản Dev đã chạy thế từ trước.
+   Quy tắc chia: MỘT KHỐI = MỘT LẦN NGỒI XUỐNG VỚI MỘT TẬP GIẤY.
+   🛑 SÁU khối con, ⛔ bảy: bản Dev ⛔ có Ô «ảnh chữ ký», còn «🖼 Đổi ảnh 4×6» là NÚT
+   ở đầu khối ⇒ dựng riêng một khối cho đúng một cái nút là đẻ một đầu khối rỗng.
+   `arr` là 44 khúc của thân đọc cũ, ⛔ sửa một byte nào của chúng — chỉ xếp lại. */
+var KHOI_A7=[
+ ['a1','A1 — Nhân thân và liên hệ',           [1,2,3,6,7,8,9,10,16]],
+ ['a2','A2 — Các số do cơ quan khác cấp',     [4,5,17,18,19,20,21,22,40]],
+ ['a3','A3 — Học vấn, bồi dưỡng và học hàm',  [23,24,25,26,27,28,29,30,31,32,33,34]],
+ ['a4','A4 — Chính trị - xã hội',             [11,12,13,37,39]],
+ ['a5','A5 — Quân ngũ và diện chính sách',    [35,36]],
+ ['a6','A6 — Công tác, ngạch bậc và quy hoạch',[0,14,15,38,41,42,43]]
+];
+function khoiA7(p,arr){
+ return KHOI_A7.map(([k,ten,ix])=>gWrap(p,k,ten,ix.map(i=>arr[i]).join('\n'))).join('\n');
+}
+
+function gSeed(){
+ gNhap={};gMC=[];
+ const p=byId(gEdit.ns); if(!p)return;
+ GNHOM[gEdit.g].f.forEach(f=>gNhap[f[0]]=gCur(p,f[0]));
+}
+
+/* ---- FORM của một nhóm (§6.2.3b.5) ---- */
+function gForm(p,gk){
+ const G=GNHOM[gk];
+ const gon=G.f.filter(f=>gThuGon(p,f));
+ const dong=G.f.filter(f=>!gThuGon(p,f)).map(f=>{
+  const [path,nhan,tang,kieu,why]=f, v=gNhap[path]!==undefined?gNhap[path]:gCur(p,path);
+  const tg=tang===0?'<span class="tg g">theo nguồn</span>'
+    :tang===1?'<span class="tg c">tầng 1</span>':tang===2?'<span class="tg b">tầng 2</span>':'<span class="tg a">tầng 3</span>';
+  let o;
+  if(ycKhoa(p.id,nhan))
+   o=`<span class="st2 b">📝 Đang chờ duyệt: ${esc(gYCgt(p.id,nhan))}</span>
+      <span class="why">⛔ sửa tay khi hàng đợi còn một yêu cầu của chính chủ — xử lý ở <b>T2</b></span>`;
+  else if(kieu==='ro')
+   o=`<span>${esc(v)||'<span style="color:var(--ink3)">—</span>'}</span><span class="why">${why}</span>`;
+  else if(kieu==='tep')
+   o=`<span class="st2 ${v?'o':'r'}">${v?'✓ Đã có':'⚠ Chưa có'}</span>
+      <button class="btn xs" data-x="g-tep" data-gi="${path}">📎 ${v?'Đổi tệp':'Tải lên'}</button><span class="why">${why}</span>`;
+  else if(kieu==='co3')
+   o=`<select data-gi="${path}">${['c','k','cks'].map(k=>`<option value="${k}" ${v===k?'selected':''}>${CO3[k][0]}</option>`).join('')}</select><span class="why">${why}</span>`;
+  else if(kieu.indexOf('s|')===0)
+   o=`<select data-gi="${path}">${kieu.slice(2).split('|').map(k=>`<option ${v===k?'selected':''}>${k}</option>`).join('')}</select><span class="why">${why}</span>`;
+  else
+   o=`<input type="text" data-gi="${path}" value="${esc(v)}"><span class="why">${why}</span>`;
+  const cls=ycKhoa(p.id,nhan)||kieu==='ro'?'ro':tang===2?'t2':tang===3?'t3':'';
+  /* ô ⛔ áp dụng mà ĐÃ CÓ GIÁ TRỊ ⇒ vẫn hiện đủ, kèm cảnh báo — nó thường là VẾT của một lần đổi diện làm việc */
+  const kap=!gApDung(p,f)?`<span class="st2 w">⚠ đã khai nhưng ⛔ áp dụng cho diện làm việc hiện tại</span>`:'';
+  return `<div class="gf ${cls}"><div class="k">${nhan} ${tg}</div><div>${o}${kap?'<br>'+kap:''}</div></div>`}).join('');
+ const t2=G.f.filter(f=>f[2]===2&&gCanGhi(p,f)).length, t1=G.f.filter(f=>f[2]===1&&gCanGhi(p,f)).length,
+       t3=G.f.filter(f=>f[2]===3&&gCanGhi(p,f)).length, ro=G.f.length-t1-t2-t3;
+ return `<div class="gbar">✎ Đang sửa nhóm <b>${G.ten}</b> — ${t1} ô tầng 1 · ${t2} ô tầng 2 · ${t3} ô tầng 3 · ${ro} ô chỉ đọc
+   <span class="sp"></span>
+   <button class="btn xs" data-x="g-huy">✕ Hủy</button>
+   <button class="btn xs p" data-x="g-luu">💾 Lưu</button></div>
+  ${G.nc?`<div class="danger">🔒 Mở form sửa khối N <b>LÀ một lượt xem</b> ⇒ nhật ký truy cập đã ghi ngay lúc mở,
+    ⛔ chờ tới lúc lưu. Khối phải <b>đã mở che</b> mới có nút này — ⛔ có đường nào vừa sửa vừa còn che.</div>`:''}
+  ${dong||'<div class="gf ro"><div class="k">—</div><div>Mọi ô của nhóm này ⛔ áp dụng cho người đang xem.</div></div>'}
+  ${gon.length?`<div class="gf ro"><div class="k">⛔ áp dụng</div><div>
+    <b>${gon.length}</b> ô ${gVisao2(p)} — ${gon.map(f=>esc(f[1])).join(' · ')}
+    <span class="why">Thu gọn, ⛔ ẩn: bấm <b>👁 Hiện cả ô không áp dụng</b> ở đầu tab để bung ra.
+     ⛔ ô nào trong số này đang có giá trị — ô đã khai thì luôn hiện đủ.</span></div></div>`:''}
+  <div class="lgd"><span>Một lượt <b>💾 Lưu = MỘT giao dịch</b>: ⛔ có ca «lưu được ba ô tầng 1 rồi hủy ở hộp thoại minh chứng».
+   Trường ⛔ đổi thì ⛔ sinh audit, ⛔ sinh thông báo.</span></div>`;
+}
+const gYCgt=(ns,truong)=>{const y=YC.find(y=>y.ns===ns&&y.truong===truong&&y.tt==='cho');return y?(y.moi||''):''};
+
+/* ---- 💾 LƯU — hàng rào ở NHÁNH GHI, theo TỪNG TRƯỜNG (§6.2.3b.6) ---- */
+function gDoi(p,gk){
+ return GNHOM[gk].f.filter(f=>gCanGhi(p,f)&&gNhap[f[0]]!==undefined&&gNhap[f[0]]!==gCur(p,f[0]));
+}
+function gChan(p,gk,doi){
+ const loi=[];
+ /* ① mức ① ⛔ xóa trắng — chạy ĐÚNG phép kiểm của §2c.1, ⛔ bản thứ hai */
+ const sau={}; M1F.forEach(([k,ten])=>sau[k]=m1Val(p,k));
+ doi.forEach(f=>{const k={'n':'n','sinh':'sinh','gt':'gt','cccd':'cccd','tk.sdt':'sdt'}[f[0]]; if(k)sau[k]=gNhap[f[0]]});
+ M1F.forEach(([k,ten])=>{if(sau[k]!==undefined&&!coGiaTri(sau[k])&&coGiaTri(m1Val(p,k)))
+   loi.push('Mức ① «'+ten+'» ⛔ được xóa trắng — §2c.1')});
+ /* ② trùng định danh đăng nhập toàn trường (§4b.7) */
+ doi.forEach(f=>{
+  if(f[0]==='tk.sdt'){const t=NS.find(x=>x.id!==p.id&&x.tk&&x.tk.sdt&&x.tk.sdt.replace(/\s/g,'')===gNhap[f[0]].replace(/\s/g,''));
+   if(t)loi.push('Số điện thoại trùng với <b>'+t.n+'</b> — định danh đăng nhập phải duy nhất toàn trường')}
+  if(f[0]==='tk.mail'){const t=NS.find(x=>x.id!==p.id&&x.tk&&x.tk.mail&&x.tk.mail.toLowerCase()===gNhap[f[0]].toLowerCase());
+   if(t)loi.push('Email trùng với <b>'+t.n+'</b> — định danh đăng nhập phải duy nhất toàn trường')}
+  if(f[0]==='cccd'){const t=NS.find(x=>x.id!==p.id&&x.cccd===gNhap[f[0]]);
+   if(t)loi.push('Số căn cước trùng với <b>'+t.n+'</b> — khóa chống trùng (§4b.8)')}
+ });
+ return loi;
+}
+function gGhi(p,gk,doi,mcTheoTruong){
+ gLuot++;
+ const ma='LUU-'+String(gLuot).padStart(3,'0');
+ const ng=d2s(HOMNAY), ai=R().n||role;
+ const t1=[],t2=[],t3=[];
+ doi.forEach(f=>{
+  const cu=gCur(p,f[0]), moi=gNhap[f[0]];
+  /* 🛑 kiểm LẠI ở nhánh ghi: trong lúc form mở có thể đã sinh yêu cầu chờ duyệt */
+  if(!gCanGhi(p,f))return;
+  gSet(p,f[0],moi);
+  const nhanh=f[2]===2?t2:f[2]===1?t1:t3;
+  nhanh.push([f[1],cu,moi]);
+  /* audit MỘT BẢN GHI MỖI TRƯỜNG (ràng buộc 126) — mang mã lượt lưu chung */
+  (AUDIT[p.id]=AUDIT[p.id]||[]).unshift([ng,ai,
+    (f[2]===2?'Sửa trường nhạy cảm — ':'Sửa hồ sơ — ')+f[1],
+    '«'+(cu||'—')+'» → «'+(moi||'—')+'» · nhóm '+GNHOM[gk].ten+' · lượt '+ma
+      /* 🔑 audit ghi ĐÚNG tệp đã trỏ cho Ô NÀY, ⛔ cả danh sách tệp của lượt —
+         câu «ai đổi số tài khoản này, bằng tờ giấy nào» phải trả lời được ở một bản ghi */
+      +(f[2]===2?' · minh chứng: '+((mcTheoTruong&&mcTheoTruong[f[1]])||'—'):''),
+    f[2]===2?'w':'']);
+ });
+ return {ma,t1,t2,t3};
+}
+function gKetQua(p,gk,r,boQua,mcLuot){
+ const kh=a=>a.map(x=>`<tr><td>${esc(x[0])}</td><td style="color:var(--ink3)">${esc(x[1])||'—'}</td><td><b>${esc(x[2])||'—'}</b></td></tr>`).join('');
+ const bang=(ten,a)=>a.length?`<h4 style="margin:10px 0 5px">${ten} <span class="cnt">${a.length}</span></h4>
+   <table><thead><tr><th>Trường</th><th style="width:150px">Giá trị cũ</th><th style="width:180px">Giá trị mới</th></tr></thead><tbody>${kh(a)}</tbody></table>`:'';
+ modal('💾 Đã lưu nhóm «'+GNHOM[gk].ten+'» — lượt '+r.ma,
+  `<div class="info">✓ <b>MỘT giao dịch</b>, <b>${r.t1.length+r.t2.length+r.t3.length}</b> trường đã ghi ·
+    <b>${r.t1.length+r.t2.length+r.t3.length}</b> bản ghi audit (<b>một bản ghi mỗi trường</b>, cùng mã lượt <b>${r.ma}</b>) ·
+    <b>1</b> thông báo cho chính chủ <b>${esc(p.n)}</b> — ⛔ một thông báo mỗi trường.</div>
+   ${bang('Tầng 1 — ghi thẳng',r.t1)}
+   ${bang('Tầng 2 — audit loại «Sửa trường nhạy cảm»',r.t2)}
+   ${bang('Tầng 3 — TCNS là chủ',r.t3)}
+   ${r.t2.length?`<div class="ro" style="margin-top:9px">Minh chứng của lượt này: <b>${(mcLuot||[]).map(m=>esc(m.ten)).join(' · ')||'—'}</b>.
+     Mỗi trường tầng 2 trỏ tới ít nhất một tệp — ⛔ một tệp chung đứng tên cho cả nhóm.</div>`:''}
+   ${boQua.length?`<div class="danger" style="margin-top:9px">⚠ <b>${boQua.length}</b> trường <b>BỎ QUA, nêu đích danh</b>
+     — ⛔ ghi đè, ⛔ im lặng: ${boQua.map(x=>'<b>'+esc(x)+'</b>').join(' · ')}</div>`:''}`,
+  `<button class="btn" data-x="close">Đóng</button>`);
+}
+
+/* ---- hộp thoại minh chứng của CẢ NHÓM (§6.2.3b.4) ---- */
+function gMCModal(p,gk,doi){
+ const t2=doi.filter(f=>f[2]===2);
+ modal('📝 Xác nhận sửa '+t2.length+' trường tầng 2 — nhóm «'+GNHOM[gk].ten+'»',
+  `<div class="danger">Trường tầng 2 là <b>căn cứ pháp lý hoặc căn cứ chi tiền</b>. Mỗi trường phải
+    <b>trỏ tới ít nhất một tệp minh chứng</b> — ⛔ một tệp chung đứng tên cho cả nhóm
+    <i>(sao kê ngân hàng ⛔ chứng minh được số căn cước)</i>, ⛔ bắt mỗi trường một tệp riêng
+    <i>(một bản scan căn cước là minh chứng của ba ô)</i>.</div>
+   <div class="drop" data-x="g-mc-them">📎 Bấm để đính thêm tệp minh chứng</div>
+   <div id="gmcl" style="font-size:12px;margin:7px 0">${gMCList()}</div>
+   <table><thead><tr><th>Trường</th><th style="width:140px">Cũ</th><th style="width:150px">Mới</th>
+     <th style="width:180px">Minh chứng cho ô này</th></tr></thead><tbody>
+   ${t2.map((f,i)=>`<tr><td>${esc(f[1])}</td><td style="color:var(--ink3)">${esc(gCur(p,f[0]))||'—'}</td>
+     <td><b>${esc(gNhap[f[0]])||'—'}</b></td>
+     <td><select data-gmc="${i}">${gMC.length?gMC.map((m,j)=>`<option value="${j}">${esc(m.ten)}</option>`).join('')
+       :'<option value="">— chưa đính tệp nào —</option>'}</select></td></tr>`).join('')}
+   </tbody></table>
+   <label class="lbl">Lý do của cả lượt <span style="color:var(--red)">*</span>
+     <span style="font-weight:400;color:var(--ink3)">— lý do nói VÌ SAO đi sửa lượt này, ⛔ nói tờ giấy nào</span></label>
+   <textarea class="fldi" id="glydo" rows="2" placeholder="Ví dụ: đối chiếu hồ sơ giấy đợt RS-2026-01, người này đổi thẻ căn cước"></textarea>`,
+  `<button class="btn" data-x="close">Hủy — ⛔ ghi gì (một giao dịch)</button>
+   <button class="btn p" data-x="g-luu2" data-g2="${gk}">💾 Lưu cả nhóm</button>`);
+}
+const gMCList=()=>gMC.length?gMC.map(m=>`<span class="chip">📎 ${esc(m.ten)}</span>`).join(' ')
+  :'<span style="color:var(--red)">Chưa đính tệp nào — ⛔ lưu được trường tầng 2</span>';
+
+/* ================================ THAO TÁC ================================ */
+document.addEventListener('click',e=>{
+ const t=e.target.closest('[data-x]'); if(!t)return;
+ const x=t.dataset.x; if(!x||x.indexOf('g-')!==0)return;
+ switch(x){
+ case 'g-sua': {                       /* mỗi lúc MỘT nhóm ở chế độ sửa (ràng buộc 125) */
+   if(!gRoi())return;
+   gEdit={ns:+t.dataset.ns,g:t.dataset.g2}; gHL=null; gSeed(); render();}break;
+ case 'g-huy': if(gRoi())render();break;
+ /* §6.2.3c — công tắc của MỘT LƯỢT XEM, ⛔ nhớ qua lượt sau (ràng buộc 133) */
+ case 'g-hien-het': gHienHet=!gHienHet; render();
+   toast(gHienHet?'👁 Đang hiện <b>cả ô ⛔ áp dụng</b> — ⛔ một con số đếm nào đổi'
+                 :'Đã thu gọn lại — ô ⛔ áp dụng mà <b>đã có giá trị</b> thì vẫn hiện đủ');break;
+ case 'g-tep': {const k=t.dataset.gi; gNhap[k]=gNhap[k]?'':'1'; render();
+   toast(gNhap[k]?'📎 Đã chọn tệp — <b>chưa ghi</b>, bấm 💾 Lưu mới thành một giao dịch':'Đã bỏ tệp');}break;
+ case 'g-luu': {
+   const p=byId(gEdit.ns), gk=gEdit.g, doi=gDoi(p,gk);
+   if(!doi.length){toast('⛔ trường nào đổi — ⛔ sinh audit, ⛔ sinh thông báo');gEdit=null;render();return}
+   const loi=gChan(p,gk,doi);
+   if(loi.length){modal('⛔ CHẶN CẢ LƯỢT LƯU — '+loi.length+' lỗi',
+     `<div class="danger">Một lượt 💾 Lưu là <b>MỘT giao dịch</b>: có một lỗi thì <b>⛔ ghi gì</b>.
+       Hàng rào kiểm ở <b>nhánh GHI</b>, theo <b>từng trường</b> — ⛔ chỉ ở nhánh vẽ ô (ràng buộc 128).</div>
+      <ul style="margin:9px 0 0 18px;font-size:12.5px">${loi.map(l=>'<li style="margin-bottom:4px">'+l+'</li>').join('')}</ul>`,
+     `<button class="btn" data-x="close">Quay lại sửa</button>`);return}
+   if(doi.some(f=>f[2]===2)){gMCModal(p,gk,doi);return}
+   const r=gGhi(p,gk,doi); gEdit=null;gNhap={};gMC=[]; render(); gKetQua(p,gk,r,[],[]);}break;
+ case 'g-mc-them': {gMC.push({ten:'minh-chung-'+(gMC.length+1)+'.pdf'});
+   const l=$('#gmcl'); if(l)l.innerHTML=gMCList();
+   document.querySelectorAll('select[data-gmc]').forEach(s=>{
+    s.innerHTML=gMC.map((m,j)=>`<option value="${j}">${esc(m.ten)}</option>`).join('')});}break;
+ case 'g-luu2': {
+   const p=byId(gEdit.ns), gk=t.dataset.g2, doi=gDoi(p,gk), t2=doi.filter(f=>f[2]===2);
+   const lydo=($('#glydo')&&$('#glydo').value||'').trim();
+   const thieuMC=[], mcTheoTruong={};
+   t2.forEach((f,i)=>{const s=document.querySelector(`select[data-gmc="${i}"]`);
+     if(!s||!s.value&&s.value!=='0'){thieuMC.push(f[1]);return}
+     const m=gMC[+s.value]; if(!m){thieuMC.push(f[1]);return}
+     mcTheoTruong[f[1]]=m.ten});
+   if(thieuMC.length||!lydo){
+    toast((thieuMC.length?'⛔ CHẶN LƯU — trường chưa trỏ tệp minh chứng: <b>'+thieuMC.join(' · ')+'</b>':'')
+      +(thieuMC.length&&!lydo?'<br>':'')+(!lydo?'⛔ CHẶN LƯU — <b>lý do của cả lượt</b> là bắt buộc':''));return}
+   closeModal();
+   const boQua=doi.filter(f=>!gCanGhi(p,f)).map(f=>f[1]);
+   const mcLuot=gMC.slice();
+   const r=gGhi(p,gk,doi,mcTheoTruong); gEdit=null;gNhap={};gMC=[]; render(); gKetQua(p,gk,r,boQua,mcLuot);}break;
+ }
+});
+document.addEventListener('input',e=>{const el=e.target;
+ if(el.dataset.gi!==undefined&&el.tagName==='INPUT')gNhap[el.dataset.gi]=el.value});
+document.addEventListener('change',e=>{const el=e.target;
+ if(el.dataset.gi!==undefined&&el.tagName==='SELECT'){gNhap[el.dataset.gi]=el.value;render()}});
+
+/* ═══════════════════════════════════════════════════════════════════════════════════
+   M4.1 v1.30 §6.4 — PHẦN E NHẬN THÊM MỘT VAI: NƠI LƯU NHIỆM KỲ CHỨC DANH
+                                                        (6/10/2026 · cụm CDHT)
+
+   `M4.3` v3.0 thôi giữ nhiệm kỳ — ở đó chỉ còn TRẠNG THÁI bật / tắt của hiện tại.
+   ⟹ Câu «ngày D người này giữ chức danh gì» có ĐÚNG MỘT nguồn: Phần E của hồ sơ này.
+
+   Bốn thứ tệp này dựng:
+     ① HAI LOẠI MỐC, MỘT CHỖ LƯU — mốc ngoài trường (ô chữ tự do, giữ nguyên) ⟂ mốc
+        chức danh tại trường (chức danh từ danh mục · đơn vị · văn bản căn cứ · trỏ ngược
+        về lượt thay đổi ở M4.3 · nguồn). ⛔ tách thành mục riêng: Phần E là mẫu 38 mục
+        của Bộ Nội vụ — MỘT chuỗi quá trình công tác, ⛔ phân biệt nơi làm.
+     ② BA ĐƯỜNG MỐC SINH RA — M4.2 / ô ghi hộ M10.1 (máy, ngày theo quyết định) ·
+        nút `＋ Tạo mốc công tác` của M4.3 (người tự nhập, ô ngày để TRỐNG) · nhập trực tiếp.
+     ③ Sửa · Xóa mốc là chuyện BÌNH THƯỜNG ở đây — và 🛑 nó ⛔ ĐỔI trạng thái chức danh
+        hiện tại ở M4.3. Thứ duy nhất đổi theo là GIÁ TRỊ SUY RA `Đã gắn / Chưa gắn`.
+     ④ Phép đếm «lượt thay đổi chức danh chưa gắn mốc» ở T3, TÁCH HAI CHIỀU — ⛔ chặn gì.
+
+   🛑 Tệp này ⛔ sửa một byte nào của app.js: khai lại `pQuaTrinh` (mảnh nạp sau thắng),
+      nối hai dòng vào `M2F` bằng push, và dùng listener click RIÊNG với tên thao tác MỚI
+      (`moc-*`) nên switch của app.js ⛔ bắt phải.
+   ═══════════════════════════════════════════════════════════════════════════════════ */
+
+const TRUONG41 = 'THCS & THPT Nguyễn Tất Thành';
+
+/* ── Danh mục chức danh — bản chiếu M10.4. [tên, nhóm, cần đơn vị?]
+      nhóm ①② gắn văn bản (số QĐ + tệp) · nhóm ③ chỉ cần ngày (M4.3 §6.2.1 · ràng buộc 8) ── */
+const CDMUC41 = [
+  ['Hiệu trưởng', 1, ''], ['Phó HT Chuyên môn', 1, ''], ['Phó HT phụ trách điểm trường', 1, 'dt'],
+  ['Tổ trưởng chuyên môn', 2, 'to'], ['Tổ phó chuyên môn', 2, 'to'],
+  ['Tổ chức nhân sự', 2, ''], ['Kế toán', 2, ''], ['Thủ quỹ', 2, ''], ['Văn thư', 2, ''],
+  ['Y tế học đường', 2, ''], ['Bảo vệ', 2, ''], ['Nhân viên phục vụ', 2, ''],
+  ['Giáo viên bộ môn', 3, ''], ['Giáo viên chủ nhiệm', 3, '']
+];
+const cdMuc41 = ten => CDMUC41.find(x => x[0] === ten);
+
+/* ── Kho LƯỢT THAY ĐỔI CHỨC DANH — bản chiếu M4.3 §6.2.5. Demo chỉ ĐỌC kho này;
+      thao tác bật / tắt vẫn thuộc M4.3, ⛔ mở ở đây. ── */
+const KIEU41 = { them: ['＋ Thêm', 'Bắt đầu nhiệm kỳ', 'bat'],
+                 bat:  ['● Bật',   'Bắt đầu nhiệm kỳ', 'bat'],
+                 tat:  ['○ Tắt',   'Kết thúc nhiệm kỳ', 'tat'] };
+const NGUON41 = { m42: '🔗 từ Biến động nhân sự', m101: '🔗 từ ô ghi hộ M10.1',
+                  m43: '✎ thao tác tay tại M4.3', tay: '✎ nhập trực tiếp tại M4.1' };
+
+let LS41 = [], LSEQ41 = 0, MSEQ41 = 0;
+
+const themLuot41 = (ns, cd, dv, kieu, luc, nguon, mocId) =>
+  LS41.push({ id: 'LS' + (++LSEQ41), ns: ns, cd: cd, dv: dv || '', kieu: kieu,
+              luc: luc, nguon: nguon, moc: mocId || null });
+
+/* `Đã gắn` là GIÁ TRỊ SUY RA, ⛔ một cột lưu: xóa mốc ở đây thì dòng bên M4.3 tự về
+   `Chưa gắn` — ⛔ có dữ liệu nào chạy ngược từ hồ sơ sang menu nguồn (ràng buộc 35). */
+const mocCua41 = id => { for (const p of NS) for (const m of (p.qt || [])) if (m[5] && m[5].id === id) return m; return null };
+const daGan41  = l => !!l.moc && !!mocCua41(l.moc);
+const chuaGan41 = (p, chieu) => LS41.filter(l => l.ns === p.id && !daGan41(l) &&
+                                 (!chieu || KIEU41[l.kieu][2] === chieu));
+
+/* ── Bốn hồ sơ có ticket biến động ở M4.2 ⇒ mốc của họ do TICKET sinh, ⛔ ô ghi hộ:
+      id 16 tạm nghỉ · 17 chuyển đi · 18 nghỉ việc · 6 chuyển diện làm việc.
+      Mốc ấy CHỈ ĐỌC tại đây — sửa thì sửa ở M4.2, ⛔ thì quá trình công tác sẽ nói
+      khác quyết định đã ký (luật cũ, giữ nguyên). ── */
+const M42_41 = [6, 16, 17, 18];
+
+/* ── GIEO: nâng mốc tại trường của dữ liệu cũ thành mốc có cấu trúc, rồi dựng lượt ── */
+(function gieoMoc41() {
+  NS.forEach(function (p) {
+    let dauTien = true;
+    (p.qt || []).forEach(function (m) {
+      if (m[2] !== TRUONG41) return;                       /* mốc ngoài trường: giữ nguyên */
+      const c = cdMuc41(p.cd) || ['Giáo viên bộ môn', 3, ''];
+      const dv = c[2] === 'to' ? p.to : c[2] === 'dt' ? p.dt : '';
+      const tuTicket = M42_41.includes(p.id);
+      m[5] = { id: 'MC' + (++MSEQ41), cd: dauTien ? p.cd : m[3], dv: dv,
+               vb: c[1] < 3 ? 'QĐ ' + (100 + p.id) + '/QĐ-NTT' : '',
+               nguon: tuTicket ? 'm42' : 'm101' };
+      if (dauTien) {
+        themLuot41(p.id, m[5].cd, dv, 'them', m[0], m[5].nguon, m[5].id);
+        m[5].luot = LS41[LS41.length - 1].id;
+        dauTien = false;
+      }
+    });
+  });
+
+  /* 🔴 CA MẪU — lượt CHƯA GẮN MỐC, dựng đúng hai chiều.
+     Người dùng bấm thẳng ở M4.3 (đường NHANH) ⇒ trạng thái đổi ngay, hồ sơ còn thiếu mốc. */
+  const bat = [[5, 'Giáo viên chủ nhiệm', ''], [9, 'Tổ phó chuyên môn', 'to'], [22, 'Giáo viên chủ nhiệm', '']];
+  const tat = [[12, 'Thủ quỹ', ''], [13, 'Văn thư', '']];
+
+  bat.forEach(function (x) { const p = byId(x[0]); if (!p) return;
+    const c = cdMuc41(x[1]); const dv = x[2] === 'to' ? p.to : x[2] === 'dt' ? p.dt : '';
+    themLuot41(p.id, x[1], dv, 'bat', '01/09/2026', 'm43', null); });
+
+  tat.forEach(function (x) { const p = byId(x[0]); if (!p) return;
+    /* chức danh kiêm nhiệm vừa thôi giữ — lượt tắt đã chạy, mốc thì chưa ai khai */
+    themLuot41(p.id, x[1], '', 'tat', '31/08/2026', 'm43', null); });
+})();
+
+/* ── T3 — hạng mục kiểm, TÁCH HAI CHIỀU.
+      Hai dòng thay vì một, vì «tách hai chiều» phải đọc ra được từ chính màn hình:
+      gộp một dòng là mất đúng cái thông tin khiến chiều TẮT nguy hơn. ── */
+M2F.push(
+  ['QT', 'Mốc chức danh chưa khai — lượt <b>BẬT</b> chưa gắn mốc',
+   p => true, p => chuaGan41(p, 'bat').length === 0, 'dot'],
+  ['QT', 'Mốc chức danh chưa khai — lượt <b>TẮT</b> chưa gắn mốc (🛑 chiều nguy hơn)',
+   p => true, p => chuaGan41(p, 'tat').length === 0, 'dot']
+);
+
+/* ════════════════════ BỀ MẶT — §6.4 ════════════════════ */
+
+const nhanMoc41 = m => m[5] ? '<span class="tg a">🏫 Chức danh tại trường</span>'
+                            : '<span class="tg c">🧳 Ngoài trường</span>';
+const suaDuoc41 = m => !m[5] || ['m43', 'tay'].includes(m[5].nguon);
+
+function pQuaTrinh(p) {
+  const edit = R().edit;
+  const qt = p.qt || [];
+  const cBat = chuaGan41(p, 'bat'), cTat = chuaGan41(p, 'tat');
+
+  const dong = qt.map(function (m, ix) {
+    const meta = m[5];
+    const l = meta && meta.luot ? LS41.find(x => x.id === meta.luot) : null;
+    return `<tr>
+      <td>${esc(m[0])} — ${esc(m[1])}</td>
+      <td>${esc(m[2])}<div style="font-size:11px;color:var(--ink3)">${nhanMoc41(m)}</div></td>
+      <td>${esc(meta ? meta.cd : m[3])}
+        ${meta && meta.dv ? `<div style="font-size:11px;color:var(--ink3)">${esc(meta.dv)}</div>` : ''}</td>
+      <td style="font-weight:400;font-size:11.5px">${meta
+        ? (meta.vb ? esc(meta.vb) : '<span style="color:var(--ink3)">— chỉ cần ngày (nhóm ③)</span>')
+        : '<span style="color:var(--ink3)">—</span>'}</td>
+      <td style="font-weight:400;font-size:11.5px">${meta ? NGUON41[meta.nguon] : '—'}
+        ${l ? `<div style="font-size:11px;color:var(--ink3)">↔ lượt ${l.id} · ${KIEU41[l.kieu][0]}</div>` : ''}</td>
+      <td>${suaDuoc41(m)
+        ? (edit ? `<button class="btn xs" data-x="moc-sua" data-ns="${p.id}" data-ix="${ix}">✎</button>
+                   <button class="btn xs" data-x="moc-xoa" data-ns="${p.id}" data-ix="${ix}">🗑</button>` : '')
+        : `<span class="tg a">${NGUON41[m[5].nguon]} · chỉ đọc</span>`}</td></tr>`;
+  }).join('');
+
+  const hopChua = (ds, chieu) => ds.length ? `
+    <div class="card ${chieu === 'tat' ? 'exp' : ''}">
+     <div class="ch">${chieu === 'tat' ? '🛑' : '⚠'} Lượt ${chieu === 'tat' ? 'TẮT' : 'BẬT'} chức danh chưa gắn mốc
+      <span class="sp"></span><span class="st2 w">${ds.length} lượt</span></div><div class="cb">
+     <table><thead><tr><th style="width:120px">Lượt</th><th>Chức danh</th><th style="width:150px">Thời điểm thao tác</th>
+      <th style="width:170px">Nguồn gốc</th><th style="width:180px"></th></tr></thead><tbody>
+     ${ds.map(l => `<tr><td>${l.id} · ${KIEU41[l.kieu][0]}</td>
+       <td>${esc(l.cd)}${l.dv ? ' · ' + esc(l.dv) : ''}</td><td>${esc(l.luc)}</td>
+       <td style="font-weight:400;font-size:11.5px">${NGUON41[l.nguon]}</td>
+       <td>${R().edit ? `<button class="btn xs p" data-x="moc-tao" data-ns="${p.id}" data-ls="${l.id}">＋ Tạo mốc công tác</button>` : ''}</td>
+      </tr>`).join('')}</tbody></table></div>
+     <div class="cact"><span style="font-size:11.5px;color:var(--ink2)">${chieu === 'tat'
+       ? '🛑 <b>Chiều TẮT nguy hơn.</b> Quên gắn thì hồ sơ để <b>nhiệm kỳ mở vô hạn</b>, đọc lên thành <i>«người này vẫn đang giữ chức danh»</i> — sai mà ⛔ ai thấy.'
+       : 'Chiều BẬT chỉ làm <b>thiếu</b> một mốc, dễ nhận ra hơn.'}
+      ⛔ <b>Chặn gì</b> ở M4.3 — thiếu mốc chỉ là thiếu thông tin tra cứu.</span></div></div>` : '';
+
+  return `<div class="ro">🔴 <b>v1.30 — mục này nhận thêm MỘT VAI: nơi lưu NHIỆM KỲ CHỨC DANH tại trường.</b>
+    <code>M4.3</code> v3.0 thôi giữ nhiệm kỳ <i>(ở đó chỉ còn trạng thái bật / tắt của hiện tại)</i> ⇒ câu
+    <b>«ngày D người này giữ chức danh gì»</b> nay có <b>đúng một nguồn: Phần E này</b>.
+    Đây vẫn là <b>ghi nhận sự kiện đã xảy ra</b>, ⛔ có workflow duyệt.</div>
+
+   <div class="card"><div class="ch">E — Quá trình công tác
+    <span class="tg c">mẫu 38 mục · Bộ Nội vụ</span><span class="sp"></span>
+    ${cBat.length + cTat.length ? `<span class="st2 w">⚠ ${cBat.length + cTat.length} lượt chưa gắn mốc</span>` : '<span class="st2 o">✓ đã gắn đủ</span>'}
+    ${R().edit ? `<button class="btn xs" data-x="moc-them" data-ns="${p.id}">+ Thêm mốc</button>` : ''}</div><div class="cb">
+    <table><thead><tr><th style="width:140px">Thời gian</th><th>Cơ quan, đơn vị</th>
+     <th style="width:180px">Chức vụ · đơn vị</th><th style="width:150px">Văn bản căn cứ</th>
+     <th style="width:180px">Nguồn</th><th style="width:92px"></th></tr></thead><tbody>${dong}</tbody></table></div>
+    <div class="cact"><span style="font-size:11.5px;color:var(--ink2)">
+     <b>Hai loại mốc, MỘT chỗ lưu.</b> ⛔ tách thành mục riêng — Phần E là <b>một chuỗi</b> quá trình công tác,
+     ⛔ phân biệt nơi làm; mốc tại trường chỉ <b>khai có cấu trúc hơn</b>.<br>
+     🛑 <b>Sửa hay xóa một mốc ở đây ⛔ ĐỔI trạng thái chức danh hiện tại ở <code>M4.3</code></b> —
+     ⛔ có dữ liệu nào chạy ngược. Thứ duy nhất đổi theo là <b>giá trị suy ra</b>
+     <code>Đã gắn / Chưa gắn</code> của dòng lượt thay đổi bên ấy.<br>
+     Cảnh báo mềm khi hai mốc liền kề có khoảng trống hoặc chồng lấn — chỉ cảnh báo, ⛔ chặn.</span></div></div>
+
+   ${hopChua(cTat, 'tat')}${hopChua(cBat, 'bat')}`;
+}
+
+/* ════════════════════ THAO TÁC ════════════════════ */
+
+const oVal41 = id => { const e = document.getElementById(id); return e ? e.value.trim() : '' };
+
+function formMoc41(p, m, ls) {
+  const meta = m ? m[5] : null;
+  const cdHien = ls ? ls.cd : meta ? meta.cd : '';
+  const dvHien = ls ? ls.dv : meta ? meta.dv : '';
+  const c = cdMuc41(cdHien);
+  const nhom3 = c && c[1] === 3;
+  return `
+   ${ls ? `<div class="info">Mốc này sinh từ <b>lượt ${ls.id} · ${KIEU41[ls.kieu][0]}</b> ở <code>M4.3</code> —
+     loại mốc là <b>${KIEU41[ls.kieu][1]}</b>, suy từ chiều của lượt.<br>
+     🛑 <b>Ô ngày để TRỐNG, bắt buộc nhập.</b> Máy ⛔ điền hộ: thời điểm <i>bấm nút</i> ở M4.3 thường
+     ⛔ phải thời điểm <i>hiệu lực</i> của nhiệm kỳ <i>(ràng buộc 36)</i>.</div>` : ''}
+   <label class="lbl">Cơ quan, đơn vị</label>
+   <input class="fldi" id="mc-cq" value="${esc(ls || meta ? TRUONG41 : (m ? m[2] : ''))}" ${ls || meta ? 'readonly' : ''}>
+   <label class="lbl">Chức vụ ${ls || meta ? '<span class="tg c">danh mục M10.4</span>' : '<span class="tg c">ô chữ tự do — mốc ngoài trường</span>'}</label>
+   ${ls || meta
+      ? `<input class="fldi" id="mc-cd" value="${esc(cdHien)}" readonly>`
+      : `<input class="fldi" id="mc-cd" value="${esc(m ? m[3] : '')}">`}
+   ${dvHien ? `<label class="lbl">Đơn vị</label><input class="fldi" id="mc-dv" value="${esc(dvHien)}" readonly>` : ''}
+   <label class="lbl">Từ ngày <span style="color:var(--red)">*</span>
+     ${ls ? '<span class="tg c">⛔ máy điền hộ</span>' : ''}</label>
+   <input class="fldi" id="mc-tu" placeholder="dd/mm/yyyy" value="${esc(ls ? '' : (m ? m[0] : ''))}">
+   <label class="lbl">Đến ngày <span style="color:var(--ink3)">(để trống nghĩa là còn đang giữ)</span></label>
+   <input class="fldi" id="mc-den" placeholder="dd/mm/yyyy hoặc «nay»" value="${esc(ls ? '' : (m ? m[1] : ''))}">
+   <label class="lbl">Văn bản căn cứ ${nhom3
+      ? '<span class="tg c">nhóm ③ — chỉ cần ngày, ⛔ bắt số QĐ</span>'
+      : '<span style="color:var(--red)">* nhóm ' + (c ? c[1] : '②') + ' — bắt buộc số QĐ</span>'}</label>
+   <input class="fldi" id="mc-vb" placeholder="vd. QĐ 118/QĐ-NTT" value="${esc(meta ? meta.vb : '')}">`;
+}
+
+function moModalMoc41(p, m, ls, ix) {
+  modal(ls ? '＋ Tạo mốc công tác — từ lượt ' + ls.id : m ? '✎ Sửa mốc quá trình công tác' : '+ Thêm mốc quá trình công tác',
+    formMoc41(p, m, ls),
+    `<button class="btn" data-x="close">Hủy</button>
+     <button class="btn p" data-x="moc-luu" data-ns="${p.id}" data-ix="${ix == null ? '' : ix}" data-ls="${ls ? ls.id : ''}">💾 ${ls ? 'Tạo mốc' : 'Lưu'}</button>`);
+}
+
+document.addEventListener('click', function (e) {
+  const t = e.target.closest('[data-x]');
+  if (!t) return;
+  const x = t.dataset.x;
+  if (!/^moc-/.test(x)) return;
+  const p = byId(+t.dataset.ns);
+
+  if (x === 'moc-them') { moModalMoc41(p, null, null, null); return }
+
+  if (x === 'moc-sua') { const ix = +t.dataset.ix, m = p.qt[ix];
+    if (!suaDuoc41(m)) { toast('⛔ Mốc do <b>' + NGUON41[m[5].nguon] + '</b> — <b>chỉ đọc tại M4.1</b>. Sửa thì sửa ở nguồn, ⛔ thì quá trình công tác sẽ nói khác quyết định đã ký'); return }
+    moModalMoc41(p, m, null, ix); return }
+
+  if (x === 'moc-tao') { const ls = LS41.find(l => l.id === t.dataset.ls); moModalMoc41(p, null, ls, null); return }
+
+  if (x === 'moc-xoa') { const ix = +t.dataset.ix, m = p.qt[ix];
+    if (!suaDuoc41(m)) { toast('⛔ Mốc do <b>' + NGUON41[m[5].nguon] + '</b> — chỉ đọc tại M4.1'); return }
+    const l = m[5] && m[5].luot ? LS41.find(z => z.id === m[5].luot) : null;
+    modal('🗑 Xóa mốc quá trình công tác',
+      `<div class="ro">Đây là <b>hồ sơ</b>, và hồ sơ thì <b>được đính chính</b> — khai sai thì xóa, đó là việc bình thường.
+        Khác hẳn <code>M4.3</code>: bản ghi bên ấy là <b>công tắc quyền</b>, xóa nó làm dữ liệu hoạt động quá khứ
+        mất chỗ dựa, nên ở đó chỉ có <b>Tắt</b>.</div>
+       <div class="warn">🛑 Xóa mốc này ⛔ <b>ĐỔI trạng thái chức danh hiện tại ở M4.3</b>.
+        ${l ? 'Thứ duy nhất đổi theo: dòng <b>lượt ' + l.id + '</b> bên ấy <b>tự trở về <code>Chưa gắn</code></b> — đó là <b>giá trị suy ra</b>, ⛔ một cột lưu.'
+            : 'Mốc này ⛔ gắn với lượt nào nên ⛔ có gì đổi theo.'}</div>`,
+      `<button class="btn" data-x="close">Hủy</button>
+       <button class="btn d" data-x="moc-xoa-ok" data-ns="${p.id}" data-ix="${ix}">🗑 Xóa mốc</button>`); return }
+
+  if (x === 'moc-xoa-ok') { const ix = +t.dataset.ix, m = p.qt[ix];
+    const l = m[5] && m[5].luot ? LS41.find(z => z.id === m[5].luot) : null;
+    p.qt.splice(ix, 1); closeModal(); render();
+    toast(l ? 'Đã xóa mốc — lượt <b>' + l.id + '</b> ở M4.3 tự về <b>Chưa gắn</b>, <b>trạng thái chức danh ⛔ đổi</b>'
+            : 'Đã xóa mốc — <b>trạng thái chức danh ở M4.3 ⛔ đổi</b>'); return }
+
+  if (x === 'moc-luu') {
+    const tu = oVal41('mc-tu'), den = oVal41('mc-den'), vb = oVal41('mc-vb'),
+          cq = oVal41('mc-cq'), cd = oVal41('mc-cd');
+    const ls = t.dataset.ls ? LS41.find(l => l.id === t.dataset.ls) : null;
+    const ix = t.dataset.ix === '' ? null : +t.dataset.ix;
+    if (!tu) { toast('⛔ <b>Bắt buộc nhập ngày</b> — máy ⛔ điền hộ: ngày bấm nút ở M4.3 thường ⛔ phải ngày hiệu lực của nhiệm kỳ'); return }
+    const c = cdMuc41(cd);
+    if (c && c[1] < 3 && !vb) { toast('⛔ Chức danh <b>nhóm ' + c[1] + '</b> bắt buộc có <b>số quyết định</b> — nhóm ③ mới chỉ cần ngày'); return }
+
+    if (ix != null) {                                   /* sửa mốc đang có */
+      const m = p.qt[ix]; m[0] = tu; m[1] = den || 'nay'; m[2] = cq; m[3] = cd;
+      if (m[5]) { m[5].cd = cd; m[5].vb = vb }
+      closeModal(); render();
+      toast('Đã sửa mốc — <b>audit đã ghi</b>. 🛑 Trạng thái chức danh ở <b>M4.3 ⛔ đổi</b>'); return }
+
+    const meta = { id: 'MC' + (++MSEQ41), cd: cd, dv: ls ? ls.dv : '', vb: vb,
+                   nguon: ls ? 'm43' : 'tay', luot: ls ? ls.id : null };
+    const laTruong = ls || cq === TRUONG41;
+    p.qt.unshift(laTruong ? [tu, den || 'nay', TRUONG41, cd, 0, meta] : [tu, den || 'nay', cq, cd, 0]);
+    if (ls) ls.moc = meta.id;
+    closeModal(); render();
+    toast(ls ? 'Đã tạo mốc — lượt <b>' + ls.id + '</b> chuyển sang <b>Đã gắn</b>' : 'Đã thêm mốc quá trình công tác');
+    return }
+});
+
+/* ════════════════════ PHÉP KIỂM ════════════════════ */
+function kiemMoc41() {
+  const k = [], ok = (t, d) => k.push([!!d, t]);
+  const taiChuc = NS.filter(p => TAICHUC.includes(p.tt));
+
+  ok('Mọi mốc tại trường đều có khối cấu trúc (chức danh · đơn vị · văn bản · nguồn)',
+     NS.every(p => (p.qt || []).every(m => m[2] !== TRUONG41 || !!m[5])));
+  ok('Mốc NGOÀI trường ⛔ bị gắn cấu trúc — hai loại mốc, một chỗ lưu',
+     NS.every(p => (p.qt || []).every(m => m[2] === TRUONG41 || !m[5])));
+
+  const cB = taiChuc.reduce((s, p) => s + chuaGan41(p, 'bat').length, 0);
+  const cT = taiChuc.reduce((s, p) => s + chuaGan41(p, 'tat').length, 0);
+  ok('Phép đếm TÁCH HAI CHIỀU và ra số khác nhau: bật ' + cB + ' · tắt ' + cT, cB === 3 && cT === 2);
+
+  ok('T3 có ĐÚNG HAI hạng mục mốc chức danh, ⛔ gộp một dòng',
+     M2F.filter(f => /Mốc chức danh chưa khai/.test(f[1])).length === 2);
+  ok('Hai hạng mục ấy áp cho MỌI hồ sơ, ⛔ chỉ viên chức',
+     M2F.filter(f => /Mốc chức danh chưa khai/.test(f[1])).every(f => NS.every(p => f[2](p) === true)));
+
+  const coThieu = taiChuc.filter(p => chuaGan41(p, 'bat').length || chuaGan41(p, 'tat').length);
+  ok('Người có lượt chưa gắn thì T3 đếm ra, người đủ mốc thì ⛔ (' + coThieu.length + ' người)',
+     coThieu.length === 5 &&
+     coThieu.every(p => myc(p).m2.some(g => g.nh === 'QT' && g.truong.some(x => /Mốc chức danh chưa khai/.test(x)))) &&
+     taiChuc.filter(p => !coThieu.includes(p))
+            .every(p => !myc(p).m2.some(g => g.nh === 'QT' && g.truong.some(x => /Mốc chức danh chưa khai/.test(x)))));
+
+  ok('`Đã gắn` là GIÁ TRỊ SUY RA: gỡ mốc khỏi hồ sơ ⇒ lượt tự về Chưa gắn, ⛔ ai ghi cột nào',
+     (function () {
+       const l = LS41.find(z => daGan41(z)); if (!l) return false;
+       const p = NS.find(q => q.id === l.ns), ix = (p.qt || []).findIndex(m => m[5] && m[5].id === l.moc);
+       const luu = p.qt[ix]; p.qt.splice(ix, 1);
+       const sau = daGan41(l); p.qt.splice(ix, 0, luu);
+       return sau === false && daGan41(l) === true;
+     })());
+
+  ok('Mốc do M4.2 / ô ghi hộ M10.1 sinh thì ⛔ sửa, ⛔ xóa được tại đây',
+     NS.some(p => (p.qt || []).some(m => m[5] && ['m42', 'm101'].includes(m[5].nguon))) &&
+     NS.every(p => (p.qt || []).every(m => !m[5] || !['m42', 'm101'].includes(m[5].nguon) || !suaDuoc41(m))));
+
+  ok('Mốc sinh từ lượt của M4.3 và mốc nhập trực tiếp thì SỬA · XÓA được',
+     ['m43', 'tay'].every(ng => suaDuoc41([0, 0, TRUONG41, '', 0, { nguon: ng }])));
+
+  ok('Ba đường mốc sinh ra đều có mặt trong dữ liệu đang chạy (M4.2 · ô ghi hộ M10.1 · lượt tay ở M4.3)',
+     ['m42', 'm101'].every(ng => NS.some(p => (p.qt || []).some(m => m[5] && m[5].nguon === ng))) &&
+     LS41.some(l => l.nguon === 'm43' && !daGan41(l)));
+
+  ok('Đúng bốn hồ sơ có mốc do ticket M4.2 sinh, và cả bốn đều CHỈ ĐỌC tại đây',
+     NS.filter(q => (q.qt || []).some(m => m[5] && m[5].nguon === 'm42')).map(q => q.id).sort((a, b) => a - b).join(',') === '6,16,17,18');
+
+  ok('Chiều TẮT chưa gắn mốc rơi đúng vào hai hồ sơ đã khai làm ca mẫu',
+     taiChuc.filter(p => chuaGan41(p, 'tat').length).map(p => p.id).sort().join(',') === '12,13');
+
+  const dat = k.filter(z => z[0]).length;
+  console.log('M4.1 v1.30 — phép kiểm mốc chức danh (§6.4): ' + dat + '/' + k.length + ' đạt');
+  k.forEach(z => console.log((z[0] ? '  ✓ ' : '  ✗ ') + z[1]));
+  return dat + '/' + k.length;
+}
+
+kiemMoc41();
+
 /* ═══════════════════════════════════════════════════════════════
    KTLD-1D — M4.1 F11 trong LUỒNG KHỞI TẠO LẦN ĐẦU  ·  bước B04
    Tài liệu: M4.1 §6.11.0 (trong luồng · hạng N) · §6.11.4 (bảng tra mã cũ → mới)
@@ -5564,6 +6614,41 @@ document.addEventListener('click', function(e){
 });
 
 render();
+
+/* ===== KHỞI CHẠY — phải nằm ở MẢNH CUỐI (1/10/2026 · GDHT) =====
+   Mọi app.*.js gộp vào MỘT <script>, nên lượt render() đầu tiên phải đứng sau
+   mọi mảnh đã gán dữ liệu của mình (GNHOM của app.20, bọc render của app.70). */
+render();
+
+/* ===== MYC-3A — deep-link ĐẾN T3 «Hồ sơ cần hoàn thiện» (M4.1 §6.7.4 · PHIEU-MYC-2B E.4) =====
+   Nguyên văn M0.2 §4.2.2e dòng V2: ?tab=ho_so_can_hoan_thien&ctx={ns_id}&return=M0.2 — ⛔ không đặt tên khác.
+   ctx nhận mã nhân sự (NS-…) — cũng nhận id nội bộ cho tiện gõ tay. Mở T3, lọc đúng người, mở sẵn panel đúng tab của nhóm thiếu đầu tiên.
+   Chỉ demo: &vai=<mã vai thanh đen> (mặc định giữ vai đang chọn) · &xem=sau (đồng hồ ② như ngày 15/11/2026 = chip «Ngày xem hồ sơ» 15/11 của M0.2).
+   Thiếu / sai tham số ⇒ mở chỗ gần nhất và NÓI ra — ⛔ không im lặng. Vai không có quyền X ở T3 hoặc người ngoài phạm vi ⇒ ⛔ không lộ tên. */
+var t3Ctx=null, t3Return=null;
+(function t3DeepLink(){const q=new URLSearchParams(location.search), tb=q.get('tab');
+ if(!tb)return;
+ const vai=q.get('vai'); if(vai&&ROLE[vai]){const btn=document.querySelector(`.rb[data-r="${vai}"]`);if(btn)btn.click();}
+ if(q.get('xem')==='sau')NGAYXEM=NGAYXEM_SAU;
+ if(tb!=='ho_so_can_hoan_thien'){render();toast('Tham số tab «'+esc(tb)+'» không nhận ra — mở Danh sách nhân sự');return}
+ if(!tabList().some(t=>t[0]==='thieu')){render();toast('Vai '+role+' không có tab Hồ sơ cần hoàn thiện — mở Danh sách nhân sự');return}
+ tab='thieu'; t3Return=q.get('return');
+ const ctx=q.get('ctx'), p=ctx?NS.find(x=>x.ma===ctx||String(x.id)===ctx):null;
+ let bao;
+ if(!ctx) bao='Thiếu tham số ctx — mở T3 cả trường';
+ else if(!p||!rows().includes(p)) bao='Không có hồ sơ «'+esc(ctx)+'» trong phạm vi của vai '+role+' — mở T3 cả trường';
+ else{t3Ctx=p.id; cur=p.id;
+  /* §6.7.2b.6 — ngoại lệ DUY NHẤT của luật «mọi dòng đóng khi vào tab»: đường V2 đã nói rõ đi xem MỘT người */
+  t3Open.add(p.id);
+  const m=myc(p);
+  /* đích = hạng mục ĐẦU TIÊN của dòng đã sắp xếp, ⛔ phải nhóm ② đầu tiên của mảng thô */
+  const g0=t3groups().find(x=>x.p.id===p.id), o0=g0&&(g0.thieu[0]||g0.viec[0]);
+  ptab=(o0&&o0.t[1])||'lylich';
+  bao=`T3 · lọc đúng một người: <b>${p.n}</b> — ${m.m2.length?'thiếu '+m.m2.length+' nhóm':'không còn nhóm ② nào thiếu'}`;}
+ render(); toast(bao+(NGAYXEM!==HOMNAY?' · đồng hồ ② xem như 15/11/2026':''));
+ /* dải lọc đứng ngay đầu T3 ⇒ chỉ cần giữ trang ở đầu: tắt khôi phục cuộn của trình duyệt (bài học MYC-2B), ⛔ scrollIntoView — nó đẩy dải khỏi tầm nhìn */
+ try{history.scrollRestoration='manual'}catch(e){} setTimeout(()=>window.scrollTo(0,0),60);
+})();
 </script>
 </body>
 </html>

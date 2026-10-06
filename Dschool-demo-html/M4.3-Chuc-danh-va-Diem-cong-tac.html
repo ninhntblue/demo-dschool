@@ -151,6 +151,14 @@ tr:last-child td{border-bottom:none}
 .rolnk.rd{color:#991b1b;background:var(--red-soft);border-color:#fecaca}
 .rolnk.am{color:#92400e;background:var(--amber-soft);border-color:#fde68a}
 
+/* BLOOP #2 2/10/2026 — §6.2.5 bảng nhiệm kỳ bổ nhiệm trong panel F2 */
+.nkr{display:grid;grid-template-columns:1fr 86px 86px 118px;gap:8px;align-items:start;padding:9px 12px;border-bottom:1px solid var(--line);font-size:12.5px}
+.nkr:last-child{border-bottom:0}
+.nkr.hd{background:#f8fafc;font-weight:700;font-size:11px;color:var(--ink2);text-transform:uppercase;letter-spacing:.3px}
+.nkr.hl{background:var(--amber-soft)}
+.nkr .d{color:var(--ink2);font-variant-numeric:tabular-nums}
+.nkr .ops{grid-column:1/-1;display:flex;gap:6px;flex-wrap:wrap;margin-top:3px}
+.nkr .sub{font-size:11.5px;color:var(--amber);margin-top:3px;font-weight:600}
 .logl{border-left:2px solid var(--line);margin-left:6px;padding-left:14px}
 .logi{position:relative;padding:7px 0;font-size:12.5px}
 .logi::before{content:"";position:absolute;left:-20px;top:12px;width:8px;height:8px;border-radius:50%;background:var(--brand);border:2px solid #fff}
@@ -362,7 +370,7 @@ const vt=t=>{const w=String(t).trim().split(/\s+/);return (w[w.length-2]||'').ch
 
 /* ===== BẢN GHI CHỨC DANH — có Từ ngày / Đến ngày ===== */
 let BN=[],BSEQ=0,QSEQ=100;
-function bn(ns,cd,dv,qd,tu,den,lyDo,nguon){BN.push({id:'B'+(++BSEQ),ns:ns,cd:cd,dv:dv||'',qd:qd,tep:qd?1:0,
+function bn(ns,cd,dv,qd,tu,den,lyDo,nguon){BN.push({id:'B'+(++BSEQ),ns:ns,cd:cd,dv:dv||'',qd:qd,tep:qd?1:0,nk:0,
  tu:tu,den:den||null,lyDo:lyDo||'',boi:'Hệ thống khởi tạo',tuCap:0,nguon:nguon||''});return BN[BN.length-1]}
 /* ═══ CDDM 26/9/2026 — trạng thái «⏳ Chờ gắn phạm vi» (M4.3 §3.4.1, nới ràng buộc 5) ═══
    Bản ghi chức danh ĐẦU TIÊN do M4.1 F11 ghi (biểu mẫu bảy ô · mẫu B04). Chức danh loại 1
@@ -406,6 +414,16 @@ bn('N12','TTCM','T3','103/QĐ-NTT','01/09/2020');
 bn('N13','TTCM','T4','104/QĐ-NTT','01/09/2020');
 bn('N14','TTCM','T5','105/QĐ-NTT','01/09/2021');
 bn('N15','TTCM','T6','106/QĐ-NTT','01/09/2019','01/07/2026','Thôi giữ để tập trung công tác Tổng phụ trách Đội');
+/* ═══ BLOOP 2/10/2026 — CA MẪU §3.3.1: ĐỔI PHẠM VI ĐÚNG HÔM NAY (29/08/2026) ═══
+   N13 đang là Tổ trưởng Tổ Khoa học tự nhiên (T4) từ 01/09/2020, hôm nay chuyển sang
+   Tổ Thể dục — Nghệ thuật (T6). Đóng bản cũ Đến ngày = 29/08/2026, mở bản mới Từ ngày = 29/08/2026.
+   🔑 Trước luật kế nhiệm: panel trả về HAI dòng (T4 và T6) — người dùng tưởng được thêm một chức danh.
+      Sau luật: panel đúng MỘT dòng (T6), bản T4 vào Lịch sử.
+   🛑 Bảng ghế T3 VẪN coi T4 có người giữ hết ngày 29/08 — giuTai() ⛔ áp luật này. */
+(function(){const b=BN.filter(x=>x.ns==='N13'&&x.cd==='TTCM')[0];
+ b.den='29/08/2026'; b.lyDo='Chuyển sang phụ trách Tổ Thể dục — Nghệ thuật';
+ const m=bn('N13','TTCM','T6','141/QĐ-NTT','29/08/2026',null,'Chuyển sang phụ trách Tổ Thể dục — Nghệ thuật');
+ m.boi='Trần Văn Hùng (Hiệu trưởng)';})();
 bn('N10','TPCM','T1','111/QĐ-NTT','01/09/2021');
 bn('N04','TPCM','T2','112/QĐ-NTT','01/09/2021');
 bn('N27','TPCM','T5','115/QĐ-NTT','01/09/2022');
@@ -424,19 +442,90 @@ bn('N08','TTVP','VP','120/QĐ-NTT','01/09/2024');   /* 15/9/2026 — Văn thư C
 bnM41('N31','VT','17/08/2026');
 bnM41('N32','TTCM','17/08/2026');
 
+/* ═══ BLOOP #2 2/10/2026 — SỐ DÒNG NHẬT KÝ `M10.7` TRONG KHOẢNG CỦA MỖI BẢN GHI ═══
+   🔑 Đây là PHÉP ĐO của cửa `✎ Sửa` và `🗑 Xóa` (§6.2.6 · ràng buộc 35): `M10.7` ⛔ LƯU cột
+   «chức danh lúc đó» mà SUY RA từ chính các bản ghi này ⇒ sửa hoặc xóa một bản ghi ĐÃ CÓ
+   dòng nhật ký là đổi cột thẩm quyền của cả quyển sổ bằng chứng, về quá khứ.
+   🛑 Demo GIEO SẴN con số; bản thật phải truy `M10.7` theo `người × khoảng`. */
+function soNgayHL(b){const het=b.den?s2d(b.den):HOMNAY;const moc=key(het)<key(HOMNAY)?het:HOMNAY;
+ const n=ngay(b.tu,moc);return n<0?0:n}
+BN.forEach(function(b){const n=soNgayHL(b);b.nk=n<=0?0:Math.max(1,Math.round(n/7)*3)});
+
+/* CA MẪU — đúng testcase đã báo trên bản Dev. N20 từng được cấp `GVBM` hiệu lực 20/08/2026
+   rồi gỡ NGAY CÙNG NGÀY ⇒ còn lại bản ghi `Từ ngày` = `Đến ngày`, 0 dòng nhật ký: BẢN KHAI NHẦM.
+   Thử: mở hồ sơ Nguyễn Thị Yến → ＋ Thêm chức danh → Giáo viên bộ môn → hiệu lực 20/08/2026. */
+(function(){const b=bn('N20','GVBM','','','20/08/2026','20/08/2026','Khai nhầm — gỡ ngay trong ngày');
+ b.nk=0;b.boi='Hoàng Văn Nam (Tổ chức nhân sự)'})();
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   CDHT 5/10/2026 — ĐỔI MÔ HÌNH: bản ghi chức danh là TRẠNG THÁI HIỆN TẠI
+   Nhiệm kỳ (có Từ ngày / Đến ngày) chuyển về M4.1 «Quá trình công tác» — ở demo này
+   mô phỏng bằng mảng MOC. Menu M4.3 còn ba thao tác: Thêm · Bật · Tắt, hiệu lực NGAY.
+   🔑 Ba kho:
+      BN  — trạng thái hiện tại:  {ns, cd, dv, tat}
+      LS  — lịch sử CẬP NHẬT chức danh (nhật ký thao tác của menu này)
+      MOC — mốc quá trình công tác ở M4.1 (nhiệm kỳ: tu · den · qd)
+   🛑 «đã gắn / chưa gắn» là GIÁ TRỊ SUY RA: dòng LS có trỏ về một mốc hay không.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+let LS=[], LSEQ=0, MOC=[], MSEQ=0;
+function themLS(nsId,cd,dv,hd,boi,luc,nguon,mocId){
+ LS.push({id:'L'+(++LSEQ),ns:nsId,cd:cd,dv:dv||'',hd:hd,boi:boi,luc:luc,nguon:nguon||'tay',moc:mocId||null});
+ return LS[LS.length-1]}
+function themMoc(nsId,cd,dv,tu,den,qd,nguon){
+ MOC.push({id:'M'+(++MSEQ),ns:nsId,cd:cd,dv:dv||'',tu:tu,den:den||null,qd:qd||'',nguon:nguon||'tay'});
+ return MOC[MOC.length-1]}
+
+/* Chuyển dữ liệu gieo của v2.x sang mô hình mới.
+   🔑 Bản ghi có `tu` === `den` là ca BẤM NHẦM ⇒ ⛔ sinh mốc, để nó mang nhãn «Đã hủy — thêm nhầm». */
+(function(){
+ const cu=BN.slice(); BN=[];
+ cu.forEach(function(b){
+  const nham = b.den && key(b.den)===key(b.tu);
+  const ng = b.nguon==='M4.1' ? 'M4.1' : 'M4.2';
+  let m=null;
+  if(!nham) m=themMoc(b.ns,b.cd,b.dv,b.tu,b.den,b.qd,ng);
+  themLS(b.ns,b.cd,b.dv,'them',b.boi,b.tu,nham?'tay':ng,m?m.id:null);
+  if(b.den) themLS(b.ns,b.cd,b.dv,'tat',b.boi,b.den,'tay',m?m.id:null);
+  const da=BN.filter(x=>x.ns===b.ns&&x.cd===b.cd&&(x.dv||'')===(b.dv||''))[0];
+  if(da){ if(!b.den) da.tat=0; return }
+  BN.push({id:b.id,ns:b.ns,cd:b.cd,dv:b.dv||'',tat:b.den?1:0,
+           nguon:b.nguon,boi:b.boi,tuCap:b.tuCap||0,qd:b.qd,nk:b.nk||0});
+ });
+})();
+
 /* số lớp đang được phân công cho GVCN — chiếu từ M4.5 */
 const PC={N09:1,N11:1,N13:1,N14:1,N18:1,N10:1,N27:1,N28:1,N19:0,N12:0};
 const TONGLOP=30, DACOGVCN=28;
 
 /* ===== TRUY VẤN THEO THỜI GIAN ===== */
-function hieuLuc(b,d){return key(b.tu)<=key(d)&&(!b.den||key(b.den)>=key(d))}
-function cdTai(nsId,d){return BN.filter(b=>b.ns===nsId&&hieuLuc(b,d))}
-function giuTai(cd,dv,d){return BN.filter(b=>b.cd===cd&&(b.dv||'')===(dv||'')&&hieuLuc(b,d))}
-function chuoi(cd,dv){return BN.filter(b=>b.cd===cd&&(b.dv||'')===(dv||'')).sort((a,b)=>key(a.tu)-key(b.tu))}
-function lichSu(nsId){return BN.filter(b=>b.ns===nsId).sort((a,b)=>key(b.tu)-key(a.tu))}
+/* ═══ CDHT 5/10/2026 — LỚP TRUY VẤN, nay chỉ hỏi TRẠNG THÁI HIỆN TẠI ═══
+   🛑 ⛔ còn chiều thời gian ở menu này: ⛔ hieuLuc theo ngày, ⛔ luật đè khoảng,
+   ⛔ luật kế nhiệm trong ngày chuyển giao. Câu «ngày D ai giữ» hỏi MOC (M4.1). */
+function hieuLuc(b,d){return !b.tat}
+function cdTai(nsId,d){return BN.filter(b=>b.ns===nsId&&!b.tat)}
+function cdTat(nsId){return BN.filter(b=>b.ns===nsId&&b.tat)}
+function giuTai(cd,dv,d){return BN.filter(b=>b.cd===cd&&(b.dv||'')===(dv||'')&&!b.tat)}
+function lichSu(nsId){return BN.filter(b=>b.ns===nsId)}
+
+/* nhật ký thao tác của MỘT người — mới nhất lên trên */
+function lsCua(nsId){return LS.filter(x=>x.ns===nsId).sort((a,b)=>key(b.luc)-key(a.luc))}
+/* 🔑 «đã gắn» là SUY RA: dòng này có trỏ về một mốc quá trình công tác ⛔ */
+function daGan(l){return !!l.moc && MOC.some(m=>m.id===l.moc)}
+function mocBy(id){return MOC.filter(m=>m.id===id)[0]}
+/* đếm hai chiều — con số này bày ở M4.1 «Hồ sơ cần hoàn thiện» (§6.2.5) */
+function chuaGan(nsId){const d=LS.filter(x=>(!nsId||x.ns===nsId)&&!daGan(x));
+ return {bat:d.filter(x=>x.hd==='them'||x.hd==='bat').length, tat:d.filter(x=>x.hd==='tat').length, ds:d}}
+/* 🆕 §6.2.7 — «Đã hủy, thêm nhầm»: đã tắt · ⛔ mốc nào · ⛔ dữ liệu hoạt động nào */
+function laHuy(b){return !!b.tat && !b.nk &&
+ !LS.some(x=>x.ns===b.ns&&x.cd===b.cd&&(x.dv||'')===(b.dv||'')&&daGan(x))}
+/* chuỗi người đã giữ một chức danh — ĐỌC TỪ M4.1, ⛔ từ bản ghi của menu này (§7.1) */
+function chuoi(cd,dv){return MOC.filter(m=>m.cd===cd&&(m.dv||'')===(dv||'')).sort((a,b)=>key(a.tu)-key(b.tu))}
 
 /* ===== TRẠNG THÁI MÀN HÌNH ===== */
 let role='FULL', tab='cd', NGAY=new Date(HOMNAY), cur=null, ptab='cd';
+/* BLOOP #2 2/10/2026 — §6.2.5 · §6.2.6 */
+/* CDHT 5/10/2026 — các biến của mô hình nhiệm kỳ đã bỏ cùng với mô hình ấy */
+const dauNH=()=>new Date(2026,7,1);   /* đầu năm học hiện tại — demo: 01/08/2026 */
 let q='', fCD=new Set(), fDT='', fRS='Tất cả', fGOM='Không gom', fDTG='Không gom', selNS=new Set();
 let curDV=null;   /* T3: {cd,dv} */
 const ROLE={
@@ -449,7 +538,7 @@ const ROLE={
  GVCN  :{ten:'Giáo viên chủ nhiệm',xem:0,sua:0,scope:'Class'}};
 const R=()=>ROLE[role];
 const suaDuoc=()=>R().sua&&!quaKhu();
-const quaKhu=()=>key(NGAY)<key(HOMNAY);
+const quaKhu=()=>false;   /* CDHT 5/10/2026 — ⛔ còn chế độ xem quá khứ (§4.2) */
 /* ai có quyền Sửa menu này — §7.5.1, chỉ hiển thị, không chặn */
 const AIS=[{ten:'Nguyễn Thị Hạnh',cd:'Hiệu trưởng'},{ten:'Hoàng Văn Nam',cd:'Tổ chức nhân sự'}];
 const ME={FULL:'N01',HT:'N01',TCNS:'N05',PHT_CM:'N02',PHT_DT:'N03',TTCM:'N09',GVCN:'N18'};
@@ -517,8 +606,7 @@ function scopeBar(){
  return '<div class="scope'+(qk?' past':'')+'">'+
   (qk?'⏱ <b>Đang xem quá khứ — chỉ đọc.</b> Bộ máy và tư cách tại ngày đã chọn.'
      :'▸ <b>'+R().scope+'</b> · <b>'+base().length+'</b> nhân sự'+(fDT?' · '+esc(dtBy(fDT).vt):''))+
-  '<span class="sp"></span>Có hiệu lực tại <input type="date" class="fs" id="dngay" value="'+isoOf(NGAY)+'">'+
-  (qk?'<button class="rolnk" data-x="homNay">⟲ Hôm nay</button>':'')+soLieu()+
+  '<span class="sp"></span>'+soLieu()+
   '<button class="rolnk" data-x="viSaoNgay">ⓘ</button>'+chips()+'</div>'}
 
 /* ===== T1 — QUẢN LÝ CHỨC DANH ===== */
@@ -585,25 +673,30 @@ function panel(){
  h+=ptab==='cd'?pCD(p):pLS(p);
  return h+'</div></div>'}
 function pCD(p){
- const c=cdTai(p.id,NGAY);
- let h='';
- if(quaKhu())h+='<div class="warn">⏱ Đang xem tư cách tại <b>'+d2s(NGAY)+'</b> — không sửa được. Về hôm nay để thao tác.</div>';
- h+='<div class="card"><div class="ch">Chức danh đang giữ<span class="sp"></span><span class="st2 n">'+c.length+'</span></div><div style="padding:11px 12px">';
- if(!c.length)h+='<div style="color:var(--ink3);font-size:12.5px">Chưa có chức danh nào — người này chỉ vào được các menu cá nhân M0.1–M0.4.</div>';
+ const c=cdTai(p.id,NGAY), tat=cdTat(p.id);
+ let h='<div class="card"><div class="ch">Chức danh<span class="sp"></span><span class="st2 o">'+c.length+' đang giữ</span>'+
+  (tat.length?'<span class="st2 n">'+tat.length+' đã tắt</span>':'')+'</div><div style="padding:11px 12px">';
+ if(!c.length&&!tat.length)h+='<div style="color:var(--ink3);font-size:12.5px">Chưa có chức danh nào — người này chỉ vào được các menu cá nhân M0.1–M0.4.</div>';
  c.forEach(function(b){const cd=cdBy(b.cd);
   h+='<span class="cdchip'+(laBN(b.cd)?' bn':'')+'"><b>'+esc(cd.ten)+'</b>'+
    (b.dv?'<span class="pv2">'+esc(dvTen(b.dv))+'</span>':'')+
    (choPV(b)?'<span class="st2 w">⏳ Chờ gắn phạm vi</span>'+(suaDuoc()?'<button class="rolnk" data-x="mGanPV" data-b="'+b.id+'">✎ Gắn phạm vi</button>':''):'')+
-   '<span class="pv2">từ '+esc(b.tu)+'</span>'+
-   (b.qd?'<button class="rolnk" data-x="xemQD" data-b="'+b.id+'">👁 '+esc(b.qd)+'</button>':'')+
-   (suaDuoc()?'<span class="x" data-x="mGo" data-b="'+b.id+'">✕</span>':'')+'</span>'});
+   ((b.dv&&suaDuoc())?'<button class="rolnk" data-x="mDoiPV" data-b="'+b.id+'">⇄ Đổi phạm vi</button>':'')+
+   '<span class="st2 o">● Đang giữ</span>'+
+   (suaDuoc()?'<button class="rolnk am" data-x="mTat" data-b="'+b.id+'">○ Tắt</button>':'')+'</span>'});
+ /* 🆕 §6.2.7 — chức danh đã tắt vẫn Ở LẠI; nhãn tách «từng giữ» với «bấm nhầm» */
+ tat.forEach(function(b){const cd=cdBy(b.cd), huy=laHuy(b);
+  h+='<span class="cdchip" style="opacity:.72"><b>'+esc(cd.ten)+'</b>'+
+   (b.dv?'<span class="pv2">'+esc(dvTen(b.dv))+'</span>':'')+
+   '<span class="st2 '+(huy?'r':'n')+'">'+(huy?'✗ Đã hủy — thêm nhầm':'○ Đã tắt')+'</span>'+
+   (suaDuoc()?'<button class="rolnk" data-x="doBat" data-b="'+b.id+'">● Bật</button>':'')+'</span>'});
  if(suaDuoc())h+='<button class="cdadd" data-x="mThem">＋ Thêm chức danh</button>';
  h+='</div></div>';
+ h+=pLSCD(p);
  const cho=cdTai(p.id,NGAY).filter(choPV);
  if(cho.length)h+='<div class="warn">⏳ <b>'+cho.length+' bản ghi chờ gắn phạm vi</b> — sinh từ <b>M4.1</b> khi tạo hồ sơ bằng biểu mẫu bảy ô '+
   '<i>(chức danh gắn đơn vị, mà biểu mẫu ⛔ không có ô phạm vi — M4.3 §3.4.1)</i>. '+
-  'Người này <b>đã có vai trò</b> nhưng phạm vi <b>rỗng</b> ⇒ vào menu thấy <b>danh sách rỗng</b> — 🛑 ⛔ <b>không</b> rơi về Toàn trường. '+
-  'Gắn phạm vi ở đây, hoặc nạp <b>B05</b>.</div>';
+  'Người này <b>đã có vai trò</b> nhưng phạm vi <b>rỗng</b> ⇒ vào menu thấy <b>danh sách rỗng</b> — 🛑 ⛔ <b>không</b> rơi về Toàn trường.</div>';
  const cp=chuaPC(p);
  if(cp.length)h+='<div class="warn">⏰ Có chức danh <b>Giáo viên chủ nhiệm</b> nhưng <b>chưa được phân công lớp nào</b>. '+
   'Người này vào được Không gian lớp học nhưng <b>danh sách lớp rỗng</b> — đây là trạng thái trung gian hợp lệ. '+dlink('M4.5','Phân công lớp')+'</div>';
@@ -614,15 +707,41 @@ function pCD(p){
    :'Không có phạm vi nào.')+
   '<div style="margin-top:7px">Ma trận <code>Role × Feature × Scope</code> định nghĩa ở '+dlink('M10.4')+' — màn hình này <b>không đụng vào ma trận</b>.</div></div></div>';
  return h}
+
+/* ═══ CDHT 5/10/2026 · §6.2.5 — LỊCH SỬ CẬP NHẬT CHỨC DANH ═══
+   Thay chỗ «bảng nhiệm kỳ» của v2.5. Nhiệm kỳ đã về M4.1, nên thứ còn lại ở đây là
+   NHẬT KÝ THAO TÁC: ai bật, ai tắt, lúc nào, vì đâu — và lượt ấy đã vào hồ sơ chưa.
+   🔑 «Đã gắn / Chưa gắn» là GIÁ TRỊ SUY RA (daGan), ⛔ phải một cột lưu. */
+const TEN_HD={them:'＋ Thêm',bat:'● Bật',tat:'○ Tắt',doipv:'⇄ Đổi phạm vi'};
+const TEN_NG={'M4.2':'từ Biến động nhân sự','M4.1':'từ M4.1 — biểu mẫu bảy ô','M10.1':'từ M10.1 — ô ghi hộ',tay:'tạo tay'};
+function pLSCD(p){
+ const l=lsCua(p.id), cg=chuaGan(p.id);
+ let h='<div class="card"><div class="ch">Lịch sử cập nhật chức danh<span class="st2 n">'+l.length+'</span>'+
+  (cg.bat+cg.tat?'<span class="sp"></span><span class="st2 w">'+(cg.bat+cg.tat)+' lượt chưa gắn mốc</span>':'')+'</div>';
+ if(!l.length)return h+'<div style="padding:11px 12px;color:var(--ink3);font-size:12.5px">Chưa có lượt thao tác nào.</div></div>';
+ h+='<div class="logl" style="margin:11px 12px">'+l.map(function(x){
+  const c=cdBy(x.cd), g=daGan(x), m=g?mocBy(x.moc):null;
+  return '<div class="logi '+(g?'g':'w')+'"><b>'+esc(TEN_HD[x.hd]||x.hd)+'  '+esc(c?c.ten:x.cd)+(x.dv?' · '+esc(dvTen(x.dv)):'')+'</b>'+
+   '<div class="mm">'+esc(x.luc)+' · '+esc(x.boi)+' · '+esc(TEN_NG[x.nguon]||x.nguon)+'</div>'+
+   (g?'<div class="mm">✓ Đã gắn → Quá trình công tác <b>'+esc(m.tu)+' → '+esc(m.den||'nay')+'</b>'+
+       (m.qd?' · '+esc(m.qd):'')+' <button class="rolnk" data-x="dl" data-m="M4.1">↗ Mở mốc ở M4.1</button></div>'
+     :'<div class="mm"><span class="st2 w">⚠ Chưa gắn mốc quá trình công tác</span>'+
+       (suaDuoc()?' <button class="rolnk" data-x="mTaoMoc" data-l="'+x.id+'">＋ Tạo mốc công tác</button>':'')+'</div>')+
+   '</div>'}).join('')+'</div>';
+ if(cg.bat+cg.tat)h+='<div class="warn" style="margin:0 12px 12px">⚠ Còn <b>'+cg.bat+' lượt bật</b> và <b>'+cg.tat+' lượt tắt</b> chưa gắn mốc quá trình công tác. '+
+  '🛑 Chiều <b>tắt</b> nguy hơn: quên gắn thì hồ sơ để <b>nhiệm kỳ mở vô hạn</b>, đọc lên thành «vẫn đang giữ chức danh». '+
+  'Con số của cả trường bày ở '+dlink('M4.1','M4.1 · Hồ sơ cần hoàn thiện')+' — ⛔ chặn thao tác nào.</div>';
+ return h+'</div>'}
+
 function pLS(p){
- const l=lichSu(p.id);
- if(!l.length)return '<div class="ro">Chưa có bản ghi chức danh nào.</div>';
- return '<div class="info">Lịch sử <b>không xóa được</b>. Gỡ chức danh chỉ điền <code>Đến ngày</code> — bản ghi vẫn tìm lại được ở đây.</div>'+
- '<div class="logl">'+l.map(function(b){const dg=!b.den;
-  return '<div class="logi '+(dg?'g':'')+'"><b>'+esc(cdBy(b.cd).ten)+(b.dv?' — '+esc(dvTen(b.dv)):'')+
-  (b.tuCap?' <span class="st2 r">⚑ tự cấp</span>':'')+'</b>'+
-  '<div class="mm">'+esc(b.tu)+' → '+(b.den?esc(b.den):'nay')+(b.qd?' · '+esc(b.qd):' · không có quyết định riêng')+'</div>'+
-  '<div class="mm">Ghi bởi '+esc(b.boi)+(b.lyDo?' · <i>'+esc(b.lyDo)+'</i>':'')+'</div></div>'}).join('')+'</div>'}
+ const l=lsCua(p.id);
+ if(!l.length)return '<div class="ro">Chưa có lượt thao tác nào.</div>';
+ return '<div class="info">Đây là <b>nhật ký thao tác</b> của menu này — ai bật, ai tắt, lúc nào, vì đâu. '+
+  '🔑 Câu <i>«thầy A làm Tổ trưởng từ bao giờ»</i> hỏi <b>M4.1 · Quá trình công tác</b>, ⛔ hỏi ở đây <i>(§6.3)</i>.</div>'+
+ '<div class="logl">'+l.map(function(x){const c=cdBy(x.cd), g=daGan(x), m=g?mocBy(x.moc):null;
+  return '<div class="logi '+(g?'g':'w')+'"><b>'+esc(TEN_HD[x.hd]||x.hd)+'  '+esc(c?c.ten:x.cd)+(x.dv?' · '+esc(dvTen(x.dv)):'')+'</b>'+
+  '<div class="mm">'+esc(x.luc)+' · '+esc(x.boi)+' · '+esc(TEN_NG[x.nguon]||x.nguon)+'</div>'+
+  '<div class="mm">'+(g?'✓ Đã gắn → '+esc(m.tu)+' → '+esc(m.den||'nay'):'⚠ Chưa gắn mốc quá trình công tác')+'</div></div>'}).join('')+'</div>'}
 
 /* ===== T3 — RÀ SOÁT BỘ MÁY ===== */
 function bmTab(){
@@ -755,13 +874,23 @@ function selNguoi(cd,dv,id){
   u.ok.map(p=>'<option value="'+p.id+'">'+esc(p.ten)+' · '+p.ma+' · '+esc(dtBy(p.dt).vt)+'</option>').join('')+'</select>'+
   '<div style="font-size:11px;color:var(--ink3);margin-top:5px">Chọn được <b>'+u.ok.length+'</b>/'+NS.length+' người. '+
   '<button class="rolnk" data-x="viSaoLoai" data-c="'+cd+'" data-d="'+(dv||'')+'">Vì sao '+u.no.length+' người không chọn được?</button></div>'}
+/* ═══ BLOOP #2 2/10/2026 — BA Ô CHỨNG CỨ PHẢI SỐNG QUA MỖI LƯỢT VẼ LẠI ═══
+   🔴 Lỗi cũ của demo: `oChungCu` in lại `value="'+isoOf(HOMNAY)+'"` mỗi lượt, nên vừa gõ
+   `ngày hiệu lực` xong, bất cứ thay đổi nào khác cũng ĐƯA NGÀY VỀ HÔM NAY — số QĐ và tệp
+   căn cứ cũng mất. Trước 2/10 chưa lộ vì ⛔ có phép kiểm nào đọc ngày đang nhập; nay luật
+   đè khoảng (ràng buộc 33) đọc nó, nên ô bị reset là phép kiểm chạy trên MỘT NGÀY KHÁC
+   với ngày người dùng đang thấy. Giữ ba ô trong `CC`, ⛔ đọc lại từ DOM. */
+let CC={hl:'',qd:'',tep:0};
+function ccReset(){CC={hl:isoOf(HOMNAY),qd:'',tep:0}}
 function oChungCu(cd){
  const bat=laBN(cd);
- return '<div class="g2"><div><label class="lbl">Ngày hiệu lực <b>*</b></label><input type="date" class="din" id="fHL" value="'+isoOf(HOMNAY)+'"></div>'+
+ if(!CC.hl)ccReset();
+ return '<div class="g2"><div><label class="lbl">Ngày hiệu lực <b>*</b></label><input type="date" class="din" id="fHL" value="'+CC.hl+'"></div>'+
   '<div><label class="lbl">Số quyết định '+(bat?'<b>*</b>':'<i style="font-weight:400">(tùy chọn)</i>')+'</label>'+
-  '<input class="din" id="fQD" placeholder="156/QĐ-NTT"></div></div>'+
+  '<input class="din" id="fQD" placeholder="156/QĐ-NTT" value="'+esc(CC.qd)+'"></div></div>'+
   '<label class="lbl">Tệp căn cứ '+(bat?'<b>*</b>':'<i style="font-weight:400">(tùy chọn)</i>')+'</label>'+
-  '<div class="drop" id="fTep" data-x="upTep">📎 Kéo thả hoặc bấm để chọn bản scan quyết định</div>'+
+  '<div class="drop'+(CC.tep?' has':'')+'" id="fTep" data-x="upTep">'+
+   (CC.tep?'✅ QD-bonhiem-2026.pdf · 214 KB':'📎 Kéo thả hoặc bấm để chọn bản scan quyết định')+'</div>'+
   (bat?'<div class="ro" style="margin-top:9px">⚖ Nhóm bổ nhiệm <b>bắt buộc</b> số quyết định và tệp căn cứ. '+
    '<b>Không ký số ở đây</b> — đây là <b>ghi nhận</b> quyết định đã ban hành, không phải ban hành quyết định.</div>':'')}
 function docChungCu(cd){
@@ -786,7 +915,7 @@ function canhLui(hl){
 /* ===== MODAL: THÊM CHỨC DANH (T1) ===== */
 let F={};
 function mThem(){
- F={cd:'',dv:''};TRU=[];
+ F={cd:'',dv:''};TRU=[];ccReset();
  modal('＋ Thêm chức danh — '+esc(nsBy(cur).ten),'<div id="themBody"></div>',
   '<button class="btn" data-x="close">Hủy</button><button class="btn p" data-x="luuThem">💾 Lưu</button>');
  drawThem()}
@@ -816,10 +945,18 @@ function drawThem(){
   if(c.don&&tu.length&&!(c.don&&gk.length))h+='<div class="danger">⛔ <b>Chặn cứng — kiêm nhiệm chéo.</b> '+
    esc(p.ten)+' đang giữ <b>'+esc(cdBy(tu[0].cd).ten)+'</b>, là chức danh đơn nhất. '+
    'Một người không giữ hai chức danh đơn nhất cùng lúc. <i>Điểm cần xác nhận #6 — trường nhỏ thiếu người có thể cần nới thành cảnh báo.</i></div>';
-  h+=oChungCu(c.ma);
-  const hl=$('#fHL')?d2s(fromIso($('#fHL').value)):d2s(HOMNAY);
-  h+=chanNgay(p.id,hl)+canhLui(hl);
-  if(dang.indexOf(c.ma+'|'+(F.dv||''))>=0)h+='<div class="danger">⛔ '+esc(p.ten)+' <b>đã đang giữ</b> chức danh này.</div>';
+  /* CDHT 5/10/2026 — ⛔ còn ô ngày hiệu lực, ⛔ còn số QĐ / tệp ở cửa này.
+     Ba thứ ấy đi theo NHIỆM KỲ về M4.1 (§6.2.1 · ràng buộc 8). */
+  h+='<div class="ro" style="margin-top:9px">🔑 <b>Hiệu lực NGAY, ⛔ hỏi ngày.</b> Số quyết định, ngày hiệu lực và tệp căn cứ '+
+   'khai ở <b>mốc quá trình công tác</b> của '+dlink('M4.1')+' — lưu xong, dòng lịch sử ở đây sẽ hiện <b>⚠ Chưa gắn mốc</b> kèm nút tạo.</div>';
+  /* BLOOP #2 2/10/2026 · ràng buộc 33 — đè KHOẢNG, đo tại NGÀY HIỆU LỰC đang nhập.
+     🛑 Dòng cũ `dang.indexOf(...)` đo tại «hôm nay» nên sai cả hai chiều — xem chongKhoang(). */
+  /* chỉ còn một phép so: người này ĐANG giữ chính chức danh ấy ⛔ (ràng buộc 26) */
+  const dangGiu=cdTai(p.id,HOMNAY).filter(b=>b.cd===c.ma&&(b.dv||'')===(F.dv||''));
+  const daTat=cdTat(p.id).filter(b=>b.cd===c.ma&&(b.dv||'')===(F.dv||''));
+  if(dangGiu.length)h+='<div class="danger">⛔ '+esc(p.ten)+' <b>đang giữ</b> chức danh này — thêm nữa ⛔ có nghĩa gì.</div>';
+  else if(daTat.length)h+='<div class="warn">ⓘ '+esc(p.ten)+' <b>từng giữ</b> chức danh này và đang <b>tắt</b>. '+
+   'Đóng hộp này rồi bấm <b>● Bật</b> trên chip ấy — ⛔ tạo bản ghi thứ hai.</div>';
   if(p.id===ME[role])h+='<div class="warn">⚑ <b>Bạn đang tự cấp chức danh cho chính mình.</b> MVP <b>không chặn</b> — '+
    'nhưng bản ghi audit sẽ gắn cờ <code>⚑ tự cấp</code> để lọc ra được ở '+dlink('M10.7')+'.</div>';
  }
@@ -828,21 +965,29 @@ function luuThem(){
  const p=nsBy(cur);
  if(!F.cd){toast('⚠ Chưa chọn chức danh');return}
  const c=cdBy(F.cd);
- if(c.dv&&!F.dv){toast('⛔ <b>Chức danh loại 1 bắt buộc có phạm vi</b> — không gắn đơn vị thì truy vấn scope trả về rỗng');return}
+ /* 🩹 CDHT 5/10/2026 — chỉ LOẠI 1 mới đòi phạm vi. `GVCN` khai dv:'lop' nhưng là nhóm ③,
+    phạm vi của nó đến từ phân công ở M4.5 (§3.4) ⇒ guard cũ chặn oan, ⛔ thêm được GVCN. */
+ if(c.nhom<3&&c.dv&&!F.dv){toast('⛔ <b>Chức danh loại 1 bắt buộc có phạm vi</b> — không gắn đơn vị thì truy vấn scope trả về rỗng');return}
  const gk=giuTai(c.ma,F.dv||'',HOMNAY);
  if(c.don&&gk.length){toast('⛔ Chặn cứng — <b>'+esc(nsBy(gk[0].ns).ten)+'</b> đang giữ chức danh này');return}
  const tu=cdTai(p.id,HOMNAY).filter(b=>cdBy(b.cd).don&&cdBy(b.cd).nhom<3);
  if(c.don&&tu.length){toast('⛔ Chặn cứng — kiêm nhiệm chéo hai chức danh đơn nhất');return}
- if(cdTai(p.id,HOMNAY).some(b=>b.cd===c.ma&&(b.dv||'')===(F.dv||''))){toast('⛔ Đã đang giữ chức danh này');return}
- const cc=docChungCu(c.ma);
- if(cc.thieu.length){toast('⛔ <b>Còn thiếu:</b> '+cc.thieu.join(' · '));return}
- if(key(cc.hl)<key(p.vao)){toast('⛔ Ngày hiệu lực <b>'+cc.hl+'</b> trước ngày vào trường <b>'+p.vao+'</b>');return}
- if(ngay(cc.hl,HOMNAY)>90&&!($('#lyLui')&&$('#lyLui').value.trim())){toast('⚠ <b>Bắt buộc ghi lý do</b> khi ghi lùi quá 90 ngày');return}
- const b=bn(p.id,c.ma,F.dv,cc.qd,cc.hl,null,'');
- b.boi=nsBy(ME[role]).ten+' ('+R().ten+')'; b.tuCap=p.id===ME[role]?1:0;
+ /* CDHT 5/10/2026 — ⛔ ngày, ⛔ chứng cứ, ⛔ luật đè khoảng. Chỉ chặn trùng chức danh ĐANG giữ. */
+ if(cdTai(p.id,HOMNAY).some(b=>b.cd===c.ma&&(b.dv||'')===(F.dv||''))){
+  toast('⛔ '+esc(p.ten)+' <b>đang giữ</b> chức danh này');return}
+ const cu=cdTat(p.id).filter(b=>b.cd===c.ma&&(b.dv||'')===(F.dv||''))[0];
+ const boi=nsBy(ME[role]).ten+' ('+R().ten+')';
+ let b;
+ if(cu){ b=cu; b.tat=0; themLS(p.id,c.ma,F.dv,'bat',boi,d2s(HOMNAY),'tay',null) }
+ else{
+  b={id:'B'+(++BSEQ),ns:p.id,cd:c.ma,dv:F.dv||'',tat:0,nguon:'',boi:boi,
+     tuCap:p.id===ME[role]?1:0,qd:'',nk:0};
+  BN.push(b);
+  themLS(p.id,c.ma,F.dv,'them',boi,d2s(HOMNAY),'tay',null);
+ }
  closeModal();render();
- toast('Đã cấp <b>'+esc(c.ten)+'</b> cho <b>'+esc(p.ten)+'</b> từ '+cc.hl+
-  ' · mở thêm quyền vào <b>'+c.mn+' menu</b>'+(b.tuCap?' · <b>⚑ tự cấp</b> đã ghi audit':''))}
+ toast('Đã cấp <b>'+esc(c.ten)+'</b> cho <b>'+esc(p.ten)+'</b> — <b>hiệu lực ngay</b> · mở thêm quyền vào <b>'+c.mn+' menu</b>'+
+  (b.tuCap?' · <b>⚑ tự cấp</b> đã ghi audit':'')+' · <b>1 lượt chưa gắn mốc</b>')}
 
 /* ===== CDDM 26/9/2026 — MODAL: GẮN PHẠM VI cho bản ghi đang chờ (§3.4.1) ===== */
 let GPV=null;
@@ -874,7 +1019,72 @@ function doGanPV(){
  if(c.don&&gk.length){toast('⛔ Chặn — <b>'+esc(nsBy(gk[0].ns).ten)+'</b> đang giữ chức danh này ở <b>'+esc(dvTen(GPV.dv))+'</b>');return}
  b.dv=GPV.dv; b.nguon=''; b.boi=nsBy(ME[role]).ten+' ('+R().ten+')';
  closeModal();render();
+ /* BLOOP 2/10/2026 — §6.2.4 nói «GẮN hoặc ĐỔI phạm vi» ⇒ cửa gắn cũng phải nhắc.
+    nhacDiemCT() tự im khi phạm vi ⛔ phải một điểm trường, hoặc đã trùng Điểm trường công tác. */
+ if(dtBy(GPV.dv)&&GPV.dv!==p.dt){nhacDiemCT(p,c,GPV.dv,'',b.qd,b.tu);return}
  toast('Đã gắn phạm vi <b>'+esc(dvTen(GPV.dv))+'</b> cho <b>'+esc(p.ten)+'</b> — truy vấn của <b>'+esc(c.ten)+'</b> nay trả về dữ liệu của đơn vị này')}
+/* ═══ BLOOP 2/10/2026 · §6.2.4 — ĐỔI PHẠM VI, và NHẮC «Điểm trường công tác» ═══
+   Đổi = đóng bản cũ (Đến ngày = D) + mở bản mới (Từ ngày = D) trong CÙNG MỘT thao tác (§3.3).
+   Trong ngày D, bản kế nhiệm thắng ở panel (§3.3.1 — biKeNhiem) nên người dùng thấy ĐÚNG MỘT dòng. */
+let DPV=null;
+function mDoiPV(bId){
+ const b=BN.filter(x=>x.id===bId)[0],p=nsBy(b.ns),c=cdBy(b.cd);
+ DPV={b:bId,dv:'',qd:'',hl:d2s(HOMNAY),ly:''};
+ modal('⇄ Đổi phạm vi — '+esc(c.ten)+' · '+esc(p.ten),'<div id="dpvBody"></div>',
+  '<button class="btn" data-x="close">Hủy</button><button class="btn p" data-x="doDoiPV">💾 Đổi phạm vi</button>');
+ drawDPV()}
+function drawDPV(){
+ const b=BN.filter(x=>x.id===DPV.b)[0],p=nsBy(b.ns),c=cdBy(b.cd);
+ let h='<div class="info">Đang giữ <b>'+esc(c.ten)+' — '+esc(dvTen(b.dv))+'</b> từ '+esc(b.tu)+'.<br>'+
+  'Đổi là <b>MỘT thao tác</b>: đóng bản ghi cũ <code>Đến ngày = '+esc(DPV.hl)+'</code> và mở bản mới '+
+  '<code>Từ ngày = '+esc(DPV.hl)+'</code> <i>(§3.3)</i>. 🛑 ⛔ bắt gỡ rồi tạo lại.</div>'+
+  '<label class="lbl">Đơn vị MỚI <b>*</b></label>'+
+  '<select class="din" data-f="dpv"><option value="">— chọn đơn vị —</option>'+
+  dsDV(c.ma).filter(d=>d!==b.dv).map(d=>'<option value="'+d+'"'+(DPV.dv===d?' selected':'')+'>'+esc(dvTen(d))+'</option>').join('')+'</select>'+
+  '<label class="lbl">Số quyết định</label><input class="din" data-f="dpvqd" value="'+esc(DPV.qd)+'">'+
+  '<label class="lbl">Ngày hiệu lực <b>*</b></label><input class="din" data-f="dpvhl" value="'+esc(DPV.hl)+'">'+
+  '<label class="lbl">Lý do <b>*</b></label><input class="din" data-f="dpvly" value="'+esc(DPV.ly)+'">';
+ if(DPV.dv){
+  const gk=giuTai(c.ma,DPV.dv,HOMNAY).filter(x=>x.ns!==b.ns);
+  if(c.don&&gk.length)h+='<div class="danger">⛔ <b>Chặn — chức danh đơn nhất.</b> <b>'+esc(nsBy(gk[0].ns).ten)+
+   '</b> đang giữ <b>'+esc(c.ten)+' — '+esc(dvTen(DPV.dv))+'</b> từ '+esc(gk[0].tu)+'.</div>';
+  else h+='<div class="ro" style="margin-top:9px">✓ <b>'+esc(dvTen(DPV.dv))+'</b> chưa có người giữ <b>'+esc(c.ten)+'</b>.</div>';
+ }
+ $('#dpvBody').innerHTML=h}
+
+function doDoiPV(){
+ const b=BN.filter(x=>x.id===DPV.b)[0],p=nsBy(b.ns),c=cdBy(b.cd);
+ if(!DPV.dv){toast('⚠ Chưa chọn đơn vị mới');return}
+ if(!DPV.ly.trim()){toast('⚠ <b>Bắt buộc ghi lý do</b> khi đổi phạm vi');return}
+ const gk=giuTai(c.ma,DPV.dv,HOMNAY).filter(x=>x.ns!==b.ns);
+ if(c.don&&gk.length){toast('⛔ Chặn — <b>'+esc(nsBy(gk[0].ns).ten)+'</b> đang giữ chức danh này ở <b>'+esc(dvTen(DPV.dv))+'</b>');return}
+ const dvCu=b.dv;
+ /* CDHT 5/10/2026 — đổi THẲNG trên bản ghi, ⛔ còn đóng bản cũ mở bản mới (§6.2.4) */
+ b.dv=DPV.dv;
+ themLS(b.ns,b.cd,DPV.dv,'doipv',nsBy(ME[role]).ten+' ('+R().ten+')',d2s(HOMNAY),'tay',null);
+ closeModal();render();
+ nhacDiemCT(p,c,DPV.dv,dvCu,DPV.qd,d2s(HOMNAY));
+}
+function nhacDiemCT(p,c,dvMoi,dvCu,qd,hl){
+ const laDT=!!dtBy(dvMoi);
+ if(!laDT||dvMoi===p.dt){
+  toast('✓ Đã đổi phạm vi <b>'+esc(c.ten)+'</b>: '+esc(dvTen(dvCu))+' → <b>'+esc(dvTen(dvMoi))+'</b> từ '+esc(hl)+
+   '<br>Trong ngày chuyển giao, panel hiện <b>đúng một dòng</b> — bản cũ vào <b>Lịch sử</b> <i>(§3.3.1)</i>.');
+  return}
+ modal('✅ Đã gắn phạm vi — '+esc(c.ten)+' · '+esc(dvTen(dvMoi)),
+  '<div class="ro">✅ <b>Đã lưu.</b> '+esc(c.ten)+' · <b>'+esc(dvTen(dvMoi))+'</b> — hiệu lực từ '+esc(hl)+
+   (qd?' · QĐ '+esc(qd):'')+'<div style="margin-top:4px">Trong ngày chuyển giao, panel hiện <b>đúng một dòng</b>; bản cũ vào <b>Lịch sử</b> <i>(§3.3.1)</i>.</div></div>'+
+  '<div class="warn" style="margin-top:10px">⚠ <b>Điểm trường công tác</b> của '+esc(p.ten)+' vẫn đang là <b>'+esc(dtBy(p.dt).ten)+'</b>.'+
+   '<div style="margin-top:5px">Hai trường này <b>ĐỘC LẬP</b>: phạm vi nói <i>«quản dữ liệu của đâu»</i>, '+
+   'điểm trường công tác nói <i>«ngồi làm việc ở đâu»</i> <i>(§6.4.4 · §3.4.1 — cùng một tên cột, hai nghĩa)</i>. '+
+   'Có thể đúng là khác nhau — hệ thống <b>⛔ tự sửa</b>.</div></div>'+
+  (suaDuoc()
+   ? '<div class="ro" style="margin-top:8px">Nút dưới chạy <b>đúng thao tác của F6</b> <i>(tab T2)</i> — vẫn bắt <b>lý do</b> và <b>ngày hiệu lực</b>, vẫn ghi <b>nhật ký của F6</b>. ⛔ đường ghi thứ hai.</div>'
+   : '<div class="ro" style="margin-top:8px">Vai này ⛔ có bit ghi của <b>F6</b> nên ⛔ đổi được tại chỗ — ⛔ ẩn nút, nói ra: đổi ở tab <b>Điểm trường công tác</b>. '+dlink('M4.3','T2')+'</div>'),
+  '<button class="btn" data-x="close">Để nguyên '+esc(dtBy(p.dt).vt)+'</button>'+
+  (suaDuoc()?'<button class="btn p" data-x="nhacDoiDCT" data-p="'+p.id+'" data-dt="'+dvMoi+'" data-qd="'+esc(qd||'')+'" data-hl="'+esc(hl)+'">✎ Đổi điểm trường công tác sang '+esc(dtBy(dvMoi).vt)+'</button>':''));
+}
+
 function xemChoPV(){
  const l=dsChoPV();
  modal('⏳ Bản ghi chờ gắn phạm vi',
@@ -886,113 +1096,174 @@ function xemChoPV(){
   '<button class="btn p" data-x="close">Đóng</button>')}
 
 /* ===== MODAL: GỠ CHỨC DANH (T1) ===== */
-function mGo(bId){
+/* ═══ CDHT 5/10/2026 · §6.2.6 — BA ĐỘNG TỪ: Thêm · Bật · Tắt ═══
+   🛑 `Gỡ` (điền Đến ngày) · `Sửa nhiệm kỳ` · `Xóa` ⛔ còn ở menu này.
+   Tắt giữ bản ghi lại ⇒ dữ liệu hoạt động quá khứ luôn có chỗ dựa (§3.3). */
+function mTat(bId){
  const b=BN.filter(x=>x.id===bId)[0],p=nsBy(b.ns),c=cdBy(b.cd);TRU=[b.ns];
- let h='';
- if(c.nhom===3&&PC[p.id])h+='<div class="warn">⚠ <b>Cảnh báo — không chặn.</b> '+esc(p.ten)+' vẫn còn <b>'+PC[p.id]+' lớp</b> đang phân công.'+
-  '<div style="margin-top:6px">Gỡ rồi thì <b>vẫn đứng lớp nhưng không vào được menu để làm việc</b> — không điểm danh, không ghi sổ đầu bài, không đánh giá rèn luyện được.</div>'+
-  '<div style="margin-top:6px">Thứ tự sạch là <b>gỡ phân công trước, gỡ chức danh sau</b>. '+dlink('M4.5','Gỡ phân công trước')+'</div></div>';
+ let h='<div class="ro">🔑 <b>Tắt chứ ⛔ xóa.</b> Bản ghi <b>ở lại</b> với nhãn <code>Đã tắt</code> — hệ thống vẫn ghi nhận '+
+  esc(p.ten)+' <b>từng giữ</b> chức danh này, nên mọi dữ liệu hoạt động trong quá khứ <b>vẫn có chỗ dựa</b> <i>(§3.3)</i>.'+
+  '<div style="margin-top:6px">Thu quyền <b>ngay</b> — ⛔ hỏi ngày. Ngày kết thúc nhiệm kỳ khai ở <b>mốc quá trình công tác</b> của '+dlink('M4.1')+'.</div></div>';
+ if(c.nhom===3&&PC[p.id])h+='<div class="warn">⚠ <b>Cảnh báo — ⛔ chặn.</b> '+esc(p.ten)+' vẫn còn <b>'+PC[p.id]+' lớp</b> đang phân công.'+
+  '<div style="margin-top:6px">Tắt rồi thì <b>vẫn đứng lớp nhưng ⛔ vào được menu để làm việc</b> — ⛔ điểm danh, ⛔ ghi sổ đầu bài, ⛔ đánh giá rèn luyện được.</div>'+
+  '<div style="margin-top:6px">Thứ tự sạch là <b>gỡ phân công trước, tắt chức danh sau</b>. '+dlink('M4.5','Gỡ phân công trước')+'</div></div>';
  if(c.nhom<3&&c.dv)h+='<div class="warn">⚠ <b>Hệ quả về phạm vi.</b> '+esc(p.ten)+' mất phạm vi <code>'+
   (c.dv==='to'?'Group':'Branch')+'</code> tại <b>'+esc(dvTen(b.dv))+'</b>.<div style="margin-top:6px">'+hauQua(c.ma,b.dv)+'</div></div>';
- h+='<div class="ro">Gỡ = <b>điền Đến ngày</b>, không xóa bản ghi. Vẫn tìm lại được ở tab <b>Lịch sử</b> và ở tab <b>Rà soát bộ máy</b> khi lùi ngày tra cứu.</div>';
- h+='<label class="lbl">Ngày kết thúc <b>*</b></label><input type="date" class="din" id="gHL" value="'+isoOf(HOMNAY)+'">'+
-  '<label class="lbl">Lý do '+(laBN(b.cd)?'<b>*</b>':'<i style="font-weight:400">(tùy chọn)</i>')+'</label><textarea class="ta" id="gLy"></textarea>';
+ h+='<label class="lbl">Lý do '+(laBN(b.cd)?'<b>*</b>':'<i style="font-weight:400">(tùy chọn)</i>')+'</label><textarea class="ta" id="gLy"></textarea>';
  const con=c.don?giuTai(c.ma,b.dv,HOMNAY).length===1:false;
- if(con)h+='<div class="danger" style="margin-top:11px">🔴 Gỡ xong thì <b>'+esc(c.ten)+(b.dv?' — '+esc(dvTen(b.dv)):'')+
-  '</b> sẽ <b>đang khuyết</b>.<div style="margin-top:7px">Chọn người thay ngay (khuyến nghị) hoặc để khuyết:</div>'+
-  selNguoi(c.ma,b.dv,'gThay')+'</div>';
- modal('− Gỡ chức danh: '+esc(c.ten)+(b.dv?' — '+esc(dvTen(b.dv)):''),h,
+ if(con)h+='<div class="danger" style="margin-top:11px">🔴 Tắt xong thì <b>'+esc(c.ten)+(b.dv?' — '+esc(dvTen(b.dv)):'')+
+  '</b> sẽ <b>đang khuyết</b>. Chức danh khuyết là trạng thái có thật — ⛔ chặn.</div>';
+ modal('○ Tắt chức danh: '+esc(c.ten)+(b.dv?' — '+esc(dvTen(b.dv)):''),h,
   '<button class="btn" data-x="close">Hủy</button>'+
   (c.nhom===3&&PC[p.id]?'<button class="btn" data-x="dl" data-m="M4.5">↗ Sang M4.5 trước</button>':'')+
-  '<button class="btn d" data-x="doGo" data-b="'+bId+'">'+(c.nhom===3&&PC[p.id]?'⚠ Vẫn gỡ':'Xác nhận gỡ')+'</button>')}
-function doGo(bId){
+  '<button class="btn d" data-x="doTat" data-b="'+bId+'">'+(c.nhom===3&&PC[p.id]?'⚠ Vẫn tắt':'Xác nhận tắt')+'</button>')}
+
+function doTat(bId){
  const b=BN.filter(x=>x.id===bId)[0],p=nsBy(b.ns),c=cdBy(b.cd);
- const hl=$('#gHL').value?d2s(fromIso($('#gHL').value)):d2s(HOMNAY);
  const ly=$('#gLy')?$('#gLy').value.trim():'';
- if(laBN(b.cd)&&!ly){toast('⛔ <b>Nhóm bổ nhiệm bắt buộc ghi lý do</b> khi gỡ');return}
- if(key(hl)<key(b.tu)){toast('⛔ Ngày kết thúc <b>'+hl+'</b> trước ngày bắt đầu <b>'+b.tu+'</b>');return}
- b.den=hl;b.lyDo=ly||'(không ghi lý do)';
- let th='';
- const sel=$('#gThay');
- if(sel&&sel.value){const nb=bn(sel.value,b.cd,b.dv,b.qd,hl,null,'');
-  nb.boi=nsBy(ME[role]).ten+' ('+R().ten+')';th=' · <b>'+esc(nsBy(sel.value).ten)+'</b> nhận ngay từ '+hl+', không có ngày trống'}
+ if(laBN(b.cd)&&!ly){toast('⛔ <b>Nhóm bổ nhiệm bắt buộc ghi lý do</b> khi tắt');return}
+ b.tat=1;
+ themLS(b.ns,b.cd,b.dv,'tat',nsBy(ME[role]).ten+' ('+R().ten+')',d2s(HOMNAY),'tay',null);
  closeModal();render();
- toast('Đã gỡ <b>'+esc(c.ten)+'</b> của <b>'+esc(p.ten)+'</b> từ '+hl+th+
-  (c.nhom===3&&PC[p.id]?' · audit ghi <b>đã gỡ khi còn '+PC[p.id]+' lớp đang phân công</b>':''))}
+ toast('Đã tắt <b>'+esc(c.ten)+'</b> của <b>'+esc(p.ten)+'</b> — bản ghi <b>ở lại</b>, hệ thống vẫn ghi nhận từng giữ'+
+  (c.nhom===3&&PC[p.id]?' · audit ghi <b>đã tắt khi còn '+PC[p.id]+' lớp đang phân công</b>':'')+
+  ' · <b>1 lượt chưa gắn mốc</b>')}
+
+function doBat(bId){
+ const b=BN.filter(x=>x.id===bId)[0],p=nsBy(b.ns),c=cdBy(b.cd);
+ const gk=giuTai(c.ma,b.dv||'',HOMNAY);
+ if(c.don&&gk.length){toast('⛔ Chặn cứng — <b>'+esc(nsBy(gk[0].ns).ten)+'</b> đang giữ chức danh này');return}
+ b.tat=0;
+ themLS(b.ns,b.cd,b.dv,'bat',nsBy(ME[role]).ten+' ('+R().ten+')',d2s(HOMNAY),'tay',null);
+ render();
+ toast('Đã bật lại <b>'+esc(c.ten)+'</b> cho <b>'+esc(p.ten)+'</b> — hiệu lực ngay · <b>1 lượt chưa gắn mốc</b>')}
+
+/* ═══ §6.2.5 — TẠO MỐC QUÁ TRÌNH CÔNG TÁC từ một dòng lịch sử ═══
+   Máy điền sẵn người · chức danh · loại mốc. 🛑 Ô NGÀY ĐỂ TRỐNG, bắt nhập —
+   điền sẵn ngày thao tác là mời bấm Lưu cho xong, và hồ sơ có một con số sai
+   trông như số đúng (ràng buộc 36). */
+function mTaoMoc(lsId){
+ const x=LS.filter(z=>z.id===lsId)[0];if(!x)return;
+ const p=nsBy(x.ns),c=cdBy(x.cd),batDau=(x.hd!=='tat');
+ modal('＋ Tạo mốc quá trình công tác — '+esc(p.ten),
+  '<div class="info">Mốc này ghi vào <b>'+dlink('M4.1','M4.1 · Quá trình công tác')+'</b> — hồ sơ viên chức theo mẫu 38 mục. '+
+   'Đây là <b>nguồn duy nhất</b> trả lời <i>«ngày D người này giữ chức danh gì»</i> <i>(§3.2)</i>.</div>'+
+  '<div class="card"><div class="ch">Máy điền sẵn</div><div style="padding:10px 12px;font-size:12.5px">'+
+   '<div class="f"><div class="k">Người</div><div class="v">'+esc(p.ten)+' · '+p.ma+'</div></div>'+
+   '<div class="f"><div class="k">Chức danh</div><div class="v">'+esc(c.ten)+(x.dv?' · '+esc(dvTen(x.dv)):'')+'</div></div>'+
+   '<div class="f"><div class="k">Loại mốc</div><div class="v"><b>'+(batDau?'Bắt đầu nhiệm kỳ':'Kết thúc nhiệm kỳ')+'</b> — suy từ lượt <b>'+esc(TEN_HD[x.hd])+'</b> ngày '+esc(x.luc)+'</div></div>'+
+   '</div></div>'+
+  '<label class="lbl">'+(batDau?'Ngày bắt đầu nhiệm kỳ':'Ngày kết thúc nhiệm kỳ')+' <b>*</b></label>'+
+  '<input type="date" class="din" id="mcNgay" value="">'+
+  '<label class="lbl">Văn bản căn cứ '+(laBN(x.cd)?'<b>*</b>':'<i style="font-weight:400">(tùy chọn với nhóm ③)</i>')+'</label>'+
+  '<input class="din" id="mcQD" placeholder="156/QĐ-NTT">'+
+  '<div class="warn" style="margin-top:11px">🛑 <b>Ô ngày để TRỐNG có chủ ý.</b> Ngày bấm nút ⛔ phải ngày nhận nhiệm vụ — '+
+   'điền sẵn là mời bấm <code>Lưu</code> cho xong, và hồ sơ có <b>một con số sai trông như số đúng</b> <i>(ràng buộc 36)</i>.</div>',
+  '<button class="btn" data-x="close">Hủy</button><button class="btn p" data-x="doTaoMoc" data-l="'+lsId+'">💾 Tạo mốc</button>')}
+
+function doTaoMoc(lsId){
+ const x=LS.filter(z=>z.id===lsId)[0];if(!x)return;
+ const p=nsBy(x.ns),c=cdBy(x.cd),batDau=(x.hd!=='tat');
+ const v=$('#mcNgay')?$('#mcNgay').value:'';
+ if(!v){toast('⛔ <b>Bắt buộc nhập ngày</b> — máy ⛔ điền hộ');return}
+ const ng=d2s(fromIso(v)), qd=$('#mcQD')?$('#mcQD').value.trim():'';
+ if(laBN(x.cd)&&!qd){toast('⛔ <b>Nhóm bổ nhiệm bắt buộc văn bản căn cứ</b>');return}
+ if(key(ng)<key(p.vao)){toast('⛔ Ngày <b>'+ng+'</b> trước ngày vào trường <b>'+p.vao+'</b>');return}
+ let m;
+ if(batDau){m=themMoc(x.ns,x.cd,x.dv,ng,null,qd,'tay')}
+ else{
+  m=MOC.filter(z=>z.ns===x.ns&&z.cd===x.cd&&(z.dv||'')===(x.dv||'')&&!z.den).sort((a,b)=>key(b.tu)-key(a.tu))[0];
+  if(!m){toast('⛔ ⛔ có nhiệm kỳ nào đang mở để đóng — tạo mốc <b>bắt đầu</b> trước');return}
+  if(key(ng)<key(m.tu)){toast('⛔ Ngày kết thúc <b>'+ng+'</b> trước ngày bắt đầu <b>'+m.tu+'</b>');return}
+  m.den=ng;
+ }
+ x.moc=m.id;
+ closeModal();render();
+ toast('Đã ghi mốc vào <b>Quá trình công tác</b>: '+esc(c.ten)+' · '+(batDau?'bắt đầu':'kết thúc')+' <b>'+esc(ng)+'</b>'+
+  ' · dòng lịch sử chuyển sang <b>Đã gắn</b>')}
 
 /* ===== MODAL: BỔ NHIỆM / THAY / BÃI (T3) ===== */
 function mBoNhiem(cd,dv){
- const c=cdBy(cd);TRU=giuTai(cd,dv,HOMNAY).map(b=>b.ns);
+ ccReset();const c=cdBy(cd);TRU=giuTai(cd,dv,HOMNAY).map(b=>b.ns);
  modal('＋ Bổ nhiệm — '+esc(c.ten)+(dv?' — '+esc(dvTen(dv)):''),
   '<div class="ro">Chức danh này đang <b>khuyết</b>. '+hauQua(cd,dv)+'</div>'+
   '<label class="lbl">Người được bổ nhiệm <b>*</b></label>'+selNguoi(cd,dv)+
-  oChungCu(cd)+'<div id="canhBN"></div>',
+  '<div id="canhBN"></div>',
   '<button class="btn" data-x="close">Hủy</button><button class="btn p" data-x="doBoNhiem" data-c="'+cd+'" data-d="'+(dv||'')+'">💾 Lưu bổ nhiệm</button>')}
 function doBoNhiem(cd,dv){
  const ns=$('#nsMoi').value;
  if(!ns){toast('⚠ Chưa chọn người');return}
- const cc=docChungCu(cd);
- if(cc.thieu.length){toast('⛔ <b>Còn thiếu:</b> '+cc.thieu.join(' · '));return}
- const p=nsBy(ns);
- if(key(cc.hl)<key(p.vao)){toast('⛔ Ngày hiệu lực <b>'+cc.hl+'</b> trước ngày '+esc(p.ten)+' vào trường (<b>'+p.vao+'</b>)');return}
- if(ngay(cc.hl,HOMNAY)>90&&!($('#lyLui')&&$('#lyLui').value.trim())){toast('⚠ <b>Bắt buộc ghi lý do</b> khi ghi lùi quá 90 ngày');return}
- const b=bn(ns,cd,dv,cc.qd,cc.hl,null,'');
- b.boi=nsBy(ME[role]).ten+' ('+R().ten+')';b.tuCap=ns===ME[role]?1:0;
+ const p=nsBy(ns),c=cdBy(cd),boi=nsBy(ME[role]).ten+' ('+R().ten+')';
+ const gk=giuTai(cd,dv||'',HOMNAY);
+ if(c.don&&gk.length){toast('⛔ Chặn cứng — <b>'+esc(nsBy(gk[0].ns).ten)+'</b> đang giữ chức danh này');return}
+ const cu=cdTat(ns).filter(b=>b.cd===cd&&(b.dv||'')===(dv||''))[0];
+ let b;
+ if(cu){b=cu;b.tat=0;themLS(ns,cd,dv,'bat',boi,d2s(HOMNAY),'tay',null)}
+ else{b={id:'B'+(++BSEQ),ns:ns,cd:cd,dv:dv||'',tat:0,nguon:'',boi:boi,tuCap:ns===ME[role]?1:0,qd:'',nk:0};
+      BN.push(b);themLS(ns,cd,dv,'them',boi,d2s(HOMNAY),'tay',null)}
  closeModal();render();
- toast('Đã bổ nhiệm <b>'+esc(p.ten)+'</b> giữ <b>'+esc(cdBy(cd).ten)+'</b> từ '+cc.hl+(b.tuCap?' · <b>⚑ tự cấp</b>':''))}
+ toast('Đã bổ nhiệm <b>'+esc(p.ten)+'</b> giữ <b>'+esc(c.ten)+'</b> — <b>hiệu lực ngay</b>'+
+  (b.tuCap?' · <b>⚑ tự cấp</b>':'')+' · <b>1 lượt chưa gắn mốc</b>')}
 function mThay(cd,dv){
  const c=cdBy(cd),cu=giuTai(cd,dv,HOMNAY)[0];
  if(!cu){mBoNhiem(cd,dv);return}
  TRU=giuTai(cd,dv,HOMNAY).map(b=>b.ns);
  modal('⇄ Thay người — '+esc(c.ten)+(dv?' — '+esc(dvTen(dv)):''),
-  '<div class="info">Thay người là <b>MỘT thao tác</b>: đóng bản ghi cũ và mở bản ghi mới <b>cùng một ngày</b>. '+
-  'Làm hai bước thì giữa hai lần lưu có một khoảng <b>không ai giữ chức danh</b> — bỏ dở giữa chừng thì khoảng đó thành vĩnh viễn.</div>'+
+  '<div class="info">🔑 <b>v3.0 — thay người là HAI lượt, nhưng vẫn ⛔ khoảng trống.</b> Tắt người cũ và bật người mới '+
+  'đều <b>hiệu lực NGAY</b>, nên ⛔ có khoảnh khắc nào ghế bỏ trống. ⛔ còn ô ngày chuyển giao — ngày nhận nhiệm vụ '+
+  'khai ở <b>mốc quá trình công tác</b> của '+dlink('M4.1')+'.</div>'+
   '<label class="lbl">Người nhận <b>*</b></label>'+selNguoi(cd,dv)+
-  '<label class="lbl">Ngày chuyển giao <b>*</b></label><input type="date" class="din" id="fHL" value="'+isoOf(HOMNAY)+'">'+
-  '<div class="g2"><div><label class="lbl">Số quyết định '+(laBN(cd)?'<b>*</b>':'')+'</label><input class="din" id="fQD" placeholder="156/QĐ-NTT"></div>'+
-  '<div><label class="lbl">Lý do người cũ thôi giữ <b>*</b></label><input class="din" id="fLy" placeholder="Chuyển công tác"></div></div>'+
-  '<label class="lbl">Tệp căn cứ '+(laBN(cd)?'<b>*</b>':'')+'</label><div class="drop" id="fTep" data-x="upTep">📎 Bấm để chọn bản scan quyết định</div>'+
+  '<label class="lbl">Lý do người cũ thôi giữ <b>*</b></label><input class="din" id="tLy" placeholder="Chuyển công tác">'+
   '<div class="sech">Xem trước</div><div id="pvThay"></div>',
-  '<button class="btn" data-x="close">Hủy</button><button class="btn p" data-x="doThay" data-c="'+cd+'" data-d="'+(dv||'')+'">💾 Lưu — một thao tác</button>');
+  '<button class="btn" data-x="close">Hủy</button><button class="btn p" data-x="doThay" data-c="'+cd+'" data-d="'+(dv||'')+'">💾 Lưu</button>');
  vThay(cd,dv)}
 function vThay(cd,dv){
- const cu=giuTai(cd,dv,HOMNAY)[0],sel=$('#nsMoi'),hl=$('#fHL').value?d2s(fromIso($('#fHL').value)):d2s(HOMNAY);
+ const cu=giuTai(cd,dv,HOMNAY)[0],sel=$('#nsMoi');
+ if(!$('#pvThay'))return;
  $('#pvThay').innerHTML='<div class="prev">'+
-  '<div class="pv"><div class="t">Đang giữ</div><div><b>'+esc(nsBy(cu.ns).ten)+'</b> — từ '+esc(cu.tu)+'</div></div>'+
-  '<div class="pv o"><div class="t">Thôi giữ</div><div><b>'+esc(nsBy(cu.ns).ten)+'</b> — '+esc(cu.tu)+' → <b>'+esc(hl)+'</b></div></div>'+
-  '<div class="pv n"><div class="t">Nhận</div><div>'+(sel&&sel.value?'<b>'+esc(nsBy(sel.value).ten)+'</b> — từ <b>'+esc(hl)+'</b>':'<i style="color:var(--ink3)">chưa chọn người</i>')+'</div></div>'+
-  '</div><div class="okbox" style="margin-top:9px">✔ Không có ngày nào trống — bản ghi cũ đóng và bản ghi mới mở <b>cùng ngày '+esc(hl)+'</b>.</div>'}
+  '<div class="pv"><div class="t">Đang giữ</div><div><b>'+esc(nsBy(cu.ns).ten)+'</b></div></div>'+
+  '<div class="pv o"><div class="t">Tắt</div><div><b>'+esc(nsBy(cu.ns).ten)+'</b> — bản ghi <b>ở lại</b>, nhãn «đã tắt»</div></div>'+
+  '<div class="pv n"><div class="t">Nhận</div><div>'+(sel&&sel.value?'<b>'+esc(nsBy(sel.value).ten)+'</b> — hiệu lực ngay':'<i style="color:var(--ink3)">chưa chọn</i>')+'</div></div>'+
+  '</div><div class="okbox" style="margin-top:9px">✔ Cả hai lượt <b>hiệu lực ngay</b> — ⛔ khoảnh khắc nào ghế bỏ trống. '+
+  'Sau đó có <b>2 lượt chưa gắn mốc</b> cần bổ sung ở '+dlink('M4.1')+'.</div>'}
 function doThay(cd,dv){
- const ns=$('#nsMoi').value,cu=giuTai(cd,dv,HOMNAY)[0];
+ const ns=$('#nsMoi')?$('#nsMoi').value:'';
+ const cu=giuTai(cd,dv,HOMNAY)[0];
+ const ly=$('#tLy')?$('#tLy').value.trim():'';
  if(!ns){toast('⚠ Chưa chọn người nhận');return}
- const ly=$('#fLy').value.trim(),qd=$('#fQD').value.trim(),tep=$('#fTep').classList.contains('has');
- const t=[];if(!ly)t.push('Lý do người cũ thôi giữ');if(laBN(cd)&&!qd)t.push('Số quyết định');if(laBN(cd)&&!tep)t.push('Tệp căn cứ');
- if(t.length){toast('⛔ <b>Còn thiếu:</b> '+t.join(' · '));return}
- const hl=d2s(fromIso($('#fHL').value)),p=nsBy(ns);
- if(key(hl)<key(p.vao)){toast('⛔ Ngày chuyển giao trước ngày '+esc(p.ten)+' vào trường ('+p.vao+')');return}
- if(key(hl)<key(cu.tu)){toast('⛔ Ngày chuyển giao trước ngày người cũ nhận chức ('+cu.tu+')');return}
- cu.den=hl;cu.lyDo=ly;
- const b=bn(ns,cd,dv,qd,hl,null,'');b.boi=nsBy(ME[role]).ten+' ('+R().ten+')';b.tuCap=ns===ME[role]?1:0;
+ if(!cu){toast('⛔ ⛔ còn ai đang giữ để thay');return}
+ if(!ly){toast('⛔ <b>Bắt buộc ghi lý do</b> người cũ thôi giữ');return}
+ const p=nsBy(ns),c=cdBy(cd),boi=nsBy(ME[role]).ten+' ('+R().ten+')';
+ /* CDHT 5/10/2026 — thay người nay là HAI lượt, nhưng vẫn ⛔ khoảng trống:
+    cả hai đều hiệu lực NGAY nên ⛔ có khoảnh khắc nào ghế bỏ trống. */
+ cu.tat=1;themLS(cu.ns,cd,dv,'tat',boi,d2s(HOMNAY),'tay',null);
+ const dat=cdTat(ns).filter(b=>b.cd===cd&&(b.dv||'')===(dv||''))[0];
+ if(dat){dat.tat=0;themLS(ns,cd,dv,'bat',boi,d2s(HOMNAY),'tay',null)}
+ else{BN.push({id:'B'+(++BSEQ),ns:ns,cd:cd,dv:dv||'',tat:0,nguon:'',boi:boi,
+               tuCap:ns===ME[role]?1:0,qd:'',nk:0});
+      themLS(ns,cd,dv,'them',boi,d2s(HOMNAY),'tay',null)}
  closeModal();render();
- toast('<b>'+esc(nsBy(cu.ns).ten)+'</b> thôi giữ '+hl+' · <b>'+esc(p.ten)+'</b> nhận cùng ngày — <b>không có khoảng trống</b>')}
+ toast('<b>'+esc(nsBy(cu.ns).ten)+'</b> thôi giữ · <b>'+esc(p.ten)+'</b> nhận — cả hai <b>hiệu lực ngay</b>, '+
+  '⛔ khoảng trống · <b>2 lượt chưa gắn mốc</b>')}
 function mBai(cd,dv){
  const c=cdBy(cd),cu=giuTai(cd,dv,HOMNAY)[0];
+ if(!cu){toast('⛔ ⛔ còn ai đang giữ chức danh này');return}
  modal('⊗ Bãi nhiệm — '+esc(c.ten)+(dv?' — '+esc(dvTen(dv)):''),
   '<div class="warn">⚠ Sau thao tác này chức danh <b>đang khuyết</b>.<div style="margin-top:6px">'+hauQua(cd,dv)+'</div></div>'+
   '<div class="ro">Vẫn cho bãi nhiệm dù chưa có người thay — người ta nghỉ việc, chuyển công tác, bị kỷ luật. '+
-  '<b>Chức danh khuyết là trạng thái có thật.</b> Chặn chỉ khiến hệ thống ghi rằng một người đã nghỉ vẫn đang giữ chức danh.</div>'+
-  '<div class="f"><div class="k">Người đang giữ</div><div class="v">'+esc(nsBy(cu.ns).ten)+' — từ '+esc(cu.tu)+'</div></div>'+
-  '<label class="lbl">Ngày thôi giữ <b>*</b></label><input type="date" class="din" id="bHL" value="'+isoOf(HOMNAY)+'">'+
+  '<b>Chức danh khuyết là trạng thái có thật.</b><div style="margin-top:6px">🔑 Bãi nhiệm nay là <b>Tắt</b>: bản ghi '+
+  '<b>ở lại</b>, hệ thống vẫn ghi nhận người ấy <b>từng giữ</b> — ⛔ ô ngày, ngày thôi giữ khai ở mốc của '+dlink('M4.1')+'.</div></div>'+
+  '<div class="f"><div class="k">Người đang giữ</div><div class="v">'+esc(nsBy(cu.ns).ten)+'</div></div>'+
   '<label class="lbl">Lý do <b>*</b></label><textarea class="ta" id="bLy"></textarea>',
   '<button class="btn" data-x="close">Hủy</button><button class="btn d" data-x="doBai" data-c="'+cd+'" data-d="'+(dv||'')+'">⊗ Xác nhận bãi nhiệm</button>')}
 function doBai(cd,dv){
- const cu=giuTai(cd,dv,HOMNAY)[0],ly=$('#bLy').value.trim();
- if(!ly){toast('⛔ <b>Bắt buộc ghi lý do</b> khi bãi nhiệm');return}
- const hl=d2s(fromIso($('#bHL').value));
- if(key(hl)<key(cu.tu)){toast('⛔ Ngày thôi giữ trước ngày nhận chức ('+cu.tu+')');return}
- cu.den=hl;cu.lyDo=ly;closeModal();render();
- toast('Đã bãi nhiệm <b>'+esc(nsBy(cu.ns).ten)+'</b> từ '+hl+' · chức danh <b>đang khuyết</b> · bản ghi <b>không xóa</b>')}
-/* ===== MODAL T2 ===== */
+ const cu=giuTai(cd,dv,HOMNAY)[0],ly=$('#bLy')?$('#bLy').value.trim():'';
+ if(!cu){toast('⛔ ⛔ còn ai đang giữ');return}
+ if(!ly){toast('⛔ <b>Bắt buộc ghi lý do</b>');return}
+ cu.tat=1;
+ themLS(cu.ns,cd,dv,'tat',nsBy(ME[role]).ten+' ('+R().ten+')',d2s(HOMNAY),'tay',null);
+ closeModal();render();
+ toast('Đã bãi nhiệm <b>'+esc(nsBy(cu.ns).ten)+'</b> — chức danh <b>đang khuyết</b>, bản ghi vẫn ở lại · <b>1 lượt chưa gắn mốc</b>')}
 function mDoiDT(id){const p=nsBy(id);
  modal('✎ Đổi điểm trường công tác — '+esc(p.ten),
   '<div class="info">Đây là <b>phân công nhiệm vụ</b>, không phải điều động. Điểm trường không phải cơ sở giáo dục '+
@@ -1011,6 +1282,17 @@ function doDoiDT(id){const p=nsBy(id),nv=$('#dNew').value,ly=$('#dLy').value.tri
  const hl=d2s(fromIso($('#dHL').value));
  (NKDT[id]=NKDT[id]||[]).unshift([hl,p.dt,nv,ly]);p.dt=nv;
  closeModal();render();toast('Đã đổi điểm trường công tác của <b>'+esc(p.ten)+'</b> sang <b>'+esc(dtBy(nv).vt)+'</b> từ '+hl)}
+/* BLOOP 2/10/2026 · §6.2.4 — nút «Đổi điểm trường công tác» của khối nhắc.
+   🛑 Nó mở ĐÚNG hộp F6 (mDoiDT), ⛔ đường ghi thứ hai: vẫn bắt lý do + ngày hiệu lực,
+   vẫn ghi nhật ký NKDT của F6. Chỉ điền SẴN lý do và ngày — người dùng sửa được. */
+function nhacDoiDCT(id,dtMoi,qd,hl){
+ const p=nsBy(+id||id);
+ closeModal(); mDoiDT(p.id);
+ if($('#dNew'))$('#dNew').value=dtMoi;
+ if($('#dHL')&&hl)$('#dHL').value=isoOf(s2d(hl));   /* s2d: dd/mm/yyyy -> Date */
+ if($('#dLy'))$('#dLy').value='theo quyết định gắn phạm vi '+(qd?qd+' ':'')+'ngày '+hl;
+ toast('Hộp này là <b>thao tác F6 của tab T2</b> — lý do và ngày đã điền sẵn, <b>sửa được</b>. Vẫn phải bấm 💾 Lưu.');
+}
 function mLoat(){
  if(!selNS.size){toast('⚠ Chưa chọn ai');return}
  modal('⇉ Đổi điểm trường công tác — '+selNS.size+' người',
@@ -1188,8 +1470,11 @@ document.addEventListener('click',function(e){
   if(x==='mGanPV'){mGanPV(el.dataset.b);return}
   if(x==='doGanPV'){doGanPV();return}
   if(x==='xemChoPV'){xemChoPV();return}
-  if(x==='mGo'){mGo(el.dataset.b);return}
-  if(x==='doGo'){doGo(el.dataset.b);return}
+  if(x==='mTat'){mTat(el.dataset.b);return}
+  if(x==='doTat'){doTat(el.dataset.b);return}
+  if(x==='doBat'){doBat(el.dataset.b);return}
+  if(x==='mTaoMoc'){mTaoMoc(el.dataset.l);return}
+  if(x==='doTaoMoc'){doTaoMoc(el.dataset.l);return}
   if(x==='moHS'){cur=id;tab='cd';closeModal();render();return}
   if(x==='mBoNhiem'){mBoNhiem(c,d);return}
   if(x==='doBoNhiem'){doBoNhiem(c,d);return}
@@ -1197,10 +1482,14 @@ document.addEventListener('click',function(e){
   if(x==='doThay'){doThay(c,d);return}
   if(x==='mBai'){mBai(c,d);return}
   if(x==='doBai'){doBai(c,d);return}
-  if(x==='upTep'){el.classList.add('has');el.innerHTML='✅ QD-bonhiem-2026.pdf · 214 KB';
+  if(x==='upTep'){CC.tep=1;el.classList.add('has');el.innerHTML='✅ QD-bonhiem-2026.pdf · 214 KB';
    if($('#themBody'))drawThem();return}
   if(x==='mDoiDT'){mDoiDT(id);return}
   if(x==='doDoiDT'){doDoiDT(id);return}
+  /* BLOOP 2/10/2026 — §6.2.4 đổi phạm vi + nhắc Điểm trường công tác */
+  if(x==='mDoiPV'){mDoiPV(el.dataset.b);return}
+  if(x==='doDoiPV'){doDoiPV();return}
+  if(x==='nhacDoiDCT'){nhacDoiDCT(el.dataset.p,el.dataset.dt,el.dataset.qd,el.dataset.hl);return}
   if(x==='mLoat'){mLoat();return}
   if(x==='doLoat'){doLoat();return}
   if(x==='nhatKy'){mNhatKy(id);return}
@@ -1216,7 +1505,8 @@ document.addEventListener('click',function(e){
 document.addEventListener('input',function(e){
  const t=e.target;
  if(t.id==='q'){q=t.value;render();return}
- if(t.id==='fQD'&&$('#themBody')){/* giữ nguyên, không vẽ lại để không mất con trỏ */return}
+ if(t.id==='fHL'){CC.hl=t.value}                 /* BLOOP #2 — giữ ngày đã chọn */
+ if(t.id==='fQD'){CC.qd=t.value;if($('#themBody'))return}
 });
 document.addEventListener('change',function(e){
  const t=e.target;
@@ -1230,11 +1520,71 @@ document.addEventListener('change',function(e){
  if(t.dataset.sel){t.checked?selNS.add(t.dataset.sel):selNS.delete(t.dataset.sel);render();return}
  if(t.dataset.x==='chonHet'){base().forEach(p=>t.checked?selNS.add(p.id):selNS.delete(p.id));render();return}
  if(t.dataset.f==='gpv'&&$('#gpvBody')){GPV.dv=t.value;drawGPV();return}   /* CDDM 26/9/2026 */
+ /* BLOOP 2/10/2026 — §6.2.4: chỉ ô ĐƠN VỊ vẽ lại (để hiện phép kiểm đơn nhất);
+    ba ô chữ chỉ ghi vào trạng thái, ⛔ vẽ lại — vẽ lại là mất chỗ con trỏ đang gõ. */
+ if($('#dpvBody')&&t.dataset.f==='dpv'){DPV.dv=t.value;drawDPV();return}
+ if($('#dpvBody')&&t.dataset.f==='dpvqd'){DPV.qd=t.value;return}
+ if($('#dpvBody')&&t.dataset.f==='dpvhl'){DPV.hl=t.value;return}
+ if($('#dpvBody')&&t.dataset.f==='dpvly'){DPV.ly=t.value;return}
  if(t.dataset.f&&$('#themBody')){F[t.dataset.f]=t.value;if(t.dataset.f==='cd')F.dv='';drawThem();return}
  if(t.id==='fHL'&&$('#themBody')){drawThem();return}
  if(t.id==='fHL'&&$('#pvThay')){vThay($('[data-x=doThay]').dataset.c,$('[data-x=doThay]').dataset.d);return}
  if(t.id==='nsMoi'&&$('#pvThay')){vThay($('[data-x=doThay]').dataset.c,$('[data-x=doThay]').dataset.d);return}
 });
+
+/* ═══════════════════════ PHÉP KIỂM — BLOOP #2 2/10/2026 ═══════════════════════
+   🛑 In CỠ MẪU, và THỬ NGƯỢC: mỗi luật đều có một ca PHẢI ĐẠT và một ca PHẢI TRƯỢT. */
+function kiemCDHT(){
+ const L=[];const ok=(t,b)=>L.push((b?'✅':'❌')+' '+t);
+ const N20=BN.filter(x=>x.ns==='N20'&&x.cd==='GVBM')[0];
+ const N09=BN.filter(x=>x.ns==='N09'&&x.cd==='GVBM')[0];
+ /* §3 — bản ghi là trạng thái hiện tại */
+ ok('§3 · bản ghi chức danh ⛔ còn cột ngày nào', BN.every(b=>b.tu===undefined&&b.den===undefined));
+ ok('§3 · mỗi bản ghi mang trạng thái bật/tắt', BN.every(b=>b.tat===0||b.tat===1));
+ ok('§3.2 · nhiệm kỳ nằm ở kho MOC (mô phỏng M4.1)', MOC.length>0&&MOC.every(m=>!!m.tu));
+ /* §3.3 — tắt chứ ⛔ xóa */
+ ok('§3.3 · người đã thôi giữ VẪN còn bản ghi, chỉ đổi trạng thái', !!BN.filter(x=>x.ns==='N06'&&x.cd==='KT')[0]);
+ ok('§3.3 · ⛔ còn hàm xóa bản ghi chức danh', typeof window.doXoa==='undefined');
+ /* ca anh Ninh báo: thêm → tắt → bật lại, liên tiếp, ⛔ chặn */
+ const truoc=BN.length;
+ (function(){const b=BN.filter(x=>x.ns==='N21'&&x.cd==='GVBM')[0];
+  if(!b){BN.push({id:'BT1',ns:'N21',cd:'GVBM',dv:'',tat:0,nguon:'',boi:'phép kiểm',tuCap:0,qd:'',nk:0});
+         themLS('N21','GVBM','','them','phép kiểm',d2s(HOMNAY),'tay',null)}})();
+ const bt=BN.filter(x=>x.ns==='N21'&&x.cd==='GVBM')[0];
+ bt.tat=1;themLS('N21','GVBM','','tat','phép kiểm',d2s(HOMNAY),'tay',null);
+ bt.tat=0;themLS('N21','GVBM','','bat','phép kiểm',d2s(HOMNAY),'tay',null);
+ ok('🔴 ca đã báo · thêm → tắt → bật lại liên tiếp ⇒ ⛔ bị chặn, và ⛔ sinh bản ghi thứ hai',
+    BN.filter(x=>x.ns==='N21'&&x.cd==='GVBM').length===1&&bt.tat===0);
+ ok('§6.2.5 · ba lượt ấy sinh ba dòng lịch sử, đều CHƯA GẮN mốc',
+    LS.filter(x=>x.ns==='N21'&&x.cd==='GVBM').length===3&&
+    LS.filter(x=>x.ns==='N21'&&x.cd==='GVBM').every(x=>!daGan(x)));
+ /* §6.2.5 — gắn mốc, và «đã gắn» là giá trị suy ra */
+ const l0=LS.filter(x=>x.ns==='N21'&&x.cd==='GVBM'&&x.hd==='them')[0];
+ const m0=themMoc('N21','GVBM','','01/09/2026',null,'','tay'); l0.moc=m0.id;
+ ok('§6.2.5 · gắn mốc xong thì dòng lịch sử thành «đã gắn»', daGan(l0));
+ MOC=MOC.filter(m=>m.id!==m0.id);
+ ok('ràng buộc 35 · XÓA mốc bên M4.1 ⇒ dòng TỰ về «chưa gắn» (giá trị suy ra)', !daGan(l0));
+ /* §6.2.7 — nhãn «đã hủy, thêm nhầm» */
+ ok('§6.2.7 · N20 thêm rồi tắt, ⛔ mốc, ⛔ dữ liệu ⇒ mang nhãn «đã hủy — thêm nhầm»', !!N20&&N20.tat===1&&laHuy(N20));
+ ok('§6.2.7 · thử ngược — N06 thôi giữ THẬT (có mốc) ⇒ ⛔ mang nhãn ấy',
+    laHuy(BN.filter(x=>x.ns==='N06'&&x.cd==='KT')[0])===false);
+ /* phép đếm hai chiều */
+ const cg=chuaGan();
+ ok('ràng buộc 37 · phép đếm TÁCH hai chiều, cả hai đều đếm được', typeof cg.bat==='number'&&typeof cg.tat==='number');
+ /* ràng buộc 4 · đơn nhất vẫn chặn, đo trên trạng thái hiện tại */
+ ok('ràng buộc 4 · đơn nhất đếm trên TRẠNG THÁI HIỆN TẠI', giuTai('HT','',HOMNAY).length===1);
+ ok('§7.1 · chuỗi người đã giữ đọc từ MOC (M4.1), ⛔ từ BN', chuoi('KT','').length>=2);
+ /* dọn dấu vết của phép kiểm */
+ BN=BN.filter(x=>!(x.ns==='N21'&&x.cd==='GVBM'));
+ LS=LS.filter(x=>!(x.ns==='N21'&&x.cd==='GVBM'));
+ console.log('%cPHÉP KIỂM M4.3 · CDHT v3.0 — cỡ mẫu: '+BN.length+' bản ghi chức danh · '+NS.length+' nhân sự · '+
+  LS.length+' dòng lịch sử · '+MOC.length+' mốc quá trình công tác · '+BN.filter(b=>b.tat).length+' chức danh đã tắt',
+  'font-weight:700;color:#1d4ed8');
+ L.forEach(s=>console.log(s));
+ const tr=L.filter(s=>s.charAt(0)==='❌').length;
+ console.log(tr?'❌ '+tr+'/'+L.length+' phép kiểm KHÔNG đạt':'✅ '+L.length+'/'+L.length+' phép kiểm đạt');
+ return tr}
+kiemCDHT();
 render();
 
 /* ═══════════════════════════════════════════════════════════════
